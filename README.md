@@ -26,7 +26,9 @@ artview.py -h
 
 ## Dependencies
 [Py-Art](https://github.com/ARM-DOE/pyart)
+
 [matplotlib](http://matplotlib.org)
+
 [TkInter](https://wiki.python.org/moin/TkInter)
 
 Developed on Python 2.7.7 :: Anaconda 2.0.1 
