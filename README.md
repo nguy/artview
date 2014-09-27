@@ -9,11 +9,17 @@ and visualize the data.  All file types available in PyArt can be opened with
 the ARTview browser.
 
 With ARTview you can:
+
 	Dynamically switch fields (variables) and tilt angles via drop down menu.
+	
     Dynamically switch fields (variables) and tilt angles via drop down menu.
+    
     Dynamically switch tilt angle by button selection.
-    Browse a directory by advancing with drop down "Next" and "Previous" menus or by arrowkey.
+    
+    Browse a directory by advancing with drop down "Next" and "Previous" menus or by arrow key.
+    
     View ground-based or airborne radar.
+    
     View PPI, sector, or RHI scans
   
 ## Installation
