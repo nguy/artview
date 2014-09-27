@@ -10,6 +10,7 @@ With ARTview you can:
   Dynamically switch tilt angle by button selection.
   Browse a directory by advancing with drop down "Next" and "Previous" menus or by arrowkey.
   View ground-based or airborne radar.
+  View PPI, sector, or RHI scans
   
 ## Installation
 Currently it is a standalone executable python script, but may eventually be wrapped into PyArt after maturation.
