@@ -6,6 +6,7 @@ ARM Radar Toolkit Viewer
 ARTview is an interactive viewing browser that uses the PyArt toolkit.  It allows one to easily scroll through a directory of weather radar data files and visualize the data.  
 
 With ARTview you can:
+
     Dynamically switch fields (variables) and tilt angles via drop down menu.
     Dynamically switch tilt angle by button selection.
     Browse a directory by advancing with drop down "Next" and "Previous" menus or by arrowkey.
