@@ -7,10 +7,10 @@ ARTview is an interactive viewing browser that uses the PyArt toolkit.  It allow
 
 With ARTview you can:
     Dynamically switch fields (variables) and tilt angles via drop down menu.
-  Dynamically switch tilt angle by button selection.
-  Browse a directory by advancing with drop down "Next" and "Previous" menus or by arrowkey.
-  View ground-based or airborne radar.
-  View PPI, sector, or RHI scans
+    Dynamically switch tilt angle by button selection.
+    Browse a directory by advancing with drop down "Next" and "Previous" menus or by arrowkey.
+    View ground-based or airborne radar.
+    View PPI, sector, or RHI scans
   
 ## Installation
 Currently it is a standalone executable python script, but may eventually be wrapped into PyArt after maturation.
