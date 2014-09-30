@@ -67,6 +67,13 @@ NCP_LIMS = (0., 1.)
 SW_LIMS = (-1., 10.)
 TP_LIMS = (-200., 100.)
 
+AIR_XRNG = (-150., 150.)
+AIR_YRNG = (-10., 20.)
+PPI_XRNG = (-150., 150.)
+PPI_YRNG = (-150., 150.)
+RHI_XRNG = (0., 150.)
+RHI_YRNG = (0., 20.)
+
 PTYPE = 'png'
 #========================================================================
 #######################
@@ -91,26 +98,30 @@ class Browse(object):
 #        if airborne:
 #            self.field = 'DBZ'
     
+        self.airborne = airborne
+        self.rhi = rhi
+        
         # Set size of plot
         self.XSIZE = 8
         self.YSIZE = 8
         self.XRNG = (0., 0.) # Just placeholders, let PyArt do the work
         self.YRNG = (0., 0.) # Just placeholders, let PyArt do the work
-        if airborne:
+        if self.airborne:
             self.XSIZE = 8
             self.YSIZE = 5
-            self.XRNG = (-150., 150.)
-            self.YRNG = (-5., 20.)
-        if rhi:
+            self.XRNG = AIR_XRNG
+            self.YRNG = AIR_YRNG
+        if self.rhi:
             self.XSIZE = 8
             self.YSIZE = 5
-            self.YRNG = (0., 20.)
+            self.XRNG = RHI_XRNG
+            self.YRNG = RHI_YRNG
             
         # Launch the GUI interface
         self.LaunchGUI()
     
         # Create a figure for output
-        self.Set_fig_ax(nrows=1, ncols=1, xsize=self.XSIZE, ysize=self.YSIZE)
+        self.Set_fig_ax(nrows=1, ncols=1)
         #matplotlib.rcParams['toolbar'] = 'None'
         self._set_figure_canvas()
     
@@ -145,10 +156,9 @@ class Browse(object):
         #self.root.withdraw() # If we don't want a full GUI, this removes
 
         # Create a frame to hold the gui stuff
-        self.frame = Tk.Frame(self.root, width=600, height=600)
+        self.frame = Tk.Frame(self.root)#, width=600, height=600
         self.frame.pack()
         Tk.Label(self.frame).pack()
-#        Tk.Label(self.frame, text="Radar File Browser").pack()
 
         # Create the menus
         self.CreateMenu()
@@ -198,7 +208,7 @@ class Browse(object):
         self.fieldmenu = Tk.Menu(self.menu)
         self.tiltmenu = Tk.Menu(self.menu)
         plotmenu.add_cascade(label="Field", menu=self.fieldmenu)
-        if airborne:
+        if self.airborne or self.rhi:
             pass
         else:
             plotmenu.add_cascade(label="Tilt", menu=self.tiltmenu)
@@ -344,11 +354,16 @@ class Browse(object):
         # Increment counter to know whether to renew Tilt and field menus
         # If > 1 then remove the pre-existing menus before redrawing
         self.counter += 1
+        
         if self.counter > 1:
-            self._remove_tilt_menu()
             self._remove_field_menu()
-            self._remove_tilt_radiobutton()
             self._remove_next_prev_menu()
+            
+        if self.airborne or self.rhi:
+            pass
+        else:
+            self._remove_tilt_menu()
+            self._remove_tilt_radiobutton()
 
         # Get the tilt angles
         self.rTilts = self.radar.sweep_number['data'][:]
@@ -356,7 +371,7 @@ class Browse(object):
         self.fieldnames = self.radar.fields.keys()
 
         # Set up the tilt and field menus
-        if airborne:
+        if self.airborne or self.rhi:
             pass
         else:
             self.SetTiltRadioButtons()
@@ -387,12 +402,14 @@ class Browse(object):
     # Plotting methods #
     ####################
 
-    def Set_fig_ax(self, nrows=1, ncols=1, xsize=10, ysize=10):
+    def Set_fig_ax(self, nrows=1, ncols=1):
         '''Set the figure and axis to plot to'''
-        self.fig = matplotlib.figure.Figure(figsize=(xsize, ysize))#, dpi=100)
+        self.fig = matplotlib.figure.Figure(figsize=(self.XSIZE, self.YSIZE))#, dpi=100)
         #self.ax = self.fig.add_subplot(111)
-        self.ax = self.fig.add_axes([0.2, 0.2, 0.7,0.7])
-        self.cax = self.fig.add_axes([0.2,0.10,0.7,0.02])
+        xwidth = 0.7
+        yheight = 0.7 * float(self.YSIZE)/float(self.XSIZE)
+        self.ax = self.fig.add_axes([0.2, 0.2, xwidth, yheight])
+        self.cax = self.fig.add_axes([0.2,0.10, xwidth, 0.02])
 
     def _set_figure_canvas(self):
         '''Set the figure canvas to draw in window area'''
@@ -419,15 +436,18 @@ class Browse(object):
         # Always intitiates at lowest elevation angle
         self.ax.cla()
         
-        if airborne:
+        if self.airborne:
             self.display = pyart.graph.RadarDisplay_Airborne(self.radar)
             
             self.plot = self.display.plot_sweep_grid(self.field, \
                                 vmin=self.limits['vmin'], vmax=self.limits['vmax'],\
                                 colorbar_flag=False, cmap=self.CMAP,\
                                 ax=self.ax)
-            self.display.set_limits(xlim=(self.XRNG[0], self.XRNG[1]), \
-                                    ylim=(self.YRNG[0], self.YRNG[1]))
+            self.display.set_limits(xlim=(self.limits['xmin'], self.limits['xmax']),\
+                                    ylim=(self.limits['ymin'], self.limits['ymax']),\
+                                    ax=self.ax)
+#            xlim=(self.XRNG[0], self.XRNG[1]), \
+#                                    ylim=(self.YRNG[0], self.YRNG[1]))
             self.display.plot_grid_lines()
         else:
             self.display = pyart.graph.RadarDisplay(self.radar)
@@ -439,12 +459,13 @@ class Browse(object):
 
                 self.display.plot_range_rings(RNG_RINGS)
                 self.display.plot_cross_hair(5.)
-            elif self.radar.scan_type == 'rhi':
+            elif (self.radar.scan_type == 'rhi') or (self.rhi is True):
                 self.plot = self.display.plot_rhi(self.field, self.tilt,\
                                 vmin=self.limits['vmin'], vmax=self.limits['vmax'],\
                                 colorbar_flag=False, cmap=self.CMAP,\
                                 ax=self.ax)
-                self.display.set_limits(ylim=(self.limits['ymin'],self.limits['ymax']),\
+                self.display.set_limits(xlim=(self.limits['xmin'], self.limits['xmax']),\
+                                        ylim=(self.limits['ymin'], self.limits['ymax']),\
                                         ax=self.ax)
                
     
@@ -505,10 +526,15 @@ class Browse(object):
         self.limits['ymax'] = self.YRNG[1]
         
         if self.radar.scan_type == 'rhi':
-            print "IN HERE"
-            self.fig.set_size_inches(8,5)
-            self.limits['ymin'] = 0.
-            self.limits['ymax'] = 20.
+            self.fig.set_size_inches(8, 5)
+            if self.airborne:
+                self.limits['xmin'] = AIR_XRNG[0]
+                self.limits['xmax'] = AIR_XRNG[1]
+                self.limits['ymin'] = AIR_YRNG[0]
+                self.limits['ymax'] = AIR_YRNG[1]
+            else:
+                self.limits['ymin'] = RHI_YRNG[0]
+                self.limits['ymax'] = RHI_YRNG[1]
             
             self.canvas.draw()
         
