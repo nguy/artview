@@ -34,9 +34,21 @@ Currently it is a standalone executable python script, but may eventually be wra
 No specific installation is required.
 
 ## Usage
+
+```python
+python artview.py /some/directory/you/want/to/point/to
+```
+
+The file can also be made executable by
+```python
+chmod +x artview.py
+```
+
+Then it can be run by calling :
 ```python
 artview.py /some/directory/you/want/to/point/to
 ```
+
 To see the command line options:
 ```python
 artview.py -h
@@ -55,3 +67,5 @@ MacOSX 10.9.4
 Author: Nick Guy (nick.guy@noaa.gov)
 
 NOTE:: This is open source software.  Contributions are very welcome, though this is not my primary project.  In addition it needs to be state that no responsibility is taken by the author for any adverse effects.
+
+At the current time the scaling and limit changing fields are very slow.
