@@ -102,8 +102,8 @@ class Browse(object):
         # Set size of plot
         self.XSIZE = 8
         self.YSIZE = 8
-        self.XRNG = (0., 0.) # Just placeholders, let PyArt do the work
-        self.YRNG = (0., 0.) # Just placeholders, let PyArt do the work
+        self.XRNG = PPI_XRNG
+        self.YRNG = PPI_YRNG
         if self.airborne:
             self.XSIZE = 8
             self.YSIZE = 5
@@ -137,6 +137,8 @@ class Browse(object):
         self.root.bind
         self.root.bind('<Right>', self.rightkey)
         self.frame.pack()
+        
+        self.root.update_idletasks()
 
         Tk.mainloop()
         #self.root.destroy()
@@ -305,19 +307,25 @@ class Browse(object):
         limit_strs = ('vmin', 'vmax', 'xmin', 'xmax', 'ymin', 'ymax')
         self.entryfield = []
         
-        EntryFrame = Tk.Frame(self.frame)
+        self.EntryFrame = Tk.Frame(self.frame)
         
         for index, lstr in enumerate(disp_strs):
         
-            LimitLabel = Tk.Label(EntryFrame, text=lstr)
+            LimitLabel = Tk.Label(self.EntryFrame, text=lstr)
             LimitLabel.pack(side=Tk.TOP)
-            self.entryfield.append(Tk.Entry(EntryFrame, width=6))
+            self.entryfield.append(Tk.Entry(self.EntryFrame, width=6))
             self.entryfield[index].pack(expand=1, side=Tk.TOP)
             self.entryfield[index].insert(0, self.limits[limit_strs[index]])
             
-        EntryFrame.pack(side=Tk.LEFT)
-        self.applybutton = Tk.Button(EntryFrame, text='Apply',command=self._update_lims)
+#            LimitLabel.update_idletasks()
+#            self.entryfield[index].update_idletasks()
+            
+        self.EntryFrame.pack(side=Tk.LEFT)
+        self.applybutton = Tk.Button(self.EntryFrame, text='Apply',command=self._update_lims)
         self.applybutton.pack(side=Tk.TOP)
+        
+        
+        self.EntryFrame.bind("<Button-1>", self._update_entrylist)
         
     def _update_lims(self):
         '''Update the limits with newly entered limits'''
@@ -326,9 +334,17 @@ class Browse(object):
         for index, lstr in enumerate(limit_strs):
             self.limits[lstr] = float(self.entryfield[index].get())
         
+#            self.root.update_idletasks()
+        
         print self.limits
         # Update the plot with new values
         self._update_plot()
+        
+ #       self.root.update_idletasks()
+ 
+    def _update_entrylist(self):
+        self.root.update_idletasks()
+        self.EntryFrame.update_idletasks()
     
     ########################
     # Selectionion methods #
@@ -418,6 +434,8 @@ class Browse(object):
         self.AddTiltMenu()
         self.AddFieldMenu()
         self.AddNextPrevMenu()
+        
+#        self.root.update_idletasks()
 
         self._update_plot()
 
@@ -480,6 +498,9 @@ class Browse(object):
                                 vmin=self.limits['vmin'], vmax=self.limits['vmax'],\
                                 colorbar_flag=False, cmap=self.CMAP,\
                                 ax=self.ax)
+                self.display.set_limits(xlim=(self.limits['xmin'], self.limits['xmax']),\
+                                        ylim=(self.limits['ymin'], self.limits['ymax']),\
+                                        ax=self.ax)
 
                 self.display.plot_range_rings(RNG_RINGS)
                 self.display.plot_cross_hair(5.)
@@ -499,6 +520,8 @@ class Browse(object):
                                                 norm=norm, orientation='horizontal')
         self.cbar.set_label(self.radar.fields[self.field]['units'])
         self.canvas.draw()
+        
+        self.root.update_idletasks()
     
     ###############
     # Get methods #
@@ -560,8 +583,6 @@ class Browse(object):
             else:
                 self.limits['ymin'] = RHI_YRNG[0]
                 self.limits['ymax'] = RHI_YRNG[1]
-            
-#            self.canvas.draw()
         
     def _get_directory_info(self):
         # Record the new directory if user went somewhere else
