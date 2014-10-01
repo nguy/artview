@@ -13,7 +13,7 @@ Author::
 Nick Guy - OU CIMMS / University of Miami
 
 Updated::
-26 Sep 2014
+30 Sep 2014
 
 Usage::
 -----
@@ -21,9 +21,9 @@ parv.py /some/directory/path/to/look/in
 
 TODO::
 ----
-Improve the Next and Previous Advancement features and error handling.
+Improve error handling.
 
-Allow interactive modification of limits for 
+Speed up interactive modification of limits for 
   contouring, xrange, and yrange.
 
 KNOWN BUGS::
@@ -47,13 +47,11 @@ import Tkinter as Tk
 from tkFileDialog import askopenfilename
 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
-# implement the default mpl key bindings
-#from matplotlib.backend_bases import key_press_handler
 
 #===============================================================
 # Initialize some variables
 
-VERSION = '0.1.1'
+VERSION = '0.1.2'
 
 RNG_RINGS = [50.,100.,150.]
 
@@ -122,7 +120,13 @@ class Browse(object):
     
         # Create a figure for output
         self.Set_fig_ax(nrows=1, ncols=1)
-        #matplotlib.rcParams['toolbar'] = 'None'
+        
+        # Initialize limits
+        self._initialize_limits()
+        
+        # Create the Limit Entry
+        self.Make_Lims_Entry()
+        
         self._set_figure_canvas()
     
         # Show an "Open" dialog box and return the path to the selected file
@@ -135,7 +139,7 @@ class Browse(object):
         self.frame.pack()
 
         Tk.mainloop()
-        #root.destroy()
+        #self.root.destroy()
     
     ####################
     # GUI methods #
@@ -153,7 +157,6 @@ class Browse(object):
     
         self.root = Tk.Tk()
         self.root.title("ARTView - ARM Radar Toolkit Viewer")
-        #self.root.withdraw() # If we don't want a full GUI, this removes
 
         # Create a frame to hold the gui stuff
         self.frame = Tk.Frame(self.root)#, width=600, height=600
@@ -291,6 +294,42 @@ class Browse(object):
        for ntilt in self.rTilts:
            self.tiltbutton[ntilt].destroy()
     
+    #############################
+    # Limit entry build methods #
+    #############################
+           
+    def Make_Lims_Entry(self):
+        '''Make entry boxes to modify variable and axis limits'''
+        disp_strs = ('Data Min:', 'Data Max:', 'X-axis Min:', 'X-axis Max:', \
+                      'Y-axis Min:', 'Y-axis Max:')
+        limit_strs = ('vmin', 'vmax', 'xmin', 'xmax', 'ymin', 'ymax')
+        self.entryfield = []
+        
+        EntryFrame = Tk.Frame(self.frame)
+        
+        for index, lstr in enumerate(disp_strs):
+        
+            LimitLabel = Tk.Label(EntryFrame, text=lstr)
+            LimitLabel.pack(side=Tk.TOP)
+            self.entryfield.append(Tk.Entry(EntryFrame, width=6))
+            self.entryfield[index].pack(expand=1, side=Tk.TOP)
+            self.entryfield[index].insert(0, self.limits[limit_strs[index]])
+            
+        EntryFrame.pack(side=Tk.LEFT)
+        self.applybutton = Tk.Button(EntryFrame, text='Apply',command=self._update_lims)
+        self.applybutton.pack(side=Tk.TOP)
+        
+    def _update_lims(self):
+        '''Update the limits with newly entered limits'''
+        limit_strs = ('vmin', 'vmax', 'xmin', 'xmax', 'ymin', 'ymax')
+       
+        for index, lstr in enumerate(limit_strs):
+            self.limits[lstr] = float(self.entryfield[index].get())
+        
+        print self.limits
+        # Update the plot with new values
+        self._update_plot()
+    
     ########################
     # Selectionion methods #
     ########################
@@ -303,7 +342,7 @@ class Browse(object):
     def FieldSelectCommand(self, nombre):
         '''Captures a selection and redraws the new field'''
         self.field = nombre
-        #self.PlotnewField()
+        self._initialize_limits()
         self._update_plot()
         
     def AdvanceFileSelect(self, findex):
@@ -358,12 +397,13 @@ class Browse(object):
         if self.counter > 1:
             self._remove_field_menu()
             self._remove_next_prev_menu()
+            #self._remove_lims_entry()
             
-        if self.airborne or self.rhi:
-            pass
-        else:
-            self._remove_tilt_menu()
-            self._remove_tilt_radiobutton()
+            if self.airborne or self.rhi:
+                pass
+            else:
+                self._remove_tilt_menu()
+                self._remove_tilt_radiobutton()
 
         # Get the tilt angles
         self.rTilts = self.radar.sweep_number['data'][:]
@@ -380,8 +420,6 @@ class Browse(object):
         self.AddNextPrevMenu()
 
         self._update_plot()
-        
-#        self.Make_Lims_Entry()
 
     def _savefile(self, PTYPE=PTYPE):
         '''Save the current display'''
@@ -393,10 +431,6 @@ class Browse(object):
 
         # Find out the save file name, first get filename
         #savefilename = tkFileDialog.asksaveasfilename(**self.file_opt)
-
-#    def on_key_event(self, event):
-#        print('you pressed %s'%event.key)
-#        key_press_handler(event, self.canvas, toolbar=None)#self.toolbar)
 
     ####################
     # Plotting methods #
@@ -418,20 +452,12 @@ class Browse(object):
         self.canvas.show()
         self.canvas.get_tk_widget().pack(side=Tk.LEFT, expand=1) 
 
-#        self.toolbar = NavigationToolbar2TkAgg( self.canvas, self.root)
-#        self.toolbar.update()
-        #self.canvas._tkcanvas.pack(side=Tk.TOP, fill=Tk.BOTH, expand=1)
         self.canvas._tkcanvas.pack(side=Tk.LEFT, expand=1)#fill=Tk.BOTH, 
-    
-#        self.canvas.mpl_connect('key_press_event', self.on_key_event)
 
     def _update_plot(self):
         '''Renew the plot'''
         print "Plotting " + self.field +" field, " + "Tilt %d" % (self.tilt+1)
     
-        # Get the min and max to use for plotting
-        self._initialize_plot()
-        print self.limits['ymax']
         # Create the plot with PyArt RadarDisplay 
         # Always intitiates at lowest elevation angle
         self.ax.cla()
@@ -446,8 +472,6 @@ class Browse(object):
             self.display.set_limits(xlim=(self.limits['xmin'], self.limits['xmax']),\
                                     ylim=(self.limits['ymin'], self.limits['ymax']),\
                                     ax=self.ax)
-#            xlim=(self.XRNG[0], self.XRNG[1]), \
-#                                    ylim=(self.YRNG[0], self.YRNG[1]))
             self.display.plot_grid_lines()
         else:
             self.display = pyart.graph.RadarDisplay(self.radar)
@@ -469,7 +493,8 @@ class Browse(object):
                                         ax=self.ax)
                
     
-        norm = matplotlib.colors.Normalize(vmin=self.vminmax[0], vmax=self.vminmax[1])
+        norm = matplotlib.colors.Normalize(vmin=self.limits['vmin'],\
+                                           vmax=self.limits['vmax'])
         self.cbar=matplotlib.colorbar.ColorbarBase(self.cax, cmap=self.CMAP,\
                                                 norm=norm, orientation='horizontal')
         self.cbar.set_label(self.radar.fields[self.field]['units'])
@@ -479,7 +504,7 @@ class Browse(object):
     # Get methods #
     ###############
     
-    def _initialize_plot(self):
+    def _initialize_limits(self):
         if self.field == 'reflectivity':
             self.vminmax = (Z_LIMS[0], Z_LIMS[1])
             self.CMAP = 'gist_ncar'
@@ -525,7 +550,7 @@ class Browse(object):
         self.limits['ymin'] = self.YRNG[0]
         self.limits['ymax'] = self.YRNG[1]
         
-        if self.radar.scan_type == 'rhi':
+        if self.rhi:
             self.fig.set_size_inches(8, 5)
             if self.airborne:
                 self.limits['xmin'] = AIR_XRNG[0]
@@ -536,7 +561,7 @@ class Browse(object):
                 self.limits['ymin'] = RHI_YRNG[0]
                 self.limits['ymax'] = RHI_YRNG[1]
             
-            self.canvas.draw()
+#            self.canvas.draw()
         
     def _get_directory_info(self):
         # Record the new directory if user went somewhere else
