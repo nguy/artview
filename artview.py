@@ -388,7 +388,6 @@ class Browse(object):
     def _initial_openfile(self):
         '''Open a file via a file selection window'''
         self.filename = askopenfilename(initialdir=self.dirIn, title='Choose a file')
-        print "Opening file " + self.filename 
         
         # Reset the directory path if needed, build list for advancing
         self._get_directory_info()
@@ -475,6 +474,11 @@ class Browse(object):
     def _update_plot(self):
         '''Renew the plot'''
         print "Plotting " + self.field +" field, " + "Tilt %d" % (self.tilt+1)
+        
+        # This is a bit of a hack to ensure that the viewer works with files
+        # withouth "standard" output as defined by PyArt
+        # Check to see if the field 'reflectivity' exists for the initial open
+        self._check_default_field()
     
         # Create the plot with PyArt RadarDisplay 
         # Always intitiates at lowest elevation angle
@@ -592,6 +596,26 @@ class Browse(object):
         self.filelist = os.listdir(self.dirIn)
         
         self.fileindex = self.filelist.index(os.path.basename(self.filename))
+        
+    def _check_default_field(self):
+        '''Hack to perform a check on reflectivity to make it work with 
+        a larger number of files
+        This should only occur upon start up with a new file'''
+        if self.field == 'reflectivity':
+            if self.field in self.fieldnames:
+                pass
+            elif 'CZ' in self.fieldnames:
+                self.field = 'CZ'
+            elif 'DZ' in self.fieldnames:
+                self.field = 'DZ'
+            elif 'dbz' in self.fieldnames:
+                self.field = 'dbz'
+            elif 'DBZ' in self.fieldnames:
+                self.field = 'DBZ'
+            elif 'dBZ' in self.fieldnames:
+                self.field = 'dBZ'
+            elif 'Z' in self.fieldnames:
+                self.field = 'Z'
            
 ###################################
 if __name__ == '__main__':
