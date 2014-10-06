@@ -54,6 +54,22 @@ To see the command line options:
 artview.py -h
 ```
 
+To plot an RHI formatted file, you must use the --rhi flag:
+```python
+artview.py --rhi /some/directory/with/RHI/files
+```
+
+To plot airborne sweep data, you must use the --airborne flag:
+```python
+artview.py --rhi /some/directory/with/airbrone/sweep/files
+```
+
+At this time the flag must be used.  In the future maybe I can find a workaround.
+
+The default startup uses radar reflectivity and checks for a few common names.
+If you find a file with a field that does not load, let me know and I can add it
+to the list.
+
 ## Dependencies
 [Py-Art](https://github.com/ARM-DOE/pyart)
 

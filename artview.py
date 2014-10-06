@@ -1,9 +1,9 @@
 #! /usr/bin/env python
 #******************************
-#  parv.py - PyArt Radar Viewer
+#  artview.py - PyArt Radar Viewer
 #******************************
 '''
-PARV - The PyArt Radar Viewer
+ARTview - The ARM Radar Toolkit Viewer
 
 Allow a graphical interface to be employed as a quick browse through 
 a radar data file opened using the PyArt software package
@@ -51,9 +51,9 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolb
 #===============================================================
 # Initialize some variables
 
-VERSION = '0.1.2'
+VERSION = '0.1.3'
 
-RNG_RINGS = [50.,100.,150.]
+#RNG_RINGS = [50., 100., 150.]
 
 Z_LIMS = (-10., 65.)
 VR_LIMS = (-30., 30.)
@@ -67,10 +67,18 @@ TP_LIMS = (-200., 100.)
 
 AIR_XRNG = (-150., 150.)
 AIR_YRNG = (-10., 20.)
+AIR_XSIZE = 8
+AIR_YSIZE = 5
+
 PPI_XRNG = (-150., 150.)
 PPI_YRNG = (-150., 150.)
+PPI_XSIZE = 8
+PPI_YSIZE = 8
+
 RHI_XRNG = (0., 150.)
 RHI_YRNG = (0., 20.)
+RHI_XSIZE = 8
+RHI_YSIZE = 5
 
 PTYPE = 'png'
 #========================================================================
@@ -93,33 +101,35 @@ class Browse(object):
         # Default field and tilt angle to plot
         self.field = 'reflectivity'
         self.tilt = 0
-#        if airborne:
-#            self.field = 'DBZ'
     
         self.airborne = airborne
         self.rhi = rhi
         
         # Set size of plot
-        self.XSIZE = 8
-        self.YSIZE = 8
+        self.XSIZE = PPI_XSIZE
+        self.YSIZE = PPI_YSIZE
         self.XRNG = PPI_XRNG
         self.YRNG = PPI_YRNG
         if self.airborne:
-            self.XSIZE = 8
-            self.YSIZE = 5
+            self.XSIZE = AIR_XSIZE
+            self.YSIZE = AIR_YSIZE
             self.XRNG = AIR_XRNG
             self.YRNG = AIR_YRNG
         if self.rhi:
-            self.XSIZE = 8
-            self.YSIZE = 5
+            self.XSIZE = RHI_XSIZE
+            self.YSIZE = RHI_YSIZE
             self.XRNG = RHI_XRNG
             self.YRNG = RHI_YRNG
             
+        # Set the default range rings
+        self.RngRingList = ["None", "10 km", "20 km", "30 km", "50 km", "100 km"]
+        self.RngRing = False
+        
         # Launch the GUI interface
         self.LaunchGUI()
     
         # Create a figure for output
-        self.Set_fig_ax(nrows=1, ncols=1)
+        self._set_fig_ax(nrows=1, ncols=1)
         
         # Initialize limits
         self._initialize_limits()
@@ -128,7 +138,7 @@ class Browse(object):
         self.Make_Lims_Entry()
         
         self._set_figure_canvas()
-    
+        
         # Show an "Open" dialog box and return the path to the selected file
         self._initial_openfile()
         
@@ -212,11 +222,13 @@ class Browse(object):
 
         self.fieldmenu = Tk.Menu(self.menu)
         self.tiltmenu = Tk.Menu(self.menu)
+        self.rngringmenu = Tk.Menu(self.menu)
         plotmenu.add_cascade(label="Field", menu=self.fieldmenu)
         if self.airborne or self.rhi:
             pass
         else:
             plotmenu.add_cascade(label="Tilt", menu=self.tiltmenu)
+            plotmenu.add_cascade(label="Rng Ring every...", menu=self.rngringmenu)
             
     def AddFileAdvanceMenu(self):
         '''Add an option to advance to next or previous file'''
@@ -226,14 +238,20 @@ class Browse(object):
     def AddTiltMenu(self):
         '''Add a menu to change tilt angles of current plot'''
         for ntilt in self.rTilts:
-            command = (lambda ntilt: lambda: self.TiltSelectCommand(ntilt)) (ntilt)
-            self.tiltmenu.add_command(label="Tilt %d"%(ntilt+1), command=command)
+            cmd = (lambda ntilt: lambda: self.TiltSelectCmd(ntilt)) (ntilt)
+            self.tiltmenu.add_command(label="Tilt %d"%(ntilt+1), command=cmd)
 
     def AddFieldMenu(self):
         '''Add a menu to change current plot field'''
         for nombre in self.fieldnames:
-            command = (lambda nombre: lambda: self.FieldSelectCommand(nombre)) (nombre)
-            self.fieldmenu.add_command(label=nombre, command=command)
+            cmd = (lambda nombre: lambda: self.FieldSelectCmd(nombre)) (nombre)
+            self.fieldmenu.add_command(label=nombre, command=cmd)
+            
+    def AddRngRingMenu(self):
+        '''Add a menu to set range rings'''
+        for RngRing in self.RngRingList:
+            cmd = (lambda RngRing: lambda: self.RngRingSelectCmd(RngRing)) (RngRing)
+            self.rngringmenu.add_command(label=RngRing, command=cmd)
     
     def AddNextPrevMenu(self):
         '''Add an option to advance to next or previous file'''
@@ -262,6 +280,11 @@ class Browse(object):
         '''Remove the field menu items'''
         for nombre in self.fieldnames:
             self.fieldmenu.delete(nombre)
+    
+    def _remove_rngring_menu(self):
+        '''Remove the range rings menu items'''
+        for rngring in self.RngRingList:
+            self.rngringmenu.delete(rngring)
             
     def _remove_next_prev_menu(self):
         '''Remove the next and previous'''
@@ -280,7 +303,7 @@ class Browse(object):
         tiltbutton = []
 
         for ntilt in self.rTilts:
-            command = (lambda ntilt: lambda: self.TiltSelectCommand(ntilt)) (ntilt)
+            command = (lambda ntilt: lambda: self.TiltSelectCmd(ntilt)) (ntilt)
             tiltbutton.append(Tk.Radiobutton(self.frame, value=int(ntilt), \
                                   text="Tilt %d"%(ntilt+1), variable=TiltInt, \
                                   command=command))
@@ -288,9 +311,9 @@ class Browse(object):
         
         self.tiltbutton = tiltbutton
         
-    ########################
+    #########################
     # Button remove methods #
-    ########################
+    #########################
     def _remove_tilt_radiobutton(self):
        '''Remove the tilt selection radio buttons'''
        for ntilt in self.rTilts:
@@ -336,7 +359,6 @@ class Browse(object):
         
 #            self.root.update_idletasks()
         
-        print self.limits
         # Update the plot with new values
         self._update_plot()
         
@@ -350,15 +372,42 @@ class Browse(object):
     # Selectionion methods #
     ########################
     
-    def TiltSelectCommand(self, ntilt):
+    def TiltSelectCmd(self, ntilt):
         '''Captures a selection and redraws the field with new tilt'''
         self.tilt = ntilt
         self._update_plot()
 
-    def FieldSelectCommand(self, nombre):
+    def FieldSelectCmd(self, nombre):
         '''Captures a selection and redraws the new field'''
         self.field = nombre
         self._initialize_limits()
+        self._update_plot()
+        
+    def RngRingSelectCmd(self, ringSel):
+        '''Captures selection and redraws the field with range rings'''
+        
+        if ringSel is "None":
+            self.RngRing = False
+        else:
+            self.RngRing = True
+            # Find the unambigous range of the radar
+            unrng = int(self.radar.instrument_parameters['unambiguous_range']['data'][0]/1000)
+            
+            # Set the step
+            if ringSel == '10 km':
+                ringdel = 10
+            if ringSel == '20 km':
+                ringdel = 20
+            if ringSel == '30 km':
+                ringdel = 30
+            if ringSel == '50 km':
+                ringdel = 50
+            if ringSel == '100 km':
+                ringdel = 100
+                
+            # Calculate an array of range rings
+            self.RNG_RINGS = range(ringdel, unrng, ringdel)
+        
         self._update_plot()
         
     def AdvanceFileSelect(self, findex):
@@ -381,9 +430,9 @@ class Browse(object):
         '''Right arrow key event triggers advancement'''
         self.AdvanceFileSelect(self.fileindex + 1)
 
-    ####################
-    # Data methods #
-    ####################
+    ########################
+    # Data display methods #
+    ########################
 
     def _initial_openfile(self):
         '''Open a file via a file selection window'''
@@ -405,6 +454,11 @@ class Browse(object):
             "This is not a recognized radar file"
             return
         
+        # In case the flags were not used at startup
+        # Check to see if this is an aircraft or rhi file
+        if self.counter == 0:
+            self._check_file_type()
+        
         # Increment counter to know whether to renew Tilt and field menus
         # If > 1 then remove the pre-existing menus before redrawing
         self.counter += 1
@@ -419,6 +473,7 @@ class Browse(object):
             else:
                 self._remove_tilt_menu()
                 self._remove_tilt_radiobutton()
+                self._remove_rngring_menu()
 
         # Get the tilt angles
         self.rTilts = self.radar.sweep_number['data'][:]
@@ -430,6 +485,7 @@ class Browse(object):
             pass
         else:
             self.SetTiltRadioButtons()
+            self.AddRngRingMenu()
         self.AddTiltMenu()
         self.AddFieldMenu()
         self.AddNextPrevMenu()
@@ -438,22 +494,11 @@ class Browse(object):
 
         self._update_plot()
 
-    def _savefile(self, PTYPE=PTYPE):
-        '''Save the current display'''
-        pName = self.display.generate_filename('refelctivity',self.tilt,ext=PTYPE)
-        print "Creating "+ pName
-
-        RADNAME = self.radar.metadata['instrument_name']
-        plt.savefig(RADNAME+pName,format=PTYPE)
-
-        # Find out the save file name, first get filename
-        #savefilename = tkFileDialog.asksaveasfilename(**self.file_opt)
-
     ####################
     # Plotting methods #
     ####################
 
-    def Set_fig_ax(self, nrows=1, ncols=1):
+    def _set_fig_ax(self, nrows=1, ncols=1):
         '''Set the figure and axis to plot to'''
         self.fig = matplotlib.figure.Figure(figsize=(self.XSIZE, self.YSIZE))#, dpi=100)
         #self.ax = self.fig.add_subplot(111)
@@ -461,6 +506,30 @@ class Browse(object):
         yheight = 0.7 * float(self.YSIZE)/float(self.XSIZE)
         self.ax = self.fig.add_axes([0.2, 0.2, xwidth, yheight])
         self.cax = self.fig.add_axes([0.2,0.10, xwidth, 0.02])
+        
+    def _set_fig_ax_rhi(self):
+        '''Change figure size and limits if RHI'''
+        print self.rhi
+        print self.YSIZE
+        if self.rhi:
+            self.XSIZE = RHI_XSIZE
+            self.YSIZE = RHI_YSIZE
+            self.limits['ymin'] = RHI_YRNG[0]
+            self.limits['ymax'] = RHI_YRNG[1]
+        if self.airborne:
+            self.XSIZE = AIR_XSIZE
+            self.YSIZE = AIR_YSIZE
+            self.limits['xmin'] = AIR_XRNG[0]
+            self.limits['xmax'] = AIR_XRNG[1]
+            self.limits['ymin'] = AIR_YRNG[0]
+            self.limits['ymax'] = AIR_YRNG[1]
+#            self.fig.set_size_inches(8, 5)
+        self._set_fig_ax()
+        self.canvas.delete()
+        self._set_figure_canvas()
+                
+        print self.rhi
+        print self.YSIZE
 
     def _set_figure_canvas(self):
         '''Set the figure canvas to draw in window area'''
@@ -498,16 +567,20 @@ class Browse(object):
         else:
             self.display = pyart.graph.RadarDisplay(self.radar)
             if self.radar.scan_type == 'ppi':
+                # Create Plot
                 self.plot = self.display.plot_ppi(self.field, self.tilt,\
                                 vmin=self.limits['vmin'], vmax=self.limits['vmax'],\
                                 colorbar_flag=False, cmap=self.CMAP,\
                                 ax=self.ax)
+                # Set limits
                 self.display.set_limits(xlim=(self.limits['xmin'], self.limits['xmax']),\
                                         ylim=(self.limits['ymin'], self.limits['ymax']),\
                                         ax=self.ax)
-
-                self.display.plot_range_rings(RNG_RINGS)
-                self.display.plot_cross_hair(5.)
+                # Add range rings
+                if self.RngRing:
+                    self.display.plot_range_rings(self.RNG_RINGS, ax=self.ax)
+                # Add radar location
+                self.display.plot_cross_hair(5., ax=self.ax)
             elif (self.radar.scan_type == 'rhi') or (self.rhi is True):
                 self.plot = self.display.plot_rhi(self.field, self.tilt,\
                                 vmin=self.limits['vmin'], vmax=self.limits['vmax'],\
@@ -516,8 +589,11 @@ class Browse(object):
                 self.display.set_limits(xlim=(self.limits['xmin'], self.limits['xmax']),\
                                         ylim=(self.limits['ymin'], self.limits['ymax']),\
                                         ax=self.ax)
+                # Add range rings
+                if self.RngRing:
+                    self.display.plot_range_rings(self.RNG_RINGS, ax=self.ax)
                
-    
+        
         norm = matplotlib.colors.Normalize(vmin=self.limits['vmin'],\
                                            vmax=self.limits['vmax'])
         self.cbar=matplotlib.colorbar.ColorbarBase(self.cax, cmap=self.CMAP,\
@@ -527,9 +603,20 @@ class Browse(object):
         
         self.root.update_idletasks()
     
-    ###############
-    # Get methods #
-    ###############
+    #########################
+    # Get and check methods #
+    #########################
+        
+    def _get_directory_info(self):
+        ''' Record the  directory of file
+        This is useful if user went somewhere else on startup
+        '''
+        self.dirIn = os.path.dirname(self.filename)
+        
+        # Get a list of files in the working directory
+        self.filelist = os.listdir(self.dirIn)
+        
+        self.fileindex = self.filelist.index(os.path.basename(self.filename))
     
     def _initialize_limits(self):
         if self.field == 'reflectivity':
@@ -577,26 +664,6 @@ class Browse(object):
         self.limits['ymin'] = self.YRNG[0]
         self.limits['ymax'] = self.YRNG[1]
         
-        if self.rhi:
-            self.fig.set_size_inches(8, 5)
-            if self.airborne:
-                self.limits['xmin'] = AIR_XRNG[0]
-                self.limits['xmax'] = AIR_XRNG[1]
-                self.limits['ymin'] = AIR_YRNG[0]
-                self.limits['ymax'] = AIR_YRNG[1]
-            else:
-                self.limits['ymin'] = RHI_YRNG[0]
-                self.limits['ymax'] = RHI_YRNG[1]
-        
-    def _get_directory_info(self):
-        # Record the new directory if user went somewhere else
-        self.dirIn = os.path.dirname(self.filename)
-        
-        # Get a list of files in the working directory
-        self.filelist = os.listdir(self.dirIn)
-        
-        self.fileindex = self.filelist.index(os.path.basename(self.filename))
-        
     def _check_default_field(self):
         '''Hack to perform a check on reflectivity to make it work with 
         a larger number of files
@@ -616,6 +683,34 @@ class Browse(object):
                 self.field = 'dBZ'
             elif 'Z' in self.fieldnames:
                 self.field = 'Z'
+                
+    def _check_file_type(self):
+        '''Check file to see if the file is airborne or rhi'''
+        
+        if self.radar.scan_type == 'rhi':
+            try:
+                (self.radar.metadata['platform_type'] == 'aircraft_tail') or \
+                (self.radar.metadata['platform_type'] == 'aircraft')
+                self.airborne = True
+            except:
+                self.rhi = True
+            
+            self._set_fig_ax_rhi()
+
+    ########################
+    # Image save methods #
+    ########################
+
+    def _savefile(self, PTYPE=PTYPE):
+        '''Save the current display'''
+        pName = self.display.generate_filename('refelctivity',self.tilt,ext=PTYPE)
+        print "Creating "+ pName
+
+        RADNAME = self.radar.metadata['instrument_name']
+        plt.savefig(RADNAME+pName,format=PTYPE)
+
+        # Find out the save file name, first get filename
+        #savefilename = tkFileDialog.asksaveasfilename(**self.file_opt)
            
 ###################################
 if __name__ == '__main__':
