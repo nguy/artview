@@ -10,10 +10,7 @@ the ARTview browser.
 
 With ARTview you can:
 
-<<<<<<< HEAD
 	Dynamically switch fields (variables) and tilt angles via drop down menu.
-	
-    Dynamically switch fields (variables) and tilt angles via drop down menu.
     
     Dynamically switch tilt angle by button selection.
     
@@ -21,17 +18,12 @@ With ARTview you can:
     
     View ground-based or airborne radar.
     
-=======
-    Dynamically switch fields (variables) and tilt angles via drop down menu.
-    Dynamically switch tilt angle by button selection.
-    Browse a directory by advancing with drop down "Next" and "Previous" menus or by arrowkey.
-    View ground-based or airborne radar.
->>>>>>> 01d2b2eded95a12cc8006b2954136cdc78b5f16a
-    View PPI, sector, or RHI scans
+    View PPI, sector or RHI type files
+    
   
 ## Installation
 Currently it is a standalone executable python script, but may eventually be wrapped into PyArt after maturation.
-No specific installation is required.
+No specific installation is required, outside of PyArt dependency.
 
 ## Usage
 
@@ -54,17 +46,18 @@ To see the command line options:
 artview.py -h
 ```
 
-To plot an RHI formatted file, you must use the --rhi flag:
+To plot an RHI formatted file, you can use the --rhi flag:
 ```python
 artview.py --rhi /some/directory/with/RHI/files
 ```
 
-To plot airborne sweep data, you must use the --airborne flag:
+To plot airborne sweep data, you can use the --airborne flag:
 ```python
-artview.py --rhi /some/directory/with/airbrone/sweep/files
+artview.py --airborne /some/directory/with/airbrone/sweep/files
 ```
 
-At this time the flag must be used.  In the future maybe I can find a workaround.
+ARTview should be able to recognize RHI and airborne files, though this has not
+been robustly tested to date.
 
 The default startup uses radar reflectivity and checks for a few common names.
 If you find a file with a field that does not load, let me know and I can add it

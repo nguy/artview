@@ -49,11 +49,9 @@ from tkFileDialog import askopenfilename
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 
 #===============================================================
-# Initialize some variables
+# Initialization defaults for variables
 
 VERSION = '0.1.3'
-
-#RNG_RINGS = [50., 100., 150.]
 
 Z_LIMS = (-10., 65.)
 VR_LIMS = (-30., 30.)
@@ -137,8 +135,6 @@ class Browse(object):
         # Create the Limit Entry
         self.Make_Lims_Entry()
         
-        self._set_figure_canvas()
-        
         # Show an "Open" dialog box and return the path to the selected file
         self._initial_openfile()
         
@@ -151,7 +147,6 @@ class Browse(object):
         self.root.update_idletasks()
 
         Tk.mainloop()
-        #self.root.destroy()
     
     ####################
     # GUI methods #
@@ -458,7 +453,8 @@ class Browse(object):
         # Check to see if this is an aircraft or rhi file
         if self.counter == 0:
             self._check_file_type()
-        
+            self._set_figure_canvas()
+
         # Increment counter to know whether to renew Tilt and field menus
         # If > 1 then remove the pre-existing menus before redrawing
         self.counter += 1
@@ -500,17 +496,15 @@ class Browse(object):
 
     def _set_fig_ax(self, nrows=1, ncols=1):
         '''Set the figure and axis to plot to'''
-        self.fig = matplotlib.figure.Figure(figsize=(self.XSIZE, self.YSIZE))#, dpi=100)
-        #self.ax = self.fig.add_subplot(111)
+        self.fig = matplotlib.figure.Figure(figsize=(self.XSIZE, self.YSIZE))
         xwidth = 0.7
         yheight = 0.7 * float(self.YSIZE)/float(self.XSIZE)
         self.ax = self.fig.add_axes([0.2, 0.2, xwidth, yheight])
         self.cax = self.fig.add_axes([0.2,0.10, xwidth, 0.02])
+#        self._set_figure_canvas()
         
     def _set_fig_ax_rhi(self):
         '''Change figure size and limits if RHI'''
-        print self.rhi
-        print self.YSIZE
         if self.rhi:
             self.XSIZE = RHI_XSIZE
             self.YSIZE = RHI_YSIZE
@@ -523,13 +517,9 @@ class Browse(object):
             self.limits['xmax'] = AIR_XRNG[1]
             self.limits['ymin'] = AIR_YRNG[0]
             self.limits['ymax'] = AIR_YRNG[1]
-#            self.fig.set_size_inches(8, 5)
+        self.fig.set_size_inches(self.XSIZE, self.YSIZE)
         self._set_fig_ax()
-        self.canvas.delete()
-        self._set_figure_canvas()
-                
-        print self.rhi
-        print self.YSIZE
+#        self.canvas.draw()
 
     def _set_figure_canvas(self):
         '''Set the figure canvas to draw in window area'''
@@ -539,6 +529,7 @@ class Browse(object):
         self.canvas.get_tk_widget().pack(side=Tk.LEFT, expand=1) 
 
         self.canvas._tkcanvas.pack(side=Tk.LEFT, expand=1)#fill=Tk.BOTH, 
+        self.canvas.draw()
 
     def _update_plot(self):
         '''Renew the plot'''
@@ -686,7 +677,6 @@ class Browse(object):
                 
     def _check_file_type(self):
         '''Check file to see if the file is airborne or rhi'''
-        
         if self.radar.scan_type == 'rhi':
             try:
                 (self.radar.metadata['platform_type'] == 'aircraft_tail') or \
@@ -696,6 +686,11 @@ class Browse(object):
                 self.rhi = True
             
             self._set_fig_ax_rhi()
+        elif self.radar.scan_type == 'ppi':
+            pass
+        else:
+            print "Check the scan type, ARTview supports PPI and RHI"
+            return
 
     ########################
     # Image save methods #
@@ -717,15 +712,18 @@ if __name__ == '__main__':
     # Check for directory
     
     parser = argparse.ArgumentParser(
-              description='Start PARV - the PyArt Radar Viewer.')
+              description='Start ARTview - the ARM Radar Toolkit Viewer.')
     parser.add_argument('searchstring', type=str, help='directory to open')
  
     igroup = parser.add_argument_group(
-             title='set input platform, optional',
-             description=('The ingest method for various platfoms can be chosen. '
-                          'If not chosen, an assumption of a gound '
+             title='Set input platform, optional',
+             description=(''
+                          'The ingest method for various platfoms can be chosen. '
+                          'If not chosen, an assumption of a ground-based '
                           'platform is made. '
-                          'Specify airborne as follows:'))
+                          'The following flags may be used to  display' 
+                          'RHI or airborne sweep data.'
+                          ' '))
   
     igroup.add_argument('--airborne', action='store_true',
                           help='Airborne radar file')
@@ -734,7 +732,7 @@ if __name__ == '__main__':
                           help='RHI scan')
  
     parser.add_argument('-v', '--version', action='version',
-                         version='PARV version %s' % (VERSION))
+                         version='ARTview version %s' % (VERSION))
     
     # Parse the args                     
     args = parser.parse_args()
