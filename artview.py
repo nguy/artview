@@ -320,6 +320,8 @@ class Browse(object):
            
     def Make_Lims_Entry(self):
         '''Make entry boxes to modify variable and axis limits'''
+        self.root.update()
+        
         disp_strs = ('Data Min:', 'Data Max:', 'X-axis Min:', 'X-axis Max:', \
                       'Y-axis Min:', 'Y-axis Max:')
         limit_strs = ('vmin', 'vmax', 'xmin', 'xmax', 'ymin', 'ymax')
@@ -337,7 +339,7 @@ class Browse(object):
             
 #            LimitLabel.update_idletasks()
 #            self.entryfield[index].update_idletasks()
-            
+        self.root.update()    
         self.EntryFrame.pack(side=Tk.LEFT)
         self.applybutton = Tk.Button(self.EntryFrame, text='Apply',command=self._update_lims)
         self.applybutton.pack(side=Tk.TOP)
@@ -431,6 +433,7 @@ class Browse(object):
 
     def _initial_openfile(self):
         '''Open a file via a file selection window'''
+        self.root.update()
         self.filename = askopenfilename(initialdir=self.dirIn, title='Choose a file')
         
         # Reset the directory path if needed, build list for advancing
@@ -489,6 +492,7 @@ class Browse(object):
 #        self.root.update_idletasks()
 
         self._update_plot()
+        self.canvas.draw()
 
     ####################
     # Plotting methods #
