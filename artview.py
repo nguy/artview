@@ -13,6 +13,7 @@ Author::
 Nick Guy - OU CIMMS / University of Miami
 
 Updated::
+-------
 30 Sep 2014
 
 Usage::
@@ -176,15 +177,54 @@ class Browse(object):
         self.AddPlotMenu()
         self.AddFileAdvanceMenu()
 
-    def _print_radar_info(self):  ####NEEDS WORK### info() does not return to variable
+    ######################
+    # Help methods #
+    ######################
+
+    def _about(self):
+        print "This is a simple radar file browser to look at files using PyArt"
+
+    def _dump_radar_info_to_terminal(self):
         '''Print out the radar info to text box'''
-        self.textFrame = Tk.Frame(self.root)
-        self.text = Tk.text(self.textFrame)
-        self.text.pack()
 
         # Get the radar info form rada object and print it
         radar_text = self.radar.info()
-        self.text.insert(self.radar_info, Tk.END, '''Radar info goes here''')
+        
+        print radar_text
+        
+        ### THIS PORTION DOES NOT WORK TO DATE  ###
+#        self.textFrame = Tk.Frame(self.root)
+#        self.text = Tk.text(self.textFrame)
+#        self.text.pack()
+#        self.text.insert(self.radar_info, Tk.END, '''Radar info goes here''')
+
+    def _print_radar_info_short(self):
+        '''Print out some basic info about the radar'''
+        print ('Radar Name: %s'% self.radar.metadata['instrument_name'])
+        print ('Radar longitude: %f'% self.radar.longitude['data'][0])
+        print ('Radar latitude: %f'% self.radar.latitude['data'][0])
+        print ('Radar altitude: %f'% self.radar.altitude['data'][0])
+        print ('   ')
+        print ('Unambiguous range: %f %s' % \
+              (self.radar.instrument_parameters['unambiguous_range']['data'][0], \
+               self.radar.instrument_parameters['unambiguous_range']['units'][0]))
+        print ('Nyquist velocity: %f %s' % \
+              (self.radar.instrument_parameters['nyquist_velocity']['data'][0], \
+               self.radar.instrument_parameters['nyquist_velocity']['units'][0]))
+        print ('   ')
+        print ('Radar Beamwidth, horiz: %f %s' % \
+              (self.radar.instrument_parameters['radar_beam_width_h']['data'][0], \
+               self.radar.instrument_parameters['radar_beam_width_h']['units'][0]))
+        print ('Radar Beamwidth, vert: %f %s' % \
+              (self.radar.instrument_parameters['radar_beam_width_v']['data'][0], \
+               self.radar.instrument_parameters['radar_beam_width_v']['units'][0]))
+        print ('Pulsewidth: %f %s' % \
+              (self.radar.instrument_parameters['pulse_width']['data'][0], \
+               self.radar.instrument_parameters['pulse_width']['units'][0]))
+        print ('   ')
+        
+        print ('Number of gates: ', self.radar.ngates)
+        print ('Number of sweeps: ', self.radar.nsweeps)
 
     ######################
     # Menu build methods #
@@ -208,7 +248,8 @@ class Browse(object):
         helpmenu = Tk.Menu(self.menu)
         self.menu.add_cascade(label="Help", menu=helpmenu)
         helpmenu.add_command(label="About...", command=self._about)
-        helpmenu.add_command(label="Print Radar Info", command=self._print_radar_info)
+        helpmenu.add_command(label="Print Short Radar Info", command=self._print_radar_info_short)
+        helpmenu.add_command(label="Print Long Radar Info", command=self._dump_radar_info_to_terminal)
 
     def AddPlotMenu(self):
         '''Add Plot item to menu bar'''
@@ -254,10 +295,7 @@ class Browse(object):
         self.advancemenu.add_command(label="Next", command=nextcmd)
         prevcmd = (lambda findex: lambda: self.AdvanceFileSelect(findex)) (self.fileindex - 1)
         self.advancemenu.add_command(label="Previous", command=prevcmd)
-
-    def _about(self):
-        print "This is a simple radar file browser to look at files using PyArt"
-
+        
     def _quit(self):
         self.root.quit()
         self.root.destroy()
@@ -354,12 +392,10 @@ class Browse(object):
         for index, lstr in enumerate(limit_strs):
             self.limits[lstr] = float(self.entryfield[index].get())
         
-#            self.root.update_idletasks()
+#            self.root.update_()
         
         # Update the plot with new values
         self._update_plot()
-        
- #       self.root.update_idletasks()
  
     def _update_entrylist(self):
         self.root.update_idletasks()
@@ -433,7 +469,7 @@ class Browse(object):
 
     def _initial_openfile(self):
         '''Open a file via a file selection window'''
-        self.root.update()
+#        self.root.update()
         self.filename = askopenfilename(initialdir=self.dirIn, title='Choose a file')
         
         # Reset the directory path if needed, build list for advancing
@@ -489,10 +525,12 @@ class Browse(object):
         self.AddFieldMenu()
         self.AddNextPrevMenu()
         
-#        self.root.update_idletasks()
+        self.root.update_idletasks()
 
         self._update_plot()
-        self.canvas.draw()
+#        self.frame.update()
+        self.root.update_idletasks()
+#        self.canvas.draw()
 
     ####################
     # Plotting methods #
@@ -505,7 +543,6 @@ class Browse(object):
         yheight = 0.7 * float(self.YSIZE)/float(self.XSIZE)
         self.ax = self.fig.add_axes([0.2, 0.2, xwidth, yheight])
         self.cax = self.fig.add_axes([0.2,0.10, xwidth, 0.02])
-#        self._set_figure_canvas()
         
     def _set_fig_ax_rhi(self):
         '''Change figure size and limits if RHI'''
