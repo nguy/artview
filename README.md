@@ -12,13 +12,17 @@ With ARTview you can:
 
 	Dynamically switch fields (variables) and tilt angles via drop down menu.
     
-    Dynamically switch tilt angle by button selection.
+    Dynamically switch tilt angle via radio button selection.  Also easily change 
+    by using the up/down arrow keys.
     
-    Browse a directory by advancing with drop down "Next" and "Previous" menus or by arrow key.
+    Browse a directory by advancing with drop down "Next" and "Previous" menus or 
+    by arrow left/right key.
     
     View ground-based or airborne radar.
     
-    View PPI, sector or RHI type files
+    View PPI, sector or RHI type file scans.
+    
+    Change scaling interactively.
     
   
 ## Installation
@@ -77,4 +81,7 @@ Author: Nick Guy (nick.guy@noaa.gov)
 
 NOTE:: This is open source software.  Contributions are very welcome, though this is not my primary project.  In addition it needs to be state that no responsibility is taken by the author for any adverse effects.
 
+## Caveats
 At the current time the scaling and limit changing fields are very slow.
+
+

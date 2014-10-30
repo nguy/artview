@@ -143,6 +143,8 @@ class Browse(object):
         self.root.bind('<Left>', self.leftkey)
         self.root.bind
         self.root.bind('<Right>', self.rightkey)
+        self.root.bind('<Up>', self.upkey)
+        self.root.bind('<Down>', self.downkey)
         self.frame.pack()
         
         self.root.update_idletasks()
@@ -414,6 +416,7 @@ class Browse(object):
         '''Captures a selection and redraws the new field'''
         self.field = nombre
         self._initialize_limits()
+        self.root.update_idletasks()
         self._update_plot()
         
     def RngRingSelectCmd(self, ringSel):
@@ -462,6 +465,14 @@ class Browse(object):
     def rightkey(self, event):
         '''Right arrow key event triggers advancement'''
         self.AdvanceFileSelect(self.fileindex + 1)
+        
+    def upkey(self, event):
+        '''Up arrow key event triggers tilt move'''
+        self.TiltSelectCmd(self.tilt + 1)
+        
+    def downkey(self, event):
+        '''Down arrow key event triggers tilt move'''
+        self.TiltSelectCmd(self.tilt - 1)
 
     ########################
     # Data display methods #
@@ -530,6 +541,7 @@ class Browse(object):
         self._update_plot()
 #        self.frame.update()
         self.root.update_idletasks()
+        self.EntryFrame.update_idletasks()
 #        self.canvas.draw()
 
     ####################
@@ -574,7 +586,7 @@ class Browse(object):
 
     def _update_plot(self):
         '''Renew the plot'''
-        print "Plotting " + self.field +" field, " + "Tilt %d" % (self.tilt+1)
+        print "Plotting " + self.field + " field, " + "Tilt %d" % (self.tilt+1)
         
         # This is a bit of a hack to ensure that the viewer works with files
         # withouth "standard" output as defined by PyArt
