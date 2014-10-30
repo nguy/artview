@@ -12,9 +12,11 @@ Author::
 ------
 Nick Guy - OU CIMMS / University of Miami
 
-Updated::
+History::
 -------
-30 Sep 2014
+30 Sep 2014  -  Created
+30 Oct 2014  -  Various updates over the last month.
+                Improved performance.
 
 Usage::
 -----
@@ -23,6 +25,7 @@ parv.py /some/directory/path/to/look/in
 TODO::
 ----
 Improve error handling.
+File check for zipped files.
 
 Speed up interactive modification of limits for 
   contouring, xrange, and yrange.
@@ -30,6 +33,7 @@ Speed up interactive modification of limits for
 KNOWN BUGS::
 ----------
 Some crashes after some number of left and right keystrokes.
+Non-unicode characters sometimes appear in the limits update boxes.
 '''
 #-------------------------------------------------------------------
 # Load the needed packages
@@ -43,8 +47,7 @@ import sys
 import os
 import argparse
 
-import Tkinter as Tk
-#from Tkinter import Tk, Button
+import Tkinter as Tk #, Button
 from tkFileDialog import askopenfilename
 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
@@ -54,6 +57,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolb
 
 VERSION = '0.1.3'
 
+# Limits for varioud variable plots
 Z_LIMS = (-10., 65.)
 VR_LIMS = (-30., 30.)
 ZDR_LIMS = (-5., 5.)
@@ -64,22 +68,27 @@ NCP_LIMS = (0., 1.)
 SW_LIMS = (-1., 10.)
 TP_LIMS = (-200., 100.)
 
+# X, Y range and size for airborne file types
 AIR_XRNG = (-150., 150.)
 AIR_YRNG = (-10., 20.)
 AIR_XSIZE = 8
 AIR_YSIZE = 5
 
+# X, Y range and size for PPI file types
 PPI_XRNG = (-150., 150.)
 PPI_YRNG = (-150., 150.)
 PPI_XSIZE = 8
 PPI_YSIZE = 8
 
+# X, Y range and size for RHI file types
 RHI_XRNG = (0., 150.)
 RHI_YRNG = (0., 20.)
 RHI_XSIZE = 8
 RHI_YSIZE = 5
 
+# Save image file type and DPI (resolution)
 PTYPE = 'png'
+DPI = 100
 #========================================================================
 #######################
 # BEGIN PARV CODE #
@@ -751,11 +760,11 @@ class Browse(object):
 
     def _savefile(self, PTYPE=PTYPE):
         '''Save the current display'''
-        pName = self.display.generate_filename('refelctivity',self.tilt,ext=PTYPE)
-        print "Creating "+ pName
+        PNAME = self.display.generate_filename(self.field,self.tilt,ext=PTYPE)
+        print "Creating "+ PNAME
 
         RADNAME = self.radar.metadata['instrument_name']
-        plt.savefig(RADNAME+pName,format=PTYPE)
+        self.canvas.print_figure(PNAME, dpi=DPI)
 
         # Find out the save file name, first get filename
         #savefilename = tkFileDialog.asksaveasfilename(**self.file_opt)
