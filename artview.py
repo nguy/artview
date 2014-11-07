@@ -26,6 +26,9 @@ TODO::
 ----
 Improve error handling.
 File check for zipped files.
+Add ability to reconfigure layout switching from scan types,
+  i.e. PPI to RHI.
+
 
 Speed up interactive modification of limits for 
   contouring, xrange, and yrange.
@@ -132,6 +135,9 @@ class Browse(object):
         # Set the default range rings
         self.RngRingList = ["None", "10 km", "20 km", "30 km", "50 km", "100 km"]
         self.RngRing = False
+        
+        # Find the PyArt colormap names
+        self.cm_names = pyart.graph.cm._cmapnames
         
         # Launch the GUI interface
         self.LaunchGUI()
@@ -270,12 +276,14 @@ class Browse(object):
         self.fieldmenu = Tk.Menu(self.menu)
         self.tiltmenu = Tk.Menu(self.menu)
         self.rngringmenu = Tk.Menu(self.menu)
+#        self.cmapmenu = Tk.Menu(self.menu)
         plotmenu.add_cascade(label="Field", menu=self.fieldmenu)
         if self.airborne or self.rhi:
             pass
         else:
             plotmenu.add_cascade(label="Tilt", menu=self.tiltmenu)
             plotmenu.add_cascade(label="Rng Ring every...", menu=self.rngringmenu)
+#        plotmenu.add_cascade(label="Colormap", menu=self.cmapmenu)
             
     def AddFileAdvanceMenu(self):
         '''Add an option to advance to next or previous file'''
@@ -306,6 +314,12 @@ class Browse(object):
         self.advancemenu.add_command(label="Next", command=nextcmd)
         prevcmd = (lambda findex: lambda: self.AdvanceFileSelect(findex)) (self.fileindex - 1)
         self.advancemenu.add_command(label="Previous", command=prevcmd)
+        
+    def AddCmapMenu(self):
+        '''Add a menu to change colormap used for plot'''
+        for cm_name in self.cm_names:
+           cmd = (lambda cm_name: lambda: self.cmapSelectCmd(cm_name)) (cm_name)
+           self.cmapmenu.add_command(label=cm_name, command=cmd)
         
     def _quit(self):
         self.root.quit()
@@ -430,7 +444,6 @@ class Browse(object):
         
     def RngRingSelectCmd(self, ringSel):
         '''Captures selection and redraws the field with range rings'''
-        
         if ringSel is "None":
             self.RngRing = False
         else:
@@ -453,6 +466,12 @@ class Browse(object):
             # Calculate an array of range rings
             self.RNG_RINGS = range(ringdel, unrng, ringdel)
         
+        self._update_plot()
+        
+    def cmapSelectCmd(self, cm_name):
+        '''Captures selection of new cmap and redraws'''
+        self.CMAP = cm_name
+        self.root.update_idletasks()
         self._update_plot()
         
     def AdvanceFileSelect(self, findex):
@@ -544,14 +563,13 @@ class Browse(object):
         self.AddTiltMenu()
         self.AddFieldMenu()
         self.AddNextPrevMenu()
+#        self.AddCmapMenu()
         
         self.root.update_idletasks()
 
         self._update_plot()
-#        self.frame.update()
         self.root.update_idletasks()
         self.EntryFrame.update_idletasks()
-#        self.canvas.draw()
 
     ####################
     # Plotting methods #
@@ -717,6 +735,34 @@ class Browse(object):
         self.limits['ymin'] = self.YRNG[0]
         self.limits['ymax'] = self.YRNG[1]
         
+#    def _build_cmap_dict(self):
+#        self.cmap_dict = {}
+#        self.cmap_dict['gist_ncar'] = matcm.get_cmap(name='gist_ncar')
+#        self.cmap_dict['RdBu_r'] = matcm.get_cmap(name='RdBu_r')
+#        self.cmap_dict['RdYlBu_r'] = matcm.get_cmap(name='RdYlBu_r
+#        self.cmap_dict['cool'] = matcm.get_cmap(name='cool
+#        self.cmap_dict['YlOrBr'] = matcm.get_cmap(name='YlOrBr
+#        self.cmap_dict['jet'] = matcm.get_cmap(name='jet
+#        self.cmap_dict['
+#        self.cmap_dict['
+#        self.cmap_dict['
+#        self.cmap_dict['
+#        self.cmap_dict['
+#        self.cmap_dict['
+#        self.cmap_dict['
+#        self.cmap_dict['
+#        self.cmap_dict['
+#        self.cmap_dict['
+#        self.cmap_dict['
+#        self.cmap_dict['
+#        self.cmap_dict['
+#        self.cmap_dict['
+#        self.cmap_dict['
+#        self.cmap_dict['
+#        self.cmap_dict['
+#        self.cmap_dict['
+        
+        
     def _check_default_field(self):
         '''Hack to perform a check on reflectivity to make it work with 
         a larger number of files
@@ -736,6 +782,8 @@ class Browse(object):
                 self.field = 'dBZ'
             elif 'Z' in self.fieldnames:
                 self.field = 'Z'
+            elif 'DBZ_S'in self.fieldnames:
+                self.field = 'DBZ_S'
                 
     def _check_file_type(self):
         '''Check file to see if the file is airborne or rhi'''
