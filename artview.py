@@ -288,7 +288,7 @@ class Browse(object):
     def AddFileAdvanceMenu(self):
         '''Add an option to advance to next or previous file'''
         self.advancemenu = Tk.Menu(self.menu)
-        self.menu.add_cascade(label="Advance", menu=self.advancemenu)
+        self.menu.add_cascade(label="Advance file", menu=self.advancemenu)
 
     def AddTiltMenu(self):
         '''Add a menu to change tilt angles of current plot'''
@@ -808,7 +808,7 @@ class Browse(object):
 
     def _savefile(self, PTYPE=PTYPE):
         '''Save the current display'''
-        PNAME = self.display.generate_filename(self.field,self.tilt,ext=PTYPE)
+        PNAME = self.display.generate_filename(self.field, self.tilt, ext=PTYPE)
         print "Creating "+ PNAME
 
         RADNAME = self.radar.metadata['instrument_name']
