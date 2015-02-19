@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 #******************************
-#  artview.py - PyArt Radar Viewer
+#  artview.py - PyArt Radar Viewer using Qt Gui interface
 #******************************
 '''
 ARTview - The ARM Radar Toolkit Viewer
@@ -10,38 +10,40 @@ a radar data file opened using the PyArt software package
 
 Author::
 ------
-Nick Guy - OU CIMMS / University of Miami
+Nick Guy - University of Wyoming
 
 History::
 -------
 30 Sep 2014  -  Created
 30 Oct 2014  -  Various updates over the last month.
                 Improved performance.
+19 Feb 2015  -  Replaced Tk GUI backend with Qt GUI backend.
+                Minor bug fixes.
 
 Usage::
 -----
-parv.py /some/directory/path/to/look/in
+artview.py /some/directory/path/to/look/in
 
 TODO::
 ----
-Improve error handling.
+Improve error handling. May be some loose ends not supported yet...
 File check for zipped files.
 Add ability to reconfigure layout switching from scan types,
   i.e. PPI to RHI.
 
 
-Speed up interactive modification of limits for 
-  contouring, xrange, and yrange.
+Speed up interaction.  
+
+Possibly replace Data/Axes min/max dialog boxes with fields?
+
+Use PyArt colormaps, currently only Matplotlib
 
 KNOWN BUGS::
 ----------
 Some crashes after some number of left and right keystrokes.
-Non-unicode characters sometimes appear in the limits update boxes.
 '''
 #-------------------------------------------------------------------
 # Load the needed packages
-import matplotlib.pyplot as plt
-import matplotlib
 import numpy as np
 import pyart
 
@@ -49,16 +51,27 @@ from glob import glob
 import sys
 import os
 import argparse
+from functools import partial
 
-import Tkinter as Tk #, Button
-from tkFileDialog import askopenfilename
+#from PySide import QtGui
+from PyQt4 import QtGui, QtCore
+from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
+from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
+from matplotlib.figure import Figure
+from matplotlib.colors import Normalize as mlabNormalize
+from matplotlib.colorbar import ColorbarBase as mlabColorbarBase
+from matplotlib.pyplot import cm
 
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
-
+#use_pyside = qt_compat.QT_API == qt_compat.QT_API_PYSIDE
+#if use_pyside:
+#    from PySide import QtGui, QtCore
+#else:
+#    from PyQt4 import QtGui, QtCore
 #===============================================================
 # Initialization defaults for variables
 
 VERSION = '0.1.3'
+MAINWINDOWTITLE = 'ARTView - ARM Radar Toolkit Viewer'
 
 # Limits for varioud variable plots
 Z_LIMS = (-10., 65.)
@@ -90,22 +103,20 @@ RHI_XSIZE = 8
 RHI_YSIZE = 5
 
 # Save image file type and DPI (resolution)
-PTYPE = 'png'
+IMAGE_EXT = 'png'
 DPI = 100
 #========================================================================
 #######################
 # BEGIN PARV CODE #
-#######################
+#######################  
 
-class Browse(object):
-    '''
-    Class to hold the GUI browse method
-    '''
+class Browse(QtGui.QMainWindow):
+    '''Class to hold the GUI browse method'''
 
     def __init__(self, pathDir=None, airborne=False, rhi=False):
-        '''
-        Initialize the class to create the interface
-        '''
+        '''Initialize the class to create the interface'''
+        super(Browse, self).__init__()
+        
         # Set some parameters
         self.dirIn = pathDir
         
@@ -132,306 +143,410 @@ class Browse(object):
             self.XRNG = RHI_XRNG
             self.YRNG = RHI_YRNG
             
+        # Initialize limits
+        self._initialize_limits()
+            
         # Set the default range rings
         self.RngRingList = ["None", "10 km", "20 km", "30 km", "50 km", "100 km"]
         self.RngRing = False
         
         # Find the PyArt colormap names
-        self.cm_names = pyart.graph.cm._cmapnames
-        
-        # Launch the GUI interface
-        self.LaunchGUI()
-    
+#        self.cm_names = pyart.graph.cm._cmapnames
+        self.cm_names = [m for m in cm.datad if not m.endswith("_r")]
+        self.cm_names.sort()
+  
         # Create a figure for output
         self._set_fig_ax(nrows=1, ncols=1)
-        
-        # Initialize limits
-        self._initialize_limits()
-        
-        # Create the Limit Entry
-        self.Make_Lims_Entry()
-        
+                        
+        # Launch the GUI interface
+        self.LaunchGUI()       
+                
         # Show an "Open" dialog box and return the path to the selected file
-        self._initial_openfile()
+        self.showDialog()
         
-        # Allow advancement via left and right arrow keys
-        self.root.bind('<Left>', self.leftkey)
-        self.root.bind
-        self.root.bind('<Right>', self.rightkey)
-        self.root.bind('<Up>', self.upkey)
-        self.root.bind('<Down>', self.downkey)
-        self.frame.pack()
+        self.central_widget.setLayout(self.layout)
+   
+        self.show()
         
-        self.root.update_idletasks()
+    # Allow advancement via left and right arrow keys
+    # and tilt adjustment via the Up-Down arrow keys
+    def keyPressEvent(self, event):
+        if event.key()==QtCore.Qt.Key_Right:
+            #self.slider.setValue(self.slider.value() + 1)
+            self.AdvanceFileSelect(self.fileindex + 1)
+        elif event.key()==QtCore.Qt.Key_Left:
+            #self.slider.setValue(self.slider.value() - 1)
+            self.AdvanceFileSelect(self.fileindex - 1)
+        elif event.key()==QtCore.Qt.Key_Up:
+            #self.slider.setValue(self.slider.value() - 1)
+            self.TiltSelectCmd(self.tilt + 1)
+        elif event.key()==QtCore.Qt.Key_Down:
+            #self.slider.setValue(self.slider.value() - 1)
+            self.TiltSelectCmd(self.tilt - 1)
+        else:
+            QtGui.QWidget.keyPressEvent(self, event)
+            #QtGui.QMainWindow.keyPressEvent(self, event)
 
-        Tk.mainloop()
-    
     ####################
     # GUI methods #
     ####################
 
     def LaunchGUI(self):
-        '''Launches a GUI interface.
-        Creates and returns gui and frame to pack
-        '''
-    
+        '''Launches a GUI interface.'''
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+     
         # Initiate a counter, used so that Tilt and Field menus are 
         # not increased every time there is a selection
         # Might be a more elegant way
         self.counter = 0
-    
-        self.root = Tk.Tk()
-        self.root.title("ARTView - ARM Radar Toolkit Viewer")
 
-        # Create a frame to hold the gui stuff
-        self.frame = Tk.Frame(self.root)#, width=600, height=600
-        self.frame.pack()
-        Tk.Label(self.frame).pack()
-
+        # Create the widget
+        self.central_widget = QtGui.QWidget()
+        self.setCentralWidget(self.central_widget)
+        self.statusBar()
+        
         # Create the menus
         self.CreateMenu()
-        self.AddHelpMenu()
-        self.AddPlotMenu()
-        self.AddFileAdvanceMenu()
+                 
+        datminb = QtGui.QPushButton("Data Min")
+        datminb.clicked.connect(self._data_min_input)
+        datmaxb = QtGui.QPushButton("Data Max")
+        datmaxb.clicked.connect(self._data_max_input)
+        xminb = QtGui.QPushButton("X Min")
+        xminb.clicked.connect(self._x_min_input)
+        xmaxb = QtGui.QPushButton("X Max")
+        xmaxb.clicked.connect(self._x_max_input)
+        yminb = QtGui.QPushButton("Y Min")
+        yminb.clicked.connect(self._y_min_input)
+        ymaxb = QtGui.QPushButton("Y Max")
+        ymaxb.clicked.connect(self._y_max_input)
+        
+        # Create layout
+        self.layout = QtGui.QGridLayout()
+        self.layout.setSpacing(8)
+        
+        self.layout.addWidget(datminb, 0, 0)
+        self.layout.addWidget(datmaxb, 0, 1)
+        self.layout.addWidget(xminb, 0, 2)
+        self.layout.addWidget(xmaxb, 0, 3)
+        self.layout.addWidget(yminb, 0, 4)
+        self.layout.addWidget(ymaxb, 0, 5)
 
+        self.CreateTiltWidget()
+                
+    def showDialog(self):
+        '''Open a dialog box to choose file'''    
+        self.qfilename = QtGui.QFileDialog.getOpenFileName(self, 'Open file', 
+                self.dirIn)
+        self.filename = str(self.qfilename)
+        self._openfile()
+        
+    def LaunchTiltButton(self):
+        if self.windowTilt is None:
+            self.windowTilt = TiltButtons(tilts=self.rTilts)
+        self.windowTilt.show()
+        
     ######################
     # Help methods #
     ######################
 
     def _about(self):
-        print "This is a simple radar file browser to look at files using PyArt"
-
-    def _dump_radar_info_to_terminal(self):
+        txOut = "This is a simple radar file browser to allow \
+                 quicklooks using the DoE PyArt software"
+        QtGui.QMessageBox.about(self, "About ARTView", txOut)
+ 
+    def _get_RadarLongInfo(self):
         '''Print out the radar info to text box'''
-
+ 
         # Get the radar info form rada object and print it
-        radar_text = self.radar.info()
-        
-        print radar_text
-        
-        ### THIS PORTION DOES NOT WORK TO DATE  ###
-#        self.textFrame = Tk.Frame(self.root)
-#        self.text = Tk.text(self.textFrame)
-#        self.text.pack()
-#        self.text.insert(self.radar_info, Tk.END, '''Radar info goes here''')
+        txOut = self.radar.info()
+        print txOut
+            
+#        QtGui.QMessageBox.information(self, "Long Radar Info", str(txOut)) 
+        QtGui.QMessageBox.information(self, "Long Radar Info", "See terminal window") 
 
-    def _print_radar_info_short(self):
+    def _get_RadarShortInfo(self):
         '''Print out some basic info about the radar'''
-        print ('Radar Name: %s'% self.radar.metadata['instrument_name'])
-        print ('Radar longitude: %f'% self.radar.longitude['data'][0])
-        print ('Radar latitude: %f'% self.radar.latitude['data'][0])
-        print ('Radar altitude: %f'% self.radar.altitude['data'][0])
-        print ('   ')
-        print ('Unambiguous range: %f %s' % \
-              (self.radar.instrument_parameters['unambiguous_range']['data'][0], \
-               self.radar.instrument_parameters['unambiguous_range']['units'][0]))
-        print ('Nyquist velocity: %f %s' % \
-              (self.radar.instrument_parameters['nyquist_velocity']['data'][0], \
-               self.radar.instrument_parameters['nyquist_velocity']['units'][0]))
-        print ('   ')
-        print ('Radar Beamwidth, horiz: %f %s' % \
-              (self.radar.instrument_parameters['radar_beam_width_h']['data'][0], \
-               self.radar.instrument_parameters['radar_beam_width_h']['units'][0]))
-        print ('Radar Beamwidth, vert: %f %s' % \
-              (self.radar.instrument_parameters['radar_beam_width_v']['data'][0], \
-               self.radar.instrument_parameters['radar_beam_width_v']['units'][0]))
-        print ('Pulsewidth: %f %s' % \
-              (self.radar.instrument_parameters['pulse_width']['data'][0], \
-               self.radar.instrument_parameters['pulse_width']['units'][0]))
-        print ('   ')
+        try:
+            rname = self.radar.metadata['instrument_name']
+        except:
+            rname = "Info not available"
+        try:
+            rlon = str(self.radar.longitude['data'][0])
+        except:
+            rlon = "Info not available"
+        try:
+            rlat = str(self.radar.latitude['data'][0])
+        except:
+            rlat = "Info not available"
+        try:
+            ralt = str(self.radar.altitude['data'][0])
+            raltu = self.radar.altitude['units'][0]
+        except:
+            ralt = "Info not available"
+        try:
+            maxr = str(self.radar.instrument_parameters['unambiguous_range']['data'][0])
+            maxru = self.radar.instrument_parameters['unambiguous_range']['units'][0]
+        except:
+            maxr = "Info not available"
+            maxru = " "
+        try:
+            nyq = str(self.radar.instrument_parameters['nyquist_velocity']['data'][0])
+            nyqu = self.radar.instrument_parameters['nyquist_velocity']['units'][0]
+        except:
+            nyq =  "Info not available"
+            nyqu = " "
+        try:
+            bwh = str(self.radar.instrument_parameters['radar_beam_width_h']['data'][0])
+            bwhu = self.radar.instrument_parameters['radar_beam_width_h']['units'][0]
+        except:
+            bwh = "Info not available"
+            bwhu = " "
+        try:
+            bwv = str(self.radar.instrument_parameters['radar_beam_width_v']['data'][0])
+            bwvu = self.radar.instrument_parameters['radar_beam_width_v']['units'][0]
+        except:
+            bwv = "Info not available"
+            bwvu = " "
+        try:
+            pw = str(self.radar.instrument_parameters['pulse_width']['data'][0])
+            pwu = self.radar.instrument_parameters['pulse_width']['units'][0]
+        except:
+            pw = "Info not available"
+            pwu = " "
+        try:
+            ngates = str(self.radar.ngates)
+        except:
+            ngates = "Info not available"
+        try:
+            nsweeps = str(self.radar.nsweeps)
+        except:
+            nsweeps = "Info not available"
         
-        print ('Number of gates: ', self.radar.ngates)
-        print ('Number of sweeps: ', self.radar.nsweeps)
+        txOut = (('Radar Name: %s\n'% rname) +\
+        ('Radar longitude: %s\n'% rlon) + \
+        ('Radar latitude: %s\n'% rlat) + \
+        ('Radar altitude: %s %s\n'% (ralt, raltu)) + \
+        ('    \n') + \
+        ('Unambiguous range: %s %s\n'% (maxr, maxru)) + \
+        ('Nyquist velocity: %s %s\n'% (nyq, nyqu)) + \
+        ('    \n') + \
+        ('Radar Beamwidth, horiz: %s %s\n'% (bwh, bwhu)) + \
+        ('Radar Beamwidth, vert: %s %s\n'% (bwv, bwvu)) + \
+        ('Pulsewidth: %s %s \n'% (pw, pwu)) + \
+        ('    \n') + \
+        ('Number of gates: %s\n'% ngates) + \
+        ('Number of sweeps: %s\n'% nsweeps))
+        
+        QtGui.QMessageBox.information(self, "Short Radar Info", txOut) 
+            
 
     ######################
     # Menu build methods #
     ######################
-
+ 
     def CreateMenu(self):
         '''Create a selection menu'''
-        self.menu = Tk.Menu(self.frame)
-        self.root.config(menu=self.menu)
+        self.menubar = self.menuBar()
+        
+        self.AddFileMenu()
+        self.AddAboutMenu()
+        self.AddPlotMenu()
+        self.AddFileAdvanceMenu()
+        
 
-        filemenu = Tk.Menu(self.menu)
-        self.menu.add_cascade(label="File", menu=filemenu)
-        filemenu.add_command(label="Open...", command=self._initial_openfile)
-        filemenu.add_separator()
-        filemenu.add_command(label="Save Image", command=self._savefile)
-        filemenu.add_separator()
-        filemenu.add_command(label="Exit", command=self._quit)
-
-    def AddHelpMenu(self):
+    def AddFileMenu(self):
+        self.filemenu = self.menubar.addMenu('&File')
+               
+        openFile = QtGui.QAction('Open', self)
+        openFile.setShortcut('Ctrl+O')
+        openFile.setStatusTip('Open new File')
+        openFile.triggered.connect(self.showDialog)
+                
+        saveImage = QtGui.QAction('Save Image', self)  
+        saveImage.setShortcut('Ctrl+S')
+        saveImage.setStatusTip('Save Image')
+        saveImage.triggered.connect(self._savefile)
+                
+        exitApp = QtGui.QAction('Close', self)  
+        exitApp.setShortcut('Ctrl+Q')
+        exitApp.setStatusTip('Exit ARTView')
+        exitApp.triggered.connect(self.close)
+        
+        self.filemenu.addAction(openFile)
+        self.filemenu.addAction(saveImage)
+        self.filemenu.addAction(exitApp)
+        
+    def AddAboutMenu(self):
         '''Add Help item to menu bar'''
-        helpmenu = Tk.Menu(self.menu)
-        self.menu.add_cascade(label="Help", menu=helpmenu)
-        helpmenu.add_command(label="About...", command=self._about)
-        helpmenu.add_command(label="Print Short Radar Info", command=self._print_radar_info_short)
-        helpmenu.add_command(label="Print Long Radar Info", command=self._dump_radar_info_to_terminal)
+        self.aboutmenu = self.menubar.addMenu('About')
 
+        self._aboutArtview = QtGui.QAction('ARTView', self)
+        self._aboutArtview.setStatusTip('About ARTView')
+        self._aboutArtview.triggered.connect(self._about)
+        
+        self.RadarShort = QtGui.QAction('Radar Short', self)
+        self.RadarShort.setStatusTip('Print Short Radar Structure Info')
+        self.RadarShort.triggered.connect(self._get_RadarShortInfo)
+        
+        self.RadarLong = QtGui.QAction('Radar Long', self)
+        self.RadarLong.setStatusTip('Print Long Radar Structure Info')
+        self.RadarLong.triggered.connect(self._get_RadarLongInfo)
+        
+        self.aboutmenu.addAction(self._aboutArtview)
+        self.aboutmenu.addAction(self.RadarShort)
+        self.aboutmenu.addAction(self.RadarLong)
+        
+ 
     def AddPlotMenu(self):
         '''Add Plot item to menu bar'''
-        plotmenu = Tk.Menu(self.menu)
-        self.menu.add_cascade(label="Plot", menu=plotmenu)
-
-        self.fieldmenu = Tk.Menu(self.menu)
-        self.tiltmenu = Tk.Menu(self.menu)
-        self.rngringmenu = Tk.Menu(self.menu)
-#        self.cmapmenu = Tk.Menu(self.menu)
-        plotmenu.add_cascade(label="Field", menu=self.fieldmenu)
+        self.plotmenu = self.menubar.addMenu('&Plot')
+        
+        # Add submenus
+        self.fieldmenu = self.plotmenu.addMenu('Field')
         if self.airborne or self.rhi:
             pass
         else:
-            plotmenu.add_cascade(label="Tilt", menu=self.tiltmenu)
-            plotmenu.add_cascade(label="Rng Ring every...", menu=self.rngringmenu)
-#        plotmenu.add_cascade(label="Colormap", menu=self.cmapmenu)
-            
+            self.tiltmenu = self.plotmenu.addMenu('Tilt')
+            self.rngringmenu = self.plotmenu.addMenu('Set Range Rings')
+        self.cmapmenu = self.plotmenu.addMenu('Colormap')
+
+
     def AddFileAdvanceMenu(self):
         '''Add an option to advance to next or previous file'''
-        self.advancemenu = Tk.Menu(self.menu)
-        self.menu.add_cascade(label="Advance file", menu=self.advancemenu)
+        self.advancemenu = self.menubar.addMenu("Advance file")
 
     def AddTiltMenu(self):
         '''Add a menu to change tilt angles of current plot'''
         for ntilt in self.rTilts:
-            cmd = (lambda ntilt: lambda: self.TiltSelectCmd(ntilt)) (ntilt)
-            self.tiltmenu.add_command(label="Tilt %d"%(ntilt+1), command=cmd)
+            TiltAction = self.tiltmenu.addAction("Tilt %d"%(ntilt+1))
+            TiltAction.triggered[()].connect(lambda ntilt=ntilt: self.TiltSelectCmd(ntilt))
 
     def AddFieldMenu(self):
         '''Add a menu to change current plot field'''
         for nombre in self.fieldnames:
-            cmd = (lambda nombre: lambda: self.FieldSelectCmd(nombre)) (nombre)
-            self.fieldmenu.add_command(label=nombre, command=cmd)
+            FieldAction = self.fieldmenu.addAction(nombre)
+            FieldAction.triggered[()].connect(lambda nombre=nombre: self.FieldSelectCmd(nombre))
             
     def AddRngRingMenu(self):
         '''Add a menu to set range rings'''
         for RngRing in self.RngRingList:
-            cmd = (lambda RngRing: lambda: self.RngRingSelectCmd(RngRing)) (RngRing)
-            self.rngringmenu.add_command(label=RngRing, command=cmd)
+            RingAction = self.rngringmenu.addAction(RngRing)
+            RingAction.triggered[()].connect(lambda RngRing=RngRing: self.RngRingSelectCmd(RngRing))
     
     def AddNextPrevMenu(self):
         '''Add an option to advance to next or previous file'''
-        nextcmd = (lambda findex: lambda: self.AdvanceFileSelect(findex)) (self.fileindex + 1)
-        self.advancemenu.add_command(label="Next", command=nextcmd)
-        prevcmd = (lambda findex: lambda: self.AdvanceFileSelect(findex)) (self.fileindex - 1)
-        self.advancemenu.add_command(label="Previous", command=prevcmd)
+        nextAction = self.advancemenu.addAction("Next")
+        nextAction.triggered[()].connect(lambda findex=self.fileindex + 1: self.AdvanceFileSelect(findex))
         
+        prevAction = self.advancemenu.addAction("Previous")
+        prevAction.triggered[()].connect(lambda findex=self.fileindex - 1: self.AdvanceFileSelect(findex))
+        
+        firstAction = self.advancemenu.addAction("First")
+        firstAction.triggered[()].connect(lambda findex=0: self.AdvanceFileSelect(findex))
+        
+        lastAction = self.advancemenu.addAction("Last")
+        lastAction.triggered[()].connect(lambda findex=(len(self.filelist) - 1): self.AdvanceFileSelect(findex))
+         
     def AddCmapMenu(self):
         '''Add a menu to change colormap used for plot'''
         for cm_name in self.cm_names:
-           cmd = (lambda cm_name: lambda: self.cmapSelectCmd(cm_name)) (cm_name)
-           self.cmapmenu.add_command(label=cm_name, command=cmd)
-        
-    def _quit(self):
-        self.root.quit()
-        self.root.destroy()
-
-    #######################
-    # Menu remove methods #
-    #######################
-
-    def _remove_tilt_menu(self):
-        '''Remove the tilt menu items'''
-        for ntilt in self.rTilts:
-            self.tiltmenu.delete("Tilt %d"%(ntilt+1))
-        
-    def _remove_field_menu(self):
-        '''Remove the field menu items'''
-        for nombre in self.fieldnames:
-            self.fieldmenu.delete(nombre)
-    
-    def _remove_rngring_menu(self):
-        '''Remove the range rings menu items'''
-        for rngring in self.RngRingList:
-            self.rngringmenu.delete(rngring)
-            
-    def _remove_next_prev_menu(self):
-        '''Remove the next and previous'''
-        self.advancemenu.delete("Next")
-        self.advancemenu.delete("Previous")
+            cmapAction = self.cmapmenu.addAction(cm_name)
+            cmapAction.triggered[()].connect(lambda cm_name=cm_name: self.cmapSelectCmd(cm_name))
     
     ########################
-    # Button build methods #
+    # Button methods #
     ########################
 
+    def CreateTiltWidget(self):
+        '''Create a widget to store radio buttons to control tilt adjust'''
+        self.radioBox = QtGui.QGroupBox("Tilt Selection")
+        self.rBox_layout = QtGui.QVBoxLayout(self.radioBox)
+        
     def SetTiltRadioButtons(self):
         '''Set a tilt selection using radio buttons'''
-        # Create a dialog box to choose Tilt angle
-        TiltInt = Tk.IntVar()
-        # Create array to hold button instances
-        tiltbutton = []
-
+        # Need to first create each tilt button and connect a value when selected
         for ntilt in self.rTilts:
-            command = (lambda ntilt: lambda: self.TiltSelectCmd(ntilt)) (ntilt)
-            tiltbutton.append(Tk.Radiobutton(self.frame, value=int(ntilt), \
-                                  text="Tilt %d"%(ntilt+1), variable=TiltInt, \
-                                  command=command))
-            tiltbutton[ntilt].pack(expand=1, side=Tk.TOP, anchor="w")
-        
-        self.tiltbutton = tiltbutton
-        
-    #########################
-    # Button remove methods #
-    #########################
-    def _remove_tilt_radiobutton(self):
-       '''Remove the tilt selection radio buttons'''
-       for ntilt in self.rTilts:
-           self.tiltbutton[ntilt].destroy()
-    
+            tiltbutton = QtGui.QRadioButton("Tilt %d"%(ntilt+1), self.radioBox)
+            QtCore.QObject.connect(tiltbutton, QtCore.SIGNAL("clicked()"), \
+                         partial(self.TiltSelectCmd, ntilt))
+
+            self.rBox_layout.addWidget(tiltbutton)
+		
+        self.radioBox.setLayout(self.rBox_layout)
+		
+        return self.radioBox
+
     #############################
-    # Limit entry build methods #
+    # Limit entry methods #
     #############################
-           
-    def Make_Lims_Entry(self):
-        '''Make entry boxes to modify variable and axis limits'''
-        self.root.update()
         
-        disp_strs = ('Data Min:', 'Data Max:', 'X-axis Min:', 'X-axis Max:', \
-                      'Y-axis Min:', 'Y-axis Max:')
-        limit_strs = ('vmin', 'vmax', 'xmin', 'xmax', 'ymin', 'ymax')
-        self.entryfield = []
-        
-        self.EntryFrame = Tk.Frame(self.frame)
-        
-        for index, lstr in enumerate(disp_strs):
-        
-            LimitLabel = Tk.Label(self.EntryFrame, text=lstr)
-            LimitLabel.pack(side=Tk.TOP)
-            self.entryfield.append(Tk.Entry(self.EntryFrame, width=6))
-            self.entryfield[index].pack(expand=1, side=Tk.TOP)
-            self.entryfield[index].insert(0, self.limits[limit_strs[index]])
+    def _data_min_input(self):
+        '''Retrieve new data lim input'''
+        val, entry = QtGui.QInputDialog.getDouble(self, "Minimum data value to display", \
+                  "Data Min:", self.limits['vmin'])
+        if entry is True:
+            self.limits['vmin'] = val
+            self._update_plot()
             
-#            LimitLabel.update_idletasks()
-#            self.entryfield[index].update_idletasks()
-        self.root.update()    
-        self.EntryFrame.pack(side=Tk.LEFT)
-        self.applybutton = Tk.Button(self.EntryFrame, text='Apply',command=self._update_lims)
-        self.applybutton.pack(side=Tk.TOP)
+    def _data_max_input(self):
+        '''Retrieve new data lim input'''
+        val, entry = QtGui.QInputDialog.getDouble(self, "Maximum data value to display", \
+                  "Data Max:", self.limits['vmax'])
+        if entry is True:
+            self.limits['vmax'] = val
+            self._update_plot()
         
+    def _x_min_input(self):
+        '''Retrieve new data lim input'''
+        val, entry = QtGui.QInputDialog.getDouble(self, "Minimum X-axis value", \
+                  "X Min:", self.limits['xmin'])
+        if entry is True:
+            self.limits['xmin'] = val
+            self._update_plot()
+            
+    def _x_max_input(self):
+        '''Retrieve new data lim input'''
+        val, entry = QtGui.QInputDialog.getDouble(self, "Maximum X-axis value", \
+                  "X Max:", self.limits['xmax'])
+        if entry is True:
+            self.limits['xmax'] = val
+            self._update_plot()
         
-        self.EntryFrame.bind("<Button-1>", self._update_entrylist)
+    def _y_min_input(self):
+        '''Retrieve new data lim input'''
+        val, entry = QtGui.QInputDialog.getDouble(self, "Minimum Y-axis value", \
+                  "Y Min:", self.limits['ymin'])
+        if entry is True:
+            self.limits['ymin'] = val
+            self._update_plot()
+            
+    def _y_max_input(self):
+        '''Retrieve new data lim input'''
+        val, entry = QtGui.QInputDialog.getDouble(self, "Maximum Y-axis value", \
+                  "Y Max:", self.limits['ymax'])
+        if entry is True:
+            self.limits['ymax'] = val
+            self._update_plot()
+            
+    def _openLimsDialog(self):
+        '''Make Entry boxes to modify variable and axis limits'''
+        dialog = QtGui.QDialog(self)
+        dialog.ui = QtGui.Ui_Dialog_popup()
+        dialog.ui.setupUi(dialog)
+        dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        dialog.show()
         
-    def _update_lims(self):
-        '''Update the limits with newly entered limits'''
-        limit_strs = ('vmin', 'vmax', 'xmin', 'xmax', 'ymin', 'ymax')
-       
-        for index, lstr in enumerate(limit_strs):
-            self.limits[lstr] = float(self.entryfield[index].get())
+        text1, ent1 = QtGui.QInputDialog.getText(self, "Limits Adjustment", \
+                      "Data Min:")
         
-#            self.root.update_()
-        
-        # Update the plot with new values
-        self._update_plot()
- 
-    def _update_entrylist(self):
-        self.root.update_idletasks()
-        self.EntryFrame.update_idletasks()
-    
     ########################
     # Selectionion methods #
     ########################
     
     def TiltSelectCmd(self, ntilt):
         '''Captures a selection and redraws the field with new tilt'''
+        print ntilt
         self.tilt = ntilt
         self._update_plot()
 
@@ -439,7 +554,6 @@ class Browse(object):
         '''Captures a selection and redraws the new field'''
         self.field = nombre
         self._initialize_limits()
-        self.root.update_idletasks()
         self._update_plot()
         
     def RngRingSelectCmd(self, ringSel):
@@ -449,7 +563,10 @@ class Browse(object):
         else:
             self.RngRing = True
             # Find the unambigous range of the radar
-            unrng = int(self.radar.instrument_parameters['unambiguous_range']['data'][0]/1000)
+            try:
+                unrng = int(self.radar.instrument_parameters['unambiguous_range']['data'][0]/1000)
+            except:
+                unrng = int(self.limits['xmax'])
             
             # Set the step
             if ringSel == '10 km':
@@ -471,62 +588,49 @@ class Browse(object):
     def cmapSelectCmd(self, cm_name):
         '''Captures selection of new cmap and redraws'''
         self.CMAP = cm_name
-        self.root.update_idletasks()
         self._update_plot()
         
     def AdvanceFileSelect(self, findex):
         '''Captures a selection and redraws figure with new file'''
         if findex > len(self.filelist):
-            print "END OF DIRECTORY, CANNOT ADVANCE"
+            print len(self.filelist)
+            msg = "End of directory, cannot advance"
+            self._ShowWarning(msg)
+            findex = (len(self.filelist) - 1)
             return
         if findex < 0:
-            print "BEGINNING OF DIRECTORY CANNOT ADVANCE"
+            msg = "Beginning of directory, must move forward"
+            self._ShowWarning(msg)
+            findex = 0
             return
         self.fileindex = findex
         self.filename = self.dirIn + "/" + self.filelist[findex]
         self._openfile()
-        
-    def leftkey(self, event):
-        '''Left arrow key event triggers advancement'''
-        self.AdvanceFileSelect(self.fileindex - 1)
-        
-    def rightkey(self, event):
-        '''Right arrow key event triggers advancement'''
-        self.AdvanceFileSelect(self.fileindex + 1)
-        
-    def upkey(self, event):
-        '''Up arrow key event triggers tilt move'''
-        self.TiltSelectCmd(self.tilt + 1)
-        
-    def downkey(self, event):
-        '''Down arrow key event triggers tilt move'''
-        self.TiltSelectCmd(self.tilt - 1)
 
     ########################
-    # Data display methods #
+    # Menu display methods #
     ########################
-
-    def _initial_openfile(self):
-        '''Open a file via a file selection window'''
-#        self.root.update()
-        self.filename = askopenfilename(initialdir=self.dirIn, title='Choose a file')
-        
-        # Reset the directory path if needed, build list for advancing
-        self._get_directory_info()
-        
-        self._openfile()
-
+ 
     def _openfile(self):
         '''Open a file via a file selection window'''
         print "Opening file " + self.filename
-    
+        
+        # Update to  current directory when file is chosen
+        self.dirIn = os.path.dirname(self.filename)
+        
+        # Get a list of files in the working directory
+        self.filelist = os.listdir(self.dirIn)
+        
+        self.fileindex = self.filelist.index(os.path.basename(self.filename))
+     
         # Read the data from file
         try:
             self.radar = pyart.io.read(self.filename)
         except:
-            "This is not a recognized radar file"
+            msg = "This is not a recognized radar file"
+            self._ShowWarning(msg)
             return
-        
+         
         # In case the flags were not used at startup
         # Check to see if this is an aircraft or rhi file
         if self.counter == 0:
@@ -538,50 +642,49 @@ class Browse(object):
         self.counter += 1
         
         if self.counter > 1:
-            self._remove_field_menu()
-            self._remove_next_prev_menu()
-            #self._remove_lims_entry()
-            
+            self.fieldmenu.clear()
+            self.advancemenu.clear()
+           
             if self.airborne or self.rhi:
                 pass
             else:
-                self._remove_tilt_menu()
-                self._remove_tilt_radiobutton()
-                self._remove_rngring_menu()
+                self.tiltmenu.clear()
+                self.rngringmenu.clear()
+                self.radioBox.deleteLater()
+#                 self._remove_tilt_radiobutton()
 
         # Get the tilt angles
         self.rTilts = self.radar.sweep_number['data'][:]
         # Get field names
         self.fieldnames = self.radar.fields.keys()
 
-        # Set up the tilt and field menus
+        # Set up the menus associated with scanning ground radars
         if self.airborne or self.rhi:
             pass
         else:
-            self.SetTiltRadioButtons()
+            self.CreateTiltWidget()
+            self.layout.addWidget(self.SetTiltRadioButtons(), 1, 6, 6, 1)
             self.AddRngRingMenu()
-        self.AddTiltMenu()
+            self.AddTiltMenu()
         self.AddFieldMenu()
         self.AddNextPrevMenu()
-#        self.AddCmapMenu()
-        
-        self.root.update_idletasks()
-
+        self.AddCmapMenu()
         self._update_plot()
-        self.root.update_idletasks()
-        self.EntryFrame.update_idletasks()
-
     ####################
     # Plotting methods #
     ####################
 
     def _set_fig_ax(self, nrows=1, ncols=1):
         '''Set the figure and axis to plot to'''
-        self.fig = matplotlib.figure.Figure(figsize=(self.XSIZE, self.YSIZE))
+        self.fig = Figure(figsize=(self.XSIZE, self.YSIZE))
         xwidth = 0.7
         yheight = 0.7 * float(self.YSIZE)/float(self.XSIZE)
         self.ax = self.fig.add_axes([0.2, 0.2, xwidth, yheight])
         self.cax = self.fig.add_axes([0.2,0.10, xwidth, 0.02])
+        
+        # We want the axes cleared every time plot() is called
+        #self.axes.hold(False)
+        
         
     def _set_fig_ax_rhi(self):
         '''Change figure size and limits if RHI'''
@@ -599,22 +702,16 @@ class Browse(object):
             self.limits['ymax'] = AIR_YRNG[1]
         self.fig.set_size_inches(self.XSIZE, self.YSIZE)
         self._set_fig_ax()
-#        self.canvas.draw()
 
     def _set_figure_canvas(self):
         '''Set the figure canvas to draw in window area'''
-        # a tk.DrawingArea
-        self.canvas = FigureCanvasTkAgg(self.fig, master=self.frame)#window)
-        self.canvas.show()
-        self.canvas.get_tk_widget().pack(side=Tk.LEFT, expand=1) 
+        self.canvas = FigureCanvasQTAgg(self.fig)
+        # Add the widget to the canvas
+        self.layout.addWidget(self.canvas, 1, 0, 7, 6)
 
-        self.canvas._tkcanvas.pack(side=Tk.LEFT, expand=1)#fill=Tk.BOTH, 
-        self.canvas.draw()
 
     def _update_plot(self):
         '''Renew the plot'''
-        print "Plotting " + self.field + " field, " + "Tilt %d" % (self.tilt+1)
-        
         # This is a bit of a hack to ensure that the viewer works with files
         # withouth "standard" output as defined by PyArt
         # Check to see if the field 'reflectivity' exists for the initial open
@@ -639,6 +736,10 @@ class Browse(object):
             self.display = pyart.graph.RadarDisplay(self.radar)
             if self.radar.scan_type == 'ppi':
                 # Create Plot
+                if self.tilt < len(self.rTilts):
+                    pass
+                else:
+                    self.tilt = 0
                 self.plot = self.display.plot_ppi(self.field, self.tilt,\
                                 vmin=self.limits['vmin'], vmax=self.limits['vmax'],\
                                 colorbar_flag=False, cmap=self.CMAP,\
@@ -663,32 +764,21 @@ class Browse(object):
                 # Add range rings
                 if self.RngRing:
                     self.display.plot_range_rings(self.RNG_RINGS, ax=self.ax)
-               
         
-        norm = matplotlib.colors.Normalize(vmin=self.limits['vmin'],\
+        norm = mlabNormalize(vmin=self.limits['vmin'],\
                                            vmax=self.limits['vmax'])
-        self.cbar=matplotlib.colorbar.ColorbarBase(self.cax, cmap=self.CMAP,\
+        self.cbar=mlabColorbarBase(self.cax, cmap=self.CMAP,\
                                                 norm=norm, orientation='horizontal')
         self.cbar.set_label(self.radar.fields[self.field]['units'])
-        self.canvas.draw()
         
-        self.root.update_idletasks()
-    
+        print "Plotting %s field, Tilt %d" % (self.field, self.tilt+1)
+        self.canvas.draw()
+
+#        self.update()
+ 
     #########################
     # Get and check methods #
     #########################
-        
-    def _get_directory_info(self):
-        ''' Record the  directory of file
-        This is useful if user went somewhere else on startup
-        '''
-        self.dirIn = os.path.dirname(self.filename)
-        
-        # Get a list of files in the working directory
-        self.filelist = os.listdir(self.dirIn)
-        
-        self.fileindex = self.filelist.index(os.path.basename(self.filename))
-    
     def _initialize_limits(self):
         if self.field == 'reflectivity':
             self.vminmax = (Z_LIMS[0], Z_LIMS[1])
@@ -735,32 +825,16 @@ class Browse(object):
         self.limits['ymin'] = self.YRNG[0]
         self.limits['ymax'] = self.YRNG[1]
         
-#    def _build_cmap_dict(self):
-#        self.cmap_dict = {}
-#        self.cmap_dict['gist_ncar'] = matcm.get_cmap(name='gist_ncar')
-#        self.cmap_dict['RdBu_r'] = matcm.get_cmap(name='RdBu_r')
-#        self.cmap_dict['RdYlBu_r'] = matcm.get_cmap(name='RdYlBu_r
-#        self.cmap_dict['cool'] = matcm.get_cmap(name='cool
-#        self.cmap_dict['YlOrBr'] = matcm.get_cmap(name='YlOrBr
-#        self.cmap_dict['jet'] = matcm.get_cmap(name='jet
-#        self.cmap_dict['
-#        self.cmap_dict['
-#        self.cmap_dict['
-#        self.cmap_dict['
-#        self.cmap_dict['
-#        self.cmap_dict['
-#        self.cmap_dict['
-#        self.cmap_dict['
-#        self.cmap_dict['
-#        self.cmap_dict['
-#        self.cmap_dict['
-#        self.cmap_dict['
-#        self.cmap_dict['
-#        self.cmap_dict['
-#        self.cmap_dict['
-#        self.cmap_dict['
-#        self.cmap_dict['
-#        self.cmap_dict['
+# #    def _build_cmap_dict(self):
+# #        self.cmap_dict = {}
+# #        self.cmap_dict['gist_ncar'] = matcm.get_cmap(name='gist_ncar')
+# #        self.cmap_dict['RdBu_r'] = matcm.get_cmap(name='RdBu_r')
+# #        self.cmap_dict['RdYlBu_r'] = matcm.get_cmap(name='RdYlBu_r
+# #        self.cmap_dict['cool'] = matcm.get_cmap(name='cool
+# #        self.cmap_dict['YlOrBr'] = matcm.get_cmap(name='YlOrBr
+# #        self.cmap_dict['jet'] = matcm.get_cmap(name='jet
+# #        self.cmap_dict['
+# #        self.cmap_dict['
         
         
     def _check_default_field(self):
@@ -799,41 +873,53 @@ class Browse(object):
         elif self.radar.scan_type == 'ppi':
             pass
         else:
-            print "Check the scan type, ARTview supports PPI and RHI"
+            msg = "Check the scan type, ARTview supports PPI and RHI"
+            self._ShowWarning(msg)
             return
-
+ 
     ########################
-    # Image save methods #
+    # Popup methods #
     ########################
+    def _ShowWarning(self, msg):
+        '''Show a warning message'''
+        flags = QtGui.QMessageBox.StandardButton()
+#        flags |= QtGui.QMessageBox.StandardButton()
+        response = QtGui.QMessageBox.warning(self, "Warning!",
+                                             msg, flags)
+        if response == 0:
+            print msg
+        else:
+            print "Warning Discarded!"
+ 
+     ########################
+     # Image save methods #
+     ########################
 
-    def _savefile(self, PTYPE=PTYPE):
+    def _savefile(self, PTYPE=IMAGE_EXT):
         '''Save the current display'''
-        PNAME = self.display.generate_filename(self.field, self.tilt, ext=PTYPE)
+        PNAME = self.display.generate_filename(self.field, self.tilt, ext=IMAGE_EXT)
         print "Creating "+ PNAME
 
-        RADNAME = self.radar.metadata['instrument_name']
         self.canvas.print_figure(PNAME, dpi=DPI)
-
-        # Find out the save file name, first get filename
-        #savefilename = tkFileDialog.asksaveasfilename(**self.file_opt)
+#        self.fig.savefig(PNAME)
            
 ###################################
 if __name__ == '__main__':
     # Check for directory
     
     parser = argparse.ArgumentParser(
-              description='Start ARTview - the ARM Radar Toolkit Viewer.')
+              description="Start ARTview - the ARM Radar Toolkit Viewer.")
     parser.add_argument('searchstring', type=str, help='directory to open')
  
     igroup = parser.add_argument_group(
-             title='Set input platform, optional',
-             description=(''
-                          'The ingest method for various platfoms can be chosen. '
-                          'If not chosen, an assumption of a ground-based '
-                          'platform is made. '
-                          'The following flags may be used to  display' 
-                          'RHI or airborne sweep data.'
-                          ' '))
+             title="Set input platform, optional",
+             description=(""
+                          "The ingest method for various platfoms can be chosen. "
+                          "If not chosen, an assumption of a ground-based "
+                          "platform is made. "
+                          "The following flags may be used to  display" 
+                          "RHI or airborne sweep data."
+                          " "))
   
     igroup.add_argument('--airborne', action='store_true',
                           help='Airborne radar file')
@@ -859,6 +945,13 @@ if __name__ == '__main__':
         airborne = True
     if args.rhi:
         rhi = True
-        
-    Browse(pathDir=fDirIn, airborne=airborne, rhi=rhi)
+    
+    app = QtGui.QApplication(sys.argv)
+    
+    main = Browse(pathDir=fDirIn, airborne=airborne, rhi=rhi)
+    
+    main.setWindowTitle(MAINWINDOWTITLE)
+    main.show()
+ 
+    sys.exit(app.exec_())
     

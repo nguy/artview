@@ -8,6 +8,8 @@ It allows one to easily scroll through a directory of weather radar data files
 and visualize the data.  All file types available in PyArt can be opened with
 the ARTview browser.
 
+![alt tag](https://github.com/nguy/artview/ARTView_Screenshot.png)
+
 With ARTview you can:
 
 	Dynamically switch fields (variables) and tilt angles via drop down menu.
@@ -27,7 +29,7 @@ With ARTview you can:
   
 ## Installation
 Currently it is a standalone executable python script, but may eventually be wrapped into PyArt after maturation.
-No specific installation is required, outside of PyArt dependency.
+See dependencies below.
 
 ## Usage
 
@@ -72,16 +74,18 @@ to the list.
 
 [matplotlib](http://matplotlib.org)
 
-[TkInter](https://wiki.python.org/moin/TkInter)
+[PyQt](http://www.riverbankcomputing.co.uk/software/pyqt/intro) or [TkInter](https://wiki.python.org/moin/TkInter) 
 
-Developed on Python 2.7.7 :: Anaconda 2.0.1 
-MacOSX 10.9.4
+Developed on Python 2.7.7 and 2.7.9 :: Anaconda 2.0.1 and 2.1.0
+MacOSX 10.9.4 and 10.10.2
 
-Author: Nick Guy (nick.guy@noaa.gov)
+Author: Nick Guy (nick.guy@uwyo.edu)
 
-NOTE:: This is open source software.  Contributions are very welcome, though this is not my primary project.  In addition it needs to be state that no responsibility is taken by the author for any adverse effects.
+NOTE:: This is open source software.  Contributions are very welcome, though this is not my primary project.  In addition it needs to be stated that no responsibility is taken by the author for any adverse effects.
 
 ## Caveats
-At the current time the scaling and limit changing fields are very slow.
+There has not been extensive testing, but seems reasonably stable.
+
+The data structure used to load can cause lag time, please be patient.  Looking into fixes for this.
 
 
