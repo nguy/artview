@@ -734,7 +734,7 @@ class Browse(QtGui.QMainWindow):
             self.display.plot_grid_lines()
         else:
             self.display = pyart.graph.RadarDisplay(self.radar)
-            if self.radar.scan_type == 'ppi':
+            if self.radar.scan_type != 'rhi':
                 # Create Plot
                 if self.tilt < len(self.rTilts):
                     pass
@@ -753,7 +753,7 @@ class Browse(QtGui.QMainWindow):
                     self.display.plot_range_rings(self.RNG_RINGS, ax=self.ax)
                 # Add radar location
                 self.display.plot_cross_hair(5., ax=self.ax)
-            elif (self.radar.scan_type == 'rhi') or (self.rhi is True):
+            else:
                 self.plot = self.display.plot_rhi(self.field, self.tilt,\
                                 vmin=self.limits['vmin'], vmax=self.limits['vmax'],\
                                 colorbar_flag=False, cmap=self.CMAP,\
@@ -769,7 +769,13 @@ class Browse(QtGui.QMainWindow):
                                            vmax=self.limits['vmax'])
         self.cbar=mlabColorbarBase(self.cax, cmap=self.CMAP,\
                                                 norm=norm, orientation='horizontal')
-        self.cbar.set_label(self.radar.fields[self.field]['units'])
+        try:
+            self.cbar.set_label(self.radar.fields[self.field]['units'])
+        except:
+            msg = "No units available for variable"
+            print msg
+            self._ShowWarning(msg)
+            
         
         print "Plotting %s field, Tilt %d" % (self.field, self.tilt+1)
         self.canvas.draw()
@@ -861,7 +867,9 @@ class Browse(QtGui.QMainWindow):
                 
     def _check_file_type(self):
         '''Check file to see if the file is airborne or rhi'''
-        if self.radar.scan_type == 'rhi':
+        if self.radar.scan_type != 'rhi':
+            pass
+        else:
             try:
                 (self.radar.metadata['platform_type'] == 'aircraft_tail') or \
                 (self.radar.metadata['platform_type'] == 'aircraft')
@@ -870,12 +878,6 @@ class Browse(QtGui.QMainWindow):
                 self.rhi = True
             
             self._set_fig_ax_rhi()
-        elif self.radar.scan_type == 'ppi':
-            pass
-        else:
-            msg = "Check the scan type, ARTview supports PPI and RHI"
-            self._ShowWarning(msg)
-            return
  
     ########################
     # Popup methods #
