@@ -772,9 +772,10 @@ class Browse(QtGui.QMainWindow):
         try:
             self.cbar.set_label(self.radar.fields[self.field]['units'])
         except:
-            msg = "No units available for variable"
-            print msg
-            self._ShowWarning(msg)
+            pass
+            #msg = "No units available for variable"
+            #print msg
+            #self._ShowWarning(msg)
             
         
         print "Plotting %s field, Tilt %d" % (self.field, self.tilt+1)
