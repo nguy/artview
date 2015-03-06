@@ -587,6 +587,7 @@ class Browse(QtGui.QMainWindow):
         '''Captures a selection and redraws the new field'''
         self.field = nombre
         self._initialize_limits()
+        self.units = None
         self._update_plot()
         
     def RngRingSelectCmd(self, ringSel):
@@ -702,6 +703,7 @@ class Browse(QtGui.QMainWindow):
         self.AddFieldMenu()
         self.AddNextPrevMenu()
         self.AddCmapMenu()
+        self.units = None
         self._update_plot()
     ####################
     # Plotting methods #
@@ -949,7 +951,6 @@ if __name__ == '__main__':
     
     parser = argparse.ArgumentParser(
               description="Start ARTview - the ARM Radar Toolkit Viewer.")
-    parser.add_argument('searchstring', type=str, help='directory to open')
  
     igroup = parser.add_argument_group(
              title="Set input platform, optional",
@@ -957,7 +958,7 @@ if __name__ == '__main__':
                           "The ingest method for various platfoms can be chosen. "
                           "If not chosen, an assumption of a ground-based "
                           "platform is made. "
-                          "The following flags may be used to  display" 
+                          "The following flags may be used to display"
                           "RHI or airborne sweep data."
                           " "))
   
@@ -967,15 +968,17 @@ if __name__ == '__main__':
     igroup.add_argument('--rhi', action='store_true',
                           help='RHI scan')
  
-    parser.add_argument('-v', '--version', action='version',
+    igroup.add_argument('-v', '--version', action='version',
                          version='ARTview version %s' % (VERSION))
     
-    # Parse the args                     
-    args = parser.parse_args()
+    #Directory argument now optional
+    igroup.add_argument('-d', '--directory', type=str, help='directory to open', default='./')
     
+    # Parse the args
+    args = parser.parse_args()
     # Check if there is an input directory
-    if args.searchstring:
-        fDirIn = args.searchstring
+    if args.directory:
+        fDirIn = args.directory
     else: 
         fDirIn = "./"
         
