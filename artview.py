@@ -142,7 +142,10 @@ class Browse(QtGui.QMainWindow):
             self.YSIZE = RHI_YSIZE
             self.XRNG = RHI_XRNG
             self.YRNG = RHI_YRNG
-            
+        
+        # Set plot title and colorbar units to defaults
+        self.title = None
+        self.units = None
         # Initialize limits
         self._initialize_limits()
             
@@ -220,6 +223,10 @@ class Browse(QtGui.QMainWindow):
         yminb.clicked.connect(self._y_min_input)
         ymaxb = QtGui.QPushButton("Y Max")
         ymaxb.clicked.connect(self._y_max_input)
+        titleb = QtGui.QPushButton("Title")
+        titleb.clicked.connect(self._title_input)
+        unitsb = QtGui.QPushButton("Units")
+        unitsb.clicked.connect(self._units_input)
         
         # Create layout
         self.layout = QtGui.QGridLayout()
@@ -231,6 +238,8 @@ class Browse(QtGui.QMainWindow):
         self.layout.addWidget(xmaxb, 0, 3)
         self.layout.addWidget(yminb, 0, 4)
         self.layout.addWidget(ymaxb, 0, 5)
+        self.layout.addWidget(titleb, 0, 6)
+        self.layout.addWidget(unitsb, 0, 7)
 
         self.CreateTiltWidget()
                 
@@ -528,7 +537,31 @@ class Browse(QtGui.QMainWindow):
         if entry is True:
             self.limits['ymax'] = val
             self._update_plot()
-            
+
+    def _title_input(self):
+        '''Retrieve new plot title'''
+        if self.title is None:
+            old_val = ''
+        else:
+            old_val = self.title
+        val, entry = QtGui.QInputDialog.getText(self, "Plot Title", \
+                  "Title:", 0, old_val)
+        if entry is True:
+            self.title = val
+            self._update_plot()
+
+    def _units_input(self):
+        '''Retrieve new plot units'''
+        if self.units is None:
+            old_val = ''
+        else:
+            old_val = self.units
+        val, entry = QtGui.QInputDialog.getText(self, "Plot Units", \
+                  "Units:", 0, old_val)
+        if entry is True:
+            self.units = val
+            self._update_plot()
+
     def _openLimsDialog(self):
         '''Make Entry boxes to modify variable and axis limits'''
         dialog = QtGui.QDialog(self)
@@ -554,6 +587,7 @@ class Browse(QtGui.QMainWindow):
         '''Captures a selection and redraws the new field'''
         self.field = nombre
         self._initialize_limits()
+        self.units = None
         self._update_plot()
         
     def RngRingSelectCmd(self, ringSel):
@@ -669,6 +703,7 @@ class Browse(QtGui.QMainWindow):
         self.AddFieldMenu()
         self.AddNextPrevMenu()
         self.AddCmapMenu()
+        self.units = None
         self._update_plot()
     ####################
     # Plotting methods #
@@ -720,6 +755,10 @@ class Browse(QtGui.QMainWindow):
         # Create the plot with PyArt RadarDisplay 
         # Always intitiates at lowest elevation angle
         self.ax.cla()
+
+        #Reset to default title if user entered nothing w/ Title button
+        if self.title == '':
+            self.title = None
         
         if self.airborne:
             self.display = pyart.graph.RadarDisplay_Airborne(self.radar)
@@ -727,7 +766,7 @@ class Browse(QtGui.QMainWindow):
             self.plot = self.display.plot_sweep_grid(self.field, \
                                 vmin=self.limits['vmin'], vmax=self.limits['vmax'],\
                                 colorbar_flag=False, cmap=self.CMAP,\
-                                ax=self.ax)
+                                ax=self.ax, title=self.title)
             self.display.set_limits(xlim=(self.limits['xmin'], self.limits['xmax']),\
                                     ylim=(self.limits['ymin'], self.limits['ymax']),\
                                     ax=self.ax)
@@ -743,7 +782,7 @@ class Browse(QtGui.QMainWindow):
                 self.plot = self.display.plot_ppi(self.field, self.tilt,\
                                 vmin=self.limits['vmin'], vmax=self.limits['vmax'],\
                                 colorbar_flag=False, cmap=self.CMAP,\
-                                ax=self.ax)
+                                ax=self.ax, title=self.title)
                 # Set limits
                 self.display.set_limits(xlim=(self.limits['xmin'], self.limits['xmax']),\
                                         ylim=(self.limits['ymin'], self.limits['ymax']),\
@@ -757,7 +796,7 @@ class Browse(QtGui.QMainWindow):
                 self.plot = self.display.plot_rhi(self.field, self.tilt,\
                                 vmin=self.limits['vmin'], vmax=self.limits['vmax'],\
                                 colorbar_flag=False, cmap=self.CMAP,\
-                                ax=self.ax)
+                                ax=self.ax, title=self.title)
                 self.display.set_limits(xlim=(self.limits['xmin'], self.limits['xmax']),\
                                         ylim=(self.limits['ymin'], self.limits['ymax']),\
                                         ax=self.ax)
@@ -769,13 +808,14 @@ class Browse(QtGui.QMainWindow):
                                            vmax=self.limits['vmax'])
         self.cbar=mlabColorbarBase(self.cax, cmap=self.CMAP,\
                                                 norm=norm, orientation='horizontal')
-        try:
-            self.cbar.set_label(self.radar.fields[self.field]['units'])
-        except:
-            msg = "No units available for variable"
-            print msg
-            self._ShowWarning(msg)
-            
+        # colorbar - use specified units or default depending on
+        # what has or has not been entered
+        if self.units is None or self.units == '':
+            try:
+                self.units = self.radar.fields[self.field]['units']
+            except:
+                self.units = ''
+        self.cbar.set_label(self.units)
         
         print "Plotting %s field, Tilt %d" % (self.field, self.tilt+1)
         self.canvas.draw()
@@ -911,7 +951,6 @@ if __name__ == '__main__':
     
     parser = argparse.ArgumentParser(
               description="Start ARTview - the ARM Radar Toolkit Viewer.")
-    parser.add_argument('searchstring', type=str, help='directory to open')
  
     igroup = parser.add_argument_group(
              title="Set input platform, optional",
@@ -919,7 +958,7 @@ if __name__ == '__main__':
                           "The ingest method for various platfoms can be chosen. "
                           "If not chosen, an assumption of a ground-based "
                           "platform is made. "
-                          "The following flags may be used to  display" 
+                          "The following flags may be used to display"
                           "RHI or airborne sweep data."
                           " "))
   
@@ -929,15 +968,17 @@ if __name__ == '__main__':
     igroup.add_argument('--rhi', action='store_true',
                           help='RHI scan')
  
-    parser.add_argument('-v', '--version', action='version',
+    igroup.add_argument('-v', '--version', action='version',
                          version='ARTview version %s' % (VERSION))
     
-    # Parse the args                     
-    args = parser.parse_args()
+    #Directory argument now optional
+    igroup.add_argument('-d', '--directory', type=str, help='directory to open', default='./')
     
+    # Parse the args
+    args = parser.parse_args()
     # Check if there is an input directory
-    if args.searchstring:
-        fDirIn = args.searchstring
+    if args.directory:
+        fDirIn = args.directory
     else: 
         fDirIn = "./"
         
