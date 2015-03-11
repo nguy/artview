@@ -75,8 +75,8 @@ You can make publication quality images.
 Modify the title and/or units if you'd like:
 ![Screenshot2](https://github.com/nguy/artview/blob/master/ARTView_Screenshot_title_unit.png)
 
-Now you can save the image simply from the menubar.  File -> Save Image 
-Or Ctrl+s on linux, Cmd+S on MacOS)
+Now you can save the image simply from the menubar.
+File -> Save Image (Or Ctrl+s on linux, Cmd+S on MacOS)
 
 ## Dependencies
 [Py-Art](https://github.com/ARM-DOE/pyart)
@@ -88,8 +88,10 @@ Or Ctrl+s on linux, Cmd+S on MacOS)
 Developed on Python 2.7.7 and 2.7.9 :: Anaconda 2.0.1 and 2.1.0
 MacOSX 10.9.4 and 10.10.2
 
-Author list: 
+##Author list: 
+
 Nick Guy (nick.guy@uwyo.edu)
+
 Timothy Lang 
 
 NOTE:: This is open source software.  Contributions are very welcome, though this is not my primary project.  In addition it needs to be stated that no responsibility is taken by the author for any adverse effects.
