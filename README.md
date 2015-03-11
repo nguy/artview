@@ -88,8 +88,9 @@ Or Ctrl+s on linux, Cmd+S on MacOS)
 Developed on Python 2.7.7 and 2.7.9 :: Anaconda 2.0.1 and 2.1.0
 MacOSX 10.9.4 and 10.10.2
 
-Author: Nick Guy (nick.guy@uwyo.edu)
-        Timothy Lang 
+Author list: 
+Nick Guy (nick.guy@uwyo.edu)
+Timothy Lang 
 
 NOTE:: This is open source software.  Contributions are very welcome, though this is not my primary project.  In addition it needs to be stated that no responsibility is taken by the author for any adverse effects.
 
