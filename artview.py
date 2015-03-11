@@ -70,7 +70,7 @@ from matplotlib.pyplot import cm
 #===============================================================
 # Initialization defaults for variables
 
-VERSION = '0.1.3'
+VERSION = '0.1.4'
 MAINWINDOWTITLE = 'ARTView - ARM Radar Toolkit Viewer'
 
 # Limits for varioud variable plots
@@ -704,6 +704,7 @@ class Browse(QtGui.QMainWindow):
         self.AddNextPrevMenu()
         self.AddCmapMenu()
         self.units = None
+        self.title = None
         self._update_plot()
     ####################
     # Plotting methods #
