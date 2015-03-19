@@ -215,31 +215,22 @@ class Browse(QtGui.QMainWindow):
         datminb.clicked.connect(self._data_min_input)
         datmaxb = QtGui.QPushButton("Data Max")
         datmaxb.clicked.connect(self._data_max_input)
-        xminb = QtGui.QPushButton("X Min")
-        xminb.clicked.connect(self._x_min_input)
-        xmaxb = QtGui.QPushButton("X Max")
-        xmaxb.clicked.connect(self._x_max_input)
-        yminb = QtGui.QPushButton("Y Min")
-        yminb.clicked.connect(self._y_min_input)
-        ymaxb = QtGui.QPushButton("Y Max")
-        ymaxb.clicked.connect(self._y_max_input)
         titleb = QtGui.QPushButton("Title")
         titleb.clicked.connect(self._title_input)
         unitsb = QtGui.QPushButton("Units")
         unitsb.clicked.connect(self._units_input)
+        minmaxb = QtGui.QPushButton("Axes Min/Max")
+        minmaxb.clicked.connect(self._axis_minmax_input)
         
         # Create layout
         self.layout = QtGui.QGridLayout()
-        self.layout.setSpacing(8)
+        self.layout.setSpacing(5)
         
         self.layout.addWidget(datminb, 0, 0)
         self.layout.addWidget(datmaxb, 0, 1)
-        self.layout.addWidget(xminb, 0, 2)
-        self.layout.addWidget(xmaxb, 0, 3)
-        self.layout.addWidget(yminb, 0, 4)
-        self.layout.addWidget(ymaxb, 0, 5)
-        self.layout.addWidget(titleb, 0, 6)
-        self.layout.addWidget(unitsb, 0, 7)
+        self.layout.addWidget(minmaxb, 0, 2)
+        self.layout.addWidget(titleb, 0, 3)
+        self.layout.addWidget(unitsb, 0, 4)
 
         self.CreateTiltWidget()
                 
@@ -506,36 +497,23 @@ class Browse(QtGui.QMainWindow):
             self.limits['vmax'] = val
             self._update_plot()
         
-    def _x_min_input(self):
+    def _axis_minmax_input(self):
         '''Retrieve new data lim input'''
-        val, entry = QtGui.QInputDialog.getDouble(self, "Minimum X-axis value", \
-                  "X Min:", self.limits['xmin'])
+        self.limits['xmin'], self.limits['xmax'] = self.ax.get_xlim()
+        self.limits['ymin'], self.limits['ymax'] = self.ax.get_ylim()
+        axis_string = str(self.limits['xmin'])+' '+str(self.limits['xmax'])+' '+str(self.limits['ymin'])+' '+str(self.limits['ymax'])
+        print "Current Values: ",axis_string
+        qval, entry = QtGui.QInputDialog.getText(self, "Enter Axes Min/Max", \
+                  "Xmin Xmax Ymin Ymax:", 0, axis_string)
         if entry is True:
-            self.limits['xmin'] = val
-            self._update_plot()
-            
-    def _x_max_input(self):
-        '''Retrieve new data lim input'''
-        val, entry = QtGui.QInputDialog.getDouble(self, "Maximum X-axis value", \
-                  "X Max:", self.limits['xmax'])
-        if entry is True:
-            self.limits['xmax'] = val
-            self._update_plot()
-        
-    def _y_min_input(self):
-        '''Retrieve new data lim input'''
-        val, entry = QtGui.QInputDialog.getDouble(self, "Minimum Y-axis value", \
-                  "Y Min:", self.limits['ymin'])
-        if entry is True:
-            self.limits['ymin'] = val
-            self._update_plot()
-            
-    def _y_max_input(self):
-        '''Retrieve new data lim input'''
-        val, entry = QtGui.QInputDialog.getDouble(self, "Maximum Y-axis value", \
-                  "Y Max:", self.limits['ymax'])
-        if entry is True:
-            self.limits['ymax'] = val
+            val = str(qval)
+            print "New Values: ",val
+            vals = val.split()
+            nums = np.array(vals).astype('d')
+            self.limits['xmin'] = nums[0]
+            self.limits['xmax'] = nums[1]
+            self.limits['ymin'] = nums[2]
+            self.limits['ymax'] = nums[3]
             self._update_plot()
 
     def _title_input(self):
@@ -746,6 +724,12 @@ class Browse(QtGui.QMainWindow):
         self.layout.addWidget(self.canvas, 1, 0, 7, 6)
 
 
+    #def _update_plot(self):
+        #self.limits['xmin'], self.limits['xmax'] = self.ax.get_xlim()
+        #self.limits['ymin'], self.limits['ymax'] = self.ax.get_ylim()
+        #self._update_plot1()
+
+    #def _update_plot1(self):
     def _update_plot(self):
         '''Renew the plot'''
         # This is a bit of a hack to ensure that the viewer works with files
@@ -755,7 +739,14 @@ class Browse(QtGui.QMainWindow):
     
         # Create the plot with PyArt RadarDisplay 
         # Always intitiates at lowest elevation angle
+
         self.ax.cla()
+
+        # Zoom and pan with the mouse
+        scale = 1.1
+        zp = ZoomPan()
+        figZoom = zp.zoom_factory(self.ax,base_scale = scale)
+        figPan = zp.pan_factory(self.ax)
 
         #Reset to default title if user entered nothing w/ Title button
         if self.title == '':
@@ -946,6 +937,89 @@ class Browse(QtGui.QMainWindow):
         self.canvas.print_figure(PNAME, dpi=DPI)
 #        self.fig.savefig(PNAME)
            
+# Zoom and Pan with the Mouse
+# from http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-wheel  (using second answer)
+class ZoomPan:
+    def __init__(self):
+        self.press = None
+        self.cur_xlim = None
+        self.cur_ylim = None
+        self.x0 = None
+        self.y0 = None
+        self.x1 = None
+        self.y1 = None
+        self.xpress = None
+        self.ypress = None
+
+
+    def zoom_factory(self, ax, base_scale = 2.):
+        def zoom(event):
+            cur_xlim = ax.get_xlim()
+            cur_ylim = ax.get_ylim()
+
+            xdata = event.xdata # get event x location
+            ydata = event.ydata # get event y location
+
+            if event.button == 'down':
+                # deal with zoom in
+                scale_factor = 1 / base_scale
+            elif event.button == 'up':
+                # deal with zoom out
+                scale_factor = base_scale
+            else:
+                # deal with something that should never happen
+                scale_factor = 1
+                print event.button
+
+            new_width = (cur_xlim[1] - cur_xlim[0]) * scale_factor
+            new_height = (cur_ylim[1] - cur_ylim[0]) * scale_factor
+
+            relx = (cur_xlim[1] - xdata)/(cur_xlim[1] - cur_xlim[0])
+            rely = (cur_ylim[1] - ydata)/(cur_ylim[1] - cur_ylim[0])
+
+            ax.set_xlim([xdata - new_width * (1-relx), xdata + new_width * (relx)])
+            ax.set_ylim([ydata - new_height * (1-rely), ydata + new_height * (rely)])
+            ax.figure.canvas.draw()
+
+        fig = ax.get_figure() # get the figure of interest
+        fig.canvas.mpl_connect('scroll_event', zoom)
+
+        return zoom
+
+    def pan_factory(self, ax):
+        def onPress(event):
+            if event.inaxes != ax: return
+            self.cur_xlim = ax.get_xlim()
+            self.cur_ylim = ax.get_ylim()
+            self.press = self.x0, self.y0, event.xdata, event.ydata
+            self.x0, self.y0, self.xpress, self.ypress = self.press
+
+        def onRelease(event):
+            self.press = None
+            ax.figure.canvas.draw()
+
+        def onMotion(event):
+            if self.press is None: return
+            if event.inaxes != ax: return
+            dx = event.xdata - self.xpress
+            dy = event.ydata - self.ypress
+            self.cur_xlim -= dx
+            self.cur_ylim -= dy
+            ax.set_xlim(self.cur_xlim)
+            ax.set_ylim(self.cur_ylim)
+
+            ax.figure.canvas.draw()
+
+        fig = ax.get_figure() # get the figure of interest
+
+        # attach the call back
+        fig.canvas.mpl_connect('button_press_event',onPress)
+        fig.canvas.mpl_connect('button_release_event',onRelease)
+        fig.canvas.mpl_connect('motion_notify_event',onMotion)
+
+        #return the function
+        return onMotion
+
 ###################################
 if __name__ == '__main__':
     # Check for directory
