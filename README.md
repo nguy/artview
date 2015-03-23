@@ -24,7 +24,8 @@ With ARTview you can:
     
     View PPI, sector or RHI type file scans.
     
-    Change scaling interactively.
+    Change scaling interactively.  Both by limits popup window or by using the
+    the mouse to zoom in/out or pan image.
     
     Modify title and units, and save image easily via drop down menu.
     
@@ -76,6 +77,7 @@ Modify the title and/or units if you'd like:
 ![Screenshot2](https://github.com/nguy/artview/blob/master/ARTView_Screenshot_title_unit.png)
 
 Now you can save the image simply from the menubar.
+
 File -> Save Image (Or Ctrl+s on linux, Cmd+S on MacOS)
 
 ## Dependencies
@@ -85,20 +87,24 @@ File -> Save Image (Or Ctrl+s on linux, Cmd+S on MacOS)
 
 [PyQt](http://www.riverbankcomputing.co.uk/software/pyqt/intro) or [TkInter](https://wiki.python.org/moin/TkInter) 
 
+Note that the TkInter version is an older deprecated version of the code.
+
 Developed on Python 2.7.7 and 2.7.9 :: Anaconda 2.0.1 and 2.1.0
 MacOSX 10.9.4 and 10.10.2
 
-##Author list: 
+##Author list
 
 Nick Guy (nick.guy@uwyo.edu)
 
 Timothy Lang 
+
+Paul Hein
 
 NOTE:: This is open source software.  Contributions are very welcome, though this is not my primary project.  In addition it needs to be stated that no responsibility is taken by the author for any adverse effects.
 
 ## Caveats
 There has not been extensive testing, but seems reasonably stable.
 
-The data structure used to load can cause lag time, please be patient.  Looking into fixes for this.
+The data structure used to load can cause lag time, please be patient.
 
 
