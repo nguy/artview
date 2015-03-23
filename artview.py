@@ -24,6 +24,7 @@ History::
 10 Mar 2015  -  Title and Units adjustable by user.
 23 Mar 2015  -  Zoom/Pan functionality added.  Condensed limits into a
                 single popup dialog window.
+                Added a Tools ComboBox to choose none, Zoom/Pan, or Default Scaling
 
 
 Usage::
@@ -75,7 +76,7 @@ from matplotlib.pyplot import cm
 #===============================================================
 # Initialization defaults for variables
 
-VERSION = '0.1.5'
+VERSION = '0.1.6'
 MAINWINDOWTITLE = 'ARTView - ARM Radar Toolkit Viewer'
 
 # Limits for varioud variable plots
@@ -234,6 +235,7 @@ class Browse(QtGui.QMainWindow):
         # Create the menus
         self.CreateMenu()
         
+        # Create the button controls
         limsb = QtGui.QPushButton("Adjust Limits")
         limsb.clicked.connect(self.showLimsDialog)
         titleb = QtGui.QPushButton("Title")
@@ -243,16 +245,17 @@ class Browse(QtGui.QMainWindow):
         unitsb.setToolTip("Change units string")
         unitsb.clicked.connect(self._units_input)
         
-        # Create the Tools ComboBox
-        self.toolsBoxUI()
+        # Create the tools ComboBox
+        self.comboBoxUI()
         
         # Create layout
         self.layout = QtGui.QGridLayout()
         self.layout.setSpacing(8)
         
         self.layout.addWidget(limsb, 0, 0)
-        self.layout.addWidget(titleb, 0, 1)
-        self.layout.addWidget(unitsb, 0, 2)
+        self.layout.addWidget(self.comboBox, 0, 1)
+        self.layout.addWidget(titleb, 0, 2)
+        self.layout.addWidget(unitsb, 0, 3)
 
         # Create the Tilt buttons
         self.CreateTiltWidget()
@@ -276,23 +279,16 @@ class Browse(QtGui.QMainWindow):
             self.windowTilt = TiltButtons(tilts=self.rTilts)
         self.windowTilt.show()
             
-    def toolsBoxUI(self):
-        self.toolsBox = QtGui.QComboBox()
-        self.toolsBox.setToolTip("Choose a tool to apply")
-        self.toolsBox.addItem("No Tools")
-        self.toolsBox.addItem("Zoom/Pan")
-        self.toolsBox.addItem("Reset file defaults")
+    def comboBoxUI(self):
+        self.comboBox = QtGui.QComboBox()
+        self.comboBox.addItem("No Tools")
+        self.comboBox.addItem("Zoom/Pan")
+        self.comboBox.addItem("Reset file defaults")
         
-        self.toolsBox.activated[str].connect(self.comboAction)
+        self.comboBox.activated[str].connect(self.comboAction)
         
     def comboAction(self, text):
-        # Check to see if Zoom/Pan was selected, if so disconnect 
-        if self.ToolSelect == "Zoom/Pan":
-            print "IN DISCONNECT"
-            self.zp.disconnect()
-        # Set the Tool to use
         self.ToolSelect = text
-        
         if self.ToolSelect == "Reset file defaults":
             self._initialize_limits()
         self._update_plot()
@@ -759,12 +755,13 @@ class Browse(QtGui.QMainWindow):
         if self.title == '':
             self.title = None
         
-        # Set up the zoom/pan functionality
-        scale = 1.1
-        zp = ZoomPan()
-        figZoom = zp.zoom_factory(self.ax, self.limits, base_scale = scale)
-        figPan = zp.pan_factory(self.ax, self.limits)
-        self.ax.format_coord = format_coord
+        # If Zoom/Pan selected, Set up the zoom/pan functionality
+        if self.ToolSelect == "Zoom/Pan":
+            scale = 1.1
+            zp = ZoomPan()
+            figZoom = zp.zoom_factory(self.ax, self.limits, base_scale = scale)
+            figPan = zp.pan_factory(self.ax, self.limits)
+            self.ax.format_coord = format_coord
         
         if self.airborne:
             self.display = pyart.graph.RadarDisplay_Airborne(self.radar)
