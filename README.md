@@ -24,9 +24,8 @@ With ARTview you can:
     
     View PPI, sector or RHI type file scans.
     
-    Change scaling interactively.  
-         Change limits via popup window. 
-         Choose Zoom/Pan and use the mouse to zoom in/out or pan image.
+    Change scaling interactively.  Both by limits popup window or by using the
+    the mouse to zoom in/out or pan image.
     
     Modify title and units, and save image easily via drop down menu.
     
