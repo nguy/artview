@@ -60,7 +60,6 @@ import os
 import argparse
 from functools import partial
 
-#from PySide import QtGui
 from PyQt4 import QtGui, QtCore
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
@@ -198,7 +197,6 @@ class Browse(QtGui.QMainWindow):
             self.TiltSelectCmd(self.tilt - 1)
         else:
             QtGui.QWidget.keyPressEvent(self, event)
-            #QtGui.QMainWindow.keyPressEvent(self, event)
 
     ####################
     # GUI methods #
@@ -229,15 +227,15 @@ class Browse(QtGui.QMainWindow):
         unitsb = QtGui.QPushButton("Units")
         unitsb.clicked.connect(self._units_input)
         
-        # Create the tools ComboBox
-        self.comboBoxUI()
+        # Create the Tools ComboBox
+        self.toolsBoxUI()
         
         # Create layout
         self.layout = QtGui.QGridLayout()
         self.layout.setSpacing(8)
         
         self.layout.addWidget(limsb, 0, 0)
-        self.layout.addWidget(self.comboBox, 0, 1)
+        self.layout.addWidget(self.toolsBox, 0, 1)
         self.layout.addWidget(titleb, 0, 2)
         self.layout.addWidget(unitsb, 0, 3)
 
@@ -262,16 +260,22 @@ class Browse(QtGui.QMainWindow):
             self.windowTilt = TiltButtons(tilts=self.rTilts)
         self.windowTilt.show()
             
-    def comboBoxUI(self):
-        self.comboBox = QtGui.QComboBox()
-        self.comboBox.addItem("No Tools")
-        self.comboBox.addItem("Zoom/Pan")
-        self.comboBox.addItem("Reset file defaults")
+    def toolsBoxUI(self):
+        self.toolsBox = QtGui.QComboBox()
+        self.toolsBox.addItem("No Tools")
+        self.toolsBox.addItem("Zoom/Pan")
+        self.toolsBox.addItem("Reset file defaults")
         
-        self.comboBox.activated[str].connect(self.comboAction)
+        self.toolsBox.activated[str].connect(self.comboAction)
         
     def comboAction(self, text):
+        # Check to see if Zoom/Pan was selected, if so disconnect 
+        if self.ToolSelect == "Zoom/Pan":
+            print "IN DISCONNECT"
+            self.zp.disconnect()
+        # Set the Tool to use
         self.ToolSelect = text
+        
         if self.ToolSelect == "Reset file defaults":
             self._initialize_limits()
         self._update_plot()
@@ -369,8 +373,7 @@ class Browse(QtGui.QMainWindow):
         ('Number of sweeps: %s\n'% nsweeps))
         
         QtGui.QMessageBox.information(self, "Short Radar Info", txOut) 
-            
-
+        
     ######################
     # Menu build methods #
     ######################
@@ -683,6 +686,7 @@ class Browse(QtGui.QMainWindow):
         self.units = None
         self.title = None
         self._update_plot()
+        
     ####################
     # Plotting methods #
     ####################
@@ -697,7 +701,6 @@ class Browse(QtGui.QMainWindow):
         
         # We want the axes cleared every time plot() is called
         #self.axes.hold(False)
-        
         
     def _set_fig_ax_rhi(self):
         '''Change figure size and limits if RHI'''
@@ -722,7 +725,6 @@ class Browse(QtGui.QMainWindow):
         # Add the widget to the canvas
         self.layout.addWidget(self.canvas, 1, 0, 7, 6)
 
-
     def _update_plot(self):
         '''Renew the plot'''
         # This is a bit of a hack to ensure that the viewer works with files
@@ -741,9 +743,10 @@ class Browse(QtGui.QMainWindow):
         # If Zoom/Pan selected, Set up the zoom/pan functionality
         if self.ToolSelect == "Zoom/Pan":
             scale = 1.1
-            zp = ZoomPan()
-            figZoom = zp.zoom_factory(self.ax, self.limits, base_scale = scale)
-            figPan = zp.pan_factory(self.ax, self.limits)
+            self.zp = ZoomPan(self.ax, self.limits, base_scale = scale)
+            #figZoom = self.zp.zoom()
+            #figPan = self.zp.pan_factory(self.limits)
+            self.zp.connect()
             self.ax.format_coord = format_coord
         
         if self.airborne:
@@ -866,7 +869,6 @@ class Browse(QtGui.QMainWindow):
 # #        self.cmap_dict['
 # #        self.cmap_dict['
         
-        
     def _check_default_field(self):
         '''Hack to perform a check on reflectivity to make it work with 
         a larger number of files
@@ -904,7 +906,7 @@ class Browse(QtGui.QMainWindow):
             self._set_fig_ax_rhi()
  
     ########################
-    # Popup methods #
+    # Warning methods #
     ########################
     def _ShowWarning(self, msg):
         '''Show a warning message'''
@@ -927,19 +929,21 @@ class Browse(QtGui.QMainWindow):
         self.canvas.print_figure(PNAME, dpi=DPI)
 #        self.fig.savefig(PNAME)
 
-######################
-# Dialog Class Methods #
-###################### 
+###############################
+# Limits Dialog Class Methods #
+###############################
 class Ui_LimsDialog(object):
+    '''
+    Limits Dialog Class
+    Popup window to set various limits
+    '''
     def setupUi(self, LimsDialog, mainLimits):
-	
-    #def setupUi(self):
+        # Set aspects of Dialog Window
         LimsDialog.setObjectName("Limits Dialog")
         LimsDialog.setWindowModality(QtCore.Qt.WindowModal)
-        #LimsDialog.resize(400, 300)
         LimsDialog.setWindowTitle("Limits Entry")
-        #QtGui.QApplication.translate("Dialog", "Dialog", None,   QtGui.QApplication.UnicodeUTF8))
-
+        
+        # Setup window layout
         self.gridLayout_2 = QtGui.QGridLayout(LimsDialog)
         self.gridLayout_2.setObjectName("gridLayout_2")
         self.gridLayout = QtGui.QGridLayout()
@@ -990,11 +994,9 @@ class Ui_LimsDialog(object):
         self.buttonBox.setObjectName("buttonBox")
         self.gridLayout_2.addWidget(self.buttonBox, 1, 0, 1, 1)
 
+        # Connect the signals from OK and Cancel buttons
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), self._pass_lims)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), LimsDialog.reject)
-        QtCore.QMetaObject.connectSlotsByName(LimsDialog)
-
-        self.retranslateUi(LimsDialog)
         QtCore.QMetaObject.connectSlotsByName(LimsDialog)
 	
     def _pass_lims(self):
@@ -1010,16 +1012,16 @@ class Ui_LimsDialog(object):
         
     def reject(self):
         LimsDialog.quit()
-
-    def retranslateUi(self, LimsDialog):
-        pass
         
-######################
+##########################
 # Zoom/Pan Class Methods #
-######################    
-# from http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-wheel  (using second answer)
+##########################
 class ZoomPan:
-    def __init__(self):
+    '''
+    Class for Zoom and Pan of plot
+    Modified an original answer found here: http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-wheel
+    '''
+    def __init__(self, ax, limits, base_scale = 2.):
         self.press = None
         self.cur_xlim = None
         self.cur_ylim = None
@@ -1029,97 +1031,93 @@ class ZoomPan:
         self.y1 = None
         self.xpress = None
         self.ypress = None
-
-
-    def zoom_factory(self, ax, limits, base_scale = 2.):
-        entry = {}
-        entry['dmin'] = None
-        entry['dmax'] = None
+        self.entry = {}
+        self.entry['dmin'] = None
+        self.entry['dmax'] = None
+        #self.connect()
+        self.ax = ax
+        self.limits = limits
+        self.base_scale = base_scale
+        self.fig = ax.get_figure() # get the figure of interest
         
-        def zoom(event):
-            cur_xlim = ax.get_xlim()
-            cur_ylim = ax.get_ylim()
+    def connect(self):
+        self.scrollID = self.fig.canvas.mpl_connect('scroll_event', self.onZoom)
+        self.pressID = self.fig.canvas.mpl_connect('button_press_event',self.onPress)
+        self.releaseID = self.fig.canvas.mpl_connect('button_release_event',self.onRelease)
+        self.motionID = self.fig.canvas.mpl_connect('motion_notify_event',self.onMotion)
 
-            xdata = event.xdata # get event x location
-            ydata = event.ydata # get event y location
+    def onZoom(self, event):
+        cur_xlim = self.ax.get_xlim()
+        cur_ylim = self.ax.get_ylim()
 
-            if event.button == 'down':
-                # deal with zoom in
-                scale_factor = 1 / base_scale
-            elif event.button == 'up':
-                # deal with zoom out
-                scale_factor = base_scale
-            else:
-                # deal with something that should never happen
-                scale_factor = 1
-                print event.button
+        xdata = event.xdata # get event x location
+        ydata = event.ydata # get event y location
 
-            new_width = (cur_xlim[1] - cur_xlim[0]) * scale_factor
-            new_height = (cur_ylim[1] - cur_ylim[0]) * scale_factor
+        if event.button == 'down':
+            # deal with zoom in
+            scale_factor = 1 / self.base_scale
+        elif event.button == 'up':
+            # deal with zoom out
+            scale_factor = self.base_scale
+        else:
+            # deal with something that should never happen
+            scale_factor = 1
+            print event.button
 
-            relx = (cur_xlim[1] - xdata)/(cur_xlim[1] - cur_xlim[0])
-            rely = (cur_ylim[1] - ydata)/(cur_ylim[1] - cur_ylim[0])
+        new_width = (cur_xlim[1] - cur_xlim[0]) * scale_factor
+        new_height = (cur_ylim[1] - cur_ylim[0]) * scale_factor
 
-            ax.set_xlim([xdata - new_width * (1-relx), xdata + new_width * (relx)])
-            ax.set_ylim([ydata - new_height * (1-rely), ydata + new_height * (rely)])
-            ax.figure.canvas.draw()
+        relx = (cur_xlim[1] - xdata)/(cur_xlim[1] - cur_xlim[0])
+        rely = (cur_ylim[1] - ydata)/(cur_ylim[1] - cur_ylim[0])
+
+        self.ax.set_xlim([xdata - new_width * (1-relx), xdata + new_width * (relx)])
+        self.ax.set_ylim([ydata - new_height * (1-rely), ydata + new_height * (rely)])
+        self.ax.figure.canvas.draw()
             
-            # Record the new limits and pass them to main window
-            entry['xmin'] = xdata - new_width * (1-relx)
-            entry['xmax'] = xdata + new_width * (relx)
-            entry['ymin'] = ydata - new_height * (1-rely)
-            entry['ymax'] = ydata + new_height * (rely)
+        # Record the new limits and pass them to main window
+        self.entry['xmin'] = xdata - new_width * (1-relx)
+        self.entry['xmax'] = xdata + new_width * (relx)
+        self.entry['ymin'] = ydata - new_height * (1-rely)
+        self.entry['ymax'] = ydata + new_height * (rely)
 	
-            Browse._lims_input(main, entry)
-
-        fig = ax.get_figure() # get the figure of interest
-        fig.canvas.mpl_connect('scroll_event', zoom)
-
-        return zoom
-
-    def pan_factory(self, ax, limits):
-        entry = {}
-        entry['dmin'] = None
-        entry['dmax'] = None
+        # Send the new limits back to the main window
+        Browse._lims_input(main, self.entry)
         
-        def onPress(event):
-            if event.inaxes != ax: return
-            self.cur_xlim = ax.get_xlim()
-            self.cur_ylim = ax.get_ylim()
-            self.press = self.x0, self.y0, event.xdata, event.ydata
-            self.x0, self.y0, self.xpress, self.ypress = self.press
+    def onPress(self, event):
+        if event.inaxes != self.ax: return
+        self.cur_xlim = self.ax.get_xlim()
+        self.cur_ylim = self.ax.get_ylim()
+        self.press = self.x0, self.y0, event.xdata, event.ydata
+        self.x0, self.y0, self.xpress, self.ypress = self.press
 
-        def onRelease(event):
-            self.press = None
-            ax.figure.canvas.draw()
+    def onRelease(self, event):
+        self.press = None
+        self.ax.figure.canvas.draw()
 
-        def onMotion(event):
-            if self.press is None: return
-            if event.inaxes != ax: return
-            dx = event.xdata - self.xpress
-            dy = event.ydata - self.ypress
-            self.cur_xlim -= dx
-            self.cur_ylim -= dy
-            ax.set_xlim(self.cur_xlim)
-            ax.set_ylim(self.cur_ylim)
+    def onMotion(self, event):
+        if self.press is None: return
+        if event.inaxes != self.ax: return
+        dx = event.xdata - self.xpress
+        dy = event.ydata - self.ypress
+        self.cur_xlim -= dx
+        self.cur_ylim -= dy
+        self.ax.set_xlim(self.cur_xlim)
+        self.ax.set_ylim(self.cur_ylim)
 
-            ax.figure.canvas.draw()
+        self.ax.figure.canvas.draw()
             
-            # Record the new limits and pass them to main window
-            entry['xmin'], entry['xmax'] = self.cur_xlim[0], self.cur_xlim[1]
-            entry['ymin'], entry['ymax'] = self.cur_ylim[0], self.cur_ylim[1]
+        # Record the new limits and pass them to main window
+        self.entry['xmin'], self.entry['xmax'] = self.cur_xlim[0], self.cur_xlim[1]
+        self.entry['ymin'], self.entry['ymax'] = self.cur_ylim[0], self.cur_ylim[1]
 	
-            Browse._lims_input(main, entry)
-            
-        fig = ax.get_figure() # get the figure of interest
-
-        # attach the call back
-        fig.canvas.mpl_connect('button_press_event',onPress)
-        fig.canvas.mpl_connect('button_release_event',onRelease)
-        fig.canvas.mpl_connect('motion_notify_event',onMotion)
-
-        # Return the function
-        return onMotion
+        # Send the new limits back to the main window
+        Browse._lims_input(main, self.entry)
+    
+    def disconnect(self):
+        self.fig.canvas.mpl_disconnect(self.scrollID)
+        self.fig.canvas.mpl_disconnect(self.pressID)
+        self.fig.canvas.mpl_disconnect(self.releaseID)
+        self.fig.canvas.mpl_disconnect(self.motionID)
 
 def format_coord(x, y):
     return 'x=%4.5f, y=%4.5f it works'%(x, y)
