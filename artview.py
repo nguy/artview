@@ -199,6 +199,12 @@ class Browse(QtGui.QMainWindow):
             self.TiltSelectCmd(self.tilt - 1)
         else:
             QtGui.QWidget.keyPressEvent(self, event)
+            
+    def onPick(self, event):
+        xdata = event.xdata # get event x location
+        ydata = event.ydata # get event y location
+        msg = 'x = %4.5f, y = %4.5f'%(xdata, ydata)
+        self.statusBar().showMessage(msg)
 
     ####################
     # GUI methods #
@@ -223,6 +229,7 @@ class Browse(QtGui.QMainWindow):
         
         # Create the button controls
         limsb = QtGui.QPushButton("Adjust Limits")
+        limsb.setToolTip("Set data, X, and Y range limits")
         limsb.clicked.connect(self.showLimsDialog)
         titleb = QtGui.QPushButton("Title")
         titleb.setToolTip("Change plot title")
@@ -255,8 +262,8 @@ class Browse(QtGui.QMainWindow):
         
     def showLimsDialog(self):
         self.limsDialog = QtGui.QDialog()
-        u = Ui_LimsDialog()
-        u.setupUi(self.limsDialog, self.limits)
+        u = Ui_LimsDialog(self.limsDialog, self.limits)
+        u.setupUi()#self.limsDialog, self.limits
 
         self.limsDialog.exec_()
         
@@ -267,6 +274,7 @@ class Browse(QtGui.QMainWindow):
             
     def toolsBoxUI(self):
         self.toolsBox = QtGui.QComboBox()
+        self.toolsBox.setToolTip("Choose a tool to apply")
         self.toolsBox.addItem("No Tools")
         self.toolsBox.addItem("Zoom/Pan")
         self.toolsBox.addItem("Reset file defaults")
@@ -400,6 +408,11 @@ class Browse(QtGui.QMainWindow):
         openFile.setShortcut('Ctrl+O')
         openFile.setStatusTip('Open new File')
         openFile.triggered.connect(self.showFileDialog)
+        
+        quicksaveImage = QtGui.QAction('Quick Save Image', self)  
+        quicksaveImage.setShortcut('Ctrl+D')
+        quicksaveImage.setStatusTip('Save Image to local directory with default name')
+        quicksaveImage.triggered.connect(self._quick_savefile)
                 
         saveImage = QtGui.QAction('Save Image', self)  
         saveImage.setShortcut('Ctrl+S')
@@ -754,7 +767,6 @@ class Browse(QtGui.QMainWindow):
             #figZoom = self.zp.zoom()
             #figPan = self.zp.pan_factory(self.limits)
             self.zp.connect()
-            self.ax.format_coord = format_coord
         
         if self.airborne:
             self.display = pyart.graph.RadarDisplay_Airborne(self.radar)
@@ -931,7 +943,7 @@ class Browse(QtGui.QMainWindow):
     ########################
     # Image save methods #
     ########################
-    def _savefile(self, PTYPE=IMAGE_EXT):
+    def _quick_savefile(self, PTYPE=IMAGE_EXT):
         '''Save the current display'''
         PNAME = self.display.generate_filename(self.field, self.tilt, ext=IMAGE_EXT)
         print "Creating "+ PNAME
@@ -1083,147 +1095,6 @@ class ZoomPan:
         new_width = (cur_xlim[1] - cur_xlim[0]) * scale_factor
         new_height = (cur_ylim[1] - cur_ylim[0]) * scale_factor
 
-        self.canvas.print_figure(PNAME, dpi=DPI)
-#        self.fig.savefig(PNAME)
-
-###############################
-# Limits Dialog Class Methods #
-###############################
-class Ui_LimsDialog(object):
-    '''
-    Limits Dialog Class
-    Popup window to set various limits
-    '''
-    def setupUi(self, LimsDialog, mainLimits):
-        # Set aspects of Dialog Window
-        LimsDialog.setObjectName("Limits Dialog")
-        LimsDialog.setWindowModality(QtCore.Qt.WindowModal)
-        LimsDialog.setWindowTitle("Limits Entry")
-        
-        # Setup window layout
-        self.gridLayout_2 = QtGui.QGridLayout(LimsDialog)
-        self.gridLayout_2.setObjectName("gridLayout_2")
-        self.gridLayout = QtGui.QGridLayout()
-        self.gridLayout.setObjectName("gridLayout")
-	
-        # Set up the Labels for entry
-        self.lab_dmin = QtGui.QLabel("Data Min")
-        self.lab_dmax = QtGui.QLabel("Data Max")
-        self.lab_xmin = QtGui.QLabel("X Min")
-        self.lab_xmax = QtGui.QLabel("X Max")
-        self.lab_ymin = QtGui.QLabel("Y Min")
-        self.lab_ymax = QtGui.QLabel("Y Max")
-	
-        # Set up the Entry fields
-        self.ent_dmin = QtGui.QLineEdit(LimsDialog)
-        self.ent_dmax = QtGui.QLineEdit(LimsDialog)
-        self.ent_xmin = QtGui.QLineEdit(LimsDialog)
-        self.ent_xmax = QtGui.QLineEdit(LimsDialog)
-        self.ent_ymin = QtGui.QLineEdit(LimsDialog)
-        self.ent_ymax = QtGui.QLineEdit(LimsDialog)
-        
-        # Input the current values
-        self.ent_dmin.setText(str(mainLimits['vmin']))
-        self.ent_dmax.setText(str(mainLimits['vmax']))
-        self.ent_xmin.setText(str(mainLimits['xmin']))
-        self.ent_xmax.setText(str(mainLimits['xmax']))
-        self.ent_ymin.setText(str(mainLimits['ymin']))
-        self.ent_ymax.setText(str(mainLimits['ymax']))
-	
-        # Add to the layout
-        self.gridLayout.addWidget(self.lab_dmin, 0, 0, 1, 1)
-        self.gridLayout.addWidget(self.ent_dmin, 0, 1, 1, 1)
-        self.gridLayout.addWidget(self.lab_dmax, 1, 0, 1, 1)
-        self.gridLayout.addWidget(self.ent_dmax, 1, 1, 1, 1)
-        self.gridLayout.addWidget(self.lab_xmin, 2, 0, 1, 1)
-        self.gridLayout.addWidget(self.ent_xmin, 2, 1, 1, 1)
-        self.gridLayout.addWidget(self.lab_xmax, 3, 0, 1, 1)
-        self.gridLayout.addWidget(self.ent_xmax, 3, 1, 1, 1)
-        self.gridLayout.addWidget(self.lab_ymin, 4, 0, 1, 1)
-        self.gridLayout.addWidget(self.ent_ymin, 4, 1, 1, 1)
-        self.gridLayout.addWidget(self.lab_ymax, 5, 0, 1, 1)
-        self.gridLayout.addWidget(self.ent_ymax, 5, 1, 1, 1)
-	
-        self.gridLayout_2.addLayout(self.gridLayout, 0, 0, 1, 1)
-        self.buttonBox = QtGui.QDialogButtonBox(LimsDialog)
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName("buttonBox")
-        self.gridLayout_2.addWidget(self.buttonBox, 1, 0, 1, 1)
-
-        # Connect the signals from OK and Cancel buttons
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), self._pass_lims)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), LimsDialog.reject)
-        QtCore.QMetaObject.connectSlotsByName(LimsDialog)
-	
-    def _pass_lims(self):
-        entry = {}
-        entry['dmin'] = float(self.ent_dmin.text())
-        entry['dmax'] = float(self.ent_dmax.text())
-        entry['xmin'] = float(self.ent_xmin.text())
-        entry['xmax'] = float(self.ent_xmax.text())
-        entry['ymin'] = float(self.ent_ymin.text())
-        entry['ymax'] = float(self.ent_ymax.text())
-	
-        Browse._lims_input(main, entry)
-        
-    def reject(self):
-        LimsDialog.quit()
-        
-##########################
-# Zoom/Pan Class Methods #
-##########################
-class ZoomPan:
-    '''
-    Class for Zoom and Pan of plot
-    Modified an original answer found here: http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-wheel
-    '''
-    def __init__(self, ax, limits, base_scale = 2.):
-        self.press = None
-        self.cur_xlim = None
-        self.cur_ylim = None
-        self.x0 = None
-        self.y0 = None
-        self.x1 = None
-        self.y1 = None
-        self.xpress = None
-        self.ypress = None
-        self.entry = {}
-        self.entry['dmin'] = None
-        self.entry['dmax'] = None
-        #self.connect()
-        self.ax = ax
-        self.limits = limits
-        self.base_scale = base_scale
-        self.fig = ax.get_figure() # get the figure of interest
-        
-    def connect(self):
-        self.scrollID = self.fig.canvas.mpl_connect('scroll_event', self.onZoom)
-        self.pressID = self.fig.canvas.mpl_connect('button_press_event',self.onPress)
-        self.releaseID = self.fig.canvas.mpl_connect('button_release_event',self.onRelease)
-        self.motionID = self.fig.canvas.mpl_connect('motion_notify_event',self.onMotion)
-
-    def onZoom(self, event):
-        cur_xlim = self.ax.get_xlim()
-        cur_ylim = self.ax.get_ylim()
-
-        xdata = event.xdata # get event x location
-        ydata = event.ydata # get event y location
-
-        if event.button == 'down':
-            # deal with zoom in
-            scale_factor = 1 / self.base_scale
-        elif event.button == 'up':
-            # deal with zoom out
-            scale_factor = self.base_scale
-        else:
-            # deal with something that should never happen
-            scale_factor = 1
-            print event.button
-
-        new_width = (cur_xlim[1] - cur_xlim[0]) * scale_factor
-        new_height = (cur_ylim[1] - cur_ylim[0]) * scale_factor
-
         relx = (cur_xlim[1] - xdata)/(cur_xlim[1] - cur_xlim[0])
         rely = (cur_ylim[1] - ydata)/(cur_ylim[1] - cur_ylim[0])
 
@@ -1275,11 +1146,6 @@ class ZoomPan:
         self.fig.canvas.mpl_disconnect(self.pressID)
         self.fig.canvas.mpl_disconnect(self.releaseID)
         self.fig.canvas.mpl_disconnect(self.motionID)
-
-def format_coord(x, y):
-    return 'x=%4.5f, y=%4.5f it works'%(x, y)
-    #z=s[(numpy.abs(x1 - x)).argmin()]
-    #return 'x=%1.4f, y=%1.4f, z=%1.4f'%(x, y, z)
            
 ###################################
 if __name__ == '__main__':
