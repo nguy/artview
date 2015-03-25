@@ -171,7 +171,7 @@ class Browse(QtGui.QMainWindow):
         self.ToolSelect = "No Tools"
                         
         # Launch the GUI interface
-        self.LaunchGUI()       
+        self.LaunchGUI()      
                 
         # Show an "Open" dialog box and return the path to the selected file
         self.showFileDialog()
@@ -179,6 +179,8 @@ class Browse(QtGui.QMainWindow):
         self.central_widget.setLayout(self.layout)
    
         self.show()
+        
+        self.pickPoint = self.fig.canvas.mpl_connect('button_press_event', self.onPick)
         
     # Allow advancement via left and right arrow keys
     # and tilt adjustment via the Up-Down arrow keys
@@ -197,6 +199,12 @@ class Browse(QtGui.QMainWindow):
             self.TiltSelectCmd(self.tilt - 1)
         else:
             QtGui.QWidget.keyPressEvent(self, event)
+            
+    def onPick(self, event):
+        xdata = event.xdata # get event x location
+        ydata = event.ydata # get event y location
+        msg = 'x = %4.5f, y = %4.5f'%(xdata, ydata)
+        self.statusBar().showMessage(msg)
 
     ####################
     # GUI methods #
@@ -221,10 +229,13 @@ class Browse(QtGui.QMainWindow):
         
         # Create the button controls
         limsb = QtGui.QPushButton("Adjust Limits")
+        limsb.setToolTip("Set data, X, and Y range limits")
         limsb.clicked.connect(self.showLimsDialog)
         titleb = QtGui.QPushButton("Title")
+        titleb.setToolTip("Change plot title")
         titleb.clicked.connect(self._title_input)
         unitsb = QtGui.QPushButton("Units")
+        unitsb.setToolTip("Change units string")
         unitsb.clicked.connect(self._units_input)
         
         # Create the Tools ComboBox
@@ -239,6 +250,7 @@ class Browse(QtGui.QMainWindow):
         self.layout.addWidget(titleb, 0, 2)
         self.layout.addWidget(unitsb, 0, 3)
 
+        # Create the Tilt buttons
         self.CreateTiltWidget()
                 
     def showFileDialog(self):
@@ -250,8 +262,8 @@ class Browse(QtGui.QMainWindow):
         
     def showLimsDialog(self):
         self.limsDialog = QtGui.QDialog()
-        u = Ui_LimsDialog()
-        u.setupUi(self.limsDialog, self.limits)
+        u = Ui_LimsDialog(self.limsDialog, self.limits)
+        u.setupUi()#self.limsDialog, self.limits
 
         self.limsDialog.exec_()
         
@@ -262,6 +274,7 @@ class Browse(QtGui.QMainWindow):
             
     def toolsBoxUI(self):
         self.toolsBox = QtGui.QComboBox()
+        self.toolsBox.setToolTip("Choose a tool to apply")
         self.toolsBox.addItem("No Tools")
         self.toolsBox.addItem("Zoom/Pan")
         self.toolsBox.addItem("Reset file defaults")
@@ -395,10 +408,15 @@ class Browse(QtGui.QMainWindow):
         openFile.setShortcut('Ctrl+O')
         openFile.setStatusTip('Open new File')
         openFile.triggered.connect(self.showFileDialog)
+        
+        quicksaveImage = QtGui.QAction('Quick Save Image', self)  
+        quicksaveImage.setShortcut('Ctrl+D')
+        quicksaveImage.setStatusTip('Save Image to local directory with default name')
+        quicksaveImage.triggered.connect(self._quick_savefile)
                 
         saveImage = QtGui.QAction('Save Image', self)  
         saveImage.setShortcut('Ctrl+S')
-        saveImage.setStatusTip('Save Image')
+        saveImage.setStatusTip('Save Image using dialog')
         saveImage.triggered.connect(self._savefile)
                 
         exitApp = QtGui.QAction('Close', self)  
@@ -407,6 +425,7 @@ class Browse(QtGui.QMainWindow):
         exitApp.triggered.connect(self.close)
         
         self.filemenu.addAction(openFile)
+        self.filemenu.addAction(quicksaveImage)
         self.filemenu.addAction(saveImage)
         self.filemenu.addAction(exitApp)
         
@@ -485,6 +504,7 @@ class Browse(QtGui.QMainWindow):
         '''Add a menu to change colormap used for plot'''
         for cm_name in self.cm_names:
             cmapAction = self.cmapmenu.addAction(cm_name)
+            cmapAction.setStatusTip("Use the %s colormap"%cm_name)
             cmapAction.triggered[()].connect(lambda cm_name=cm_name: self.cmapSelectCmd(cm_name))
     
     ########################
@@ -747,7 +767,6 @@ class Browse(QtGui.QMainWindow):
             #figZoom = self.zp.zoom()
             #figPan = self.zp.pan_factory(self.limits)
             self.zp.connect()
-            self.ax.format_coord = format_coord
         
         if self.airborne:
             self.display = pyart.graph.RadarDisplay_Airborne(self.radar)
@@ -921,13 +940,18 @@ class Browse(QtGui.QMainWindow):
     ########################
     # Image save methods #
     ########################
-    def _savefile(self, PTYPE=IMAGE_EXT):
+    def _quick_savefile(self, PTYPE=IMAGE_EXT):
         '''Save the current display'''
         PNAME = self.display.generate_filename(self.field, self.tilt, ext=IMAGE_EXT)
         print "Creating "+ PNAME
-
-        self.canvas.print_figure(PNAME, dpi=DPI)
-#        self.fig.savefig(PNAME)
+        
+    def _savefile(self, PTYPE=IMAGE_EXT):
+        PBNAME = self.display.generate_filename(self.field, self.tilt, ext=IMAGE_EXT)
+        file_choices = "PNG (*.png)|*.png"
+        path = unicode(QtGui.QFileDialog.getSaveFileName(self, 'Save file', '', file_choices))
+        if path:
+            self.canvas.print_figure(path, dpi=DPI)
+            self.statusBar().showMessage('Saved to %s' % path)
 
 ###############################
 # Limits Dialog Class Methods #
@@ -936,15 +960,19 @@ class Ui_LimsDialog(object):
     '''
     Limits Dialog Class
     Popup window to set various limits
-    '''
-    def setupUi(self, LimsDialog, mainLimits):
+    ''' 
+    def __init__(self, LimsDialog, mainLimits):
+        self.LimsDialog = LimsDialog
+        self.mainLimits = mainLimits
+    
+    def setupUi(self):
         # Set aspects of Dialog Window
-        LimsDialog.setObjectName("Limits Dialog")
-        LimsDialog.setWindowModality(QtCore.Qt.WindowModal)
-        LimsDialog.setWindowTitle("Limits Entry")
+        self.LimsDialog.setObjectName("Limits Dialog")
+        self.LimsDialog.setWindowModality(QtCore.Qt.WindowModal)
+        self.LimsDialog.setWindowTitle("Limits Entry")
         
         # Setup window layout
-        self.gridLayout_2 = QtGui.QGridLayout(LimsDialog)
+        self.gridLayout_2 = QtGui.QGridLayout(self.LimsDialog)
         self.gridLayout_2.setObjectName("gridLayout_2")
         self.gridLayout = QtGui.QGridLayout()
         self.gridLayout.setObjectName("gridLayout")
@@ -958,20 +986,20 @@ class Ui_LimsDialog(object):
         self.lab_ymax = QtGui.QLabel("Y Max")
 	
         # Set up the Entry fields
-        self.ent_dmin = QtGui.QLineEdit(LimsDialog)
-        self.ent_dmax = QtGui.QLineEdit(LimsDialog)
-        self.ent_xmin = QtGui.QLineEdit(LimsDialog)
-        self.ent_xmax = QtGui.QLineEdit(LimsDialog)
-        self.ent_ymin = QtGui.QLineEdit(LimsDialog)
-        self.ent_ymax = QtGui.QLineEdit(LimsDialog)
+        self.ent_dmin = QtGui.QLineEdit(self.LimsDialog)
+        self.ent_dmax = QtGui.QLineEdit(self.LimsDialog)
+        self.ent_xmin = QtGui.QLineEdit(self.LimsDialog)
+        self.ent_xmax = QtGui.QLineEdit(self.LimsDialog)
+        self.ent_ymin = QtGui.QLineEdit(self.LimsDialog)
+        self.ent_ymax = QtGui.QLineEdit(self.LimsDialog)
         
         # Input the current values
-        self.ent_dmin.setText(str(mainLimits['vmin']))
-        self.ent_dmax.setText(str(mainLimits['vmax']))
-        self.ent_xmin.setText(str(mainLimits['xmin']))
-        self.ent_xmax.setText(str(mainLimits['xmax']))
-        self.ent_ymin.setText(str(mainLimits['ymin']))
-        self.ent_ymax.setText(str(mainLimits['ymax']))
+        self.ent_dmin.setText(str(self.mainLimits['vmin']))
+        self.ent_dmax.setText(str(self.mainLimits['vmax']))
+        self.ent_xmin.setText(str(self.mainLimits['xmin']))
+        self.ent_xmax.setText(str(self.mainLimits['xmax']))
+        self.ent_ymin.setText(str(self.mainLimits['ymin']))
+        self.ent_ymax.setText(str(self.mainLimits['ymax']))
 	
         # Add to the layout
         self.gridLayout.addWidget(self.lab_dmin, 0, 0, 1, 1)
@@ -988,16 +1016,15 @@ class Ui_LimsDialog(object):
         self.gridLayout.addWidget(self.ent_ymax, 5, 1, 1, 1)
 	
         self.gridLayout_2.addLayout(self.gridLayout, 0, 0, 1, 1)
-        self.buttonBox = QtGui.QDialogButtonBox(LimsDialog)
+        self.buttonBox = QtGui.QDialogButtonBox(self.LimsDialog)
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName("buttonBox")
         self.gridLayout_2.addWidget(self.buttonBox, 1, 0, 1, 1)
 
         # Connect the signals from OK and Cancel buttons
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), self._pass_lims)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), LimsDialog.reject)
-        QtCore.QMetaObject.connectSlotsByName(LimsDialog)
+        self.buttonBox.accepted.connect(self._pass_lims)
+        self.buttonBox.rejected.connect(self.LimsDialog.reject)
 	
     def _pass_lims(self):
         entry = {}
@@ -1009,9 +1036,7 @@ class Ui_LimsDialog(object):
         entry['ymax'] = float(self.ent_ymax.text())
 	
         Browse._lims_input(main, entry)
-        
-    def reject(self):
-        LimsDialog.quit()
+        self.LimsDialog.accept()
         
 ##########################
 # Zoom/Pan Class Methods #
@@ -1118,11 +1143,6 @@ class ZoomPan:
         self.fig.canvas.mpl_disconnect(self.pressID)
         self.fig.canvas.mpl_disconnect(self.releaseID)
         self.fig.canvas.mpl_disconnect(self.motionID)
-
-def format_coord(x, y):
-    return 'x=%4.5f, y=%4.5f it works'%(x, y)
-    #z=s[(numpy.abs(x1 - x)).argmin()]
-    #return 'x=%1.4f, y=%1.4f, z=%1.4f'%(x, y, z)
            
 ###################################
 if __name__ == '__main__':
