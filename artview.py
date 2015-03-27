@@ -909,6 +909,9 @@ class Browse(QtGui.QMainWindow):
                 self.field = 'Z'
             elif 'DBZ_S'in self.fieldnames:
                 self.field = 'DBZ_S'
+            elif 'reflectivity_horizontal'in self.fieldnames:
+                self.field = 'reflectivity_horizontal'
+
                 
     def _check_file_type(self):
         '''Check file to see if the file is airborne or rhi'''
