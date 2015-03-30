@@ -11,6 +11,8 @@ a radar data file opened using the PyArt software package
 Author::
 ------
 Nick Guy - University of Wyoming
+Timothy Lang - NASA Marshall Flight Center
+Paul Hein - Colorado State University
 
 History::
 -------
@@ -19,6 +21,11 @@ History::
                 Improved performance.
 19 Feb 2015  -  Replaced Tk GUI backend with Qt GUI backend.
                 Minor bug fixes.
+10 Mar 2015  -  Title and Units adjustable by user.
+23 Mar 2015  -  Zoom/Pan functionality added.  Condensed limits into a
+                single popup dialog window.
+                Added a Tools ComboBox to choose none, Zoom/Pan, or Default Scaling
+
 
 Usage::
 -----
@@ -53,7 +60,6 @@ import os
 import argparse
 from functools import partial
 
-#from PySide import QtGui
 from PyQt4 import QtGui, QtCore
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
@@ -70,7 +76,7 @@ from matplotlib.pyplot import cm
 #===============================================================
 # Initialization defaults for variables
 
-VERSION = '0.1.4'
+VERSION = '0.1.6'
 MAINWINDOWTITLE = 'ARTView - ARM Radar Toolkit Viewer'
 
 # Limits for varioud variable plots
@@ -160,16 +166,21 @@ class Browse(QtGui.QMainWindow):
   
         # Create a figure for output
         self._set_fig_ax(nrows=1, ncols=1)
+        
+        # Initiate no tool useage
+        self.ToolSelect = "No Tools"
                         
         # Launch the GUI interface
-        self.LaunchGUI()       
+        self.LaunchGUI()      
                 
         # Show an "Open" dialog box and return the path to the selected file
-        self.showDialog()
+        self.showFileDialog()
         
         self.central_widget.setLayout(self.layout)
    
         self.show()
+        
+        self.pickPoint = self.fig.canvas.mpl_connect('button_press_event', self.onPick)
         
     # Allow advancement via left and right arrow keys
     # and tilt adjustment via the Up-Down arrow keys
@@ -188,7 +199,19 @@ class Browse(QtGui.QMainWindow):
             self.TiltSelectCmd(self.tilt - 1)
         else:
             QtGui.QWidget.keyPressEvent(self, event)
-            #QtGui.QMainWindow.keyPressEvent(self, event)
+            
+    def onPick(self, event):
+    '''Get value at the point one clicks on'''
+        xdata = event.xdata # get event x location
+        ydata = event.ydata # get event y location
+        az = np.arctan2(xdata,ydata)*180./np.pi
+        if az < 0:
+            az = az + 360.
+        rng = np.sqrt(xdata*xdata+ydata*ydata)
+        azindex = np.argmin(np.abs(self.radar.azimuth['data'][self.radar.sweep_start_ray_index['data'][self.tilt]:self.radar.sweep_end_ray_index['data'][self.tilt]]-az))+self.radar.sweep_start_ray_index['data'][self.tilt]
+        rngindex = np.argmin(np.abs(self.radar.range['data']-rng*1000.))
+        msg = 'Azimuth = %4.3f degrees, Range = %4.3f km, %s = %4.3f %s'%(self.radar.azimuth['data'][azindex], self.radar.range['data'][rngindex]/1000., self.field, self.radar.fields[self.field]['data'][azindex][rngindex], self.units)
+        self.statusBar().showMessage(msg)
 
     ####################
     # GUI methods #
@@ -210,41 +233,72 @@ class Browse(QtGui.QMainWindow):
         
         # Create the menus
         self.CreateMenu()
-                 
-        datminb = QtGui.QPushButton("Data Min")
-        datminb.clicked.connect(self._data_min_input)
-        datmaxb = QtGui.QPushButton("Data Max")
-        datmaxb.clicked.connect(self._data_max_input)
+        
+        # Create the button controls
+        limsb = QtGui.QPushButton("Adjust Limits")
+        limsb.setToolTip("Set data, X, and Y range limits")
+        limsb.clicked.connect(self.showLimsDialog)
         titleb = QtGui.QPushButton("Title")
+        titleb.setToolTip("Change plot title")
         titleb.clicked.connect(self._title_input)
         unitsb = QtGui.QPushButton("Units")
+        unitsb.setToolTip("Change units string")
         unitsb.clicked.connect(self._units_input)
-        minmaxb = QtGui.QPushButton("Axes Min/Max")
-        minmaxb.clicked.connect(self._axis_minmax_input)
+        
+        # Create the Tools ComboBox
+        self.toolsBoxUI()
         
         # Create layout
         self.layout = QtGui.QGridLayout()
-        self.layout.setSpacing(5)
+        self.layout.setSpacing(8)
         
-        self.layout.addWidget(datminb, 0, 0)
-        self.layout.addWidget(datmaxb, 0, 1)
-        self.layout.addWidget(minmaxb, 0, 2)
-        self.layout.addWidget(titleb, 0, 3)
-        self.layout.addWidget(unitsb, 0, 4)
+        self.layout.addWidget(limsb, 0, 0)
+        self.layout.addWidget(self.toolsBox, 0, 1)
+        self.layout.addWidget(titleb, 0, 2)
+        self.layout.addWidget(unitsb, 0, 3)
 
+        # Create the Tilt buttons
         self.CreateTiltWidget()
                 
-    def showDialog(self):
+    def showFileDialog(self):
         '''Open a dialog box to choose file'''    
         self.qfilename = QtGui.QFileDialog.getOpenFileName(self, 'Open file', 
                 self.dirIn)
         self.filename = str(self.qfilename)
         self._openfile()
         
+    def showLimsDialog(self):
+        self.limsDialog = QtGui.QDialog()
+        u = Ui_LimsDialog(self.limsDialog, self.limits)
+        u.setupUi()#self.limsDialog, self.limits
+
+        self.limsDialog.exec_()
+        
     def LaunchTiltButton(self):
         if self.windowTilt is None:
             self.windowTilt = TiltButtons(tilts=self.rTilts)
         self.windowTilt.show()
+            
+    def toolsBoxUI(self):
+        self.toolsBox = QtGui.QComboBox()
+        self.toolsBox.setToolTip("Choose a tool to apply")
+        self.toolsBox.addItem("No Tools")
+        self.toolsBox.addItem("Zoom/Pan")
+        self.toolsBox.addItem("Reset file defaults")
+        
+        self.toolsBox.activated[str].connect(self.comboAction)
+        
+    def comboAction(self, text):
+        # Check to see if Zoom/Pan was selected, if so disconnect 
+        if self.ToolSelect == "Zoom/Pan":
+            print "IN DISCONNECT"
+            self.zp.disconnect()
+        # Set the Tool to use
+        self.ToolSelect = text
+        
+        if self.ToolSelect == "Reset file defaults":
+            self._initialize_limits()
+        self._update_plot()
         
     ######################
     # Help methods #
@@ -339,8 +393,7 @@ class Browse(QtGui.QMainWindow):
         ('Number of sweeps: %s\n'% nsweeps))
         
         QtGui.QMessageBox.information(self, "Short Radar Info", txOut) 
-            
-
+        
     ######################
     # Menu build methods #
     ######################
@@ -361,11 +414,16 @@ class Browse(QtGui.QMainWindow):
         openFile = QtGui.QAction('Open', self)
         openFile.setShortcut('Ctrl+O')
         openFile.setStatusTip('Open new File')
-        openFile.triggered.connect(self.showDialog)
+        openFile.triggered.connect(self.showFileDialog)
+        
+        quicksaveImage = QtGui.QAction('Quick Save Image', self)  
+        quicksaveImage.setShortcut('Ctrl+D')
+        quicksaveImage.setStatusTip('Save Image to local directory with default name')
+        quicksaveImage.triggered.connect(self._quick_savefile)
                 
         saveImage = QtGui.QAction('Save Image', self)  
         saveImage.setShortcut('Ctrl+S')
-        saveImage.setStatusTip('Save Image')
+        saveImage.setStatusTip('Save Image using dialog')
         saveImage.triggered.connect(self._savefile)
                 
         exitApp = QtGui.QAction('Close', self)  
@@ -374,6 +432,7 @@ class Browse(QtGui.QMainWindow):
         exitApp.triggered.connect(self.close)
         
         self.filemenu.addAction(openFile)
+        self.filemenu.addAction(quicksaveImage)
         self.filemenu.addAction(saveImage)
         self.filemenu.addAction(exitApp)
         
@@ -452,6 +511,7 @@ class Browse(QtGui.QMainWindow):
         '''Add a menu to change colormap used for plot'''
         for cm_name in self.cm_names:
             cmapAction = self.cmapmenu.addAction(cm_name)
+            cmapAction.setStatusTip("Use the %s colormap"%cm_name)
             cmapAction.triggered[()].connect(lambda cm_name=cm_name: self.cmapSelectCmd(cm_name))
     
     ########################
@@ -480,41 +540,22 @@ class Browse(QtGui.QMainWindow):
     #############################
     # Limit entry methods #
     #############################
-        
-    def _data_min_input(self):
-        '''Retrieve new data lim input'''
-        val, entry = QtGui.QInputDialog.getDouble(self, "Minimum data value to display", \
-                  "Data Min:", self.limits['vmin'])
-        if entry is True:
-            self.limits['vmin'] = val
-            self._update_plot()
             
-    def _data_max_input(self):
-        '''Retrieve new data lim input'''
-        val, entry = QtGui.QInputDialog.getDouble(self, "Maximum data value to display", \
-                  "Data Max:", self.limits['vmax'])
-        if entry is True:
-            self.limits['vmax'] = val
-            self._update_plot()
-        
-    def _axis_minmax_input(self):
-        '''Retrieve new data lim input'''
-        self.limits['xmin'], self.limits['xmax'] = self.ax.get_xlim()
-        self.limits['ymin'], self.limits['ymax'] = self.ax.get_ylim()
-        axis_string = str(self.limits['xmin'])+' '+str(self.limits['xmax'])+' '+str(self.limits['ymin'])+' '+str(self.limits['ymax'])
-        print "Current Values: ",axis_string
-        qval, entry = QtGui.QInputDialog.getText(self, "Enter Axes Min/Max", \
-                  "Xmin Xmax Ymin Ymax:", 0, axis_string)
-        if entry is True:
-            val = str(qval)
-            print "New Values: ",val
-            vals = val.split()
-            nums = np.array(vals).astype('d')
-            self.limits['xmin'] = nums[0]
-            self.limits['xmax'] = nums[1]
-            self.limits['ymin'] = nums[2]
-            self.limits['ymax'] = nums[3]
-            self._update_plot()
+    def _lims_input(self, entry):
+        '''Retrieve new limits input'''
+        if entry['dmin'] is not None:
+            self.limits['vmin'] = entry['dmin']
+        if entry['dmax'] is not None:
+            self.limits['vmax'] = entry['dmax']
+        if entry['xmin'] is not None:
+            self.limits['xmin'] = entry['xmin']
+        if entry['xmax'] is not None:
+            self.limits['xmax'] = entry['xmax']
+        if entry['ymin'] is not None:
+            self.limits['ymin'] = entry['ymin']
+        if entry['ymax'] is not None:
+            self.limits['ymax'] = entry['ymax']
+        self._update_plot()
 
     def _title_input(self):
         '''Retrieve new plot title'''
@@ -539,17 +580,6 @@ class Browse(QtGui.QMainWindow):
         if entry is True:
             self.units = val
             self._update_plot()
-
-    def _openLimsDialog(self):
-        '''Make Entry boxes to modify variable and axis limits'''
-        dialog = QtGui.QDialog(self)
-        dialog.ui = QtGui.Ui_Dialog_popup()
-        dialog.ui.setupUi(dialog)
-        dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        dialog.show()
-        
-        text1, ent1 = QtGui.QInputDialog.getText(self, "Limits Adjustment", \
-                      "Data Min:")
         
     ########################
     # Selectionion methods #
@@ -663,7 +693,6 @@ class Browse(QtGui.QMainWindow):
                 self.tiltmenu.clear()
                 self.rngringmenu.clear()
                 self.radioBox.deleteLater()
-#                 self._remove_tilt_radiobutton()
 
         # Get the tilt angles
         self.rTilts = self.radar.sweep_number['data'][:]
@@ -684,6 +713,7 @@ class Browse(QtGui.QMainWindow):
         self.units = None
         self.title = None
         self._update_plot()
+        
     ####################
     # Plotting methods #
     ####################
@@ -698,7 +728,6 @@ class Browse(QtGui.QMainWindow):
         
         # We want the axes cleared every time plot() is called
         #self.axes.hold(False)
-        
         
     def _set_fig_ax_rhi(self):
         '''Change figure size and limits if RHI'''
@@ -723,13 +752,6 @@ class Browse(QtGui.QMainWindow):
         # Add the widget to the canvas
         self.layout.addWidget(self.canvas, 1, 0, 7, 6)
 
-
-    #def _update_plot(self):
-        #self.limits['xmin'], self.limits['xmax'] = self.ax.get_xlim()
-        #self.limits['ymin'], self.limits['ymax'] = self.ax.get_ylim()
-        #self._update_plot1()
-
-    #def _update_plot1(self):
     def _update_plot(self):
         '''Renew the plot'''
         # This is a bit of a hack to ensure that the viewer works with files
@@ -739,18 +761,19 @@ class Browse(QtGui.QMainWindow):
     
         # Create the plot with PyArt RadarDisplay 
         # Always intitiates at lowest elevation angle
-
         self.ax.cla()
 
-        # Zoom and pan with the mouse
-        scale = 1.1
-        zp = ZoomPan()
-        figZoom = zp.zoom_factory(self.ax,base_scale = scale)
-        figPan = zp.pan_factory(self.ax)
-
-        #Reset to default title if user entered nothing w/ Title button
+        # Reset to default title if user entered nothing w/ Title button
         if self.title == '':
             self.title = None
+        
+        # If Zoom/Pan selected, Set up the zoom/pan functionality
+        if self.ToolSelect == "Zoom/Pan":
+            scale = 1.1
+            self.zp = ZoomPan(self.ax, self.limits, base_scale = scale)
+            #figZoom = self.zp.zoom()
+            #figPan = self.zp.pan_factory(self.limits)
+            self.zp.connect()
         
         if self.airborne:
             self.display = pyart.graph.RadarDisplay_Airborne(self.radar)
@@ -811,8 +834,6 @@ class Browse(QtGui.QMainWindow):
         
         print "Plotting %s field, Tilt %d" % (self.field, self.tilt+1)
         self.canvas.draw()
-
-#        self.update()
  
     #########################
     # Get and check methods #
@@ -874,7 +895,6 @@ class Browse(QtGui.QMainWindow):
 # #        self.cmap_dict['
 # #        self.cmap_dict['
         
-        
     def _check_default_field(self):
         '''Hack to perform a check on reflectivity to make it work with 
         a larger number of files
@@ -912,12 +932,11 @@ class Browse(QtGui.QMainWindow):
             self._set_fig_ax_rhi()
  
     ########################
-    # Popup methods #
+    # Warning methods #
     ########################
     def _ShowWarning(self, msg):
         '''Show a warning message'''
         flags = QtGui.QMessageBox.StandardButton()
-#        flags |= QtGui.QMessageBox.StandardButton()
         response = QtGui.QMessageBox.warning(self, "Warning!",
                                              msg, flags)
         if response == 0:
@@ -925,22 +944,116 @@ class Browse(QtGui.QMainWindow):
         else:
             print "Warning Discarded!"
  
-     ########################
-     # Image save methods #
-     ########################
-
-    def _savefile(self, PTYPE=IMAGE_EXT):
+    ########################
+    # Image save methods #
+    ########################
+    def _quick_savefile(self, PTYPE=IMAGE_EXT):
         '''Save the current display'''
         PNAME = self.display.generate_filename(self.field, self.tilt, ext=IMAGE_EXT)
         print "Creating "+ PNAME
+        
+    def _savefile(self, PTYPE=IMAGE_EXT):
+        PBNAME = self.display.generate_filename(self.field, self.tilt, ext=IMAGE_EXT)
+        file_choices = "PNG (*.png)|*.png"
+        path = unicode(QtGui.QFileDialog.getSaveFileName(self, 'Save file', '', file_choices))
+        if path:
+            self.canvas.print_figure(path, dpi=DPI)
+            self.statusBar().showMessage('Saved to %s' % path)
 
-        self.canvas.print_figure(PNAME, dpi=DPI)
-#        self.fig.savefig(PNAME)
-           
-# Zoom and Pan with the Mouse
-# from http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-wheel  (using second answer)
+###############################
+# Limits Dialog Class Methods #
+###############################
+class Ui_LimsDialog(object):
+    '''
+    Limits Dialog Class
+    Popup window to set various limits
+    ''' 
+    def __init__(self, LimsDialog, mainLimits):
+        self.LimsDialog = LimsDialog
+        self.mainLimits = mainLimits
+    
+    def setupUi(self):
+        # Set aspects of Dialog Window
+        self.LimsDialog.setObjectName("Limits Dialog")
+        self.LimsDialog.setWindowModality(QtCore.Qt.WindowModal)
+        self.LimsDialog.setWindowTitle("Limits Entry")
+        
+        # Setup window layout
+        self.gridLayout_2 = QtGui.QGridLayout(self.LimsDialog)
+        self.gridLayout_2.setObjectName("gridLayout_2")
+        self.gridLayout = QtGui.QGridLayout()
+        self.gridLayout.setObjectName("gridLayout")
+	
+        # Set up the Labels for entry
+        self.lab_dmin = QtGui.QLabel("Data Min")
+        self.lab_dmax = QtGui.QLabel("Data Max")
+        self.lab_xmin = QtGui.QLabel("X Min")
+        self.lab_xmax = QtGui.QLabel("X Max")
+        self.lab_ymin = QtGui.QLabel("Y Min")
+        self.lab_ymax = QtGui.QLabel("Y Max")
+	
+        # Set up the Entry fields
+        self.ent_dmin = QtGui.QLineEdit(self.LimsDialog)
+        self.ent_dmax = QtGui.QLineEdit(self.LimsDialog)
+        self.ent_xmin = QtGui.QLineEdit(self.LimsDialog)
+        self.ent_xmax = QtGui.QLineEdit(self.LimsDialog)
+        self.ent_ymin = QtGui.QLineEdit(self.LimsDialog)
+        self.ent_ymax = QtGui.QLineEdit(self.LimsDialog)
+        
+        # Input the current values
+        self.ent_dmin.setText(str(self.mainLimits['vmin']))
+        self.ent_dmax.setText(str(self.mainLimits['vmax']))
+        self.ent_xmin.setText(str(self.mainLimits['xmin']))
+        self.ent_xmax.setText(str(self.mainLimits['xmax']))
+        self.ent_ymin.setText(str(self.mainLimits['ymin']))
+        self.ent_ymax.setText(str(self.mainLimits['ymax']))
+	
+        # Add to the layout
+        self.gridLayout.addWidget(self.lab_dmin, 0, 0, 1, 1)
+        self.gridLayout.addWidget(self.ent_dmin, 0, 1, 1, 1)
+        self.gridLayout.addWidget(self.lab_dmax, 1, 0, 1, 1)
+        self.gridLayout.addWidget(self.ent_dmax, 1, 1, 1, 1)
+        self.gridLayout.addWidget(self.lab_xmin, 2, 0, 1, 1)
+        self.gridLayout.addWidget(self.ent_xmin, 2, 1, 1, 1)
+        self.gridLayout.addWidget(self.lab_xmax, 3, 0, 1, 1)
+        self.gridLayout.addWidget(self.ent_xmax, 3, 1, 1, 1)
+        self.gridLayout.addWidget(self.lab_ymin, 4, 0, 1, 1)
+        self.gridLayout.addWidget(self.ent_ymin, 4, 1, 1, 1)
+        self.gridLayout.addWidget(self.lab_ymax, 5, 0, 1, 1)
+        self.gridLayout.addWidget(self.ent_ymax, 5, 1, 1, 1)
+	
+        self.gridLayout_2.addLayout(self.gridLayout, 0, 0, 1, 1)
+        self.buttonBox = QtGui.QDialogButtonBox(self.LimsDialog)
+        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+        self.buttonBox.setObjectName("buttonBox")
+        self.gridLayout_2.addWidget(self.buttonBox, 1, 0, 1, 1)
+
+        # Connect the signals from OK and Cancel buttons
+        self.buttonBox.accepted.connect(self._pass_lims)
+        self.buttonBox.rejected.connect(self.LimsDialog.reject)
+	
+    def _pass_lims(self):
+        entry = {}
+        entry['dmin'] = float(self.ent_dmin.text())
+        entry['dmax'] = float(self.ent_dmax.text())
+        entry['xmin'] = float(self.ent_xmin.text())
+        entry['xmax'] = float(self.ent_xmax.text())
+        entry['ymin'] = float(self.ent_ymin.text())
+        entry['ymax'] = float(self.ent_ymax.text())
+	
+        Browse._lims_input(main, entry)
+        self.LimsDialog.accept()
+        
+##########################
+# Zoom/Pan Class Methods #
+##########################
 class ZoomPan:
-    def __init__(self):
+    '''
+    Class for Zoom and Pan of plot
+    Modified an original answer found here: http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-wheel
+    '''
+    def __init__(self, ax, limits, base_scale = 2.):
         self.press = None
         self.cur_xlim = None
         self.cur_ylim = None
@@ -950,76 +1063,94 @@ class ZoomPan:
         self.y1 = None
         self.xpress = None
         self.ypress = None
+        self.entry = {}
+        self.entry['dmin'] = None
+        self.entry['dmax'] = None
+        #self.connect()
+        self.ax = ax
+        self.limits = limits
+        self.base_scale = base_scale
+        self.fig = ax.get_figure() # get the figure of interest
+        
+    def connect(self):
+        self.scrollID = self.fig.canvas.mpl_connect('scroll_event', self.onZoom)
+        self.pressID = self.fig.canvas.mpl_connect('button_press_event',self.onPress)
+        self.releaseID = self.fig.canvas.mpl_connect('button_release_event',self.onRelease)
+        self.motionID = self.fig.canvas.mpl_connect('motion_notify_event',self.onMotion)
 
+    def onZoom(self, event):
+        cur_xlim = self.ax.get_xlim()
+        cur_ylim = self.ax.get_ylim()
 
-    def zoom_factory(self, ax, base_scale = 2.):
-        def zoom(event):
-            cur_xlim = ax.get_xlim()
-            cur_ylim = ax.get_ylim()
+        xdata = event.xdata # get event x location
+        ydata = event.ydata # get event y location
 
-            xdata = event.xdata # get event x location
-            ydata = event.ydata # get event y location
+        if event.button == 'down':
+            # deal with zoom in
+            scale_factor = 1 / self.base_scale
+        elif event.button == 'up':
+            # deal with zoom out
+            scale_factor = self.base_scale
+        else:
+            # deal with something that should never happen
+            scale_factor = 1
+            print event.button
 
-            if event.button == 'down':
-                # deal with zoom in
-                scale_factor = 1 / base_scale
-            elif event.button == 'up':
-                # deal with zoom out
-                scale_factor = base_scale
-            else:
-                # deal with something that should never happen
-                scale_factor = 1
-                print event.button
+        new_width = (cur_xlim[1] - cur_xlim[0]) * scale_factor
+        new_height = (cur_ylim[1] - cur_ylim[0]) * scale_factor
 
-            new_width = (cur_xlim[1] - cur_xlim[0]) * scale_factor
-            new_height = (cur_ylim[1] - cur_ylim[0]) * scale_factor
+        relx = (cur_xlim[1] - xdata)/(cur_xlim[1] - cur_xlim[0])
+        rely = (cur_ylim[1] - ydata)/(cur_ylim[1] - cur_ylim[0])
 
-            relx = (cur_xlim[1] - xdata)/(cur_xlim[1] - cur_xlim[0])
-            rely = (cur_ylim[1] - ydata)/(cur_ylim[1] - cur_ylim[0])
+        self.ax.set_xlim([xdata - new_width * (1-relx), xdata + new_width * (relx)])
+        self.ax.set_ylim([ydata - new_height * (1-rely), ydata + new_height * (rely)])
+        self.ax.figure.canvas.draw()
+            
+        # Record the new limits and pass them to main window
+        self.entry['xmin'] = xdata - new_width * (1-relx)
+        self.entry['xmax'] = xdata + new_width * (relx)
+        self.entry['ymin'] = ydata - new_height * (1-rely)
+        self.entry['ymax'] = ydata + new_height * (rely)
+	
+        # Send the new limits back to the main window
+        Browse._lims_input(main, self.entry)
+        
+    def onPress(self, event):
+        if event.inaxes != self.ax: return
+        self.cur_xlim = self.ax.get_xlim()
+        self.cur_ylim = self.ax.get_ylim()
+        self.press = self.x0, self.y0, event.xdata, event.ydata
+        self.x0, self.y0, self.xpress, self.ypress = self.press
 
-            ax.set_xlim([xdata - new_width * (1-relx), xdata + new_width * (relx)])
-            ax.set_ylim([ydata - new_height * (1-rely), ydata + new_height * (rely)])
-            ax.figure.canvas.draw()
+    def onRelease(self, event):
+        self.press = None
+        self.ax.figure.canvas.draw()
 
-        fig = ax.get_figure() # get the figure of interest
-        fig.canvas.mpl_connect('scroll_event', zoom)
+    def onMotion(self, event):
+        if self.press is None: return
+        if event.inaxes != self.ax: return
+        dx = event.xdata - self.xpress
+        dy = event.ydata - self.ypress
+        self.cur_xlim -= dx
+        self.cur_ylim -= dy
+        self.ax.set_xlim(self.cur_xlim)
+        self.ax.set_ylim(self.cur_ylim)
 
-        return zoom
-
-    def pan_factory(self, ax):
-        def onPress(event):
-            if event.inaxes != ax: return
-            self.cur_xlim = ax.get_xlim()
-            self.cur_ylim = ax.get_ylim()
-            self.press = self.x0, self.y0, event.xdata, event.ydata
-            self.x0, self.y0, self.xpress, self.ypress = self.press
-
-        def onRelease(event):
-            self.press = None
-            ax.figure.canvas.draw()
-
-        def onMotion(event):
-            if self.press is None: return
-            if event.inaxes != ax: return
-            dx = event.xdata - self.xpress
-            dy = event.ydata - self.ypress
-            self.cur_xlim -= dx
-            self.cur_ylim -= dy
-            ax.set_xlim(self.cur_xlim)
-            ax.set_ylim(self.cur_ylim)
-
-            ax.figure.canvas.draw()
-
-        fig = ax.get_figure() # get the figure of interest
-
-        # attach the call back
-        fig.canvas.mpl_connect('button_press_event',onPress)
-        fig.canvas.mpl_connect('button_release_event',onRelease)
-        fig.canvas.mpl_connect('motion_notify_event',onMotion)
-
-        #return the function
-        return onMotion
-
+        self.ax.figure.canvas.draw()
+            
+        # Record the new limits and pass them to main window
+        self.entry['xmin'], self.entry['xmax'] = self.cur_xlim[0], self.cur_xlim[1]
+        self.entry['ymin'], self.entry['ymax'] = self.cur_ylim[0], self.cur_ylim[1]
+	
+        # Send the new limits back to the main window
+        Browse._lims_input(main, self.entry)
+    
+    def disconnect(self):
+        self.fig.canvas.mpl_disconnect(self.scrollID)
+        self.fig.canvas.mpl_disconnect(self.pressID)
+        self.fig.canvas.mpl_disconnect(self.releaseID)
+        self.fig.canvas.mpl_disconnect(self.motionID)
+           
 ###################################
 if __name__ == '__main__':
     # Check for directory
