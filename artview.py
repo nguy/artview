@@ -201,9 +201,17 @@ class Browse(QtGui.QMainWindow):
             QtGui.QWidget.keyPressEvent(self, event)
             
     def onPick(self, event):
+        '''Get value at the point selected by mouse click'''
         xdata = event.xdata # get event x location
         ydata = event.ydata # get event y location
-        msg = 'x = %4.5f, y = %4.5f'%(xdata, ydata)
+        az = np.arctan2(xdata, ydata)*180./np.pi
+        if az < 0:
+            az = az + 360.
+        rng = np.sqrt(xdata*xdata+ydata*ydata)
+        azindex = np.argmin(np.abs(self.radar.azimuth['data'][self.radar.sweep_start_ray_index['data'][self.tilt]:self.radar.sweep_end_ray_index['data'][self.tilt]]-az))+self.radar.sweep_start_ray_index['data'][self.tilt]
+        rngindex = np.argmin(np.abs(self.radar.range['data']-rng*1000.))
+        msg = 'x = %4.2f, y = %4.2f, Azimuth = %4.2f deg., Range = %4.2f km, %s = %4.2f %s'\
+        %(xdata, ydata, self.radar.azimuth['data'][azindex], self.radar.range['data'][rngindex]/1000., self.field, self.radar.fields[self.field]['data'][azindex][rngindex], self.units)
         self.statusBar().showMessage(msg)
 
     ####################
