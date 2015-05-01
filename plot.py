@@ -1,64 +1,6 @@
-#! /usr/bin/env python
-#******************************
-#  artview.py - PyArt Radar Viewer using Qt Gui interface
-#******************************
-'''
-ARTview - The ARM Radar Toolkit Viewer
-
-Allow a graphical interface to be employed as a quick browse through 
-a radar data file opened using the PyArt software package
-
-Author::
-------
-Nick Guy - University of Wyoming
-Timothy Lang - NASA Marshall Flight Center
-Paul Hein - Colorado State University
-
-History::
--------
-30 Sep 2014  -  Created
-30 Oct 2014  -  Various updates over the last month.
-                Improved performance.
-19 Feb 2015  -  Replaced Tk GUI backend with Qt GUI backend.
-                Minor bug fixes.
-10 Mar 2015  -  Title and Units adjustable by user.
-23 Mar 2015  -  Zoom/Pan functionality added.  Condensed limits into a
-                single popup dialog window.
-                Added a Tools ComboBox to choose none, Zoom/Pan, or Default Scaling
-
-
-Usage::
------
-artview.py /some/directory/path/to/look/in
-
-TODO::
-----
-Improve error handling. May be some loose ends not supported yet...
-File check for zipped files.
-Add ability to reconfigure layout switching from scan types,
-  i.e. PPI to RHI.
-
-
-Speed up interaction.  
-
-Possibly replace Data/Axes min/max dialog boxes with fields?
-
-Use PyArt colormaps, currently only Matplotlib
-
-KNOWN BUGS::
-----------
-Some crashes after some number of left and right keystrokes.
-'''
-#-------------------------------------------------------------------
 # Load the needed packages
 import numpy as np
 import pyart
-
-from glob import glob
-import sys
-import os
-import argparse
-from functools import partial
 
 from PyQt4 import QtGui, QtCore
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
@@ -68,16 +10,7 @@ from matplotlib.colors import Normalize as mlabNormalize
 from matplotlib.colorbar import ColorbarBase as mlabColorbarBase
 from matplotlib.pyplot import cm
 
-#use_pyside = qt_compat.QT_API == qt_compat.QT_API_PYSIDE
-#if use_pyside:
-#    from PySide import QtGui, QtCore
-#else:
-#    from PyQt4 import QtGui, QtCore
-#===============================================================
-# Initialization defaults for variables
-
-VERSION = '0.1.6'
-MAINWINDOWTITLE = 'ARTView - ARM Radar Toolkit Viewer'
+from tilt import TiltButtonWindow
 
 # Limits for varioud variable plots
 Z_LIMS = (-10., 65.)
@@ -116,20 +49,27 @@ DPI = 100
 # BEGIN PARV CODE #
 #######################  
 
-class Browse(QtGui.QMainWindow):
-    '''Class to hold the GUI browse method'''
 
-    def __init__(self, pathDir=None, airborne=False, rhi=False):
+class Display(QtGui.QMainWindow):
+    '''Class that plots a Radar structure using pyart.graph'''
+
+    def __init__(self, Vradar, Vfield, Vtilt, airborne=False, rhi=False, name="Display", parent=None):
         '''Initialize the class to create the interface'''
-        super(Browse, self).__init__()
+        super(Display, self).__init__(parent)
+        self.parent = parent
+        self.name = name
+        self.setWindowTitle(name)
         
-        # Set some parameters
-        self.dirIn = pathDir
+        #XXX set up signal, so that DISPLAY can react to external (or internal) changes in radar,field and tilt
+        #XXX radar,field and tilt are expected to be Core.Variable instances
+        #XXX I use the capital V so people remember using ".value"
+        self.Vradar = Vradar
+        QtCore.QObject.connect(Vradar,QtCore.SIGNAL("ValueChanged"),self.NewRadar)
+        self.Vfield = Vfield
+        QtCore.QObject.connect(Vfield,QtCore.SIGNAL("ValueChanged"),self.NewField)
+        self.Vtilt = Vtilt
+        QtCore.QObject.connect(Vtilt,QtCore.SIGNAL("ValueChanged"),self.NewTilt)
         
-        # Default field and tilt angle to plot
-        self.field = 'reflectivity'
-        self.tilt = 0
-    
         self.airborne = airborne
         self.rhi = rhi
         
@@ -168,50 +108,44 @@ class Browse(QtGui.QMainWindow):
         self._set_fig_ax(nrows=1, ncols=1)
         
         # Initiate no tool useage
-        self.ToolSelect = "No Tools"
-                        
-        # Launch the GUI interface
-        self.LaunchGUI()      
-                
-        # Show an "Open" dialog box and return the path to the selected file
-        self.showFileDialog()
+        self.ToolSelect = "No Tools" #XXX this is problably not the right way of doing this
         
-        self.central_widget.setLayout(self.layout)
-   
+        # Launch the GUI interface
+        self.LaunchGUI() #XXX almost empty
+        
+        self.NewRadar(None, None) #XXX initialise radar
+        
         self.show()
         
         self.pickPoint = self.fig.canvas.mpl_connect('button_press_event', self.onPick)
+
         
     # Allow advancement via left and right arrow keys
     # and tilt adjustment via the Up-Down arrow keys
     def keyPressEvent(self, event):
-        if event.key()==QtCore.Qt.Key_Right:
-            #self.slider.setValue(self.slider.value() + 1)
-            self.AdvanceFileSelect(self.fileindex + 1)
-        elif event.key()==QtCore.Qt.Key_Left:
-            #self.slider.setValue(self.slider.value() - 1)
-            self.AdvanceFileSelect(self.fileindex - 1)
-        elif event.key()==QtCore.Qt.Key_Up:
-            #self.slider.setValue(self.slider.value() - 1)
-            self.TiltSelectCmd(self.tilt + 1)
+        if event.key()==QtCore.Qt.Key_Up:
+            self.TiltSelectCmd(self.Vtilt.value + 1) #XXX Display control de tilt, but not the file
         elif event.key()==QtCore.Qt.Key_Down:
-            #self.slider.setValue(self.slider.value() - 1)
-            self.TiltSelectCmd(self.tilt - 1)
+            self.TiltSelectCmd(self.Vtilt.value - 1) #XXX Display control de tilt, but not the file
         else:
-            QtGui.QWidget.keyPressEvent(self, event)
+            if self.parent==None:
+                QtGui.QWidget.keyPressEvent(self, event)
+            else:
+                self.parent.keyPressEvent(event) #XXX send event to parent to handel it, I consider not having a pygt form of doing this a limitation
             
     def onPick(self, event):
         '''Get value at the point selected by mouse click'''
         xdata = event.xdata # get event x location
         ydata = event.ydata # get event y location
         az = np.arctan2(xdata, ydata)*180./np.pi
+        radar = self.Vradar.value #keep equantions clean
         if az < 0:
             az = az + 360.
         rng = np.sqrt(xdata*xdata+ydata*ydata)
-        azindex = np.argmin(np.abs(self.radar.azimuth['data'][self.radar.sweep_start_ray_index['data'][self.tilt]:self.radar.sweep_end_ray_index['data'][self.tilt]]-az))+self.radar.sweep_start_ray_index['data'][self.tilt]
-        rngindex = np.argmin(np.abs(self.radar.range['data']-rng*1000.))
-        msg = 'x = %4.2f, y = %4.2f, Azimuth = %4.2f deg., Range = %4.3f km, %s = %4.2f %s'\
-        %(xdata, ydata, self.radar.azimuth['data'][azindex], self.radar.range['data'][rngindex]/1000., self.field, self.radar.fields[self.field]['data'][azindex][rngindex], self.units)
+        azindex = np.argmin(np.abs(radar.azimuth['data'][radar.sweep_start_ray_index['data'][self.Vtilt.value]:radar.sweep_end_ray_index['data'][self.Vtilt.value]]-az))+radar.sweep_start_ray_index['data'][self.Vtilt.value]
+        rngindex = np.argmin(np.abs(radar.range['data']-rng*1000.))
+        msg = 'x = %4.2f, y = %4.2f, Azimuth = %4.2f deg., Range = %4.2f km, %s = %4.2f %s'\
+        %(xdata, ydata, radar.azimuth['data'][azindex], radar.range['data'][rngindex]/1000., self.Vfield.value, radar.fields[self.Vfield.value]['data'][azindex][rngindex], self.units)
         self.statusBar().showMessage(msg)
 
     ####################
@@ -220,327 +154,53 @@ class Browse(QtGui.QMainWindow):
 
     def LaunchGUI(self):
         '''Launches a GUI interface.'''
-        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-     
-        # Initiate a counter, used so that Tilt and Field menus are 
-        # not increased every time there is a selection
-        # Might be a more elegant way
-        self.counter = 0
-
+        
+        # Create layout
+        self.layout = QtGui.QGridLayout()
+        self.layout.setSpacing(8)
+        
         # Create the widget
         self.central_widget = QtGui.QWidget()
         self.setCentralWidget(self.central_widget)
-        self.statusBar()
+#        self.statusBar()
         
-        # Create the menus
-        self.CreateMenu()
+        self.central_widget.setLayout(self.layout)
+        #self.setLayout(self.layout)
+        # Create the Tilt buttons
+        #self.CreateTiltWidget()
         
+        # Create the Tools ComboBox
+#        self.toolsBoxUI()
+        
+        self.addButtons()
+                    
+    ########################
+    # Button methods #
+    ######################## 
+    def addButtons(self):
+        '''If not BASIC mode, then add functionality buttons'''
         # Create the button controls
         limsb = QtGui.QPushButton("Adjust Limits")
         limsb.setToolTip("Set data, X, and Y range limits")
-        limsb.clicked.connect(self.showLimsDialog)
+#        limsb.clicked.connect(self.showLimsDialog)
         titleb = QtGui.QPushButton("Title")
         titleb.setToolTip("Change plot title")
         titleb.clicked.connect(self._title_input)
         unitsb = QtGui.QPushButton("Units")
         unitsb.setToolTip("Change units string")
         unitsb.clicked.connect(self._units_input)
-        
-        # Create the Tools ComboBox
-        self.toolsBoxUI()
-        
-        # Create layout
-        self.layout = QtGui.QGridLayout()
-        self.layout.setSpacing(8)
+        tiltsb = QtGui.QPushButton("Tilt Select")
+        tiltsb.setToolTip("Choose tilt elevation angle")
+        tiltsb.clicked.connect(self._open_tiltbuttonwindow)
         
         self.layout.addWidget(limsb, 0, 0)
-        self.layout.addWidget(self.toolsBox, 0, 1)
+#        self.layout.addWidget(self.toolsBox, 0, 1)
         self.layout.addWidget(titleb, 0, 2)
         self.layout.addWidget(unitsb, 0, 3)
-
-        # Create the Tilt buttons
-        self.CreateTiltWidget()
-                
-    def showFileDialog(self):
-        '''Open a dialog box to choose file'''    
-        self.qfilename = QtGui.QFileDialog.getOpenFileName(self, 'Open file', 
-                self.dirIn)
-        self.filename = str(self.qfilename)
-        self._openfile()
+        self.layout.addWidget(tiltsb, 0, 4)
         
-    def showLimsDialog(self):
-        self.limsDialog = QtGui.QDialog()
-        u = Ui_LimsDialog(self.limsDialog, self.limits)
-        u.setupUi()#self.limsDialog, self.limits
-
-        self.limsDialog.exec_()
-        
-    def LaunchTiltButton(self):
-        if self.windowTilt is None:
-            self.windowTilt = TiltButtons(tilts=self.rTilts)
-        self.windowTilt.show()
-            
-    def toolsBoxUI(self):
-        self.toolsBox = QtGui.QComboBox()
-        self.toolsBox.setToolTip("Choose a tool to apply")
-        self.toolsBox.addItem("No Tools")
-        self.toolsBox.addItem("Zoom/Pan")
-        self.toolsBox.addItem("Reset file defaults")
-        
-        self.toolsBox.activated[str].connect(self.comboAction)
-        
-    def comboAction(self, text):
-        # Check to see if Zoom/Pan was selected, if so disconnect 
-        if self.ToolSelect == "Zoom/Pan":
-            print "IN DISCONNECT"
-            self.zp.disconnect()
-        # Set the Tool to use
-        self.ToolSelect = text
-        
-        if self.ToolSelect == "Reset file defaults":
-            self._initialize_limits()
-        self._update_plot()
-        
-    ######################
-    # Help methods #
-    ######################
-
-    def _about(self):
-        txOut = "This is a simple radar file browser to allow \
-                 quicklooks using the DoE PyArt software"
-        QtGui.QMessageBox.about(self, "About ARTView", txOut)
- 
-    def _get_RadarLongInfo(self):
-        '''Print out the radar info to text box'''
- 
-        # Get the radar info form rada object and print it
-        txOut = self.radar.info()
-        print txOut
-            
-#        QtGui.QMessageBox.information(self, "Long Radar Info", str(txOut)) 
-        QtGui.QMessageBox.information(self, "Long Radar Info", "See terminal window") 
-
-    def _get_RadarShortInfo(self):
-        '''Print out some basic info about the radar'''
-        try:
-            rname = self.radar.metadata['instrument_name']
-        except:
-            rname = "Info not available"
-        try:
-            rlon = str(self.radar.longitude['data'][0])
-        except:
-            rlon = "Info not available"
-        try:
-            rlat = str(self.radar.latitude['data'][0])
-        except:
-            rlat = "Info not available"
-        try:
-            ralt = str(self.radar.altitude['data'][0])
-            raltu = self.radar.altitude['units'][0]
-        except:
-            ralt = "Info not available"
-            raltu = " "
-        try:
-            maxr = str(self.radar.instrument_parameters['unambiguous_range']['data'][0])
-            maxru = self.radar.instrument_parameters['unambiguous_range']['units'][0]
-        except:
-            maxr = "Info not available"
-            maxru = " "
-        try:
-            nyq = str(self.radar.instrument_parameters['nyquist_velocity']['data'][0])
-            nyqu = self.radar.instrument_parameters['nyquist_velocity']['units'][0]
-        except:
-            nyq =  "Info not available"
-            nyqu = " "
-        try:
-            bwh = str(self.radar.instrument_parameters['radar_beam_width_h']['data'][0])
-            bwhu = self.radar.instrument_parameters['radar_beam_width_h']['units'][0]
-        except:
-            bwh = "Info not available"
-            bwhu = " "
-        try:
-            bwv = str(self.radar.instrument_parameters['radar_beam_width_v']['data'][0])
-            bwvu = self.radar.instrument_parameters['radar_beam_width_v']['units'][0]
-        except:
-            bwv = "Info not available"
-            bwvu = " "
-        try:
-            pw = str(self.radar.instrument_parameters['pulse_width']['data'][0])
-            pwu = self.radar.instrument_parameters['pulse_width']['units'][0]
-        except:
-            pw = "Info not available"
-            pwu = " "
-        try:
-            ngates = str(self.radar.ngates)
-        except:
-            ngates = "Info not available"
-        try:
-            nsweeps = str(self.radar.nsweeps)
-        except:
-            nsweeps = "Info not available"
-        
-        txOut = (('Radar Name: %s\n'% rname) +\
-        ('Radar longitude: %s\n'% rlon) + \
-        ('Radar latitude: %s\n'% rlat) + \
-        ('Radar altitude: %s %s\n'% (ralt, raltu)) + \
-        ('    \n') + \
-        ('Unambiguous range: %s %s\n'% (maxr, maxru)) + \
-        ('Nyquist velocity: %s %s\n'% (nyq, nyqu)) + \
-        ('    \n') + \
-        ('Radar Beamwidth, horiz: %s %s\n'% (bwh, bwhu)) + \
-        ('Radar Beamwidth, vert: %s %s\n'% (bwv, bwvu)) + \
-        ('Pulsewidth: %s %s \n'% (pw, pwu)) + \
-        ('    \n') + \
-        ('Number of gates: %s\n'% ngates) + \
-        ('Number of sweeps: %s\n'% nsweeps))
-        
-        QtGui.QMessageBox.information(self, "Short Radar Info", txOut) 
-        
-    ######################
-    # Menu build methods #
-    ######################
- 
-    def CreateMenu(self):
-        '''Create a selection menu'''
-        self.menubar = self.menuBar()
-        
-        self.AddFileMenu()
-        self.AddAboutMenu()
-        self.AddPlotMenu()
-        self.AddFileAdvanceMenu()
-        
-
-    def AddFileMenu(self):
-        self.filemenu = self.menubar.addMenu('&File')
-               
-        openFile = QtGui.QAction('Open', self)
-        openFile.setShortcut('Ctrl+O')
-        openFile.setStatusTip('Open new File')
-        openFile.triggered.connect(self.showFileDialog)
-        
-        quicksaveImage = QtGui.QAction('Quick Save Image', self)  
-        quicksaveImage.setShortcut('Ctrl+D')
-        quicksaveImage.setStatusTip('Save Image to local directory with default name')
-        quicksaveImage.triggered.connect(self._quick_savefile)
-                
-        saveImage = QtGui.QAction('Save Image', self)  
-        saveImage.setShortcut('Ctrl+S')
-        saveImage.setStatusTip('Save Image using dialog')
-        saveImage.triggered.connect(self._savefile)
-                
-        exitApp = QtGui.QAction('Close', self)  
-        exitApp.setShortcut('Ctrl+Q')
-        exitApp.setStatusTip('Exit ARTView')
-        exitApp.triggered.connect(self.close)
-        
-        self.filemenu.addAction(openFile)
-        self.filemenu.addAction(quicksaveImage)
-        self.filemenu.addAction(saveImage)
-        self.filemenu.addAction(exitApp)
-        
-    def AddAboutMenu(self):
-        '''Add Help item to menu bar'''
-        self.aboutmenu = self.menubar.addMenu('About')
-
-        self._aboutArtview = QtGui.QAction('ARTView', self)
-        self._aboutArtview.setStatusTip('About ARTView')
-        self._aboutArtview.triggered.connect(self._about)
-        
-        self.RadarShort = QtGui.QAction('Radar Short', self)
-        self.RadarShort.setStatusTip('Print Short Radar Structure Info')
-        self.RadarShort.triggered.connect(self._get_RadarShortInfo)
-        
-        self.RadarLong = QtGui.QAction('Radar Long', self)
-        self.RadarLong.setStatusTip('Print Long Radar Structure Info')
-        self.RadarLong.triggered.connect(self._get_RadarLongInfo)
-        
-        self.aboutmenu.addAction(self._aboutArtview)
-        self.aboutmenu.addAction(self.RadarShort)
-        self.aboutmenu.addAction(self.RadarLong)
-        
- 
-    def AddPlotMenu(self):
-        '''Add Plot item to menu bar'''
-        self.plotmenu = self.menubar.addMenu('&Plot')
-        
-        # Add submenus
-        self.fieldmenu = self.plotmenu.addMenu('Field')
-        if self.airborne or self.rhi:
-            pass
-        else:
-            self.tiltmenu = self.plotmenu.addMenu('Tilt')
-            self.rngringmenu = self.plotmenu.addMenu('Set Range Rings')
-        self.cmapmenu = self.plotmenu.addMenu('Colormap')
-
-
-    def AddFileAdvanceMenu(self):
-        '''Add an option to advance to next or previous file'''
-        self.advancemenu = self.menubar.addMenu("Advance file")
-
-    def AddTiltMenu(self):
-        '''Add a menu to change tilt angles of current plot'''
-        for ntilt in self.rTilts:
-            TiltAction = self.tiltmenu.addAction("Tilt %d"%(ntilt+1))
-            TiltAction.triggered[()].connect(lambda ntilt=ntilt: self.TiltSelectCmd(ntilt))
-
-    def AddFieldMenu(self):
-        '''Add a menu to change current plot field'''
-        for nombre in self.fieldnames:
-            FieldAction = self.fieldmenu.addAction(nombre)
-            FieldAction.triggered[()].connect(lambda nombre=nombre: self.FieldSelectCmd(nombre))
-            
-    def AddRngRingMenu(self):
-        '''Add a menu to set range rings'''
-        for RngRing in self.RngRingList:
-            RingAction = self.rngringmenu.addAction(RngRing)
-            RingAction.triggered[()].connect(lambda RngRing=RngRing: self.RngRingSelectCmd(RngRing))
-    
-    def AddNextPrevMenu(self):
-        '''Add an option to advance to next or previous file'''
-        nextAction = self.advancemenu.addAction("Next")
-        nextAction.triggered[()].connect(lambda findex=self.fileindex + 1: self.AdvanceFileSelect(findex))
-        
-        prevAction = self.advancemenu.addAction("Previous")
-        prevAction.triggered[()].connect(lambda findex=self.fileindex - 1: self.AdvanceFileSelect(findex))
-        
-        firstAction = self.advancemenu.addAction("First")
-        firstAction.triggered[()].connect(lambda findex=0: self.AdvanceFileSelect(findex))
-        
-        lastAction = self.advancemenu.addAction("Last")
-        lastAction.triggered[()].connect(lambda findex=(len(self.filelist) - 1): self.AdvanceFileSelect(findex))
-         
-    def AddCmapMenu(self):
-        '''Add a menu to change colormap used for plot'''
-        for cm_name in self.cm_names:
-            cmapAction = self.cmapmenu.addAction(cm_name)
-            cmapAction.setStatusTip("Use the %s colormap"%cm_name)
-            cmapAction.triggered[()].connect(lambda cm_name=cm_name: self.cmapSelectCmd(cm_name))
-    
-    ########################
-    # Button methods #
-    ########################
-
-    def CreateTiltWidget(self):
-        '''Create a widget to store radio buttons to control tilt adjust'''
-        self.radioBox = QtGui.QGroupBox("Tilt Selection")
-        self.rBox_layout = QtGui.QVBoxLayout(self.radioBox)
-        
-    def SetTiltRadioButtons(self):
-        '''Set a tilt selection using radio buttons'''
-        # Need to first create each tilt button and connect a value when selected
-        for ntilt in self.rTilts:
-            tiltbutton = QtGui.QRadioButton("Tilt %d"%(ntilt+1), self.radioBox)
-            QtCore.QObject.connect(tiltbutton, QtCore.SIGNAL("clicked()"), \
-                         partial(self.TiltSelectCmd, ntilt))
-
-            self.rBox_layout.addWidget(tiltbutton)
-		
-        self.radioBox.setLayout(self.rBox_layout)
-		
-        return self.radioBox
-
     #############################
-    # Limit entry methods #
+    # Functionality methods #
     #############################
             
     def _lims_input(self, entry):
@@ -582,24 +242,56 @@ class Browse(QtGui.QMainWindow):
         if entry is True:
             self.units = val
             self._update_plot()
+            
+    def _open_tiltbuttonwindow(self):
+        '''Open a TiltButtonWindow instance'''
+        self.tiltbuttonwindow = TiltButtonWindow(self.Vradar, self.Vtilt, \
+                            name=self.name+" Tilt Selection", parent=self.parent)
         
     ########################
     # Selectionion methods #
     ########################
-    
-    def TiltSelectCmd(self, ntilt):
-        '''Captures a selection and redraws the field with new tilt'''
-        print ntilt
-        self.tilt = ntilt
+
+    def NewRadar(self,variable,value):
+        # In case the flags were not used at startup
+        self._check_file_type()
+        self._set_figure_canvas()
+
+        # Get the tilt angles
+        self.rTilts = self.Vradar.value.sweep_number['data'][:]
+        # Get field names
+        self.fieldnames = self.Vradar.value.fields.keys()
+
+        # Set up the menus associated with scanning ground radars
+        if self.airborne or self.rhi:
+            pass
+        else:
+            pass
+        self.units = None
+        self.title = None
         self._update_plot()
 
-    def FieldSelectCmd(self, nombre):
-        '''Captures a selection and redraws the new field'''
-        self.field = nombre
+    def NewField(self,variable,value):
         self._initialize_limits()
         self.units = None
         self._update_plot()
-        
+    
+    def NewTilt(self,variable,value):
+        self._update_plot()
+
+
+    def TiltSelectCmd(self, ntilt):
+        '''Captures a selection and redraws the field with new tilt'''
+        print ntilt
+        self.Vtilt.change(ntilt)
+        #XXX tilt is changed and signal sended, so this and other classes do what they need to do
+
+
+    def FieldSelectCmd(self, nombre):
+        '''Captures a selection and redraws the new field'''
+        self.Vfield.change(nombre)
+
+
     def RngRingSelectCmd(self, ringSel):
         '''Captures selection and redraws the field with range rings'''
         if ringSel is "None":
@@ -634,87 +326,6 @@ class Browse(QtGui.QMainWindow):
         self.CMAP = cm_name
         self._update_plot()
         
-    def AdvanceFileSelect(self, findex):
-        '''Captures a selection and redraws figure with new file'''
-        if findex > len(self.filelist):
-            print len(self.filelist)
-            msg = "End of directory, cannot advance"
-            self._ShowWarning(msg)
-            findex = (len(self.filelist) - 1)
-            return
-        if findex < 0:
-            msg = "Beginning of directory, must move forward"
-            self._ShowWarning(msg)
-            findex = 0
-            return
-        self.fileindex = findex
-        self.filename = self.dirIn + "/" + self.filelist[findex]
-        self._openfile()
-
-    ########################
-    # Menu display methods #
-    ########################
- 
-    def _openfile(self):
-        '''Open a file via a file selection window'''
-        print "Opening file " + self.filename
-        
-        # Update to  current directory when file is chosen
-        self.dirIn = os.path.dirname(self.filename)
-        
-        # Get a list of files in the working directory
-        self.filelist = os.listdir(self.dirIn)
-        
-        self.fileindex = self.filelist.index(os.path.basename(self.filename))
-     
-        # Read the data from file
-        try:
-            self.radar = pyart.io.read(self.filename)
-        except:
-            msg = "This is not a recognized radar file"
-            self._ShowWarning(msg)
-            return
-         
-        # In case the flags were not used at startup
-        # Check to see if this is an aircraft or rhi file
-        if self.counter == 0:
-            self._check_file_type()
-            self._set_figure_canvas()
-
-        # Increment counter to know whether to renew Tilt and field menus
-        # If > 1 then remove the pre-existing menus before redrawing
-        self.counter += 1
-        
-        if self.counter > 1:
-            self.fieldmenu.clear()
-            self.advancemenu.clear()
-           
-            if self.airborne or self.rhi:
-                pass
-            else:
-                self.tiltmenu.clear()
-                self.rngringmenu.clear()
-                self.radioBox.deleteLater()
-
-        # Get the tilt angles
-        self.rTilts = self.radar.sweep_number['data'][:]
-        # Get field names
-        self.fieldnames = self.radar.fields.keys()
-
-        # Set up the menus associated with scanning ground radars
-        if self.airborne or self.rhi:
-            pass
-        else:
-            self.CreateTiltWidget()
-            self.layout.addWidget(self.SetTiltRadioButtons(), 1, 6, 6, 1)
-            self.AddRngRingMenu()
-            self.AddTiltMenu()
-        self.AddFieldMenu()
-        self.AddNextPrevMenu()
-        self.AddCmapMenu()
-        self.units = None
-        self.title = None
-        self._update_plot()
         
     ####################
     # Plotting methods #
@@ -778,9 +389,9 @@ class Browse(QtGui.QMainWindow):
             self.zp.connect()
         
         if self.airborne:
-            self.display = pyart.graph.RadarDisplay_Airborne(self.radar)
+            self.display = pyart.graph.RadarDisplay_Airborne(self.Vradar.value)
             
-            self.plot = self.display.plot_sweep_grid(self.field, \
+            self.plot = self.display.plot_sweep_grid(self.Vfield.value, \
                                 vmin=self.limits['vmin'], vmax=self.limits['vmax'],\
                                 colorbar_flag=False, cmap=self.CMAP,\
                                 ax=self.ax, title=self.title)
@@ -789,14 +400,14 @@ class Browse(QtGui.QMainWindow):
                                     ax=self.ax)
             self.display.plot_grid_lines()
         else:
-            self.display = pyart.graph.RadarDisplay(self.radar)
-            if self.radar.scan_type != 'rhi':
+            self.display = pyart.graph.RadarDisplay(self.Vradar.value)
+            if self.Vradar.value.scan_type != 'rhi':
                 # Create Plot
-                if self.tilt < len(self.rTilts):
+                if self.Vtilt.value < len(self.rTilts):
                     pass
                 else:
-                    self.tilt = 0
-                self.plot = self.display.plot_ppi(self.field, self.tilt,\
+                    self.Vtilt.change(0)
+                self.plot = self.display.plot_ppi(self.Vfield.value, self.Vtilt.value,\
                                 vmin=self.limits['vmin'], vmax=self.limits['vmax'],\
                                 colorbar_flag=False, cmap=self.CMAP,\
                                 ax=self.ax, title=self.title)
@@ -810,7 +421,7 @@ class Browse(QtGui.QMainWindow):
                 # Add radar location
                 self.display.plot_cross_hair(5., ax=self.ax)
             else:
-                self.plot = self.display.plot_rhi(self.field, self.tilt,\
+                self.plot = self.display.plot_rhi(self.Vfield.value, self.Vtilt.value,\
                                 vmin=self.limits['vmin'], vmax=self.limits['vmax'],\
                                 colorbar_flag=False, cmap=self.CMAP,\
                                 ax=self.ax, title=self.title)
@@ -829,49 +440,50 @@ class Browse(QtGui.QMainWindow):
         # what has or has not been entered
         if self.units is None or self.units == '':
             try:
-                self.units = self.radar.fields[self.field]['units']
+                self.units = self.Vradar.value.fields[self.field]['units']
             except:
                 self.units = ''
         self.cbar.set_label(self.units)
         
-        print "Plotting %s field, Tilt %d" % (self.field, self.tilt+1)
+        print "Plotting %s field, Tilt %d" % (self.Vfield.value, self.Vtilt.value+1)
         self.canvas.draw()
  
     #########################
     # Get and check methods #
     #########################
     def _initialize_limits(self):
-        if self.field == 'reflectivity':
+        field = self.Vfield.value
+        if field == 'reflectivity':
             self.vminmax = (Z_LIMS[0], Z_LIMS[1])
             self.CMAP = 'gist_ncar'
-        elif self.field == 'DBZ':
+        elif field == 'DBZ' or field == 'DBZH':
             self.vminmax = (Z_LIMS[0], Z_LIMS[1])
             self.CMAP = 'gist_ncar'
-        elif self.field == 'velocity':
+        elif field == 'velocity':
             self.vminmax = (VR_LIMS[0], VR_LIMS[1])
             self.CMAP = 'RdBu_r'
-        elif self.field == 'VEL':
+        elif field == 'VEL':
             self.vminmax = (VR_LIMS[0], VR_LIMS[1])
             self.CMAP = 'RdBu_r'
-        elif self.field == 'differential_reflectivity':
+        elif field == 'differential_reflectivity':
             self.vminmax = (ZDR_LIMS[0], ZDR_LIMS[1])
             self.CMAP = 'RdYlBu_r'
-        elif self.field == 'cross_correlation_ratio':
+        elif field == 'cross_correlation_ratio':
             self.vminmax = (RHO_HV_LIMS[0], RHO_HV_LIMS[1])
             self.CMAP = 'cool'
-        elif self.field == 'differential_phase':
+        elif field == 'differential_phase':
             self.vminmax = (KDP_LIMS[0], KDP_LIMS[1])
             self.CMAP = 'YlOrBr'
-        elif self.field == 'normalized_coherent_power':
+        elif field == 'normalized_coherent_power':
             self.vminmax = (NCP_LIMS[0], NCP_LIMS[1])
             self.CMAP = 'jet'
-        elif self.field == 'spectrum_width':
+        elif field == 'spectrum_width':
             self.vminmax = (SW_LIMS[0], SW_LIMS[1])
             self.CMAP = 'gist_ncar'
-        elif self.field == 'specific_differential_phase':
+        elif field == 'specific_differential_phase':
             self.vminmax = (PHIDP_LIMS[0], PHIDP_LIMS[1]) 
             self.CMAP = 'RdBu_r'
-        elif self.field == 'total_power':
+        elif field == 'total_power':
             self.vminmax = (TP_LIMS[0], TP_LIMS[1])
             self.CMAP = 'jet'
            
@@ -901,35 +513,35 @@ class Browse(QtGui.QMainWindow):
         '''Hack to perform a check on reflectivity to make it work with 
         a larger number of files
         This should only occur upon start up with a new file'''
-        if self.field == 'reflectivity':
-            if self.field in self.fieldnames:
+        if self.Vfield.value == 'reflectivity':
+            if self.Vfield.value in self.fieldnames:
                 pass
             elif 'CZ' in self.fieldnames:
-                self.field = 'CZ'
+                self.Vfield.change('CZ')
             elif 'DZ' in self.fieldnames:
-                self.field = 'DZ'
+                self.Vfield.change('DZ')
             elif 'dbz' in self.fieldnames:
-                self.field = 'dbz'
+                self.Vfield.change('dbz')
             elif 'DBZ' in self.fieldnames:
-                self.field = 'DBZ'
+                self.Vfield.change('DBZ')
             elif 'dBZ' in self.fieldnames:
-                self.field = 'dBZ'
+                self.Vfield.change('dBZ')
             elif 'Z' in self.fieldnames:
-                self.field = 'Z'
+                self.Vfield.change('Z')
             elif 'DBZ_S'in self.fieldnames:
-                self.field = 'DBZ_S'
+                self.Vfield.change('DBZ_S')
             elif 'reflectivity_horizontal'in self.fieldnames:
-                self.field = 'reflectivity_horizontal'
+                self.Vfield.change('reflectivity_horizontal')
 
                 
     def _check_file_type(self):
         '''Check file to see if the file is airborne or rhi'''
-        if self.radar.scan_type != 'rhi':
+        if self.Vradar.value.scan_type != 'rhi':
             pass
         else:
             try:
-                (self.radar.metadata['platform_type'] == 'aircraft_tail') or \
-                (self.radar.metadata['platform_type'] == 'aircraft')
+                (self.Vradar.value.metadata['platform_type'] == 'aircraft_tail') or \
+                (self.Vradar.value.metadata['platform_type'] == 'aircraft')
                 self.airborne = True
             except:
                 self.rhi = True
@@ -954,11 +566,11 @@ class Browse(QtGui.QMainWindow):
     ########################
     def _quick_savefile(self, PTYPE=IMAGE_EXT):
         '''Save the current display'''
-        PNAME = self.display.generate_filename(self.field, self.tilt, ext=IMAGE_EXT)
+        PNAME = self.display.generate_filename(self.Vfield.value, self.Vtilt.value, ext=IMAGE_EXT)
         print "Creating "+ PNAME
         
     def _savefile(self, PTYPE=IMAGE_EXT):
-        PBNAME = self.display.generate_filename(self.field, self.tilt, ext=IMAGE_EXT)
+        PBNAME = self.display.generate_filename(self.Vfield.value, self.Vtilt.value, ext=IMAGE_EXT)
         file_choices = "PNG (*.png)|*.png"
         path = unicode(QtGui.QFileDialog.getSaveFileName(self, 'Save file', '', file_choices))
         if path:
@@ -1155,57 +767,4 @@ class ZoomPan:
         self.fig.canvas.mpl_disconnect(self.pressID)
         self.fig.canvas.mpl_disconnect(self.releaseID)
         self.fig.canvas.mpl_disconnect(self.motionID)
-           
-###################################
-if __name__ == '__main__':
-    # Check for directory
-    
-    parser = argparse.ArgumentParser(
-              description="Start ARTview - the ARM Radar Toolkit Viewer.")
- 
-    igroup = parser.add_argument_group(
-             title="Set input platform, optional",
-             description=(""
-                          "The ingest method for various platfoms can be chosen. "
-                          "If not chosen, an assumption of a ground-based "
-                          "platform is made. "
-                          "The following flags may be used to display"
-                          "RHI or airborne sweep data."
-                          " "))
-  
-    igroup.add_argument('--airborne', action='store_true',
-                          help='Airborne radar file')
-                          
-    igroup.add_argument('--rhi', action='store_true',
-                          help='RHI scan')
- 
-    igroup.add_argument('-v', '--version', action='version',
-                         version='ARTview version %s' % (VERSION))
-    
-    #Directory argument now optional
-    igroup.add_argument('-d', '--directory', type=str, help='directory to open', default='./')
-    
-    # Parse the args
-    args = parser.parse_args()
-    # Check if there is an input directory
-    if args.directory:
-        fDirIn = args.directory
-    else: 
-        fDirIn = "./"
-        
-    # Set airborne flag off and change if airborne called
-    airborne, rhi = False, False
-    if args.airborne:
-        airborne = True
-    if args.rhi:
-        rhi = True
-    
-    app = QtGui.QApplication(sys.argv)
-    
-    main = Browse(pathDir=fDirIn, airborne=airborne, rhi=rhi)
-    
-    main.setWindowTitle(MAINWINDOWTITLE)
-    main.show()
- 
-    sys.exit(app.exec_())
-    
+
