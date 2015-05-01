@@ -42,4 +42,4 @@ def parse(argv):
     if args.rhi:
         rhi = True
     
-    return args.directory,args.field
+    return args.directory, args.field

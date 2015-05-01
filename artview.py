@@ -210,7 +210,7 @@ class Browse(QtGui.QMainWindow):
         rng = np.sqrt(xdata*xdata+ydata*ydata)
         azindex = np.argmin(np.abs(self.radar.azimuth['data'][self.radar.sweep_start_ray_index['data'][self.tilt]:self.radar.sweep_end_ray_index['data'][self.tilt]]-az))+self.radar.sweep_start_ray_index['data'][self.tilt]
         rngindex = np.argmin(np.abs(self.radar.range['data']-rng*1000.))
-        msg = 'x = %4.2f, y = %4.2f, Azimuth = %4.2f deg., Range = %4.2f km, %s = %4.2f %s'\
+        msg = 'x = %4.2f, y = %4.2f, Azimuth = %4.2f deg., Range = %4.3f km, %s = %4.2f %s'\
         %(xdata, ydata, self.radar.azimuth['data'][azindex], self.radar.range['data'][rngindex]/1000., self.field, self.radar.fields[self.field]['data'][azindex][rngindex], self.units)
         self.statusBar().showMessage(msg)
 
@@ -339,6 +339,7 @@ class Browse(QtGui.QMainWindow):
             raltu = self.radar.altitude['units'][0]
         except:
             ralt = "Info not available"
+            raltu = " "
         try:
             maxr = str(self.radar.instrument_parameters['unambiguous_range']['data'][0])
             maxru = self.radar.instrument_parameters['unambiguous_range']['units'][0]
