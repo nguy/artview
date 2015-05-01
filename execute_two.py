@@ -25,21 +25,12 @@ Vradar = Variable(None)
 
 app = QtGui.QApplication(sys.argv)
 
-<<<<<<< HEAD
-MainMenu=menu.Menu(Vradar,DirIn,name="Menu") #initiate Vradar
-
-
-plot1=plot.Display(Vradar,Variable(field),Variable(0),name="Display1",parent=MainMenu)
-plot2=plot.Display(Vradar,Variable(field),Variable(0),name="Display2",parent=MainMenu)
-
-
-app.exec_()
-=======
 MainMenu = Menu(Vradar, DirIn, name="Menu") #initiate Vradar
+
 
 plot1 = Display(Vradar, Variable(field), Variable(0), name="Display1", parent=MainMenu)
 plot2 = Display(Vradar, Variable(field), Variable(0), name="Display2", parent=MainMenu)
-tiltselect = TiltButtonWindow(Vradar, Variable(0), name="Tilt Selection", parent=MainMenu)
+#tiltselect = TiltButtonWindow(Vradar, Variable(0), name="Tilt Selection", parent=MainMenu)
 
 #MainDisplay = make_MainDisplay(MainMenu, plots=[plot1, plot2])
 
@@ -51,4 +42,3 @@ tiltselect = TiltButtonWindow(Vradar, Variable(0), name="Tilt Selection", parent
 
 
 app.exec_()
->>>>>>> Class Driven beginning contributed by A Gama and modified for some functionality tests.

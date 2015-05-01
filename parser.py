@@ -43,3 +43,4 @@ def parse(argv):
         rhi = True
     
     return args.directory, args.field
+
