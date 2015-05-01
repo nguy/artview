@@ -31,6 +31,13 @@ With ARTview you can:
     Modify title and units, and save image easily via drop down menu.
     
   
+## News
+ARTView is undergoing changes to allow multiple windows to be opened, with functionality
+in each window.  It is still in beta testing, so not ready for heavy useage yet.
+
+BUT, the single stream, original version described below is still available in the directory.
+The other code should not have any effect on it's useage.
+
 ## Installation
 Currently it is a standalone executable python script, but may eventually be wrapped into PyArt after maturation.
 See dependencies below.
@@ -93,13 +100,15 @@ Note that the TkInter version is an older deprecated version of the code.
 Developed on Python 2.7.7 and 2.7.9 :: Anaconda 2.0.1 and 2.1.0
 MacOSX 10.9.4 and 10.10.2
 
-##Author list
+##Contributors
 
 Nick Guy (nick.guy@uwyo.edu)
 
 Timothy Lang 
 
 Paul Hein
+
+Anderson Gama
 
 NOTE:: This is open source software.  Contributions are very welcome, though this is not my primary project.  In addition it needs to be stated that no responsibility is taken by the author for any adverse effects.
 

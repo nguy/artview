@@ -10,7 +10,7 @@ from matplotlib.colors import Normalize as mlabNormalize
 from matplotlib.colorbar import ColorbarBase as mlabColorbarBase
 from matplotlib.pyplot import cm
 
-
+from tilt import TiltButtonWindow
 
 # Limits for varioud variable plots
 Z_LIMS = (-10., 65.)
@@ -51,7 +51,7 @@ DPI = 100
 
 
 class Display(QtGui.QMainWindow):
-    '''Class that plots a Radar structu using pyart.graph'''
+    '''Class that plots a Radar structure using pyart.graph'''
 
     def __init__(self, Vradar, Vfield, Vtilt, airborne=False, rhi=False, name="Display", parent=None):
         '''Initialize the class to create the interface'''
@@ -61,7 +61,7 @@ class Display(QtGui.QMainWindow):
         self.setWindowTitle(name)
         
         #XXX set up signal, so that DISPLAY can react to external (or internal) changes in radar,field and tilt
-        #XXX radar,field and tilt are espected to be Core.Variable instances
+        #XXX radar,field and tilt are expected to be Core.Variable instances
         #XXX I use the capital V so people remember using ".value"
         self.Vradar = Vradar
         QtCore.QObject.connect(Vradar,QtCore.SIGNAL("ValueChanged"),self.NewRadar)
@@ -70,11 +70,8 @@ class Display(QtGui.QMainWindow):
         self.Vtilt = Vtilt
         QtCore.QObject.connect(Vtilt,QtCore.SIGNAL("ValueChanged"),self.NewTilt)
         
-        
-
         self.airborne = airborne
         self.rhi = rhi
-        
         
         # Set size of plot
         self.XSIZE = PPI_XSIZE
@@ -116,7 +113,7 @@ class Display(QtGui.QMainWindow):
         # Launch the GUI interface
         self.LaunchGUI() #XXX almost empty
         
-        self.NewRadar(None,None) #XXX initialise radar
+        self.NewRadar(None, None) #XXX initialise radar
         
         self.show()
         
@@ -157,33 +154,53 @@ class Display(QtGui.QMainWindow):
 
     def LaunchGUI(self):
         '''Launches a GUI interface.'''
+        
         # Create layout
         self.layout = QtGui.QGridLayout()
         self.layout.setSpacing(8)
         
+        # Create the widget
         self.central_widget = QtGui.QWidget()
         self.setCentralWidget(self.central_widget)
+#        self.statusBar()
         
         self.central_widget.setLayout(self.layout)
         #self.setLayout(self.layout)
         # Create the Tilt buttons
         #self.CreateTiltWidget()
-                
         
-    ######################
-    # Help methods #
-    ######################
+        # Create the Tools ComboBox
+#        self.toolsBoxUI()
         
-    ######################
-    # Menu build methods #
-    ######################
-    
+        self.addButtons()
+                    
     ########################
     # Button methods #
-    ########################
-
+    ######################## 
+    def addButtons(self):
+        '''If not BASIC mode, then add functionality buttons'''
+        # Create the button controls
+        limsb = QtGui.QPushButton("Adjust Limits")
+        limsb.setToolTip("Set data, X, and Y range limits")
+#        limsb.clicked.connect(self.showLimsDialog)
+        titleb = QtGui.QPushButton("Title")
+        titleb.setToolTip("Change plot title")
+        titleb.clicked.connect(self._title_input)
+        unitsb = QtGui.QPushButton("Units")
+        unitsb.setToolTip("Change units string")
+        unitsb.clicked.connect(self._units_input)
+        tiltsb = QtGui.QPushButton("Tilt Select")
+        tiltsb.setToolTip("Choose tilt elevation angle")
+        tiltsb.clicked.connect(self._open_tiltbuttonwindow)
+        
+        self.layout.addWidget(limsb, 0, 0)
+#        self.layout.addWidget(self.toolsBox, 0, 1)
+        self.layout.addWidget(titleb, 0, 2)
+        self.layout.addWidget(unitsb, 0, 3)
+        self.layout.addWidget(tiltsb, 0, 4)
+        
     #############################
-    # Limit entry methods #
+    # Functionality methods #
     #############################
             
     def _lims_input(self, entry):
@@ -225,6 +242,11 @@ class Display(QtGui.QMainWindow):
         if entry is True:
             self.units = val
             self._update_plot()
+            
+    def _open_tiltbuttonwindow(self):
+        '''Open a TiltButtonWindow instance'''
+        self.tiltbuttonwindow = TiltButtonWindow(self.Vradar, self.Vtilt, \
+                            name=self.name+" Tilt Selection", parent=self.parent)
         
     ########################
     # Selectionion methods #
@@ -262,7 +284,7 @@ class Display(QtGui.QMainWindow):
         '''Captures a selection and redraws the field with new tilt'''
         print ntilt
         self.Vtilt.change(ntilt)
-        #XXX tilt is changed and signal sended, so this an other classes do what they need to do
+        #XXX tilt is changed and signal sended, so this and other classes do what they need to do
 
 
     def FieldSelectCmd(self, nombre):

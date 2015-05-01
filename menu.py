@@ -4,25 +4,22 @@ import pyart
 import os
 from PyQt4 import QtGui, QtCore
 
-VERSION = '0.1.6'
-MAINWINDOWTITLE = 'ARTView - ARM Radar Toolkit Viewer'
-
-
 class Menu(QtGui.QMainWindow):
     '''Class to display the MainMenu'''
 
     def __init__(self, Vradar, pathDir, name="Menu", parent=None):
         '''Initialize the class to create the interface'''
         super(Menu, self).__init__(parent)
-        self.name=name
+        self.name = name
+        self.parent = parent
         self.setWindowTitle(name)
         
         # Set some parameters
         self.dirIn = pathDir
-        self.Vradar=Vradar
+        self.Vradar = Vradar
         
         # Launch the GUI interface
-        self.LaunchGUI()      
+        self.LaunchApp()      
                 
         # Show an "Open" dialog box and return the path to the selected file
         self.showFileDialog()
@@ -44,123 +41,23 @@ class Menu(QtGui.QMainWindow):
     # GUI methods #
     ####################
 
-    def LaunchGUI(self):
+    def LaunchApp(self):
         '''Launches a GUI interface.'''
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
      
         # Create the menus
         self.CreateMenu()
         
-        
         # Create layout
         self.layout = QtGui.QGridLayout()
         self.layout.setSpacing(8)
-        
-                
+                    
     def showFileDialog(self):
         '''Open a dialog box to choose file'''    
         self.qfilename = QtGui.QFileDialog.getOpenFileName(self, 'Open file', 
                 self.dirIn)
         self.filename = str(self.qfilename)
         self._openfile()
-        
-        
-        
-
-        
-    ######################
-    # Help methods #
-    ######################
-
-    def _about(self):
-        txOut = "This is a simple radar file browser to allow \
-                 quicklooks using the DoE PyArt software"
-        QtGui.QMessageBox.about(self, "About ARTView", txOut)
- 
-    def _get_RadarLongInfo(self):
-        '''Print out the radar info to text box'''
- 
-        # Get the radar info form rada object and print it
-        txOut = self.radar.info()
-        print txOut
-            
-#        QtGui.QMessageBox.information(self, "Long Radar Info", str(txOut)) 
-        QtGui.QMessageBox.information(self, "Long Radar Info", "See terminal window") 
-
-    def _get_RadarShortInfo(self):
-        '''Print out some basic info about the radar'''
-        try:
-            rname = self.radar.metadata['instrument_name']
-        except:
-            rname = "Info not available"
-        try:
-            rlon = str(self.radar.longitude['data'][0])
-        except:
-            rlon = "Info not available"
-        try:
-            rlat = str(self.radar.latitude['data'][0])
-        except:
-            rlat = "Info not available"
-        try:
-            ralt = str(self.radar.altitude['data'][0])
-            raltu = self.radar.altitude['units'][0]
-        except:
-            ralt = "Info not available"
-        try:
-            maxr = str(self.radar.instrument_parameters['unambiguous_range']['data'][0])
-            maxru = self.radar.instrument_parameters['unambiguous_range']['units'][0]
-        except:
-            maxr = "Info not available"
-            maxru = " "
-        try:
-            nyq = str(self.radar.instrument_parameters['nyquist_velocity']['data'][0])
-            nyqu = self.radar.instrument_parameters['nyquist_velocity']['units'][0]
-        except:
-            nyq =  "Info not available"
-            nyqu = " "
-        try:
-            bwh = str(self.radar.instrument_parameters['radar_beam_width_h']['data'][0])
-            bwhu = self.radar.instrument_parameters['radar_beam_width_h']['units'][0]
-        except:
-            bwh = "Info not available"
-            bwhu = " "
-        try:
-            bwv = str(self.radar.instrument_parameters['radar_beam_width_v']['data'][0])
-            bwvu = self.radar.instrument_parameters['radar_beam_width_v']['units'][0]
-        except:
-            bwv = "Info not available"
-            bwvu = " "
-        try:
-            pw = str(self.radar.instrument_parameters['pulse_width']['data'][0])
-            pwu = self.radar.instrument_parameters['pulse_width']['units'][0]
-        except:
-            pw = "Info not available"
-            pwu = " "
-        try:
-            ngates = str(self.radar.ngates)
-        except:
-            ngates = "Info not available"
-        try:
-            nsweeps = str(self.radar.nsweeps)
-        except:
-            nsweeps = "Info not available"
-        
-        txOut = (('Radar Name: %s\n'% rname) +\
-        ('Radar longitude: %s\n'% rlon) + \
-        ('Radar latitude: %s\n'% rlat) + \
-        ('Radar altitude: %s %s\n'% (ralt, raltu)) + \
-        ('    \n') + \
-        ('Unambiguous range: %s %s\n'% (maxr, maxru)) + \
-        ('Nyquist velocity: %s %s\n'% (nyq, nyqu)) + \
-        ('    \n') + \
-        ('Radar Beamwidth, horiz: %s %s\n'% (bwh, bwhu)) + \
-        ('Radar Beamwidth, vert: %s %s\n'% (bwv, bwvu)) + \
-        ('Pulsewidth: %s %s \n'% (pw, pwu)) + \
-        ('    \n') + \
-        ('Number of gates: %s\n'% ngates) + \
-        ('Number of sweeps: %s\n'% nsweeps))
-        
-        QtGui.QMessageBox.information(self, "Short Radar Info", txOut) 
         
     ######################
     # Menu build methods #
@@ -224,7 +121,6 @@ class Menu(QtGui.QMainWindow):
         self.aboutmenu.addAction(self.RadarShort)
         self.aboutmenu.addAction(self.RadarLong)
         
- 
     def AddPlotMenu(self):
         '''Add Plot item to menu bar'''
         self.plotmenu = self.menubar.addMenu('&Plot')
@@ -234,7 +130,6 @@ class Menu(QtGui.QMainWindow):
         self.tiltmenu = self.plotmenu.addMenu('Tilt')
         self.rngringmenu = self.plotmenu.addMenu('Set Range Rings')
         self.cmapmenu = self.plotmenu.addMenu('Colormap')
-
 
     def AddFileAdvanceMenu(self):
         '''Add an option to advance to next or previous file'''
@@ -272,24 +167,106 @@ class Menu(QtGui.QMainWindow):
             cmapAction = self.cmapmenu.addAction(cm_name)
             cmapAction.setStatusTip("Use the %s colormap"%cm_name)
             cmapAction.triggered[()].connect(lambda cm_name=cm_name: self.cmapSelectCmd(cm_name))
-    
-    ########################
-    # Button methods #
-    ########################
+           
+    ######################
+    # Help methods #
+    ######################
 
-
-    #############################
-    # Limit entry methods #
-    #############################
+    def _about(self):
+        txOut = "This is a simple radar file browser to allow \
+                 quicklooks using the DoE PyArt software"
+        QtGui.QMessageBox.about(self, "About ARTView", txOut)
+ 
+    def _get_RadarLongInfo(self):
+        '''Print out the radar info to text box'''
+ 
+        # Get the radar info form rada object and print it
+        txOut = self.radar.info()
+        print txOut
             
+#        QtGui.QMessageBox.information(self, "Long Radar Info", str(txOut)) 
+        QtGui.QMessageBox.information(self, "Long Radar Info", "See terminal window") 
 
+    def _get_RadarShortInfo(self):
+        '''Print out some basic info about the radar'''
+        try:
+            rname = self.radar.metadata['instrument_name']
+        except:
+            rname = "Info not available"
+        try:
+            rlon = str(self.radar.longitude['data'][0])
+        except:
+            rlon = "Info not available"
+        try:
+            rlat = str(self.radar.latitude['data'][0])
+        except:
+            rlat = "Info not available"
+        try:
+            ralt = str(self.radar.altitude['data'][0])
+            raltu = self.radar.altitude['units'][0]
+        except:
+            ralt = "Info not available"
+            raltu = " "
+        try:
+            maxr = str(self.radar.instrument_parameters['unambiguous_range']['data'][0])
+            maxru = self.radar.instrument_parameters['unambiguous_range']['units'][0]
+        except:
+            maxr = "Info not available"
+            maxru = " "
+        try:
+            nyq = str(self.radar.instrument_parameters['nyquist_velocity']['data'][0])
+            nyqu = self.radar.instrument_parameters['nyquist_velocity']['units'][0]
+        except:
+            nyq =  "Info not available"
+            nyqu = " "
+        try:
+            bwh = str(self.radar.instrument_parameters['radar_beam_width_h']['data'][0])
+            bwhu = self.radar.instrument_parameters['radar_beam_width_h']['units'][0]
+        except:
+            bwh = "Info not available"
+            bwhu = " "
+        try:
+            bwv = str(self.radar.instrument_parameters['radar_beam_width_v']['data'][0])
+            bwvu = self.radar.instrument_parameters['radar_beam_width_v']['units'][0]
+        except:
+            bwv = "Info not available"
+            bwvu = " "
+        try:
+            pw = str(self.radar.instrument_parameters['pulse_width']['data'][0])
+            pwu = self.radar.instrument_parameters['pulse_width']['units'][0]
+        except:
+            pw = "Info not available"
+            pwu = " "
+        try:
+            ngates = str(self.radar.ngates)
+        except:
+            ngates = "Info not available"
+        try:
+            nsweeps = str(self.radar.nsweeps)
+        except:
+            nsweeps = "Info not available"
+        
+        txOut = (('Radar Name: %s\n'% rname) +\
+        ('Radar longitude: %s\n'% rlon) + \
+        ('Radar latitude: %s\n'% rlat) + \
+        ('Radar altitude: %s %s\n'% (ralt, raltu)) + \
+        ('    \n') + \
+        ('Unambiguous range: %s %s\n'% (maxr, maxru)) + \
+        ('Nyquist velocity: %s %s\n'% (nyq, nyqu)) + \
+        ('    \n') + \
+        ('Radar Beamwidth, horiz: %s %s\n'% (bwh, bwhu)) + \
+        ('Radar Beamwidth, vert: %s %s\n'% (bwv, bwvu)) + \
+        ('Pulsewidth: %s %s \n'% (pw, pwu)) + \
+        ('    \n') + \
+        ('Number of gates: %s\n'% ngates) + \
+        ('Number of sweeps: %s\n'% nsweeps))
+        
+        QtGui.QMessageBox.information(self, "Short Radar Info", txOut)
         
     ########################
     # Selectionion methods #
     ########################
     
-        
-        
     def AdvanceFileSelect(self, findex):
         '''Captures a selection and redraws figure with new file'''
         if findex > len(self.filelist):
@@ -331,15 +308,6 @@ class Menu(QtGui.QMainWindow):
             msg = "This is not a recognized radar file"
             self._ShowWarning(msg)
             return
-        
-
-    ####################
-    # Plotting methods #
-    ####################
- 
-    #########################
-    # Get and check methods #
-    #########################
 
     ########################
     # Warning methods #
@@ -357,6 +325,4 @@ class Menu(QtGui.QMainWindow):
     ########################
     # Image save methods #
     ########################
-
-
 
