@@ -10,7 +10,7 @@ from matplotlib.colors import Normalize as mlabNormalize
 from matplotlib.colorbar import ColorbarBase as mlabColorbarBase
 from matplotlib.pyplot import cm
 
-from tilt import TiltButtonWindow
+
 
 # Limits for varioud variable plots
 Z_LIMS = (-10., 65.)
@@ -207,12 +207,21 @@ class Display(QtGui.QMainWindow):
             self.tiltBox.addItem(btntxt)
         self.tiltBox.activated[str].connect(self._tiltAction)
         
+        self.fieldBox = QtGui.QComboBox()
+        self.fieldBox.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.fieldBox.setToolTip("Choose field")
+        self.fieldBox.addItem("Field Window")
+        # Loop through and create each field button
+        for field in self.Vradar.value.fields.keys():
+            self.fieldBox.addItem(field)
+        self.fieldBox.activated[str].connect(self._fieldAction)
         
         self.layout.addWidget(limsb, 0, 0)
 #        self.layout.addWidget(self.toolsBox, 0, 1)
         self.layout.addWidget(titleb, 0, 2)
         self.layout.addWidget(unitsb, 0, 3)
         self.layout.addWidget(self.tiltBox, 0, 4)
+        self.layout.addWidget(self.fieldBox, 0, 5)
         
     #############################
     # Functionality methods #
@@ -241,6 +250,12 @@ class Display(QtGui.QMainWindow):
             ntilt=int(text.split("(Tilt ")[1][:-1])-1
             self.TiltSelectCmd(ntilt)
 
+    def _fieldAction(self,text):
+        if text == "Field Window":
+            self._open_fieldbuttonwindow()
+        else:
+            self.FieldSelectCmd(str(text))
+
     def _title_input(self):
         '''Retrieve new plot title'''
         if self.title is None:
@@ -267,8 +282,15 @@ class Display(QtGui.QMainWindow):
             
     def _open_tiltbuttonwindow(self):
         '''Open a TiltButtonWindow instance'''
+        from tilt import TiltButtonWindow
         self.tiltbuttonwindow = TiltButtonWindow(self.Vradar, self.Vtilt, \
                             name=self.name+" Tilt Selection", parent=self.parent)
+        
+    def _open_fieldbuttonwindow(self):
+        '''Open a FieldButtonWindow instance'''
+        from field import FieldButtonWindow
+        self.fieldbuttonwindow = FieldButtonWindow(self.Vradar, self.Vfield, \
+                            name=self.name+" Field Selection", parent=self.parent)
         
     ########################
     # Selectionion methods #
@@ -296,6 +318,8 @@ class Display(QtGui.QMainWindow):
     def NewField(self,variable,value):
         self._initialize_limits()
         self.units = None
+        idx = self.fieldBox.findText(value)
+        self.fieldBox.setCurrentIndex(idx)
         self._update_plot()
     
     def NewTilt(self,variable,value):
