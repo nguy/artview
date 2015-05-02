@@ -111,7 +111,7 @@ class Display(QtGui.QMainWindow):
         self.ToolSelect = "No Tools" #XXX this is problably not the right way of doing this
         
         # Launch the GUI interface
-        self.LaunchGUI() #XXX almost empty
+        self.LaunchGUI() 
         
         self.NewRadar(None, None) #XXX initialise radar
         
@@ -197,25 +197,18 @@ class Display(QtGui.QMainWindow):
 #        tiltsb.setToolTip("Choose tilt elevation angle")
 #        tiltsb.clicked.connect(self._open_tiltbuttonwindow)
         
+        
         self.tiltBox = QtGui.QComboBox()
         self.tiltBox.setFocusPolicy(QtCore.Qt.NoFocus)
         self.tiltBox.setToolTip("Choose tilt elevation angle")
-        self.tiltBox.addItem("Tilt Window")
-        # Loop through and create each tilt button
-        elevs = self.Vradar.value.fixed_angle['data'][:]
-        for ntilt in self.Vradar.value.sweep_number['data'][:]:
-            btntxt = "%2.1f deg (Tilt %d)"%(elevs[ntilt], ntilt+1)
-            self.tiltBox.addItem(btntxt)
         self.tiltBox.activated[str].connect(self._tiltAction)
+        #self._fillTiltBox() XXX will be done by newRadar
         
         self.fieldBox = QtGui.QComboBox()
         self.fieldBox.setFocusPolicy(QtCore.Qt.NoFocus)
         self.fieldBox.setToolTip("Choose field")
-        self.fieldBox.addItem("Field Window")
-        # Loop through and create each field button
-        for field in self.Vradar.value.fields.keys():
-            self.fieldBox.addItem(field)
         self.fieldBox.activated[str].connect(self._fieldAction)
+        #self._fillFieldBox() XXX will be done by newRadar
         
         self.layout.addWidget(limsb, 0, 0)
 #        self.layout.addWidget(self.toolsBox, 0, 1)
@@ -227,7 +220,23 @@ class Display(QtGui.QMainWindow):
     #############################
     # Functionality methods #
     #############################
-            
+    
+    def _fillTiltBox(self):
+        self.tiltBox.clear()
+        self.tiltBox.addItem("Tilt Window")
+        # Loop through and create each tilt button
+        elevs = self.Vradar.value.fixed_angle['data'][:]
+        for ntilt in self.rTilts:
+            btntxt = "%2.1f deg (Tilt %d)"%(elevs[ntilt], ntilt+1)
+            self.tiltBox.addItem(btntxt)
+    
+    def _fillFieldBox(self):
+        self.fieldBox.clear()
+        self.fieldBox.addItem("Field Window")
+        # Loop through and create each field button
+        for field in self.fieldnames:
+            self.fieldBox.addItem(field)
+    
     def _lims_input(self, entry):
         '''Retrieve new limits input'''
         if entry['dmin'] is not None:
@@ -303,9 +312,13 @@ class Display(QtGui.QMainWindow):
         self._set_figure_canvas()
 
         # Get the tilt angles
-        self.rTilts = self.Vradar.value.sweep_number['data'][:]
+        self.rTilts = self.Vradar.value.sweep_number['data'][:] 
         # Get field names
         self.fieldnames = self.Vradar.value.fields.keys()
+
+        # Update field and tilt MenuBox
+        self._fillTiltBox()
+        self._fillFieldBox()
 
         # Set up the menus associated with scanning ground radars
         if self.airborne or self.rhi:
@@ -330,8 +343,6 @@ class Display(QtGui.QMainWindow):
 
     def TiltSelectCmd(self, ntilt):
         '''Captures a selection and redraws the field with new tilt'''
-        print ntilt
-        print "TiltSelectCmd"
         self.Vtilt.change(ntilt)
         #XXX tilt is changed and signal sended, so this and other classes do what they need to do
 

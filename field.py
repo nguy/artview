@@ -23,9 +23,10 @@ class FieldButtonWindow(QtGui.QMainWindow):
         # (or internal) changes in field (Core.Variable instances expected)
         self.Vfield = Vfield
         QtCore.QObject.connect(Vfield, QtCore.SIGNAL("ValueChanged"), self.NewField)
+        QtCore.QObject.connect(Vradar, QtCore.SIGNAL("ValueChanged"), self.NewRadar)
 
         self.CreateFieldWidget()
-        self.rButtons = self.SetFieldRadioButtons()
+        self.SetFieldRadioButtons()
         self.show()
            
     ########################
@@ -42,6 +43,8 @@ class FieldButtonWindow(QtGui.QMainWindow):
         '''Create a widget to store radio buttons to control tilt adjust'''
         self.radioBox = QtGui.QGroupBox("Field Selection", parent=self)
         self.rBox_layout = QtGui.QVBoxLayout(self.radioBox)
+        self.radioBox.setLayout(self.rBox_layout)
+        self.setCentralWidget(self.radioBox)
                 
     def SetFieldRadioButtons(self):
         '''Set a field selection using radio buttons'''
@@ -58,12 +61,12 @@ class FieldButtonWindow(QtGui.QMainWindow):
             self.rBox_layout.addWidget(button)
         
         self.NewField(self.Vfield, self.Vfield.value)  # setChecked the current field
-        self.radioBox.setLayout(self.rBox_layout)
-        self.setCentralWidget(self.radioBox)
-        
-        return self.radioBox
     
     def NewField(self, variable, value):
         if value in self.Vradar.value.fields:
             self.fieldbutton[value].setChecked(True)
         
+    def NewRadar(self, variable, value):
+        # update field list
+        self.CreateFieldWidget()
+        self.SetFieldRadioButtons()

@@ -23,9 +23,10 @@ class TiltButtonWindow(QtGui.QMainWindow):
         # (or internal) changes in tilt (Core.Variable instances expected)
         self.Vtilt = Vtilt
         QtCore.QObject.connect(Vtilt, QtCore.SIGNAL("ValueChanged"), self.NewTilt)
+        QtCore.QObject.connect(Vradar, QtCore.SIGNAL("ValueChanged"), self.NewRadar)
 
         self.CreateTiltWidget()
-        self.rButtons = self.SetTiltRadioButtons()
+        self.SetTiltRadioButtons()
         self.show()
            
     ########################
@@ -42,6 +43,8 @@ class TiltButtonWindow(QtGui.QMainWindow):
         '''Create a widget to store radio buttons to control tilt adjust'''
         self.radioBox = QtGui.QGroupBox("Tilt Selection", parent=self)
         self.rBox_layout = QtGui.QVBoxLayout(self.radioBox)
+        self.radioBox.setLayout(self.rBox_layout)
+        self.setCentralWidget(self.radioBox)
                 
     def SetTiltRadioButtons(self):
         '''Set a tilt selection using radio buttons'''
@@ -63,13 +66,13 @@ class TiltButtonWindow(QtGui.QMainWindow):
             self.rBox_layout.addWidget(self.tiltbutton[ntilt])
         
         self.NewTilt(self.Vtilt, self.Vtilt.value)  # setChecked the current tilt
-        self.radioBox.setLayout(self.rBox_layout)
-        self.setCentralWidget(self.radioBox)
-        
-        return self.radioBox
     
     def NewTilt(self, variable, value):
         tilt = self.Vtilt.value
         if tilt >= 0 and tilt < len(self.tiltbutton):
             self.tiltbutton[tilt].setChecked(True)
-        
+    
+    def NewRadar(self, variable, value):
+        # update tilt list
+        self.CreateTiltWidget()
+        self.SetTiltRadioButtons()
