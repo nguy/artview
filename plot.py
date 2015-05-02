@@ -181,23 +181,39 @@ class Display(QtGui.QMainWindow):
         '''If not BASIC mode, then add functionality buttons'''
         # Create the button controls
         limsb = QtGui.QPushButton("Adjust Limits")
+        limsb.setFocusPolicy(QtCore.Qt.NoFocus)
         limsb.setToolTip("Set data, X, and Y range limits")
-#        limsb.clicked.connect(self.showLimsDialog)
+        #limsb.clicked.connect(self.showLimsDialog)
         titleb = QtGui.QPushButton("Title")
+        titleb.setFocusPolicy(QtCore.Qt.NoFocus)
         titleb.setToolTip("Change plot title")
         titleb.clicked.connect(self._title_input)
         unitsb = QtGui.QPushButton("Units")
+        unitsb.setFocusPolicy(QtCore.Qt.NoFocus)
         unitsb.setToolTip("Change units string")
         unitsb.clicked.connect(self._units_input)
-        tiltsb = QtGui.QPushButton("Tilt Select")
-        tiltsb.setToolTip("Choose tilt elevation angle")
-        tiltsb.clicked.connect(self._open_tiltbuttonwindow)
+        
+#        tiltsb = QtGui.QPushButton("Tilt Select")
+#        tiltsb.setToolTip("Choose tilt elevation angle")
+#        tiltsb.clicked.connect(self._open_tiltbuttonwindow)
+        
+        self.tiltBox = QtGui.QComboBox()
+        self.tiltBox.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.tiltBox.setToolTip("Choose tilt elevation angle")
+        self.tiltBox.addItem("Tilt Window")
+        # Loop through and create each tilt button
+        elevs = self.Vradar.value.fixed_angle['data'][:]
+        for ntilt in self.Vradar.value.sweep_number['data'][:]:
+            btntxt = "%2.1f deg (Tilt %d)"%(elevs[ntilt], ntilt+1)
+            self.tiltBox.addItem(btntxt)
+        self.tiltBox.activated[str].connect(self._tiltAction)
+        
         
         self.layout.addWidget(limsb, 0, 0)
 #        self.layout.addWidget(self.toolsBox, 0, 1)
         self.layout.addWidget(titleb, 0, 2)
         self.layout.addWidget(unitsb, 0, 3)
-        self.layout.addWidget(tiltsb, 0, 4)
+        self.layout.addWidget(self.tiltBox, 0, 4)
         
     #############################
     # Functionality methods #
@@ -218,6 +234,13 @@ class Display(QtGui.QMainWindow):
         if entry['ymax'] is not None:
             self.limits['ymax'] = entry['ymax']
         self._update_plot()
+
+    def _tiltAction(self,text):
+        if text == "Tilt Window":
+            self._open_tiltbuttonwindow()
+        else:
+            ntilt=int(text.split("(Tilt ")[1][:-1])-1
+            self.TiltSelectCmd(ntilt)
 
     def _title_input(self):
         '''Retrieve new plot title'''
@@ -277,12 +300,14 @@ class Display(QtGui.QMainWindow):
         self._update_plot()
     
     def NewTilt(self,variable,value):
+        self.tiltBox.setCurrentIndex(value+1)  # +1 since the first one is "Tilt Window"
         self._update_plot()
 
 
     def TiltSelectCmd(self, ntilt):
         '''Captures a selection and redraws the field with new tilt'''
         print ntilt
+        print "TiltSelectCmd"
         self.Vtilt.change(ntilt)
         #XXX tilt is changed and signal sended, so this and other classes do what they need to do
 

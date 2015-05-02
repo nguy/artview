@@ -62,7 +62,7 @@ class TiltButtonWindow(QtGui.QMainWindow):
             
             self.rBox_layout.addWidget(self.tiltbutton[ntilt])
         
-        self.NewTilt(self.Vtilt, self.Vtitl.value)  # setChecked the current tilt
+        self.NewTilt(self.Vtilt, self.Vtilt.value)  # setChecked the current tilt
         self.radioBox.setLayout(self.rBox_layout)
         self.setCentralWidget(self.radioBox)
         
