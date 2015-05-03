@@ -11,6 +11,7 @@ from matplotlib.colorbar import ColorbarBase as mlabColorbarBase
 from matplotlib.pyplot import cm
 
 from tilt import TiltButtonWindow
+from limits import DisplayLimits, Ui_LimsDialog
 
 # Limits for varioud variable plots
 Z_LIMS = (-10., 65.)
@@ -69,31 +70,36 @@ class Display(QtGui.QMainWindow):
         QtCore.QObject.connect(Vfield,QtCore.SIGNAL("ValueChanged"),self.NewField)
         self.Vtilt = Vtilt
         QtCore.QObject.connect(Vtilt,QtCore.SIGNAL("ValueChanged"),self.NewTilt)
+#        self.Vlims = Vlims
+#        QtCore.QObject.connect(Vtilt,QtCore.SIGNAL("ValueChanged"),self.NewLims)
+        
+        self.DisplayLimits = DisplayLimits(self.Vfield)
         
         self.airborne = airborne
         self.rhi = rhi
         
         # Set size of plot
-        self.XSIZE = PPI_XSIZE
-        self.YSIZE = PPI_YSIZE
-        self.XRNG = PPI_XRNG
-        self.YRNG = PPI_YRNG
-        if self.airborne:
-            self.XSIZE = AIR_XSIZE
-            self.YSIZE = AIR_YSIZE
-            self.XRNG = AIR_XRNG
-            self.YRNG = AIR_YRNG
-        if self.rhi:
-            self.XSIZE = RHI_XSIZE
-            self.YSIZE = RHI_YSIZE
-            self.XRNG = RHI_XRNG
-            self.YRNG = RHI_YRNG
+#         self.XSIZE = PPI_XSIZE
+#         self.YSIZE = PPI_YSIZE
+#         self.XRNG = PPI_XRNG
+#         self.YRNG = PPI_YRNG
+#         if self.airborne:
+#             self.XSIZE = AIR_XSIZE
+#             self.YSIZE = AIR_YSIZE
+#             self.XRNG = AIR_XRNG
+#             self.YRNG = AIR_YRNG
+#         if self.rhi:
+#             self.XSIZE = RHI_XSIZE
+#             self.YSIZE = RHI_YSIZE
+#             self.XRNG = RHI_XRNG
+#             self.YRNG = RHI_YRNG
         
         # Set plot title and colorbar units to defaults
         self.title = None
         self.units = None
         # Initialize limits
-        self._initialize_limits()
+##        self._initialize_limits()
+        self.limits, self.CMAP = self.DisplayLimits._initialize_limits(airborne=self.airborne, rhi=self.rhi)
             
         # Set the default range rings
         self.RngRingList = ["None", "10 km", "20 km", "30 km", "50 km", "100 km"]
@@ -182,7 +188,7 @@ class Display(QtGui.QMainWindow):
         # Create the button controls
         limsb = QtGui.QPushButton("Adjust Limits")
         limsb.setToolTip("Set data, X, and Y range limits")
-#        limsb.clicked.connect(self.showLimsDialog)
+        limsb.clicked.connect(self._open_LimsDialog)
         titleb = QtGui.QPushButton("Title")
         titleb.setToolTip("Change plot title")
         titleb.clicked.connect(self._title_input)
@@ -202,6 +208,11 @@ class Display(QtGui.QMainWindow):
     #############################
     # Functionality methods #
     #############################
+        
+    def _open_LimsDialog(self):
+#        self.limsDialog = QtGui.QDialog()
+        self.limsDialog = Ui_LimsDialog(self.Vfield, self.limits, \
+                          name=self.name+" Limts Adjustment", parent=self.parent)
             
     def _lims_input(self, entry):
         '''Retrieve new limits input'''
@@ -271,12 +282,17 @@ class Display(QtGui.QMainWindow):
         self.title = None
         self._update_plot()
 
-    def NewField(self,variable,value):
-        self._initialize_limits()
+    def NewField(self, variable, value):
+##        self._initialize_limits()
+        self.limits, self.CMAP = self.DisplayLimits._initialize_limits(airborne=self.airborne, rhi=self.rhi)
+        
         self.units = None
         self._update_plot()
     
-    def NewTilt(self,variable,value):
+    def NewTilt(self, variable, value):
+        self._update_plot()
+        
+    def NewLims(self, variable, value):
         self._update_plot()
 
 
@@ -333,9 +349,9 @@ class Display(QtGui.QMainWindow):
 
     def _set_fig_ax(self, nrows=1, ncols=1):
         '''Set the figure and axis to plot to'''
-        self.fig = Figure(figsize=(self.XSIZE, self.YSIZE))
+        self.fig = Figure(figsize=(self.limits['xsize'], self.limits['ysize']))
         xwidth = 0.7
-        yheight = 0.7 * float(self.YSIZE)/float(self.XSIZE)
+        yheight = 0.7 * float(self.limits['ysize'])/float(self.limits['xsize'])
         self.ax = self.fig.add_axes([0.2, 0.2, xwidth, yheight])
         self.cax = self.fig.add_axes([0.2,0.10, xwidth, 0.02])
         
@@ -344,19 +360,20 @@ class Display(QtGui.QMainWindow):
         
     def _set_fig_ax_rhi(self):
         '''Change figure size and limits if RHI'''
-        if self.rhi:
-            self.XSIZE = RHI_XSIZE
-            self.YSIZE = RHI_YSIZE
-            self.limits['ymin'] = RHI_YRNG[0]
-            self.limits['ymax'] = RHI_YRNG[1]
-        if self.airborne:
-            self.XSIZE = AIR_XSIZE
-            self.YSIZE = AIR_YSIZE
-            self.limits['xmin'] = AIR_XRNG[0]
-            self.limits['xmax'] = AIR_XRNG[1]
-            self.limits['ymin'] = AIR_YRNG[0]
-            self.limits['ymax'] = AIR_YRNG[1]
-        self.fig.set_size_inches(self.XSIZE, self.YSIZE)
+#         if self.rhi:
+#             self.XSIZE = RHI_XSIZE
+#             self.YSIZE = RHI_YSIZE
+#             self.limits['ymin'] = RHI_YRNG[0]
+#             self.limits['ymax'] = RHI_YRNG[1]
+#         if self.airborne:
+#             self.XSIZE = AIR_XSIZE
+#             self.YSIZE = AIR_YSIZE
+#             self.limits['xmin'] = AIR_XRNG[0]
+#             self.limits['xmax'] = AIR_XRNG[1]
+#             self.limits['ymin'] = AIR_YRNG[0]
+#             self.limits['ymax'] = AIR_YRNG[1]
+        self.limits, self.CMAP = self.DisplayLimits._initialize_limits(airborne=self.airborne, rhi=self.rhi)
+        self.fig.set_size_inches(self.limits['xsize'], self.limits['ysize'])
         self._set_fig_ax()
 
     def _set_figure_canvas(self):
@@ -576,91 +593,6 @@ class Display(QtGui.QMainWindow):
         if path:
             self.canvas.print_figure(path, dpi=DPI)
             self.statusBar().showMessage('Saved to %s' % path)
-
-###############################
-# Limits Dialog Class Methods #
-###############################
-class Ui_LimsDialog(object):
-    '''
-    Limits Dialog Class
-    Popup window to set various limits
-    ''' 
-    def __init__(self, LimsDialog, mainLimits):
-        self.LimsDialog = LimsDialog
-        self.mainLimits = mainLimits
-    
-    def setupUi(self):
-        # Set aspects of Dialog Window
-        self.LimsDialog.setObjectName("Limits Dialog")
-        self.LimsDialog.setWindowModality(QtCore.Qt.WindowModal)
-        self.LimsDialog.setWindowTitle("Limits Entry")
-        
-        # Setup window layout
-        self.gridLayout_2 = QtGui.QGridLayout(self.LimsDialog)
-        self.gridLayout_2.setObjectName("gridLayout_2")
-        self.gridLayout = QtGui.QGridLayout()
-        self.gridLayout.setObjectName("gridLayout")
-	
-        # Set up the Labels for entry
-        self.lab_dmin = QtGui.QLabel("Data Min")
-        self.lab_dmax = QtGui.QLabel("Data Max")
-        self.lab_xmin = QtGui.QLabel("X Min")
-        self.lab_xmax = QtGui.QLabel("X Max")
-        self.lab_ymin = QtGui.QLabel("Y Min")
-        self.lab_ymax = QtGui.QLabel("Y Max")
-	
-        # Set up the Entry fields
-        self.ent_dmin = QtGui.QLineEdit(self.LimsDialog)
-        self.ent_dmax = QtGui.QLineEdit(self.LimsDialog)
-        self.ent_xmin = QtGui.QLineEdit(self.LimsDialog)
-        self.ent_xmax = QtGui.QLineEdit(self.LimsDialog)
-        self.ent_ymin = QtGui.QLineEdit(self.LimsDialog)
-        self.ent_ymax = QtGui.QLineEdit(self.LimsDialog)
-        
-        # Input the current values
-        self.ent_dmin.setText(str(self.mainLimits['vmin']))
-        self.ent_dmax.setText(str(self.mainLimits['vmax']))
-        self.ent_xmin.setText(str(self.mainLimits['xmin']))
-        self.ent_xmax.setText(str(self.mainLimits['xmax']))
-        self.ent_ymin.setText(str(self.mainLimits['ymin']))
-        self.ent_ymax.setText(str(self.mainLimits['ymax']))
-	
-        # Add to the layout
-        self.gridLayout.addWidget(self.lab_dmin, 0, 0, 1, 1)
-        self.gridLayout.addWidget(self.ent_dmin, 0, 1, 1, 1)
-        self.gridLayout.addWidget(self.lab_dmax, 1, 0, 1, 1)
-        self.gridLayout.addWidget(self.ent_dmax, 1, 1, 1, 1)
-        self.gridLayout.addWidget(self.lab_xmin, 2, 0, 1, 1)
-        self.gridLayout.addWidget(self.ent_xmin, 2, 1, 1, 1)
-        self.gridLayout.addWidget(self.lab_xmax, 3, 0, 1, 1)
-        self.gridLayout.addWidget(self.ent_xmax, 3, 1, 1, 1)
-        self.gridLayout.addWidget(self.lab_ymin, 4, 0, 1, 1)
-        self.gridLayout.addWidget(self.ent_ymin, 4, 1, 1, 1)
-        self.gridLayout.addWidget(self.lab_ymax, 5, 0, 1, 1)
-        self.gridLayout.addWidget(self.ent_ymax, 5, 1, 1, 1)
-	
-        self.gridLayout_2.addLayout(self.gridLayout, 0, 0, 1, 1)
-        self.buttonBox = QtGui.QDialogButtonBox(self.LimsDialog)
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName("buttonBox")
-        self.gridLayout_2.addWidget(self.buttonBox, 1, 0, 1, 1)
-
-        # Connect the signals from OK and Cancel buttons
-        self.buttonBox.accepted.connect(self._pass_lims)
-        self.buttonBox.rejected.connect(self.LimsDialog.reject)
-	
-    def _pass_lims(self):
-        entry = {}
-        entry['dmin'] = float(self.ent_dmin.text())
-        entry['dmax'] = float(self.ent_dmax.text())
-        entry['xmin'] = float(self.ent_xmin.text())
-        entry['xmax'] = float(self.ent_xmax.text())
-        entry['ymin'] = float(self.ent_ymin.text())
-        entry['ymax'] = float(self.ent_ymax.text())
-	
-        Browse._lims_input(main, entry)
-        self.LimsDialog.accept()
         
 ##########################
 # Zoom/Pan Class Methods #

@@ -12,7 +12,7 @@ class TiltButtonWindow(QtGui.QMainWindow):
     tiltClicked = QtCore.pyqtSignal()
     
     def __init__(self, Vradar, Vtilt, name="TiltButtons", parent=None):
-        '''Initialize the class to create the interface'''
+        '''Initialize the class to create the Tilt Selection interface'''
         super(TiltButtonWindow, self).__init__(parent)
         self.parent = parent
         self.name = name
@@ -34,8 +34,6 @@ class TiltButtonWindow(QtGui.QMainWindow):
         
     def TiltSelectCmd(self, ntilt):
         '''Captures a selection and redraws the field with new tilt'''
-##        print ntilt
-        #self.tiltClicked.emit()
         self.Vtilt.change(ntilt)
 
     def CreateTiltWidget(self):
