@@ -10,8 +10,12 @@ from matplotlib.colors import Normalize as mlabNormalize
 from matplotlib.colorbar import ColorbarBase as mlabColorbarBase
 from matplotlib.pyplot import cm
 
+<<<<<<< HEAD
 from tilt import TiltButtonWindow
 from limits import DisplayLimits, Ui_LimsDialog
+=======
+
+>>>>>>> 50b93c79e022c0ef812764a9dea22ee914066dee
 
 # Limits for varioud variable plots
 Z_LIMS = (-10., 65.)
@@ -117,7 +121,7 @@ class Display(QtGui.QMainWindow):
         self.ToolSelect = "No Tools" #XXX this is problably not the right way of doing this
         
         # Launch the GUI interface
-        self.LaunchGUI() #XXX almost empty
+        self.LaunchGUI() 
         
         self.NewRadar(None, None) #XXX initialise radar
         
@@ -187,33 +191,75 @@ class Display(QtGui.QMainWindow):
         '''If not BASIC mode, then add functionality buttons'''
         # Create the button controls
         limsb = QtGui.QPushButton("Adjust Limits")
+        limsb.setFocusPolicy(QtCore.Qt.NoFocus)
         limsb.setToolTip("Set data, X, and Y range limits")
+<<<<<<< HEAD
         limsb.clicked.connect(self._open_LimsDialog)
+=======
+        #limsb.clicked.connect(self.showLimsDialog)
+>>>>>>> 50b93c79e022c0ef812764a9dea22ee914066dee
         titleb = QtGui.QPushButton("Title")
+        titleb.setFocusPolicy(QtCore.Qt.NoFocus)
         titleb.setToolTip("Change plot title")
         titleb.clicked.connect(self._title_input)
         unitsb = QtGui.QPushButton("Units")
+        unitsb.setFocusPolicy(QtCore.Qt.NoFocus)
         unitsb.setToolTip("Change units string")
         unitsb.clicked.connect(self._units_input)
-        tiltsb = QtGui.QPushButton("Tilt Select")
-        tiltsb.setToolTip("Choose tilt elevation angle")
-        tiltsb.clicked.connect(self._open_tiltbuttonwindow)
+        
+#        tiltsb = QtGui.QPushButton("Tilt Select")
+#        tiltsb.setToolTip("Choose tilt elevation angle")
+#        tiltsb.clicked.connect(self._open_tiltbuttonwindow)
+        
+        
+        self.tiltBox = QtGui.QComboBox()
+        self.tiltBox.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.tiltBox.setToolTip("Choose tilt elevation angle")
+        self.tiltBox.activated[str].connect(self._tiltAction)
+        #self._fillTiltBox() XXX will be done by newRadar
+        
+        self.fieldBox = QtGui.QComboBox()
+        self.fieldBox.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.fieldBox.setToolTip("Choose field")
+        self.fieldBox.activated[str].connect(self._fieldAction)
+        #self._fillFieldBox() XXX will be done by newRadar
         
         self.layout.addWidget(limsb, 0, 0)
 #        self.layout.addWidget(self.toolsBox, 0, 1)
         self.layout.addWidget(titleb, 0, 2)
         self.layout.addWidget(unitsb, 0, 3)
-        self.layout.addWidget(tiltsb, 0, 4)
+        self.layout.addWidget(self.tiltBox, 0, 4)
+        self.layout.addWidget(self.fieldBox, 0, 5)
         
     #############################
     # Functionality methods #
     #############################
+<<<<<<< HEAD
         
     def _open_LimsDialog(self):
 #        self.limsDialog = QtGui.QDialog()
         self.limsDialog = Ui_LimsDialog(self.Vfield, self.limits, \
                           name=self.name+" Limts Adjustment", parent=self.parent)
             
+=======
+    
+    def _fillTiltBox(self):
+        self.tiltBox.clear()
+        self.tiltBox.addItem("Tilt Window")
+        # Loop through and create each tilt button
+        elevs = self.Vradar.value.fixed_angle['data'][:]
+        for ntilt in self.rTilts:
+            btntxt = "%2.1f deg (Tilt %d)"%(elevs[ntilt], ntilt+1)
+            self.tiltBox.addItem(btntxt)
+    
+    def _fillFieldBox(self):
+        self.fieldBox.clear()
+        self.fieldBox.addItem("Field Window")
+        # Loop through and create each field button
+        for field in self.fieldnames:
+            self.fieldBox.addItem(field)
+    
+>>>>>>> 50b93c79e022c0ef812764a9dea22ee914066dee
     def _lims_input(self, entry):
         '''Retrieve new limits input'''
         if entry['dmin'] is not None:
@@ -229,6 +275,19 @@ class Display(QtGui.QMainWindow):
         if entry['ymax'] is not None:
             self.limits['ymax'] = entry['ymax']
         self._update_plot()
+
+    def _tiltAction(self,text):
+        if text == "Tilt Window":
+            self._open_tiltbuttonwindow()
+        else:
+            ntilt=int(text.split("(Tilt ")[1][:-1])-1
+            self.TiltSelectCmd(ntilt)
+
+    def _fieldAction(self,text):
+        if text == "Field Window":
+            self._open_fieldbuttonwindow()
+        else:
+            self.FieldSelectCmd(str(text))
 
     def _title_input(self):
         '''Retrieve new plot title'''
@@ -256,8 +315,15 @@ class Display(QtGui.QMainWindow):
             
     def _open_tiltbuttonwindow(self):
         '''Open a TiltButtonWindow instance'''
+        from tilt import TiltButtonWindow
         self.tiltbuttonwindow = TiltButtonWindow(self.Vradar, self.Vtilt, \
                             name=self.name+" Tilt Selection", parent=self.parent)
+        
+    def _open_fieldbuttonwindow(self):
+        '''Open a FieldButtonWindow instance'''
+        from field import FieldButtonWindow
+        self.fieldbuttonwindow = FieldButtonWindow(self.Vradar, self.Vfield, \
+                            name=self.name+" Field Selection", parent=self.parent)
         
     ########################
     # Selectionion methods #
@@ -269,9 +335,13 @@ class Display(QtGui.QMainWindow):
         self._set_figure_canvas()
 
         # Get the tilt angles
-        self.rTilts = self.Vradar.value.sweep_number['data'][:]
+        self.rTilts = self.Vradar.value.sweep_number['data'][:] 
         # Get field names
         self.fieldnames = self.Vradar.value.fields.keys()
+
+        # Update field and tilt MenuBox
+        self._fillTiltBox()
+        self._fillFieldBox()
 
         # Set up the menus associated with scanning ground radars
         if self.airborne or self.rhi:
@@ -287,18 +357,24 @@ class Display(QtGui.QMainWindow):
         self.limits, self.CMAP = self.DisplayLimits._initialize_limits(airborne=self.airborne, rhi=self.rhi)
         
         self.units = None
+        idx = self.fieldBox.findText(value)
+        self.fieldBox.setCurrentIndex(idx)
         self._update_plot()
     
+<<<<<<< HEAD
     def NewTilt(self, variable, value):
         self._update_plot()
         
     def NewLims(self, variable, value):
+=======
+    def NewTilt(self,variable,value):
+        self.tiltBox.setCurrentIndex(value+1)  # +1 since the first one is "Tilt Window"
+>>>>>>> 50b93c79e022c0ef812764a9dea22ee914066dee
         self._update_plot()
 
 
     def TiltSelectCmd(self, ntilt):
         '''Captures a selection and redraws the field with new tilt'''
-        print ntilt
         self.Vtilt.change(ntilt)
         #XXX tilt is changed and signal sended, so this and other classes do what they need to do
 
