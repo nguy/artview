@@ -1,3 +1,7 @@
+"""
+parser.py - Parse the input code from execution program
+"""
+
 import argparse
 VERSION = '0.1.6'
 def parse(argv):

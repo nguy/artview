@@ -1,3 +1,6 @@
+"""
+men.py - Class to create menu for ARTView app
+"""
 import numpy as np
 import pyart
 

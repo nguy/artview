@@ -28,8 +28,9 @@ app = QtGui.QApplication(sys.argv)
 MainMenu = Menu(Vradar, DirIn, name="Menu") #initiate Vradar
 
 Vtilt = Variable(0)
-plot1 = Display(Vradar, Variable(field), Vtilt, name="Display1", parent=MainMenu)
-plot2 = Display(Vradar, Variable(field), Vtilt, name="Display2", parent=MainMenu)
+Vlims = Variable(0)
+plot1 = Display(Vradar, Variable(field), Vtilt, Vlims, name="Display1", parent=MainMenu)
+plot2 = Display(Vradar, Variable(field), Vtilt, Vlims, name="Display2", parent=MainMenu)
 #tiltselect = TiltButtonWindow(Vradar, Variable(0), name="Tilt Selection", parent=MainMenu)
 
 #MainDisplay = make_MainDisplay(MainMenu, plots=[plot1, plot2])
