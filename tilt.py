@@ -1,6 +1,6 @@
-###########
-# tilt.py
-###########
+"""
+tilt.py - Class for modifying tilt via Display window
+"""
 # Load the needed packages
 from PyQt4 import QtGui, QtCore
 from functools import partial
