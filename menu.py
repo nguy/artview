@@ -1,5 +1,5 @@
 """
-men.py - Class to create menu for ARTView app
+menu.py - Class to create menu for ARTView app
 """
 import numpy as np
 import pyart
@@ -72,7 +72,7 @@ class Menu(QtGui.QMainWindow):
         
         self.AddFileMenu()
         self.AddAboutMenu()
-        self.AddPlotMenu()
+#        self.AddPlotMenu()
         self.AddFileAdvanceMenu()
         
 
@@ -184,7 +184,7 @@ class Menu(QtGui.QMainWindow):
         '''Print out the radar info to text box'''
  
         # Get the radar info form rada object and print it
-        txOut = self.radar.info()
+        txOut = self.Vradar.value.info()
         print txOut
             
 #        QtGui.QMessageBox.information(self, "Long Radar Info", str(txOut)) 
@@ -193,59 +193,59 @@ class Menu(QtGui.QMainWindow):
     def _get_RadarShortInfo(self):
         '''Print out some basic info about the radar'''
         try:
-            rname = self.radar.metadata['instrument_name']
+            rname = self.Vradar.value.metadata['instrument_name']
         except:
             rname = "Info not available"
         try:
-            rlon = str(self.radar.longitude['data'][0])
+            rlon = str(self.Vradar.value.longitude['data'][0])
         except:
             rlon = "Info not available"
         try:
-            rlat = str(self.radar.latitude['data'][0])
+            rlat = str(self.Vradar.value.latitude['data'][0])
         except:
             rlat = "Info not available"
         try:
-            ralt = str(self.radar.altitude['data'][0])
-            raltu = self.radar.altitude['units'][0]
+            ralt = str(self.Vradar.value.altitude['data'][0])
+            raltu = self.Vradar.value.altitude['units'][0]
         except:
             ralt = "Info not available"
             raltu = " "
         try:
-            maxr = str(self.radar.instrument_parameters['unambiguous_range']['data'][0])
-            maxru = self.radar.instrument_parameters['unambiguous_range']['units'][0]
+            maxr = str(self.Vradar.value.instrument_parameters['unambiguous_range']['data'][0])
+            maxru = self.Vradar.value.instrument_parameters['unambiguous_range']['units'][0]
         except:
             maxr = "Info not available"
             maxru = " "
         try:
-            nyq = str(self.radar.instrument_parameters['nyquist_velocity']['data'][0])
-            nyqu = self.radar.instrument_parameters['nyquist_velocity']['units'][0]
+            nyq = str(self.Vradar.value.instrument_parameters['nyquist_velocity']['data'][0])
+            nyqu = self.Vradar.value.instrument_parameters['nyquist_velocity']['units'][0]
         except:
             nyq =  "Info not available"
             nyqu = " "
         try:
-            bwh = str(self.radar.instrument_parameters['radar_beam_width_h']['data'][0])
-            bwhu = self.radar.instrument_parameters['radar_beam_width_h']['units'][0]
+            bwh = str(self.Vradar.value.instrument_parameters['radar_beam_width_h']['data'][0])
+            bwhu = self.Vradar.value.instrument_parameters['radar_beam_width_h']['units'][0]
         except:
             bwh = "Info not available"
             bwhu = " "
         try:
-            bwv = str(self.radar.instrument_parameters['radar_beam_width_v']['data'][0])
-            bwvu = self.radar.instrument_parameters['radar_beam_width_v']['units'][0]
+            bwv = str(self.Vradar.value.instrument_parameters['radar_beam_width_v']['data'][0])
+            bwvu = self.Vradar.value.instrument_parameters['radar_beam_width_v']['units'][0]
         except:
             bwv = "Info not available"
             bwvu = " "
         try:
-            pw = str(self.radar.instrument_parameters['pulse_width']['data'][0])
-            pwu = self.radar.instrument_parameters['pulse_width']['units'][0]
+            pw = str(self.Vradar.value.instrument_parameters['pulse_width']['data'][0])
+            pwu = self.Vradar.value.instrument_parameters['pulse_width']['units'][0]
         except:
             pw = "Info not available"
             pwu = " "
         try:
-            ngates = str(self.radar.ngates)
+            ngates = str(self.Vradar.value.ngates)
         except:
             ngates = "Info not available"
         try:
-            nsweeps = str(self.radar.nsweeps)
+            nsweeps = str(self.Vradar.value.nsweeps)
         except:
             nsweeps = "Info not available"
         
