@@ -1,6 +1,7 @@
 """
 tilt.py - Class for modifying tilt via Display window
 """
+
 # Load the needed packages
 from PyQt4 import QtGui, QtCore
 from functools import partial
@@ -21,6 +22,7 @@ class TiltButtonWindow(QtGui.QMainWindow):
         
         # Set up signal, so that DISPLAY can react to external 
         # (or internal) changes in tilt (Core.Variable instances expected)
+        # The change is sent through Vradar
         self.Vtilt = Vtilt
         QtCore.QObject.connect(Vtilt, QtCore.SIGNAL("ValueChanged"), self.NewTilt)
         QtCore.QObject.connect(Vradar, QtCore.SIGNAL("ValueChanged"), self.NewRadar)

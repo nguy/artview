@@ -176,8 +176,6 @@ class Display(QtGui.QMainWindow):
 #        tiltsb.setToolTip("Choose tilt elevation angle")
 #        tiltsb.clicked.connect(self._open_tiltbuttonwindow)
         
-
-        
         #self._fillFieldBox() AG will be done by newRadar
         self._add_tiltBoxUI()
         self._add_fieldBoxUI()
@@ -317,6 +315,7 @@ class Display(QtGui.QMainWindow):
 #        self.toolsBox.addItem("Reset file defaults")
         
         self.toolsButton = QtGui.QPushButton("Toolbox")
+        self.toolsButton.setFocusPolicy(QtCore.Qt.NoFocus)
         self.toolsButton.setToolTip("Choose a tool to apply")
         toolmenu = QtGui.QMenu(self)
         toolZoomPan = toolmenu.addAction("Zoom/Pan")
@@ -418,7 +417,8 @@ class Display(QtGui.QMainWindow):
         
     def toolZoomPanCmd(self):
         scale = 1.1
-        self.zp = ZoomPan(self.ax, self.limits, base_scale = scale)
+        self.zp = ZoomPan(self.Vradar, self.Vlims, self.ax, self.limits, \
+                          base_scale = scale, parent=self.parent)
         self.zp.connect()
         
     def toolCustomCmd(self):
@@ -482,11 +482,12 @@ class Display(QtGui.QMainWindow):
         # If Zoom/Pan selected, Set up the zoom/pan functionality
         if self.zp != None:
             scale = 1.1
-            self.zp = ZoomPan(self.ax, self.limits, base_scale = scale)
+            self.zp = ZoomPan(self.Vradar, self.Vlims, self.ax, self.limits, \
+                              base_scale = scale, parent=self.parent)
             #figZoom = self.zp.zoom()
             #figPan = self.zp.pan_factory(self.limits)
             self.zp.connect()
-        
+
         if self.airborne:
             self.display = pyart.graph.RadarDisplay_Airborne(self.Vradar.value)
             
@@ -633,12 +634,23 @@ class Display(QtGui.QMainWindow):
 ##########################
 # Zoom/Pan Class Methods #
 ##########################
-class ZoomPan:
+class ZoomPan(QtGui.QMainWindow):
     '''
     Class for Zoom and Pan of plot
     Modified an original answer found here: http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-wheel
     '''
-    def __init__(self, ax, limits, base_scale = 2.):
+    def __init__(self, Vradar, Vlims, ax, limits, base_scale = 2., name="ZoomPan", parent=None):
+        super(ZoomPan, self).__init__(parent)
+        self.parent = parent
+        self.name = name
+        
+        # Set up signal, so that DISPLAY can react to external 
+        # (or internal) changes in limits (Core.Variable instances expected)
+        self.Vradar = Vradar
+        QtCore.QObject.connect(Vradar, QtCore.SIGNAL("ValueChanged"), self.NewRadar)
+        self.Vlims = Vlims
+        QtCore.QObject.connect(Vlims, QtCore.SIGNAL("ValueChanged"), self.NewLimits)
+        
         self.press = None
         self.cur_xlim = None
         self.cur_ylim = None
@@ -698,7 +710,8 @@ class ZoomPan:
         self.entry['ymax'] = ydata + new_height * (rely)
 	
         # Send the new limits back to the main window
-        Display._lims_input(main, self.entry)
+#        Display._lims_input(main, self.entry)
+#        Display._lims_input(Display, self.entry)
         
     def onPress(self, event):
         if event.inaxes != self.ax: return
@@ -728,11 +741,31 @@ class ZoomPan:
         self.entry['ymin'], self.entry['ymax'] = self.cur_ylim[0], self.cur_ylim[1]
 	
         # Send the new limits back to the main window
-        Display._lims_input(main, self.entry)
+#        Display._lims_input(main, self.entry)
+#        Display._lims_input(Display, self.entry)
     
     def disconnect(self):
         self.fig.canvas.mpl_disconnect(self.scrollID)
         self.fig.canvas.mpl_disconnect(self.pressID)
         self.fig.canvas.mpl_disconnect(self.releaseID)
         self.fig.canvas.mpl_disconnect(self.motionID)
+        
+    def _pass_lims(self):
+        self.limits['vmin'] = self.limits['vmin']
+        self.limits['vmax'] = self.limits['vmax']
+        self.limits['xmin'] = self.entry['xmin']
+        self.limits['xmax'] = self.entry['xmax']
+        self.limits['ymin'] = self.entry['ymin']
+        self.limits['ymax'] = self.entry['ymax']
+        
+        self.LimsDialog.accept()
+        self.Vlims.change(self.limits)
+             
+    def NewLimits(self, variable, value):
+        '''Retrieve new limits input'''
+        self._pass_lims()
+    
+    def NewRadar(self, variable, value):
+        # update Limits
+        self._pass_lims()
 

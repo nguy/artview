@@ -37,8 +37,6 @@ class FieldButtonWindow(QtGui.QMainWindow):
         
     def FieldSelectCmd(self, field):
         '''Captures a selection and redraws the field with new tilt'''
-##        print ntilt
-        #self.tiltClicked.emit()
         self.Vfield.change(field)
 
     def CreateFieldWidget(self):
