@@ -151,15 +151,24 @@ class Display(QtGui.QMainWindow):
         
         self.dispButton = QtGui.QPushButton("Display Options")
         self.dispButton.setToolTip("Adjust display properties")
+        self.dispButton.setFocusPolicy(QtCore.Qt.NoFocus)
         dispmenu = QtGui.QMenu(self)
         dispLimits = dispmenu.addAction("Adjust Display Limits")
+        dispLimits.setToolTip("Set data, X, and Y range limits")
         dispTitle = dispmenu.addAction("Change Title")
+        dispTitle.setToolTip("Change plot title")
         dispUnit = dispmenu.addAction("Change Units")
+        dispUnit.setToolTip("Change units string")
+        self.dispRngRing = dispmenu.addAction("Add Range Rings")
+        self.dispRngRingmenu = QtGui.QMenu("Add Range Rings")
+        self.dispRngRingmenu.setFocusPolicy(QtCore.Qt.NoFocus)
         self.dispCmap = dispmenu.addAction("Change Colormap")
         self.dispCmapmenu = QtGui.QMenu("Change Cmap")
+        self.dispCmapmenu.setFocusPolicy(QtCore.Qt.NoFocus)
         dispLimits.triggered[()].connect(self._open_LimsDialog)
         dispTitle.triggered[()].connect(self._title_input)
         dispUnit.triggered[()].connect(self._units_input)
+        self._add_RngRing_to_button()
         self._add_cmaps_to_button()
         self.dispButton.setMenu(dispmenu)
 				
@@ -177,7 +186,10 @@ class Display(QtGui.QMainWindow):
 #        tiltsb.clicked.connect(self._open_tiltbuttonwindow)
         
         #self._fillFieldBox() AG will be done by newRadar
+        
+        # Create the Tilt ComboBox
         self._add_tiltBoxUI()
+        #Create the Field ComboBox
         self._add_fieldBoxUI()
         # Create the Tools ComboBox
         self._add_toolsBoxUI()
@@ -202,6 +214,7 @@ class Display(QtGui.QMainWindow):
                           name=self.name+" Limts Adjustment", parent=self.parent)
     
     def _fillTiltBox(self):
+        '''Fill in the Tilt Window Box with current elevation angles'''
         self.tiltBox.clear()
         self.tiltBox.addItem("Tilt Window")
         # Loop through and create each tilt button
@@ -211,6 +224,7 @@ class Display(QtGui.QMainWindow):
             self.tiltBox.addItem(btntxt)
     
     def _fillFieldBox(self):
+        '''Fill in the Field Window Box with current variable names'''
         self.fieldBox.clear()
         self.fieldBox.addItem("Field Window")
         # Loop through and create each field button
@@ -234,13 +248,15 @@ class Display(QtGui.QMainWindow):
         self._update_plot()
 
     def _tiltAction(self, text):
+        '''Define action for Tilt Button selection'''
         if text == "Tilt Window":
             self._open_tiltbuttonwindow()
         else:
-            ntilt=int(text.split("(Tilt ")[1][:-1])-1
+            ntilt = int(text.split("(Tilt ")[1][:-1])-1
             self.TiltSelectCmd(ntilt)
 
     def _fieldAction(self, text):
+        '''Define action for Field Button selection'''
         if text == "Field Window":
             self._open_fieldbuttonwindow()
         else:
@@ -282,6 +298,14 @@ class Display(QtGui.QMainWindow):
         self.fieldbuttonwindow = FieldButtonWindow(self.Vradar, self.Vfield, \
                             name=self.name+" Field Selection", parent=self.parent)
         
+    def _add_RngRing_to_button(self):
+        '''Add a menu to display range rings on plot'''
+        for RngRing in self.RngRingList:
+            RingAction = self.dispRngRingmenu.addAction(RngRing)
+            RingAction.setStatusTip("Apply Range Rings every %s"%RngRing)
+            RingAction.triggered[()].connect(lambda RngRing=RngRing: self.RngRingSelectCmd(RngRing))
+            self.dispRngRing.setMenu(self.dispRngRingmenu)
+        
     def _add_cmaps_to_button(self):
         '''Add a menu to change colormap used for plot'''
         for cm_name in self.cm_names:
@@ -307,6 +331,7 @@ class Display(QtGui.QMainWindow):
         #self._fillFieldBox() AG will be done by newRadar
                    
     def _add_toolsBoxUI(self):
+        '''Create a Tools Button menu'''
 #        self.toolsBox = QtGui.QComboBox()
 #        self.fieldBox.setFocusPolicy(QtCore.Qt.NoFocus)
 #        self.toolsBox.setToolTip("Choose a tool to apply")
@@ -330,7 +355,8 @@ class Display(QtGui.QMainWindow):
     # Selectionion methods #
     ########################
 
-    def NewRadar(self,variable,value):
+    def NewRadar(self, variable, value):
+        '''Display changes after radar Variable class is altered'''
         # In case the flags were not used at startup
         self._check_file_type()
         self._set_figure_canvas()
@@ -354,6 +380,7 @@ class Display(QtGui.QMainWindow):
         self._update_plot()
 
     def NewField(self, variable, value):
+        '''Display changes after field in Variable class is altered'''
         self.DisplayLimits = DisplayLimits(self.Vfield)
         self.limits, self.CMAP = self.DisplayLimits._initialize_limits(airborne=self.airborne, rhi=self.rhi)
         
@@ -362,27 +389,27 @@ class Display(QtGui.QMainWindow):
         self.fieldBox.setCurrentIndex(idx)
         self._update_plot()
 
-    def NewTilt(self, variable, value):
-        self._update_plot()
-        
     def NewLims(self, variable, value):
+        '''Display changes after limits in Variable class is altered'''
         self._update_plot()
 
     def NewTilt(self,variable,value):
-        self.tiltBox.setCurrentIndex(value+1)  # +1 since the first one is "Tilt Window"
+        '''Display changes after tilt in Variable class is altered'''
+        # +1 since the first one is "Tilt Window"
+        self.tiltBox.setCurrentIndex(value+1)  
         self._update_plot()
 
     def TiltSelectCmd(self, ntilt):
-        '''Captures a selection and redraws the field with new tilt'''
+        '''Captures tilt selection and redraws the field with new tilt'''
         self.Vtilt.change(ntilt)
         #AG tilt is changed and signal sent, so this and other classes do what they need to do
 
     def FieldSelectCmd(self, nombre):
-        '''Captures a selection and redraws the new field'''
+        '''Captures field selection and redraws the new field'''
         self.Vfield.change(nombre)
 
     def RngRingSelectCmd(self, ringSel):
-        '''Captures selection and redraws the field with range rings'''
+        '''Captures Range Ring selection and redraws the field with range rings'''
         if ringSel is "None":
             self.RngRing = False
         else:
@@ -411,11 +438,12 @@ class Display(QtGui.QMainWindow):
         self._update_plot()
         
     def cmapSelectCmd(self, cm_name):
-        '''Captures selection of new cmap and redraws'''
+        '''Captures colormap selection and redraws'''
         self.CMAP = cm_name
         self._update_plot()
         
     def toolZoomPanCmd(self):
+        '''Creates and connects to a Zoom/Pan instance'''
         scale = 1.1
         self.zp = ZoomPan(self.Vradar, self.Vlims, self.ax, self.limits, \
                           base_scale = scale, parent=self.parent)
@@ -442,7 +470,7 @@ class Display(QtGui.QMainWindow):
     ####################
 
     def _set_fig_ax(self, nrows=1, ncols=1):
-        '''Set the figure and axis to plot to'''
+        '''Set the figure and axis to plot'''
         self.fig = Figure(figsize=(self.limits['xsize'], self.limits['ysize']))
         xwidth = 0.7
         yheight = 0.7 * float(self.limits['ysize'])/float(self.limits['xsize'])
@@ -465,7 +493,7 @@ class Display(QtGui.QMainWindow):
         self.layout.addWidget(self.canvas, 1, 0, 7, 6)
 
     def _update_plot(self):
-        '''Renew the plot'''
+        '''Draw/Redraw the plot'''
         # This is a bit of a hack to ensure that the viewer works with files
         # withouth "standard" output as defined by PyArt
         # Check to see if the field 'reflectivity' exists for the initial open
@@ -565,7 +593,9 @@ class Display(QtGui.QMainWindow):
         
     def _check_default_field(self):
         '''Hack to perform a check on reflectivity to make it work with 
-        a larger number of files
+        a larger number of files as there are many nomenclature is the
+        weather radar world.
+        
         This should only occur upon start up with a new file'''
         if self.Vfield.value == 'reflectivity':
             if self.Vfield.value in self.fieldnames:
@@ -582,10 +612,12 @@ class Display(QtGui.QMainWindow):
                 self.Vfield.change('dBZ')
             elif 'Z' in self.fieldnames:
                 self.Vfield.change('Z')
-            elif 'DBZ_S'in self.fieldnames:
+            elif 'DBZ_S' in self.fieldnames:
                 self.Vfield.change('DBZ_S')
             elif 'reflectivity_horizontal'in self.fieldnames:
                 self.Vfield.change('reflectivity_horizontal')
+            elif 'DBZH' in self.fieldnames:
+                self.Vfield.change('DBZH')
 
                 
     def _check_file_type(self):
@@ -619,11 +651,12 @@ class Display(QtGui.QMainWindow):
     # Image save methods #
     ########################
     def _quick_savefile(self, PTYPE=IMAGE_EXT):
-        '''Save the current display'''
+        '''Save the current display via PyArt'''
         PNAME = self.display.generate_filename(self.Vfield.value, self.Vtilt.value, ext=IMAGE_EXT)
         print "Creating "+ PNAME
         
     def _savefile(self, PTYPE=IMAGE_EXT):
+        '''Save the current display using PyQt dialog'''
         PBNAME = self.display.generate_filename(self.Vfield.value, self.Vtilt.value, ext=IMAGE_EXT)
         file_choices = "PNG (*.png)|*.png"
         path = unicode(QtGui.QFileDialog.getSaveFileName(self, 'Save file', '', file_choices))
