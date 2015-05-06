@@ -1,5 +1,7 @@
 """
-tilt.py - Class for modifying tilt via Display window
+tilt.py 
+
+Class instance used for modifying tilt via Display window.
 """
 
 # Load the needed packages
@@ -25,7 +27,7 @@ class TiltButtonWindow(QtGui.QMainWindow):
         # The change is sent through Vradar
         self.Vtilt = Vtilt
         QtCore.QObject.connect(Vtilt, QtCore.SIGNAL("ValueChanged"), self.NewTilt)
-        QtCore.QObject.connect(Vradar, QtCore.SIGNAL("ValueChanged"), self.NewRadar)
+#        QtCore.QObject.connect(Vradar, QtCore.SIGNAL("ValueChanged"), self.NewRadar)
 
         self.CreateTiltWidget()
         self.SetTiltRadioButtons()
@@ -72,7 +74,7 @@ class TiltButtonWindow(QtGui.QMainWindow):
         if tilt >= 0 and tilt < len(self.tiltbutton):
             self.tiltbutton[tilt].setChecked(True)
     
-    def NewRadar(self, variable, value):
-        # update tilt list
-        self.CreateTiltWidget()
-        self.SetTiltRadioButtons()
+#    def NewRadar(self, variable, value):
+#        # update tilt list
+#        self.CreateTiltWidget()
+#        self.SetTiltRadioButtons()

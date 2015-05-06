@@ -1,5 +1,7 @@
 """
-field.py - Class for modifying field via Display window
+field.py
+
+Class instance used for modifying field via Display window.
 """
 
 # Load the needed packages

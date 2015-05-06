@@ -1,9 +1,17 @@
 """
-parser.py - Parse the input code from execution program
+parser.py
+
+Parse the input code from execution program.
 """
 
 import argparse
-VERSION = '0.1.6'
+
+# Get the version
+f = open("version", "r")
+NAME = f.readline().strip()
+VERSION = f.readline().strip()
+f.close()
+
 def parse(argv):
     parser = argparse.ArgumentParser(
               description="Start ARTview - the ARM Radar Toolkit Viewer.")

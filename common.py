@@ -1,5 +1,7 @@
 """
-core.py - Class to establish change signals to variables
+common.py 
+
+Common routines run throughout ARTView.
 """
 
 # Load the needed packages
