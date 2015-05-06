@@ -1,6 +1,8 @@
 """
 core.py - Class to establish change signals to variables
 """
+
+# Load the needed packages
 from PyQt4 import QtGui, QtCore
 
 class Variable (QtCore.QObject):
