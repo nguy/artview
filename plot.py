@@ -1,5 +1,7 @@
 """
-plot.py - Class to make Display
+plot.py
+
+Class instance used to make Display.
 """
 # Load the needed packages
 import numpy as np
@@ -143,43 +145,14 @@ class Display(QtGui.QMainWindow):
     ##################################
     def addButtons(self):
         '''Add a series of buttons for user control over display'''
-        # Create the button controls
-#        self.limsButton = QtGui.QPushButton("Adjust Limits")
-#        self.limsButton.setFocusPolicy(QtCore.Qt.NoFocus)
-#        self.limsButton.setToolTip("Set data, X, and Y range limits")
-#        self.limsButton.clicked.connect(self._open_LimsDialog)
-        
-        self.dispButton = QtGui.QPushButton("Display Options")
-        self.dispButton.setToolTip("Adjust display properties")
-        self.dispButton.setFocusPolicy(QtCore.Qt.NoFocus)
-        dispmenu = QtGui.QMenu(self)
-        dispLimits = dispmenu.addAction("Adjust Display Limits")
-        dispLimits.setToolTip("Set data, X, and Y range limits")
-        dispTitle = dispmenu.addAction("Change Title")
-        dispTitle.setToolTip("Change plot title")
-        dispUnit = dispmenu.addAction("Change Units")
-        dispUnit.setToolTip("Change units string")
-        self.dispRngRing = dispmenu.addAction("Add Range Rings")
-        self.dispRngRingmenu = QtGui.QMenu("Add Range Rings")
-        self.dispRngRingmenu.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.dispCmap = dispmenu.addAction("Change Colormap")
-        self.dispCmapmenu = QtGui.QMenu("Change Cmap")
-        self.dispCmapmenu.setFocusPolicy(QtCore.Qt.NoFocus)
-        dispLimits.triggered[()].connect(self._open_LimsDialog)
-        dispTitle.triggered[()].connect(self._title_input)
-        dispUnit.triggered[()].connect(self._units_input)
-        self._add_RngRing_to_button()
-        self._add_cmaps_to_button()
-        self.dispButton.setMenu(dispmenu)
-				
-#        titleb = QtGui.QPushButton("Title")
-#        titleb.setFocusPolicy(QtCore.Qt.NoFocus)
-#        titleb.setToolTip("Change plot title")
-#        titleb.clicked.connect(self._title_input)
-#        unitsb = QtGui.QPushButton("Units")
-#        unitsb.setFocusPolicy(QtCore.Qt.NoFocus)
-#        unitsb.setToolTip("Change units string")
-#        unitsb.clicked.connect(self._units_input)
+        # Create the Display controls
+        self._add_displayBoxUI()
+        # Create the Tilt controls
+        self._add_tiltBoxUI()
+        #Create the Field controls
+        self._add_fieldBoxUI()
+        # Create the Tools controls
+        self._add_toolsBoxUI()
         
 #        tiltsb = QtGui.QPushButton("Tilt Select")
 #        tiltsb.setToolTip("Choose tilt elevation angle")
@@ -187,22 +160,12 @@ class Display(QtGui.QMainWindow):
         
         #self._fillFieldBox() AG will be done by newRadar
         
-        # Create the Tilt ComboBox
-        self._add_tiltBoxUI()
-        #Create the Field ComboBox
-        self._add_fieldBoxUI()
-        # Create the Tools ComboBox
-        self._add_toolsBoxUI()
-        
     def setUILayout(self):
         '''Setup the button/display UI layout'''
         self.layout.addWidget(self.tiltBox, 0, 0)
         self.layout.addWidget(self.fieldBox, 0, 1)
-#        self.layout.addWidget(self.limsButton, 0, 2)
         self.layout.addWidget(self.dispButton, 0, 2)
         self.layout.addWidget(self.toolsButton, 0, 3)
-#        self.layout.addWidget(titleb, 0, 2)
-#        self.layout.addWidget(unitsb, 0, 3)
         
     #############################
     # Functionality methods #
@@ -318,6 +281,41 @@ class Display(QtGui.QMainWindow):
             cmapAction.triggered[()].connect(lambda cm_name=cm_name: self.cmapSelectCmd(cm_name))
             self.dispCmap.setMenu(self.dispCmapmenu)
             
+    def _add_displayBoxUI(self):
+        '''Create the Display Options Button menu'''
+        self.dispButton = QtGui.QPushButton("Display Options")
+        self.dispButton.setToolTip("Adjust display properties")
+        self.dispButton.setFocusPolicy(QtCore.Qt.NoFocus)
+        dispmenu = QtGui.QMenu(self)
+        dispLimits = dispmenu.addAction("Adjust Display Limits")
+        dispLimits.setToolTip("Set data, X, and Y range limits")
+        dispTitle = dispmenu.addAction("Change Title")
+        dispTitle.setToolTip("Change plot title")
+        dispUnit = dispmenu.addAction("Change Units")
+        dispUnit.setToolTip("Change units string")
+        self.dispRngRing = dispmenu.addAction("Add Range Rings")
+        self.dispRngRingmenu = QtGui.QMenu("Add Range Rings")
+        self.dispRngRingmenu.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.dispCmap = dispmenu.addAction("Change Colormap")
+        self.dispCmapmenu = QtGui.QMenu("Change Cmap")
+        self.dispCmapmenu.setFocusPolicy(QtCore.Qt.NoFocus)
+        dispQuickSave = dispmenu.addAction("Quick Save Image")
+        dispQuickSave.setShortcut("Ctrl+D")
+        dispQuickSave.setStatusTip("Save Image to local directory with default name")
+        dispSaveFile = dispmenu.addAction("Save Image")
+        dispSaveFile.setShortcut("Ctrl+S")
+        dispSaveFile.setStatusTip("Save Image using dialog")
+        
+        dispLimits.triggered[()].connect(self._open_LimsDialog)
+        dispTitle.triggered[()].connect(self._title_input)
+        dispUnit.triggered[()].connect(self._units_input)
+        dispQuickSave.triggered[()].connect(self._quick_savefile)
+        dispSaveFile.triggered[()].connect(self._savefile)
+        
+        self._add_RngRing_to_button()
+        self._add_cmaps_to_button()
+        self.dispButton.setMenu(dispmenu)
+        
     def _add_tiltBoxUI(self):
         '''Create the Tilt Selection ComboBox'''
         self.tiltBox = QtGui.QComboBox()
@@ -335,14 +333,7 @@ class Display(QtGui.QMainWindow):
         #self._fillFieldBox() AG will be done by newRadar
                    
     def _add_toolsBoxUI(self):
-        '''Create a Tools Button menu'''
-#        self.toolsBox = QtGui.QComboBox()
-#        self.fieldBox.setFocusPolicy(QtCore.Qt.NoFocus)
-#        self.toolsBox.setToolTip("Choose a tool to apply")
-#        self.toolsBox.addItem("No Tools")
-#        self.toolsBox.addItem("Zoom/Pan")
-#        self.toolsBox.addItem("Reset file defaults")
-        
+        '''Create the Tools Button menu'''
         self.toolsButton = QtGui.QPushButton("Toolbox")
         self.toolsButton.setFocusPolicy(QtCore.Qt.NoFocus)
         self.toolsButton.setToolTip("Choose a tool to apply")
@@ -457,9 +448,10 @@ class Display(QtGui.QMainWindow):
         if self.zp != None:
             self.zp.disconnect()
             self.zp = None
-        print "This feature is inactive at present"
-        
-        
+        msg = "This feature is inactive at present"
+        print msg
+        warn = common.ShowWarning(msg)
+                
     def toolDefaultCmd(self):
         '''Restore the Display defaults'''
         if self.zp != None:
@@ -582,19 +574,8 @@ class Display(QtGui.QMainWindow):
         self.canvas.draw()
  
     #########################
-    # Get and check methods #
+    # Check methods #
     #########################
-
-# #    def _build_cmap_dict(self):
-# #        self.cmap_dict = {}
-# #        self.cmap_dict['gist_ncar'] = matcm.get_cmap(name='gist_ncar')
-# #        self.cmap_dict['RdBu_r'] = matcm.get_cmap(name='RdBu_r')
-# #        self.cmap_dict['RdYlBu_r'] = matcm.get_cmap(name='RdYlBu_r
-# #        self.cmap_dict['cool'] = matcm.get_cmap(name='cool
-# #        self.cmap_dict['YlOrBr'] = matcm.get_cmap(name='YlOrBr
-# #        self.cmap_dict['jet'] = matcm.get_cmap(name='jet
-# #        self.cmap_dict['
-# #        self.cmap_dict['
         
     def _check_default_field(self):
         '''Hack to perform a check on reflectivity to make it work with 
@@ -629,7 +610,7 @@ class Display(QtGui.QMainWindow):
                       'check_default_field' function in plot.py\n\
                       Please send a note to ARTView folks to add this name\n\
                       Thanks!"
-                self._ShowWarning(msg)
+                common.ShowWarning(msg)
 
                 
     def _check_file_type(self):
@@ -645,19 +626,6 @@ class Display(QtGui.QMainWindow):
                 self.rhi = True
             
             self._set_fig_ax_rhi()
- 
-    ########################
-    # Warning methods #
-    ########################
-    def _ShowWarning(self, msg):
-        '''Show a warning message'''
-        flags = QtGui.QMessageBox.StandardButton()
-        response = QtGui.QMessageBox.warning(self, "Warning!",
-                                             msg, flags)
-        if response == 0:
-            print msg
-        else:
-            print "Warning Discarded!"
  
     ########################
     # Image save methods #

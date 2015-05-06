@@ -1,5 +1,7 @@
 """
-limits.py - Classes for modifying plot limits via Display window
+limits.py
+
+Routines used for modifying limits via Display window.
 """
         
 # Load the needed packages

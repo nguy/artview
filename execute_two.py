@@ -1,4 +1,8 @@
+"""
+execute_two.py
 
+Driver function that creates ARTView display.
+"""
 from PyQt4 import QtGui, QtCore
 import sys
 
@@ -32,16 +36,6 @@ Vtilt2 = Variable(0)
 Vlims = Variable(None)
 plot1 = Display(Vradar, Variable(field), Vtilt, Vlims, name="Display1", parent=MainMenu)
 plot2 = Display(Vradar, Variable(field), Vtilt2, Vlims, name="Display2", parent=MainMenu)
-#tiltselect = TiltButtonWindow(Vradar, Variable(0), name="Tilt Selection", parent=MainMenu)
-
-#MainDisplay = make_MainDisplay(MainMenu, plots=[plot1, plot2])
-
-
-#MainMenu=menu.Menu(Vradar,DirIn,name="Menu") #initiate Vradar
-
-#plot1=plot.Display(Vradar,Variable(field),Variable(0),name="Display1",parent=MainMenu)
-#plot2=plot.Display(Vradar,Variable(field),Variable(0),name="Display2",parent=MainMenu)
-
 
 app.exec_()
 

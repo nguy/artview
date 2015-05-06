@@ -1,11 +1,15 @@
 """
-menu.py - Class to create menu for ARTView app
+menu.py
+
+Class instance used to create menu for ARTView app.
 """
 import numpy as np
 import pyart
 
 import os
 from PyQt4 import QtGui, QtCore
+
+import common
 
 class Menu(QtGui.QMainWindow):
     '''Class to display the MainMenu'''
@@ -27,6 +31,9 @@ class Menu(QtGui.QMainWindow):
         # Show an "Open" dialog box and return the path to the selected file
         self.showFileDialog()
         
+        # Connect the file advancement interface
+        self.AddNextPrevMenu()
+        
         self.show()
         
     # Allow advancement via left and right arrow keys
@@ -39,7 +46,6 @@ class Menu(QtGui.QMainWindow):
         else:
             QtGui.QWidget.keyPressEvent(self, event)
             
-
     ####################
     # GUI methods #
     ####################
@@ -84,15 +90,15 @@ class Menu(QtGui.QMainWindow):
         openFile.setStatusTip('Open new File')
         openFile.triggered.connect(self.showFileDialog)
         
-        quicksaveImage = QtGui.QAction('Quick Save Image', self)  
-        quicksaveImage.setShortcut('Ctrl+D')
-        quicksaveImage.setStatusTip('Save Image to local directory with default name')
-        #quicksaveImage.triggered.connect(self._quick_savefile) #XXX Turn off
-                
-        saveImage = QtGui.QAction('Save Image', self)  
-        saveImage.setShortcut('Ctrl+S')
-        saveImage.setStatusTip('Save Image using dialog')
-        #saveImage.triggered.connect(self._savefile) #XXX Turn off
+#         quicksaveImage = QtGui.QAction('Quick Save Image', self)  
+#         quicksaveImage.setShortcut('Ctrl+D')
+#         quicksaveImage.setStatusTip('Save Image to local directory with default name')
+#         #quicksaveImage.triggered.connect(self._quick_savefile) #AG Turn off
+#                 
+#         saveImage = QtGui.QAction('Save Image', self)  
+#         saveImage.setShortcut('Ctrl+S')
+#         saveImage.setStatusTip('Save Image using dialog')
+#         #saveImage.triggered.connect(self._savefile) #AG Turn off
                 
         exitApp = QtGui.QAction('Close', self)  
         exitApp.setShortcut('Ctrl+Q')
@@ -100,8 +106,8 @@ class Menu(QtGui.QMainWindow):
         exitApp.triggered.connect(self.close)
         
         self.filemenu.addAction(openFile)
-        self.filemenu.addAction(quicksaveImage)
-        self.filemenu.addAction(saveImage)
+#        self.filemenu.addAction(quicksaveImage)
+#        self.filemenu.addAction(saveImage)
         self.filemenu.addAction(exitApp)
         
     def AddAboutMenu(self):
@@ -138,17 +144,17 @@ class Menu(QtGui.QMainWindow):
         '''Add an option to advance to next or previous file'''
         self.advancemenu = self.menubar.addMenu("Advance file")
 
-    def AddFieldMenu(self):
-        '''Add a menu to change current plot field'''
-        for nombre in self.fieldnames:
-            FieldAction = self.fieldmenu.addAction(nombre)
-            FieldAction.triggered[()].connect(lambda nombre=nombre: self.FieldSelectCmd(nombre))
-            
-    def AddRngRingMenu(self):
-        '''Add a menu to set range rings'''
-        for RngRing in self.RngRingList:
-            RingAction = self.rngringmenu.addAction(RngRing)
-            RingAction.triggered[()].connect(lambda RngRing=RngRing: self.RngRingSelectCmd(RngRing))
+#     def AddFieldMenu(self):
+#         '''Add a menu to change current plot field'''
+#         for nombre in self.fieldnames:
+#             FieldAction = self.fieldmenu.addAction(nombre)
+#             FieldAction.triggered[()].connect(lambda nombre=nombre: self.FieldSelectCmd(nombre))
+#             
+#     def AddRngRingMenu(self):
+#         '''Add a menu to set range rings'''
+#         for RngRing in self.RngRingList:
+#             RingAction = self.rngringmenu.addAction(RngRing)
+#             RingAction.triggered[()].connect(lambda RngRing=RngRing: self.RngRingSelectCmd(RngRing))
     
     def AddNextPrevMenu(self):
         '''Add an option to advance to next or previous file'''
@@ -164,12 +170,12 @@ class Menu(QtGui.QMainWindow):
         lastAction = self.advancemenu.addAction("Last")
         lastAction.triggered[()].connect(lambda findex=(len(self.filelist) - 1): self.AdvanceFileSelect(findex))
          
-    def AddCmapMenu(self):
-        '''Add a menu to change colormap used for plot'''
-        for cm_name in self.cm_names:
-            cmapAction = self.cmapmenu.addAction(cm_name)
-            cmapAction.setStatusTip("Use the %s colormap"%cm_name)
-            cmapAction.triggered[()].connect(lambda cm_name=cm_name: self.cmapSelectCmd(cm_name))
+#     def AddCmapMenu(self):
+#         '''Add a menu to change colormap used for plot'''
+#         for cm_name in self.cm_names:
+#             cmapAction = self.cmapmenu.addAction(cm_name)
+#             cmapAction.setStatusTip("Use the %s colormap"%cm_name)
+#             cmapAction.triggered[()].connect(lambda cm_name=cm_name: self.cmapSelectCmd(cm_name))
            
     ######################
     # Help methods #
@@ -186,8 +192,7 @@ class Menu(QtGui.QMainWindow):
         # Get the radar info form rada object and print it
         txOut = self.Vradar.value.info()
         print txOut
-            
-#        QtGui.QMessageBox.information(self, "Long Radar Info", str(txOut)) 
+        
         QtGui.QMessageBox.information(self, "Long Radar Info", "See terminal window") 
 
     def _get_RadarShortInfo(self):
@@ -309,23 +314,6 @@ class Menu(QtGui.QMainWindow):
             self.Vradar.change(radar)
         except:
             msg = "This is not a recognized radar file"
-            self._ShowWarning(msg)
+            common.ShowWarning(msg)
             return
-
-    ########################
-    # Warning methods #
-    ########################
-    def _ShowWarning(self, msg):
-        '''Show a warning message'''
-        flags = QtGui.QMessageBox.StandardButton()
-        response = QtGui.QMessageBox.warning(self, "Warning!",
-                                             msg, flags)
-        if response == 0:
-            print msg
-        else:
-            print "Warning Discarded!"
- 
-    ########################
-    # Image save methods #
-    ########################
 
