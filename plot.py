@@ -13,9 +13,9 @@ from matplotlib.colors import Normalize as mlabNormalize
 from matplotlib.colorbar import ColorbarBase as mlabColorbarBase
 from matplotlib.pyplot import cm
 
-
-from tilt import TiltButtonWindow
-from limits import DisplayLimits, Ui_LimsDialog
+import limits
+import common
+from limits import Ui_LimsDialog
 
 # Save image file type and DPI (resolution)
 IMAGE_EXT = 'png'
@@ -47,9 +47,7 @@ class Display(QtGui.QMainWindow):
         QtCore.QObject.connect(Vtilt,QtCore.SIGNAL("ValueChanged"),self.NewTilt)
         self.Vlims = Vlims
         QtCore.QObject.connect(Vlims,QtCore.SIGNAL("ValueChanged"),self.NewLims)
-        
-        self.DisplayLimits = DisplayLimits(self.Vfield)
-        
+                
         self.airborne = airborne
         self.rhi = rhi
                 
@@ -57,7 +55,9 @@ class Display(QtGui.QMainWindow):
         self.title = None
         self.units = None
         # Initialize limits
-        self.limits, self.CMAP = self.DisplayLimits._initialize_limits(airborne=self.airborne, rhi=self.rhi)
+           
+        self.limits, self.CMAP = limits.initialize_limits(self.Vfield.value, \
+                                         airborne=self.airborne, rhi=self.rhi)
             
         # Set the default range rings
         self.RngRingList = ["None", "10 km", "20 km", "30 km", "50 km", "100 km"]
@@ -210,8 +210,10 @@ class Display(QtGui.QMainWindow):
         
     def _open_LimsDialog(self):
 #        self.limsDialog = QtGui.QDialog()
-        self.limsDialog = Ui_LimsDialog(self.Vradar, self.Vlims, self.limits, \
-                          name=self.name+" Limts Adjustment", parent=self.parent)
+#        self.limsDialog = Ui_LimsDialog(self.Vradar, self.Vlims, self.limits, \
+#                          name=self.name+" Limts Adjustment", parent=self.parent)
+        self.limits = limits.limits_dialog(self.limits, self.name)     
+        self._update_plot()
     
     def _fillTiltBox(self):
         '''Fill in the Tilt Window Box with current elevation angles'''
@@ -264,24 +266,26 @@ class Display(QtGui.QMainWindow):
 
     def _title_input(self):
         '''Retrieve new plot title'''
-        if self.title is None:
-            old_val = ''
-        else:
-            old_val = self.title
-        val, entry = QtGui.QInputDialog.getText(self, "Plot Title", \
-                  "Title:", 0, old_val)
+#        if self.title is None:
+#            old_val = ''
+#        else:
+#            old_val = self.title
+#        val, entry = QtGui.QInputDialog.getText(self, "Plot Title", \
+#                  "Title:", 0, old_val)
+        val, entry = common.string_dialog(self.title, "Plot Title", "Title:")
         if entry is True:
             self.title = val
             self._update_plot()
 
     def _units_input(self):
         '''Retrieve new plot units'''
-        if self.units is None:
-            old_val = ''
-        else:
-            old_val = self.units
-        val, entry = QtGui.QInputDialog.getText(self, "Plot Units", \
-                  "Units:", 0, old_val)
+#        if self.units is None:
+#            old_val = ''
+#        else:
+#            old_val = self.units
+#        val, entry = QtGui.QInputDialog.getText(self, "Plot Units", \
+#                  "Units:", 0, old_val)
+        val, entry = common.string_dialog(self.units, "Plot Units", "Units:")
         if entry is True:
             self.units = val
             self._update_plot()
@@ -381,9 +385,8 @@ class Display(QtGui.QMainWindow):
 
     def NewField(self, variable, value):
         '''Display changes after field in Variable class is altered'''
-        self.DisplayLimits = DisplayLimits(self.Vfield)
-        self.limits, self.CMAP = self.DisplayLimits._initialize_limits(airborne=self.airborne, rhi=self.rhi)
-        
+        self.limits, self.CMAP = limits.initialize_limits(self.Vfield.value, \
+                                         airborne=self.airborne, rhi=self.rhi)
         self.units = None
         idx = self.fieldBox.findText(value)
         self.fieldBox.setCurrentIndex(idx)
@@ -445,7 +448,7 @@ class Display(QtGui.QMainWindow):
     def toolZoomPanCmd(self):
         '''Creates and connects to a Zoom/Pan instance'''
         scale = 1.1
-        self.zp = ZoomPan(self.Vradar, self.Vlims, self.ax, self.limits, \
+        self.zp = ZoomPan(self.Vlims, self.ax, self.limits, \
                           base_scale = scale, parent=self.parent)
         self.zp.connect()
         
@@ -462,7 +465,8 @@ class Display(QtGui.QMainWindow):
         if self.zp != None:
             self.zp.disconnect()
             self.zp = None
-        self.limits, self.CMAP = self.DisplayLimits._initialize_limits(airborne=self.airborne, rhi=self.rhi)
+        self.limits, self.CMAP = limits.initialize_limits(self.Vfield.value, \
+                                         airborne=self.airborne, rhi=self.rhi)
         self._update_plot()
          
     ####################
@@ -482,7 +486,8 @@ class Display(QtGui.QMainWindow):
         
     def _set_fig_ax_rhi(self):
         '''Change figure size and limits if RHI'''
-        self.limits, self.CMAP = self.DisplayLimits._initialize_limits(airborne=self.airborne, rhi=self.rhi)
+        self.limits, self.CMAP = limits.initialize_limits(self.Vfield.value, \
+                                         airborne=self.airborne, rhi=self.rhi)
         self.fig.set_size_inches(self.limits['xsize'], self.limits['ysize'])
         self._set_fig_ax()
 
@@ -510,7 +515,7 @@ class Display(QtGui.QMainWindow):
         # If Zoom/Pan selected, Set up the zoom/pan functionality
         if self.zp != None:
             scale = 1.1
-            self.zp = ZoomPan(self.Vradar, self.Vlims, self.ax, self.limits, \
+            self.zp = ZoomPan(self.Vlims, self.ax, self.limits, \
                               base_scale = scale, parent=self.parent)
             #figZoom = self.zp.zoom()
             #figPan = self.zp.pan_factory(self.limits)
@@ -618,6 +623,13 @@ class Display(QtGui.QMainWindow):
                 self.Vfield.change('reflectivity_horizontal')
             elif 'DBZH' in self.fieldnames:
                 self.Vfield.change('DBZH')
+            else:
+                msg = "Could not find the field name.\n\
+                      You can add an additional name by modifying the\n\
+                      'check_default_field' function in plot.py\n\
+                      Please send a note to ARTView folks to add this name\n\
+                      Thanks!"
+                self._ShowWarning(msg)
 
                 
     def _check_file_type(self):
@@ -672,15 +684,16 @@ class ZoomPan(QtGui.QMainWindow):
     Class for Zoom and Pan of plot
     Modified an original answer found here: http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-wheel
     '''
-    def __init__(self, Vradar, Vlims, ax, limits, base_scale = 2., name="ZoomPan", parent=None):
+    def __init__(self, Vlims, ax, limits, base_scale = 2., name="ZoomPan", parent=None):
         super(ZoomPan, self).__init__(parent)
         self.parent = parent
         self.name = name
         
         # Set up signal, so that DISPLAY can react to external 
         # (or internal) changes in limits (Core.Variable instances expected)
-        self.Vradar = Vradar
-        QtCore.QObject.connect(Vradar, QtCore.SIGNAL("ValueChanged"), self.NewRadar)
+        # Send the new limits back to the main window
+#        self.Vradar = Vradar
+#        QtCore.QObject.connect(Vradar, QtCore.SIGNAL("ValueChanged"), self.NewRadar)
         self.Vlims = Vlims
         QtCore.QObject.connect(Vlims, QtCore.SIGNAL("ValueChanged"), self.NewLimits)
         
@@ -737,14 +750,10 @@ class ZoomPan(QtGui.QMainWindow):
         self.ax.figure.canvas.draw()
             
         # Record the new limits and pass them to main window
-        self.entry['xmin'] = xdata - new_width * (1-relx)
-        self.entry['xmax'] = xdata + new_width * (relx)
-        self.entry['ymin'] = ydata - new_height * (1-rely)
-        self.entry['ymax'] = ydata + new_height * (rely)
-	
-        # Send the new limits back to the main window
-#        Display._lims_input(main, self.entry)
-#        Display._lims_input(Display, self.entry)
+        self.limits['xmin'] = xdata - new_width * (1-relx)
+        self.limits['xmax'] = xdata + new_width * (relx)
+        self.limits['ymin'] = ydata - new_height * (1-rely)
+        self.limits['ymax'] = ydata + new_height * (rely)
         
     def onPress(self, event):
         if event.inaxes != self.ax: return
@@ -770,12 +779,8 @@ class ZoomPan(QtGui.QMainWindow):
         self.ax.figure.canvas.draw()
             
         # Record the new limits and pass them to main window
-        self.entry['xmin'], self.entry['xmax'] = self.cur_xlim[0], self.cur_xlim[1]
-        self.entry['ymin'], self.entry['ymax'] = self.cur_ylim[0], self.cur_ylim[1]
-	
-        # Send the new limits back to the main window
-#        Display._lims_input(main, self.entry)
-#        Display._lims_input(Display, self.entry)
+        self.limits['xmin'], self.limits['xmax'] = self.cur_xlim[0], self.cur_xlim[1]
+        self.limits['ymin'], self.limits['ymax'] = self.cur_ylim[0], self.cur_ylim[1]
     
     def disconnect(self):
         self.fig.canvas.mpl_disconnect(self.scrollID)
@@ -784,8 +789,6 @@ class ZoomPan(QtGui.QMainWindow):
         self.fig.canvas.mpl_disconnect(self.motionID)
         
     def _pass_lims(self):
-        self.limits['vmin'] = self.limits['vmin']
-        self.limits['vmax'] = self.limits['vmax']
         self.limits['xmin'] = self.entry['xmin']
         self.limits['xmax'] = self.entry['xmax']
         self.limits['ymin'] = self.entry['ymin']
@@ -796,9 +799,11 @@ class ZoomPan(QtGui.QMainWindow):
              
     def NewLimits(self, variable, value):
         '''Retrieve new limits input'''
-        self._pass_lims()
+        #self._pass_lims()
+        print "In NewLims"
     
     def NewRadar(self, variable, value):
         # update Limits
-        self._pass_lims()
+        #self._pass_lims()
+        print "In NewRadar"
 
