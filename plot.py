@@ -350,7 +350,7 @@ class Display(QtGui.QMainWindow):
     # Selectionion methods #
     ########################
 
-    def NewRadar(self, variable, value):
+    def NewRadar(self, variable, value, strong):
         '''Display changes after radar Variable class is altered'''
         # In case the flags were not used at startup
         self._check_file_type()
@@ -372,26 +372,30 @@ class Display(QtGui.QMainWindow):
             pass
         self.units = None
         self.title = None
-        self._update_plot()
+        if strong:
+            self._update_plot()
 
-    def NewField(self, variable, value):
+    def NewField(self, variable, value, strong):
         '''Display changes after field in Variable class is altered'''
         self.limits, self.CMAP = limits.initialize_limits(self.Vfield.value, \
                                          airborne=self.airborne, rhi=self.rhi)
         self.units = None
         idx = self.fieldBox.findText(value)
         self.fieldBox.setCurrentIndex(idx)
-        self._update_plot()
+        if strong:
+            self._update_plot()
 
-    def NewLims(self, variable, value):
+    def NewLims(self, variable, value, strong):
         '''Display changes after limits in Variable class is altered'''
-        self._update_plot()
+        if strong:
+            self._update_plot()
 
-    def NewTilt(self,variable,value):
+    def NewTilt(self, variable, value, strong):
         '''Display changes after tilt in Variable class is altered'''
         # +1 since the first one is "Tilt Window"
         self.tiltBox.setCurrentIndex(value+1)  
-        self._update_plot()
+        if strong:
+            self._update_plot()
 
     def TiltSelectCmd(self, ntilt):
         '''Captures tilt selection and redraws the field with new tilt'''
@@ -765,12 +769,12 @@ class ZoomPan(QtGui.QMainWindow):
         self.LimsDialog.accept()
         self.Vlims.change(self.limits)
              
-    def NewLimits(self, variable, value):
+    def NewLimits(self, variable, value, strong):
         '''Retrieve new limits input'''
         #self._pass_lims()
         print "In NewLims"
     
-    def NewRadar(self, variable, value):
+    def NewRadar(self, variable, value, strong):
         # update Limits
         #self._pass_lims()
         print "In NewRadar"

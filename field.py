@@ -64,11 +64,11 @@ class FieldButtonWindow(QtGui.QMainWindow):
         
         self.NewField(self.Vfield, self.Vfield.value)  # setChecked the current field
     
-    def NewField(self, variable, value):
+    def NewField(self, variable, value, strong):
         if value in self.Vradar.value.fields:
             self.fieldbutton[value].setChecked(True)
         
-    def NewRadar(self, variable, value):
+    def NewRadar(self, variable, value, strong):
         # update field list
         self.CreateFieldWidget()
         self.SetFieldRadioButtons()
