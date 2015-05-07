@@ -24,18 +24,18 @@ class make_MainDisplay(object):
 
 DirIn,field=parser.parse(sys.argv)
 
-Vradar = Variable(None)
+
 
 
 app = QtGui.QApplication(sys.argv)
 
-MainMenu = Menu(Vradar, DirIn, name="Menu") #initiate Vradar
+MainMenu = Menu(DirIn, name="Menu") #initiate Vradar
+Vradar = MainMenu.Vradar
 
 Vtilt = Variable(0)
 Vtilt2 = Variable(0)
-Vlims = Variable(None)
-plot1 = Display(Vradar, Variable(field), Vtilt, Vlims, name="Display1", parent=MainMenu)
-plot2 = Display(Vradar, Variable(field), Vtilt2, Vlims, name="Display2", parent=MainMenu)
+plot1 = Display(Vradar, Variable(field), Vtilt, name="Display1", parent=MainMenu)
+plot2 = Display(Vradar, Variable(field), Vtilt2, name="Display2", parent=MainMenu)
 
 app.exec_()
 
