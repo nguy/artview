@@ -17,6 +17,7 @@ from matplotlib.pyplot import cm
 
 import limits
 import common
+from core import Variable
 from limits import Ui_LimsDialog
 
 # Save image file type and DPI (resolution)
@@ -31,7 +32,7 @@ DPI = 100
 class Display(QtGui.QMainWindow):
     '''Class that plots a Radar structure using pyart.graph'''
 
-    def __init__(self, Vradar, Vfield, Vtilt, Vlims, airborne=False, rhi=False, name="Display", parent=None):
+    def __init__(self, Vradar, Vfield, Vtilt, Vlims=None, airborne=False, rhi=False, name="Display", parent=None):
         '''Initialize the class to create the interface'''
         super(Display, self).__init__(parent)
         self.parent = parent
@@ -47,8 +48,11 @@ class Display(QtGui.QMainWindow):
         QtCore.QObject.connect(Vfield,QtCore.SIGNAL("ValueChanged"),self.NewField)
         self.Vtilt = Vtilt
         QtCore.QObject.connect(Vtilt,QtCore.SIGNAL("ValueChanged"),self.NewTilt)
-        self.Vlims = Vlims
-        QtCore.QObject.connect(Vlims,QtCore.SIGNAL("ValueChanged"),self.NewLims)
+        if Vlims is None:
+            self.Vlims = Variable(None)
+        else:
+            self.Vlims = Vlims
+        QtCore.QObject.connect(self.Vlims,QtCore.SIGNAL("ValueChanged"),self.NewLims)
                 
         self.airborne = airborne
         self.rhi = rhi
@@ -60,7 +64,10 @@ class Display(QtGui.QMainWindow):
            
         self.limits, self.CMAP = limits.initialize_limits(self.Vfield.value, \
                                          airborne=self.airborne, rhi=self.rhi)
-            
+        
+        if self.Vlims.value is None:
+            self.Vlims.change(self.limits)
+        
         # Set the default range rings
         self.RngRingList = ["None", "10 km", "20 km", "30 km", "50 km", "100 km"]
         self.RngRing = False

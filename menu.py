@@ -10,11 +10,12 @@ import os
 from PyQt4 import QtGui, QtCore
 
 import common
+from core import Variable
 
 class Menu(QtGui.QMainWindow):
     '''Class to display the MainMenu'''
 
-    def __init__(self, Vradar, pathDir, name="Menu", parent=None):
+    def __init__(self, pathDir, Vradar=None, name="Menu", parent=None):
         '''Initialize the class to create the interface'''
         super(Menu, self).__init__(parent)
         self.name = name
@@ -29,7 +30,10 @@ class Menu(QtGui.QMainWindow):
         self.LaunchApp()      
                 
         # Show an "Open" dialog box and return the path to the selected file
-        self.showFileDialog()
+        # Just do that if Vradar was not given
+        if self.Vradar is None:
+            self.Vradar = Variable(None)
+            self.showFileDialog()
         
         # Connect the file advancement interface
         self.AddNextPrevMenu()
