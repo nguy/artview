@@ -67,7 +67,7 @@ class TiltButtonWindow(QtGui.QMainWindow):
             
             self.rBox_layout.addWidget(self.tiltbutton[ntilt])
         
-        self.NewTilt(self.Vtilt, self.Vtilt.value)  # setChecked the current tilt
+        self.NewTilt(self.Vtilt, self.Vtilt.value, True)  # setChecked the current tilt
     
     def NewTilt(self, variable, value, strong):
         tilt = self.Vtilt.value

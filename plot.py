@@ -81,7 +81,7 @@ class Display(QtGui.QMainWindow):
         self.LaunchGUI() 
         
         # AG - Initialize radar
-        self.NewRadar(None, None)
+        self.NewRadar(None, None, True)
         
         self.show()
         
