@@ -25,9 +25,9 @@ class Variable(QtCore.QObject):
             Define if this is a strong, of a soft change. This is a some what
             subjective decision: strong is default, a soft change should be
             used to indicate to the slot that this change should not trigger
-            any costly computation. Reasons for this are: this variable is
-            likely to change again shortly, another more important variable
-            is being changed as well etc.
+            any costly computation. Reasons for this are: When initialising
+            variables, variable is likely to change again shortly, another
+            more important variable is being changed as well etc.
             .. note:
                 Defining how to respond to strong/soft changes is
                 responsibility of the slot, most can just ignore the

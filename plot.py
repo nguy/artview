@@ -66,7 +66,7 @@ class Display(QtGui.QMainWindow):
                                          airborne=self.airborne, rhi=self.rhi)
         
         if self.Vlims.value is None:
-            self.Vlims.change(self.limits)
+            self.Vlims.change(self.limits, strong=False)
         
         # Set the default range rings
         self.RngRingList = ["None", "10 km", "20 km", "30 km", "50 km", "100 km"]
