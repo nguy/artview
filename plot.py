@@ -15,10 +15,9 @@ from matplotlib.colors import Normalize as mlabNormalize
 from matplotlib.colorbar import ColorbarBase as mlabColorbarBase
 from matplotlib.pyplot import cm
 
-import limits
+
 import common
 from core import Variable
-from limits import Ui_LimsDialog
 
 # Save image file type and DPI (resolution)
 IMAGE_EXT = 'png'
@@ -62,8 +61,7 @@ class Display(QtGui.QMainWindow):
         self.units = None
         # Initialize limits
            
-        self.limits, self.CMAP = limits.initialize_limits(self.Vfield.value, \
-                                         airborne=self.airborne, rhi=self.rhi)
+        self._set_default_limits()
         
         if self.Vlims.value is None:
             self.Vlims.change(self.limits)
@@ -182,7 +180,8 @@ class Display(QtGui.QMainWindow):
 #        self.limsDialog = QtGui.QDialog()
 #        self.limsDialog = Ui_LimsDialog(self.Vradar, self.Vlims, self.limits, \
 #                          name=self.name+" Limts Adjustment", parent=self.parent)
-        self.limits = limits.limits_dialog(self.limits, self.name)     
+        from limits import limits_dialog
+        self.limits = limits_dialog(self.limits, self.name)     
         self._update_plot()
     
     def _fillTiltBox(self):
@@ -202,7 +201,7 @@ class Display(QtGui.QMainWindow):
         # Loop through and create each field button
         for field in self.fieldnames:
             self.fieldBox.addItem(field)
-    
+
     def _lims_input(self, entry):
         '''Retrieve new limits input'''
         if entry['dmin'] is not None:
@@ -383,8 +382,7 @@ class Display(QtGui.QMainWindow):
 
     def NewField(self, variable, value):
         '''Display changes after field in Variable class is altered'''
-        self.limits, self.CMAP = limits.initialize_limits(self.Vfield.value, \
-                                         airborne=self.airborne, rhi=self.rhi)
+        self._set_default_limits()
         self.units = None
         idx = self.fieldBox.findText(value)
         self.fieldBox.setCurrentIndex(idx)
@@ -464,8 +462,7 @@ class Display(QtGui.QMainWindow):
         if self.zp != None:
             self.zp.disconnect()
             self.zp = None
-        self.limits, self.CMAP = limits.initialize_limits(self.Vfield.value, \
-                                         airborne=self.airborne, rhi=self.rhi)
+        self._set_default_limits()
         self._update_plot()
          
     ####################
@@ -485,8 +482,7 @@ class Display(QtGui.QMainWindow):
         
     def _set_fig_ax_rhi(self):
         '''Change figure size and limits if RHI'''
-        self.limits, self.CMAP = limits.initialize_limits(self.Vfield.value, \
-                                         airborne=self.airborne, rhi=self.rhi)
+        self._set_default_limits()
         self.fig.set_size_inches(self.limits['xsize'], self.limits['ysize'])
         self._set_fig_ax()
 
@@ -618,6 +614,12 @@ class Display(QtGui.QMainWindow):
                       Please send a note to ARTView folks to add this name\n\
                       Thanks!"
                 common.ShowWarning(msg)
+
+    def _set_default_limits(self):
+        ''' Set limits and CMAP to pre-defined default'''
+        from limits import initialize_limits
+        self.limits, self.CMAP = initialize_limits(self.Vfield.value, \
+                                 airborne=self.airborne, rhi=self.rhi)
 
                 
     def _check_file_type(self):
