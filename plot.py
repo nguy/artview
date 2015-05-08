@@ -31,6 +31,7 @@ DPI = 100
 
 class Display(QtGui.QMainWindow):
     '''Class that plots a Radar structure using pyart.graph'''
+    sharedVariables = ("Vradar", "Vfield", "Vtilt", "Vlims" )
 
     def __init__(self, Vradar, Vfield, Vtilt, Vlims=None, airborne=False, rhi=False, name="Display", parent=None):
         '''Initialize the class to create the interface'''

@@ -14,6 +14,7 @@ from core import Variable
 
 class Menu(QtGui.QMainWindow):
     '''Class to display the MainMenu'''
+    sharedVariables = ("Vradar",)
 
     def __init__(self, pathDir, Vradar=None, name="Menu", parent=None):
         '''Initialize the class to create the interface'''

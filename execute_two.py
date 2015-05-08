@@ -37,5 +37,9 @@ Vtilt2 = Variable(0)
 plot1 = Display(Vradar, Variable(field), Vtilt, name="Display1", parent=MainMenu)
 plot2 = Display(Vradar, Variable(field), Vtilt2, name="Display2", parent=MainMenu)
 
+from component_control import ComponentsControl
+
+c = ComponentsControl([MainMenu,plot1,plot2],parent=MainMenu)
+
 app.exec_()
 
