@@ -10,23 +10,21 @@ import os
 from PyQt4 import QtGui, QtCore
 
 import common
-from core import Variable
+from core import Variable, Component
 
-class Menu(QtGui.QMainWindow):
+class Menu(Component):
     '''Class to display the MainMenu'''
-    sharedVariables = ("Vradar",)
 
     def __init__(self, pathDir, Vradar=None, name="Menu", parent=None):
         '''Initialize the class to create the interface'''
-        super(Menu, self).__init__(parent)
-        self.name = name
-        self.parent = parent
-        self.setWindowTitle(name)
-        
+        super(Menu, self).__init__(name=name, parent=parent)
+        self.central_widget = QtGui.QWidget()
+        self.setCentralWidget(self.central_widget)
+        self.mylayout = QtGui.QGridLayout(self.central_widget)
         # Set some parameters
         self.dirIn = pathDir
         self.Vradar = Vradar
-        
+        self.sharedVariables = {"Vradar": None,}
         # Launch the GUI interface
         self.LaunchApp()      
                 

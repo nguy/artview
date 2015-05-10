@@ -15,13 +15,6 @@ from tilt import TiltButtonWindow
 import parser
 
 
-class make_MainDisplay(object):
-    '''Make a class to hold the display objects'''
-    def __init__(self, menu, plots=None):
-       self.menu = menu
-       self.plot1 = plots[0]
-       self.plot2 = plots[1]
-
 DirIn,field=parser.parse(sys.argv)
 
 
@@ -39,7 +32,10 @@ plot2 = Display(Vradar, Variable(field), Vtilt2, name="Display2", parent=MainMen
 
 from component_control import ComponentsControl
 
-c = ComponentsControl([MainMenu,plot1,plot2],parent=MainMenu)
-
+c = ComponentsControl(parent=MainMenu)
+MainMenu.mylayout.addWidget(c,0,0)
+#MainMenu.setCentralWidget(c)
+#print c.nativeParentWidget()
+#print c.parentWidget()
 app.exec_()
 
