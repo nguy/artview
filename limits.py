@@ -8,7 +8,24 @@ Routines used for modifying limits via Display window.
 from PyQt4 import QtGui, QtCore
 
 def initialize_limits(field, airborne=False, rhi=False):
-    '''Initialized limits to default program values'''
+    '''
+    Initialize limits to default program values.
+    
+    Parameters::
+    ----------
+    field - string
+        Field name to use for initialization (e.g. 'reflectivity').
+    
+    [Optional]
+    airborne - boolean
+        Set True to display airborne type radar files (assumes tail radar setup such as NOAA P-3).
+    rhi - boolean
+        Set True to display RHI type radar files.
+        
+    Notes::
+    -----
+    Returns a dictionary of display limits and colormap instance
+    '''
     # Limits for variables
     Z_LIMS = (-10., 65.)
     VR_LIMS = (-30., 30.)
@@ -112,7 +129,19 @@ def initialize_limits(field, airborne=False, rhi=False):
 ###############################
 
 def limits_dialog(limits, name):
-    '''function'''
+    '''Function to instantiate a Display Limits Window.
+    
+    Parameters::
+    ----------
+    limits - dict
+        Dictionary containing display limits.
+    name - string
+        Window name to add as prefix in window title .
+        
+    Notes::
+    -----
+    Returns a dictionary of display limits.
+    '''
     LimsDialog = QtGui.QDialog()
     LimsDialog.setObjectName("Limits Dialog")
     LimsDialog.setWindowModality(QtCore.Qt.WindowModal)
@@ -187,120 +216,3 @@ def limits_dialog(limits, name):
 
     return limits
     
-######################################
-class Ui_LimsDialog(QtGui.QMainWindow):
-    '''
-    Limits Dialog Class
-    Popup window to set various limits
-    '''
-    def __init__(self, Vradar, Vlims, limits, name="LimsDialog", parent=None):
-        super(Ui_LimsDialog, self).__init__(parent)
-        self.parent = parent
-        self.name = name
-        self.setWindowTitle(name)
-        self.LimsDialog = QtGui.QDialog(parent=self)
-        self.mainLimits = limits
-        self.Vradar = Vradar
-        
-        # Set up an entry variable to pass
-        self.limits = {}
-        self.limits['vmin'] = self.mainLimits['vmin']
-        self.limits['vmax'] = self.mainLimits['vmax']
-        self.limits['xmin'] = self.mainLimits['xmin']
-        self.limits['xmax'] = self.mainLimits['xmax']
-        self.limits['ymin'] = self.mainLimits['ymin']
-        self.limits['ymax'] = self.mainLimits['ymax']
-        
-        # Set up signal, so that DISPLAY can react to external 
-        # (or internal) changes in limits (Core.Variable instances expected)
-        self.Vlims = Vlims
-        QtCore.QObject.connect(Vlims, QtCore.SIGNAL("ValueChanged"), self.NewLimits)
-        QtCore.QObject.connect(Vradar, QtCore.SIGNAL("ValueChanged"), self.NewRadar)
-        
-        self.setupUi()
-        self.LimsDialog.show()
-#        self.show()
-           
-    def setupUi(self):
-        # Set aspects of Dialog Window
-        self.LimsDialog.setObjectName("Limits Dialog")
-        self.LimsDialog.setWindowModality(QtCore.Qt.WindowModal)
-        self.LimsDialog.setWindowTitle(self.name+" Limits Entry")
-        
-        # Setup window layout
-        self.gridLayout_2 = QtGui.QGridLayout(self.LimsDialog)
-        self.gridLayout_2.setObjectName("gridLayout_2")
-        self.gridLayout = QtGui.QGridLayout()
-        self.gridLayout.setObjectName("gridLayout")
-	
-        # Set up the Labels for entry
-        self.lab_dmin = QtGui.QLabel("Data Min")
-        self.lab_dmax = QtGui.QLabel("Data Max")
-        self.lab_xmin = QtGui.QLabel("X Min")
-        self.lab_xmax = QtGui.QLabel("X Max")
-        self.lab_ymin = QtGui.QLabel("Y Min")
-        self.lab_ymax = QtGui.QLabel("Y Max")
-	
-        # Set up the Entry limits
-        self.ent_dmin = QtGui.QLineEdit(self.LimsDialog)
-        self.ent_dmax = QtGui.QLineEdit(self.LimsDialog)
-        self.ent_xmin = QtGui.QLineEdit(self.LimsDialog)
-        self.ent_xmax = QtGui.QLineEdit(self.LimsDialog)
-        self.ent_ymin = QtGui.QLineEdit(self.LimsDialog)
-        self.ent_ymax = QtGui.QLineEdit(self.LimsDialog)
-        
-        # Input the current values
-        self.ent_dmin.setText(str(self.mainLimits['vmin']))
-        self.ent_dmax.setText(str(self.mainLimits['vmax']))
-        self.ent_xmin.setText(str(self.mainLimits['xmin']))
-        self.ent_xmax.setText(str(self.mainLimits['xmax']))
-        self.ent_ymin.setText(str(self.mainLimits['ymin']))
-        self.ent_ymax.setText(str(self.mainLimits['ymax']))
-	
-        # Add to the layout
-        self.gridLayout.addWidget(self.lab_dmin, 0, 0, 1, 1)
-        self.gridLayout.addWidget(self.ent_dmin, 0, 1, 1, 1)
-        self.gridLayout.addWidget(self.lab_dmax, 1, 0, 1, 1)
-        self.gridLayout.addWidget(self.ent_dmax, 1, 1, 1, 1)
-        self.gridLayout.addWidget(self.lab_xmin, 2, 0, 1, 1)
-        self.gridLayout.addWidget(self.ent_xmin, 2, 1, 1, 1)
-        self.gridLayout.addWidget(self.lab_xmax, 3, 0, 1, 1)
-        self.gridLayout.addWidget(self.ent_xmax, 3, 1, 1, 1)
-        self.gridLayout.addWidget(self.lab_ymin, 4, 0, 1, 1)
-        self.gridLayout.addWidget(self.ent_ymin, 4, 1, 1, 1)
-        self.gridLayout.addWidget(self.lab_ymax, 5, 0, 1, 1)
-        self.gridLayout.addWidget(self.ent_ymax, 5, 1, 1, 1)
-	
-        self.gridLayout_2.addLayout(self.gridLayout, 0, 0, 1, 1)
-        self.buttonBox = QtGui.QDialogButtonBox(self.LimsDialog)
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName("buttonBox")
-        self.gridLayout_2.addWidget(self.buttonBox, 1, 0, 1, 1)
-        
-        self.LimsDialog.setLayout(self.gridLayout_2)
-        self.setCentralWidget(self.LimsDialog)
-
-        # Connect the signals from OK and Cancel buttons
-        self.buttonBox.accepted.connect(self._pass_lims)
-        self.buttonBox.rejected.connect(self.LimsDialog.reject)
-	
-    def _pass_lims(self):
-        self.limits['vmin'] = float(self.ent_dmin.text())
-        self.limits['vmax'] = float(self.ent_dmax.text())
-        self.limits['xmin'] = float(self.ent_xmin.text())
-        self.limits['xmax'] = float(self.ent_xmax.text())
-        self.limits['ymin'] = float(self.ent_ymin.text())
-        self.limits['ymax'] = float(self.ent_ymax.text())
-        
-        self.LimsDialog.accept()
-        self.Vlims.change(self.limits)
-             
-    def NewLimits(self, variable, value, strong):
-        '''Retrieve new limits input'''
-        self.buttonBox.accepted.connect(self._pass_lims)
-    
-    def NewRadar(self, variable, value, strong):
-        # update Limits
-        self.setupUi()
-        self.LimsDialog.show()

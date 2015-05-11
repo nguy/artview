@@ -14,7 +14,23 @@ import common
 # Restore the default Display #
 ###############################
 def restore_default_display(zoompan, field, airborne, rhi):
-    '''Restore the Display defaults'''
+    '''Restore the Display defaults.
+    
+    Parameters::
+    ----------
+    zoompan - ZoomPan class instance
+        A ZoomPan class instance.
+    field - string
+        Name of field to display.
+    airborne - boolean
+        True for airborne-type radar file.
+    rhi - boolean
+        True for RHI-type radar file.
+        
+    Notes::
+    -----
+    Returns updated zoompan class instance, limits dictionary, and colormap.
+    '''
     # ****Need to check if this would work****
     if zoompan != None:
         zoompan.disconnect()
@@ -27,7 +43,14 @@ def restore_default_display(zoompan, field, airborne, rhi):
 # Use a custom Method #
 ###############################
 def custom_tool(zoompan):
-    '''Allow user to activate self-defined tool'''
+    '''Allow user to activate self-defined tool.
+    
+    Parameters::
+    ----------
+        
+    Notes::
+    -----
+    '''
     if zoompan != None:
         zoompan.disconnect()
         zoompan = None
@@ -40,10 +63,37 @@ def custom_tool(zoompan):
 ##########################
 class ZoomPan(QtGui.QMainWindow):
     '''
-    Class for Zoom and Pan of plot
-    Modified an original answer found here: http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-wheel
+    Class for Zoom and Pan of display.
+    
+    Modified an original answer found here: 
+    http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-wheel
     '''
     def __init__(self, Vlims, ax, limits, base_scale = 2., name="ZoomPan", parent=None):
+        '''
+        Initialize the class to create the interface.
+    
+        Parameters::
+        ----------
+        Vlims - Variable instance
+            Limits signal variable to be used.
+        ax - Matplotlib axis instance
+            Axis instance to use.
+        limits - dict
+            Display limits dictionary.
+    
+        [Optional]
+        base_scale - float
+            Scaling factor to use fo Zoom/Pan
+        name - string
+            Field Radiobutton window name.
+        parent - QtWindow instance
+            QtWindow parent instance to associate to FieldButtonWindow.
+        
+        Notes::
+        -----
+        This class records the selected button and passes the 
+        change value back to variable.
+        '''
         super(ZoomPan, self).__init__(parent)
         self.parent = parent
         self.name = name
@@ -157,11 +207,13 @@ class ZoomPan(QtGui.QMainWindow):
         self.Vlims.change(self.limits)
              
     def NewLimits(self, variable, value, strong):
+        '''Record the new display limits.'''
         '''Retrieve new limits input'''
         #self._pass_lims()
         print "In NewLims"
     
     def NewRadar(self, variable, value, strong):
+        '''Update the field list when radar variable is changed.'''
         # update Limits
         #self._pass_lims()
         print "In NewRadar"

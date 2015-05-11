@@ -9,20 +9,24 @@ from PyQt4 import QtGui, QtCore
 
 class Variable(QtCore.QObject):
     def __init__(self, value=None):
-        """Class that holds a value, changing that with change() emits a signal"""
+        """
+        Class that holds a value, modifying with change() emits a signal.
+        """
         QtCore.QObject.__init__(self)
         self.value = value
 
     def change(self, value, strong=True):
         """
-        Change the Variable value and emit 'ValueChanged' signal
+        Change the Variable value and emit 'ValueChanged' signal.
 
-        Parameters
+        Parameters::
         ----------
         value : 
             New Value to be assigned to the variable.
+        
+        [Optional]
         strong : bool, optional
-            Define if this is a strong, of a soft change. This is a some what
+            Define if this is a strong, or a soft change. This is a some what
             subjective decision: strong is default, a soft change should be
             used to indicate to the slot that this change should not trigger
             any costly computation. Reasons for this are: When initialising
@@ -33,9 +37,9 @@ class Variable(QtCore.QObject):
                 responsibility of the slot, most can just ignore the
                 difference, but the costly ones should be aware.
         
-        Note
-        ----
-        The arguments of the emitted signal are (self, value, strong)
+        Notes::
+        -----
+        The arguments of the emitted signal are (self, value, strong).
         """
         self.value = value
         self.emit(QtCore.SIGNAL("ValueChanged"), self, value, strong)    
