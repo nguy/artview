@@ -296,11 +296,11 @@ class Ui_LimsDialog(QtGui.QMainWindow):
         self.LimsDialog.accept()
         self.Vlims.change(self.limits)
              
-    def NewLimits(self, variable, value):
+    def NewLimits(self, variable, value, strong):
         '''Retrieve new limits input'''
         self.buttonBox.accepted.connect(self._pass_lims)
     
-    def NewRadar(self, variable, value):
+    def NewRadar(self, variable, value, strong):
         # update Limits
         self.setupUi()
         self.LimsDialog.show()

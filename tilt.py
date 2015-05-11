@@ -67,14 +67,14 @@ class TiltButtonWindow(QtGui.QMainWindow):
             
             self.rBox_layout.addWidget(self.tiltbutton[ntilt])
         
-        self.NewTilt(self.Vtilt, self.Vtilt.value)  # setChecked the current tilt
+        self.NewTilt(self.Vtilt, self.Vtilt.value, True)  # setChecked the current tilt
     
-    def NewTilt(self, variable, value):
+    def NewTilt(self, variable, value, strong):
         tilt = self.Vtilt.value
         if tilt >= 0 and tilt < len(self.tiltbutton):
             self.tiltbutton[tilt].setChecked(True)
     
-#    def NewRadar(self, variable, value):
+#    def NewRadar(self, variable, value, strong):
 #        # update tilt list
 #        self.CreateTiltWidget()
 #        self.SetTiltRadioButtons()

@@ -156,12 +156,12 @@ class ZoomPan(QtGui.QMainWindow):
         self.LimsDialog.accept()
         self.Vlims.change(self.limits)
              
-    def NewLimits(self, variable, value):
+    def NewLimits(self, variable, value, strong):
         '''Retrieve new limits input'''
         #self._pass_lims()
         print "In NewLims"
     
-    def NewRadar(self, variable, value):
+    def NewRadar(self, variable, value, strong):
         # update Limits
         #self._pass_lims()
         print "In NewRadar"
