@@ -58,9 +58,9 @@ class Component(QtGui.QMainWindow):
     '''Abstract class for a ART-view component'''
     
 
-    def __init__(self, name="Component", parent=None):
+    def __init__(self, name="Component", parent=None, flags=QtCore.Qt.Widget):
         '''Initialize the class to create the interface'''
-        super(Component, self).__init__(parent=parent)
+        super(Component, self).__init__(parent=parent, flags=flags)
         self.name = name
         self.parent = parent
         self.setWindowTitle(name)

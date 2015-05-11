@@ -15,6 +15,8 @@ class ComponentsControl(core.Component):
     The user select 2 components from a list and a radio menu is added for
     every common sharable variable. The variable in the second one can be
     connect or disconnected from the first one.
+
+    This is a powerfull Component, multiple instances may conflict
     '''
 
     def __init__(self, components=None, name="ComponentsControl", parent=None):

@@ -18,9 +18,6 @@ class Menu(Component):
     def __init__(self, pathDir, Vradar=None, name="Menu", parent=None):
         '''Initialize the class to create the interface'''
         super(Menu, self).__init__(name=name, parent=parent)
-        self.central_widget = QtGui.QWidget()
-        self.setCentralWidget(self.central_widget)
-        self.mylayout = QtGui.QGridLayout(self.central_widget)
         # Set some parameters
         self.dirIn = pathDir
         self.Vradar = Vradar
@@ -35,7 +32,7 @@ class Menu(Component):
             self.showFileDialog()
         
         # Connect the file advancement interface
-        self.AddNextPrevMenu()
+        self.addNextPrevMenu()
         
         self.show()
         
@@ -56,21 +53,35 @@ class Menu(Component):
     def LaunchApp(self):
         '''Launches a GUI interface.'''
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-     
+
+        # Create layout
+        self.central_widget = QtGui.QWidget()
+        self.setCentralWidget(self.central_widget)
+        self.centralLayout = QtGui.QVBoxLayout(self.central_widget)
+        self.centralLayout.setSpacing(8)
+
         # Create the menus
         self.CreateMenu()
-        
-        # Create layout
-        self.layout = QtGui.QGridLayout()
-        self.layout.setSpacing(8)
-                    
+
     def showFileDialog(self):
         '''Open a dialog box to choose file'''    
         self.qfilename = QtGui.QFileDialog.getOpenFileName(self, 'Open file', 
                 self.dirIn)
         self.filename = str(self.qfilename)
         self._openfile()
-        
+
+    def addLayoutWidget(self, comp):
+        '''Add a component to central layout
+        external call'''
+        self.centralLayout.addWidget(comp)
+        self.addLayoutMenuItem(comp)
+
+    def removeLayoutWidget(self, comp):
+        '''Remove component from central layout'''
+        self.centralLayout.removeWidget(comp)
+        self.removeLayoutMenuItem(comp)
+        comp.deleteLater()
+
     ######################
     # Menu build methods #
     ######################
@@ -79,13 +90,14 @@ class Menu(Component):
         '''Create a selection menu'''
         self.menubar = self.menuBar()
         
-        self.AddFileMenu()
-        self.AddAboutMenu()
+        self.addFileMenu()
+        self.addAboutMenu()
 #        self.AddPlotMenu()
-        self.AddFileAdvanceMenu()
+        self.addFileAdvanceMenu()
+        self.addLayoutMenu()
         
 
-    def AddFileMenu(self):
+    def addFileMenu(self):
         self.filemenu = self.menubar.addMenu('&File')
                
         openFile = QtGui.QAction('Open', self)
@@ -113,7 +125,7 @@ class Menu(Component):
 #        self.filemenu.addAction(saveImage)
         self.filemenu.addAction(exitApp)
         
-    def AddAboutMenu(self):
+    def addAboutMenu(self):
         '''Add Help item to menu bar'''
         self.aboutmenu = self.menubar.addMenu('About')
 
@@ -133,7 +145,7 @@ class Menu(Component):
         self.aboutmenu.addAction(self.RadarShort)
         self.aboutmenu.addAction(self.RadarLong)
         
-    def AddPlotMenu(self):
+    def addPlotMenu(self):
         '''Add Plot item to menu bar'''
         self.plotmenu = self.menubar.addMenu('&Plot')
         
@@ -143,7 +155,25 @@ class Menu(Component):
         self.rngringmenu = self.plotmenu.addMenu('Set Range Rings')
         self.cmapmenu = self.plotmenu.addMenu('Colormap')
 
-    def AddFileAdvanceMenu(self):
+    def addLayoutMenu(self):
+        '''Add Layout item to menu bar'''
+        self.layoutmenu = self.menubar.addMenu('&Layout')
+        self.layoutmenuItems = {}
+
+    def addLayoutMenuItem(self, comp):
+        item = self.layoutmenu.addMenu(comp.name)
+        self.layoutmenuItems[comp.__repr__()] = item
+        remove = item.addAction("remove")
+        remove.triggered[()].connect(lambda comp=comp: self.removeLayoutWidget(comp))
+
+    def removeLayoutMenuItem(self, comp):
+        rep = comp.__repr__()
+        if rep in self.layoutmenuItems:
+            self.layoutmenuItems[rep].clear()
+            self.layoutmenu.removeAction(self.layoutmenuItems[rep].menuAction())
+            del self.layoutmenuItems[rep]
+
+    def addFileAdvanceMenu(self):
         '''Add an option to advance to next or previous file'''
         self.advancemenu = self.menubar.addMenu("Advance file")
 
@@ -159,7 +189,7 @@ class Menu(Component):
 #             RingAction = self.rngringmenu.addAction(RngRing)
 #             RingAction.triggered[()].connect(lambda RngRing=RngRing: self.RngRingSelectCmd(RngRing))
     
-    def AddNextPrevMenu(self):
+    def addNextPrevMenu(self):
         '''Add an option to advance to next or previous file'''
         nextAction = self.advancemenu.addAction("Next")
         nextAction.triggered[()].connect(lambda findex=self.fileindex + 1: self.AdvanceFileSelect(findex))
@@ -191,7 +221,6 @@ class Menu(Component):
  
     def _get_RadarLongInfo(self):
         '''Print out the radar info to text box'''
- 
         # Get the radar info form rada object and print it
         txOut = self.Vradar.value.info()
         print txOut

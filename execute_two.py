@@ -32,8 +32,8 @@ plot2 = Display(Vradar, Variable(field), Vtilt2, name="Display2", parent=MainMen
 
 from component_control import ComponentsControl
 
-c = ComponentsControl(parent=MainMenu)
-MainMenu.mylayout.addWidget(c,0,0)
+c = ComponentsControl()
+MainMenu.addLayoutWidget(c)
 #MainMenu.setCentralWidget(c)
 #print c.nativeParentWidget()
 #print c.parentWidget()
