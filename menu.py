@@ -30,8 +30,9 @@ class Menu(QtGui.QMainWindow):
             A value of None initializes with this class.
         name - string
             Menu name.
-        parent - QtWindow instance
-            QtWindow parent instance to associate to menu.
+        parent - PyQt instance
+            Parent instance to associate to menu.
+            If None, then Qt owns, otherwise associated with parent PyQt instance.
         
         Notes::
         -----

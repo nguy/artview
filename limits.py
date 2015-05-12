@@ -205,7 +205,7 @@ def limits_dialog(limits, name):
     buttonBox.accepted.connect(LimsDialog.accept)
     buttonBox.rejected.connect(LimsDialog.reject)
     retval = LimsDialog.exec_()
-    
+    print retval
     if retval == 1:
         limits['vmin'] = float(ent_dmin.text())
         limits['vmax'] = float(ent_dmax.text())
@@ -214,5 +214,5 @@ def limits_dialog(limits, name):
         limits['ymin'] = float(ent_ymin.text())
         limits['ymax'] = float(ent_ymax.text())
 
-    return limits
+    return limits, retval
     
