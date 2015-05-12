@@ -28,9 +28,10 @@ class FieldButtonWindow(QtGui.QMainWindow):
         [Optional]
         name - string
             Field Radiobutton window name.
-        parent - QtWindow instance
-            QtWindow parent instance to associate to FieldButtonWindow.
-        
+        parent - PyQt instance
+            Parent instance to associate to FieldButtonWindow.
+            If None, then Qt owns, otherwise associated with parent PyQt instance.
+                    
         Notes::
         -----
         This class records the selected button and passes the 
