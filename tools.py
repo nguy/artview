@@ -20,8 +20,8 @@ def restore_default_display(zoompan, field, airborne, rhi):
         zoompan.disconnect()
         zoompan = None
     limits, CMAP = limits.initialize_limits(field, airborne, rhi)
-    
-    return zoompan, limits, CMAP    
+
+    return zoompan, limits, CMAP
 
 ###############################
 # Use a custom Method #

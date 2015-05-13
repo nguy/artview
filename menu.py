@@ -22,18 +22,15 @@ class Menu(Component):
         self.dirIn = pathDir
         self.Vradar = Vradar
         self.sharedVariables = {"Vradar": None,}
-        # Launch the GUI interface
-        self.LaunchApp()      
-                
+
         # Show an "Open" dialog box and return the path to the selected file
         # Just do that if Vradar was not given
         if self.Vradar is None:
             self.Vradar = Variable(None)
             self.showFileDialog()
-        
-        # Connect the file advancement interface
-        self.addNextPrevMenu()
-        
+
+        # Launch the GUI interface
+        self.LaunchApp()
         self.show()
         
     # Allow advancement via left and right arrow keys
@@ -70,18 +67,27 @@ class Menu(Component):
         self.filename = str(self.qfilename)
         self._openfile()
 
-    def addLayoutWidget(self, comp):
-        '''Add a component to central layout
+    def addLayoutWidget(self, widget):
+        '''Add a widget to central layout
         external call'''
-        self.centralLayout.addWidget(comp)
-        self.addLayoutMenuItem(comp)
+        self.centralLayout.addWidget(widget)
+        self.addLayoutMenuItem(widget)
 
-    def removeLayoutWidget(self, comp):
-        '''Remove component from central layout'''
-        self.centralLayout.removeWidget(comp)
-        self.removeLayoutMenuItem(comp)
-        comp.deleteLater()
+    def removeLayoutWidget(self, widget):
+        '''Remove widget from central layout'''
+        self.centralLayout.removeWidget(widget)
+        self.removeLayoutMenuItem(widget)
+        widget.deleteLater()
 
+    def addComponent(self, Comp):
+        '''Add Component Contructor'''
+        # first test the existence of a guiStart
+        if not hasattr(Comp,'guiStart'):
+            raise ValueError("Compnent has no class guiStart Method")
+            return
+        self.addComponentMenuItem(Comp)
+
+        
     ######################
     # Menu build methods #
     ######################
@@ -95,7 +101,7 @@ class Menu(Component):
 #        self.AddPlotMenu()
         self.addFileAdvanceMenu()
         self.addLayoutMenu()
-        
+        self.addComponentMenu()
 
     def addFileMenu(self):
         self.filemenu = self.menubar.addMenu('&File')
@@ -160,56 +166,54 @@ class Menu(Component):
         self.layoutmenu = self.menubar.addMenu('&Layout')
         self.layoutmenuItems = {}
 
-    def addLayoutMenuItem(self, comp):
-        item = self.layoutmenu.addMenu(comp.name)
-        self.layoutmenuItems[comp.__repr__()] = item
-        remove = item.addAction("remove")
-        remove.triggered[()].connect(lambda comp=comp: self.removeLayoutWidget(comp))
+    def addComponentMenu(self):
+        '''Add Component item to menu bar'''
+        self.componentmenu = self.menubar.addMenu('&Components')
 
-    def removeLayoutMenuItem(self, comp):
-        rep = comp.__repr__()
+    def addLayoutMenuItem(self, widget):
+        '''Add widget item to Layout Menu'''
+        if hasattr(widget,'name'):
+            item = self.layoutmenu.addMenu(widget.name)
+        else:
+            item = self.layoutmenu.addMenu(widget.__str__())
+        self.layoutmenuItems[widget.__repr__()] = item
+        remove = item.addAction("remove")
+        remove.triggered[()].connect(lambda widget=widget: self.removeLayoutWidget(widget))
+
+    def removeLayoutMenuItem(self, widget):
+        '''Remove widget item to Layout Menu'''
+        rep = widget.__repr__()
         if rep in self.layoutmenuItems:
             self.layoutmenuItems[rep].clear()
             self.layoutmenu.removeAction(self.layoutmenuItems[rep].menuAction())
+            self.layoutmenuItems[rep].close()
             del self.layoutmenuItems[rep]
+
+    def addComponentMenuItem(self, Comp):
+        '''Add Component item to Component Menu'''
+        action = self.componentmenu.addAction(Comp.__name__)
+        action.triggered[()].connect(lambda Comp=Comp: self.startComponent(Comp))
+
+    def startComponent(self, Comp):
+        '''GUI start a Component and add to layout'''
+        comp = Comp.guiStart()
+        self.addLayoutWidget(comp)
 
     def addFileAdvanceMenu(self):
         '''Add an option to advance to next or previous file'''
         self.advancemenu = self.menubar.addMenu("Advance file")
-
-#     def AddFieldMenu(self):
-#         '''Add a menu to change current plot field'''
-#         for nombre in self.fieldnames:
-#             FieldAction = self.fieldmenu.addAction(nombre)
-#             FieldAction.triggered[()].connect(lambda nombre=nombre: self.FieldSelectCmd(nombre))
-#             
-#     def AddRngRingMenu(self):
-#         '''Add a menu to set range rings'''
-#         for RngRing in self.RngRingList:
-#             RingAction = self.rngringmenu.addAction(RngRing)
-#             RingAction.triggered[()].connect(lambda RngRing=RngRing: self.RngRingSelectCmd(RngRing))
-    
-    def addNextPrevMenu(self):
-        '''Add an option to advance to next or previous file'''
         nextAction = self.advancemenu.addAction("Next")
         nextAction.triggered[()].connect(lambda findex=self.fileindex + 1: self.AdvanceFileSelect(findex))
-        
+
         prevAction = self.advancemenu.addAction("Previous")
         prevAction.triggered[()].connect(lambda findex=self.fileindex - 1: self.AdvanceFileSelect(findex))
-        
+
         firstAction = self.advancemenu.addAction("First")
         firstAction.triggered[()].connect(lambda findex=0: self.AdvanceFileSelect(findex))
-        
+
         lastAction = self.advancemenu.addAction("Last")
         lastAction.triggered[()].connect(lambda findex=(len(self.filelist) - 1): self.AdvanceFileSelect(findex))
-         
-#     def AddCmapMenu(self):
-#         '''Add a menu to change colormap used for plot'''
-#         for cm_name in self.cm_names:
-#             cmapAction = self.cmapmenu.addAction(cm_name)
-#             cmapAction.setStatusTip("Use the %s colormap"%cm_name)
-#             cmapAction.triggered[()].connect(lambda cm_name=cm_name: self.cmapSelectCmd(cm_name))
-           
+
     ######################
     # Help methods #
     ######################

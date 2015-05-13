@@ -9,6 +9,7 @@ from PyQt4 import QtGui, QtCore
 from functools import partial
 
 import core
+import common
 
 class ComponentsControl(core.Component):
     '''Class instance for control variables shared between components.
@@ -18,6 +19,11 @@ class ComponentsControl(core.Component):
 
     This is a powerfull Component, multiple instances may conflict
     '''
+
+    @classmethod
+    def guiStart(self):
+        val, entry = common.string_dialog("", "Component Name", "Name:")
+        return self(name=val)
 
     def __init__(self, components=None, name="ComponentsControl", parent=None):
         '''Initialize the class to create the interface'''
