@@ -370,10 +370,12 @@ class Display(QtGui.QMainWindow):
         toolmenu = QtGui.QMenu(self)
         toolZoomPan = toolmenu.addAction("Zoom/Pan")
         toolValueClick = toolmenu.addAction("Click for Value")
+        toolROI = toolmenu.addAction("Select a Region of Interest")
         toolCustom = toolmenu.addAction("Use Custom Tool")
-        toolDefault = toolmenu.addAction("Reset file defaults")
+        toolDefault = toolmenu.addAction("Reset File Defaults")
         toolZoomPan.triggered[()].connect(self.toolZoomPanCmd)
         toolValueClick.triggered[()].connect(self.toolValueClickCmd)
+        toolROI.triggered[()].connect(self.toolROICmd)
         toolCustom.triggered[()].connect(self.toolCustomCmd)
         toolDefault.triggered[()].connect(self.toolDefaultCmd)
         self.toolsButton.setMenu(toolmenu)
@@ -485,6 +487,13 @@ class Display(QtGui.QMainWindow):
         self.tools['valueclick'] = ValueClick(self.Vradar, self.Vtilt, self.Vfield, \
                                    self.units, self.ax, self.statusbar, parent=self.parent)
         self.tools['valueclick'].connect()
+        
+    def toolROICmd(self):
+        '''Creates and connects to Region of Interest instance'''
+        from tools import ROI
+        self.tools['roi'] = ROI(self.Vradar, self.Vtilt, self.ax, self.display, parent=self.parent)
+        self.tools['roi'].connect()
+        
         
     def toolCustomCmd(self):
         '''Allow user to activate self-defined tool.'''
