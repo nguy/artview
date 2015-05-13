@@ -35,8 +35,5 @@ from component_control import ComponentsControl
 c = ComponentsControl()
 MainMenu.addLayoutWidget(c)
 MainMenu.addComponent(ComponentsControl)
-#MainMenu.setCentralWidget(c)
-#print c.nativeParentWidget()
-#print c.parentWidget()
 app.exec_()
 

@@ -45,7 +45,7 @@ class Variable (QtCore.QObject):
         The arguments of the emitted signal are (self, value, strong).
         """
         self.value = value
-        self.emit(QtCore.SIGNAL("ValueChanged"), self, value)
+        self.emit(QtCore.SIGNAL("ValueChanged"), self, value, strong)
 
 
 class ComponentsList(QtCore.QObject):
