@@ -16,8 +16,31 @@ class Menu(Component):
     '''Class to display the MainMenu'''
 
     def __init__(self, pathDir, Vradar=None, name="Menu", parent=None):
-        '''Initialize the class to create the interface'''
+        '''
+        Initialize the class to create the interface.
+    
+        Parameters::
+        ----------
+        pathDir - string
+            Input directory path to open.
+    
+        [Optional]
+        Vradar - Variable instance
+            Radar signal variable. 
+            A value of None initializes with this class.
+        name - string
+            Menu name.
+        parent - PyQt instance
+            Parent instance to associate to menu.
+            If None, then Qt owns, otherwise associated with parent PyQt instance.
+        
+        Notes::
+        -----
+        This class creates the main application interface and creates
+        a menubar for the program.
+        '''
         super(Menu, self).__init__(name=name, parent=parent)
+
         # Set some parameters
         self.dirIn = pathDir
         self.Vradar = Vradar
@@ -61,29 +84,31 @@ class Menu(Component):
         self.CreateMenu()
 
     def showFileDialog(self):
-        '''Open a dialog box to choose file'''    
+        '''Open a dialog box to choose file.'''    
         self.qfilename = QtGui.QFileDialog.getOpenFileName(self, 'Open file', 
                 self.dirIn)
         self.filename = str(self.qfilename)
         self._openfile()
 
     def addLayoutWidget(self, widget):
-        '''Add a widget to central layout
-        external call'''
+        '''
+        Add a widget to central layout.
+        This function is to be called both internal and external
+        '''
         self.centralLayout.addWidget(widget)
         self.addLayoutMenuItem(widget)
 
     def removeLayoutWidget(self, widget):
-        '''Remove widget from central layout'''
+        '''Remove widget from central layout.'''
         self.centralLayout.removeWidget(widget)
         self.removeLayoutMenuItem(widget)
         widget.deleteLater()
 
     def addComponent(self, Comp):
-        '''Add Component Contructor'''
+        '''Add Component Contructor.'''
         # first test the existence of a guiStart
         if not hasattr(Comp,'guiStart'):
-            raise ValueError("Compnent has no class guiStart Method")
+            raise ValueError("Component has no guiStart Method")
             return
         self.addComponentMenuItem(Comp)
 
@@ -93,7 +118,7 @@ class Menu(Component):
     ######################
  
     def CreateMenu(self):
-        '''Create a selection menu'''
+        '''Create the main menubar.'''
         self.menubar = self.menuBar()
         
         self.addFileMenu()
@@ -104,22 +129,13 @@ class Menu(Component):
         self.addComponentMenu()
 
     def addFileMenu(self):
+        '''Add the File item to menubar.'''
         self.filemenu = self.menubar.addMenu('&File')
                
         openFile = QtGui.QAction('Open', self)
         openFile.setShortcut('Ctrl+O')
         openFile.setStatusTip('Open new File')
         openFile.triggered.connect(self.showFileDialog)
-        
-#         quicksaveImage = QtGui.QAction('Quick Save Image', self)  
-#         quicksaveImage.setShortcut('Ctrl+D')
-#         quicksaveImage.setStatusTip('Save Image to local directory with default name')
-#         #quicksaveImage.triggered.connect(self._quick_savefile) #AG Turn off
-#                 
-#         saveImage = QtGui.QAction('Save Image', self)  
-#         saveImage.setShortcut('Ctrl+S')
-#         saveImage.setStatusTip('Save Image using dialog')
-#         #saveImage.triggered.connect(self._savefile) #AG Turn off
                 
         exitApp = QtGui.QAction('Close', self)  
         exitApp.setShortcut('Ctrl+Q')
@@ -127,12 +143,10 @@ class Menu(Component):
         exitApp.triggered.connect(self.close)
         
         self.filemenu.addAction(openFile)
-#        self.filemenu.addAction(quicksaveImage)
-#        self.filemenu.addAction(saveImage)
         self.filemenu.addAction(exitApp)
         
     def addAboutMenu(self):
-        '''Add Help item to menu bar'''
+        '''Add Help item to menubar.'''
         self.aboutmenu = self.menubar.addMenu('About')
 
         self._aboutArtview = QtGui.QAction('ARTView', self)
@@ -152,7 +166,7 @@ class Menu(Component):
         self.aboutmenu.addAction(self.RadarLong)
         
     def addPlotMenu(self):
-        '''Add Plot item to menu bar'''
+        '''Add Plot item to menubar.'''
         self.plotmenu = self.menubar.addMenu('&Plot')
         
         # Add submenus
@@ -162,16 +176,16 @@ class Menu(Component):
         self.cmapmenu = self.plotmenu.addMenu('Colormap')
 
     def addLayoutMenu(self):
-        '''Add Layout item to menu bar'''
+        '''Add Layout item to menu bar.'''
         self.layoutmenu = self.menubar.addMenu('&Layout')
         self.layoutmenuItems = {}
 
     def addComponentMenu(self):
-        '''Add Component item to menu bar'''
+        '''Add Component item to menu bar.'''
         self.componentmenu = self.menubar.addMenu('&Components')
 
     def addLayoutMenuItem(self, widget):
-        '''Add widget item to Layout Menu'''
+        '''Add widget item to Layout Menu.'''
         if hasattr(widget,'name'):
             item = self.layoutmenu.addMenu(widget.name)
         else:
@@ -181,7 +195,7 @@ class Menu(Component):
         remove.triggered[()].connect(lambda widget=widget: self.removeLayoutWidget(widget))
 
     def removeLayoutMenuItem(self, widget):
-        '''Remove widget item to Layout Menu'''
+        '''Remove widget item to Layout Menu.'''
         rep = widget.__repr__()
         if rep in self.layoutmenuItems:
             self.layoutmenuItems[rep].clear()
@@ -190,17 +204,17 @@ class Menu(Component):
             del self.layoutmenuItems[rep]
 
     def addComponentMenuItem(self, Comp):
-        '''Add Component item to Component Menu'''
+        '''Add Component item to Component Menu.'''
         action = self.componentmenu.addAction(Comp.__name__)
         action.triggered[()].connect(lambda Comp=Comp: self.startComponent(Comp))
 
     def startComponent(self, Comp):
-        '''GUI start a Component and add to layout'''
+        '''GUI start a Component and add to layout.'''
         comp = Comp.guiStart()
         self.addLayoutWidget(comp)
 
     def addFileAdvanceMenu(self):
-        '''Add an option to advance to next or previous file'''
+        '''Add an option to advance to next or previous file.'''
         self.advancemenu = self.menubar.addMenu("Advance file")
         nextAction = self.advancemenu.addAction("Next")
         nextAction.triggered[()].connect(lambda findex=self.fileindex + 1: self.AdvanceFileSelect(findex))
@@ -219,12 +233,13 @@ class Menu(Component):
     ######################
 
     def _about(self):
+        # Add a more extensive about eventually
         txOut = "This is a simple radar file browser to allow \
                  quicklooks using the DoE PyArt software"
         QtGui.QMessageBox.about(self, "About ARTView", txOut)
  
     def _get_RadarLongInfo(self):
-        '''Print out the radar info to text box'''
+        '''Print out the radar info to text box.'''
         # Get the radar info form rada object and print it
         txOut = self.Vradar.value.info()
         print txOut
@@ -232,7 +247,7 @@ class Menu(Component):
         QtGui.QMessageBox.information(self, "Long Radar Info", "See terminal window") 
 
     def _get_RadarShortInfo(self):
-        '''Print out some basic info about the radar'''
+        '''Print out some basic info about the radar.'''
         try:
             rname = self.Vradar.value.metadata['instrument_name']
         except:
@@ -312,15 +327,15 @@ class Menu(Component):
     ########################
     
     def AdvanceFileSelect(self, findex):
-        '''Captures a selection and redraws figure with new file'''
+        '''Captures a selection and redraws figure with new file.'''
         if findex > len(self.filelist):
             print len(self.filelist)
-            msg = "End of directory, cannot advance"
+            msg = "End of directory, cannot advance!"
             self._ShowWarning(msg)
             findex = (len(self.filelist) - 1)
             return
         if findex < 0:
-            msg = "Beginning of directory, must move forward"
+            msg = "Beginning of directory, must move forward!"
             self._ShowWarning(msg)
             findex = 0
             return
@@ -333,7 +348,7 @@ class Menu(Component):
     ########################
  
     def _openfile(self):
-        '''Open a file via a file selection window'''
+        '''Open a file via a file selection window.'''
         print "Opening file " + self.filename
         
         # Update to  current directory when file is chosen
@@ -349,7 +364,7 @@ class Menu(Component):
             radar = pyart.io.read(self.filename)
             self.Vradar.change(radar)
         except:
-            msg = "This is not a recognized radar file"
+            msg = "This is not a recognized radar file!"
             common.ShowWarning(msg)
             return
 

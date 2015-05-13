@@ -16,7 +16,28 @@ class FieldButtonWindow(Component):
     FieldClicked = QtCore.pyqtSignal()
     
     def __init__(self, Vradar, Vfield, name="FieldButtons", parent=None):
-        '''Initialize the class to create the interface'''
+        '''
+        Initialize the class to create the interface.
+    
+        Parameters::
+        ----------
+        Vradar - Variable instance
+            Radar signal variable to be used.
+        Vfield - Variable instance
+            Field signal variable to be used.
+    
+        [Optional]
+        name - string
+            Field Radiobutton window name.
+        parent - PyQt instance
+            Parent instance to associate to FieldButtonWindow.
+            If None, then Qt owns, otherwise associated with parent PyQt instance.
+                    
+        Notes::
+        -----
+        This class records the selected button and passes the 
+        change value back to variable.
+        '''
         super(FieldButtonWindow, self).__init__(name=name, parent=parent)
 
         # Set up signal, so that DISPLAY can react to external 
@@ -37,11 +58,11 @@ class FieldButtonWindow(Component):
     ########################
         
     def FieldSelectCmd(self, field):
-        '''Captures a selection and redraws the field with new tilt'''
+        '''Captures a selection and redraws the field with new tilt.'''
         self.Vfield.change(field)
 
     def CreateFieldWidget(self):
-        '''Create a widget to store radio buttons to control tilt adjust'''
+        '''Create a widget to store radio buttons to control tilt adjust.'''
         self.radioBox = QtGui.QGroupBox("Field Selection", parent=self)
         self.rBox_layout = QtGui.QVBoxLayout(self.radioBox)
         self.radioBox.setLayout(self.rBox_layout)
@@ -61,13 +82,14 @@ class FieldButtonWindow(Component):
             
             self.rBox_layout.addWidget(button)
         
-        self.NewField(self.Vfield, self.Vfield.value)  # setChecked the current field
+        self.NewField(self.Vfield, self.Vfield.value, True)  # setChecked the current field
     
-    def NewField(self, variable, value):
+    def NewField(self, variable, value, strong):
+        '''Record the selected button by updating the dictionary.'''
         if value in self.Vradar.value.fields:
             self.fieldbutton[value].setChecked(True)
         
-    def NewRadar(self, variable, value):
-        # update field list
+    def NewRadar(self, variable, value, strong):
+        '''Update the field list when radar variable is changed.'''
         self.CreateFieldWidget()
         self.SetFieldRadioButtons()

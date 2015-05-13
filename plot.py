@@ -15,10 +15,9 @@ from matplotlib.colors import Normalize as mlabNormalize
 from matplotlib.colorbar import ColorbarBase as mlabColorbarBase
 from matplotlib.pyplot import cm
 
-import limits
+
 import common
 from core import Variable, Component
-from limits import Ui_LimsDialog
 
 # Save image file type and DPI (resolution)
 IMAGE_EXT = 'png'
@@ -30,10 +29,44 @@ DPI = 100
 
 
 class Display(Component):
-    '''Class that plots a Radar structure using pyart.graph'''
+    '''
+    Class that creates a display plot, using a returned Radar structure 
+    from the PyArt pyart.graph package.
+    '''
 
-    def __init__(self, Vradar, Vfield, Vtilt, Vlims=None, airborne=False, rhi=False, name="Display", parent=None):
-        '''Initialize the class to create the interface'''
+    def __init__(self, Vradar, Vfield, Vtilt, Vlims=None, \
+                 airborne=False, rhi=False, name="Display", parent=None):
+        '''
+        Initialize the class to create display.
+    
+        Parameters::
+        ----------
+        Vradar - Variable instance
+            Radar signal variable to be used.
+        Vfield - Variable instance
+            Field signal variable to be used.
+        Vtilt - Variable instance
+            Tilt signal variable to be used.
+    
+        [Optional]
+        Vlims - Variable instance
+            Limits signal variable to be used.
+            A value of None will instantiate a limits variable.
+        airborne - boolean
+            Set True to display airborne type radar files (assumes tail radar setup such as NOAA P-3).
+        rhi - boolean
+            Set True to display RHI type radar files.
+        name - string
+            Display window name.
+        parent - PyQt instance
+            Parent instance to associate to Display window.
+            If None, then Qt owns, otherwise associated with parent PyQt instance.
+        
+        Notes::
+        -----
+        This class records the selected button and passes the 
+        change value back to variable.
+        '''
         super(Display, self).__init__(name=name, parent=parent)
         #AG set up signal, so that DISPLAY can react to external (or internal) changes in radar,field and tilt
         #AG radar,field and tilt are expected to be Core.Variable instances
@@ -58,13 +91,12 @@ class Display(Component):
         # Set plot title and colorbar units to defaults
         self.title = None
         self.units = None
-        # Initialize limits
-           
-        self.limits, self.CMAP = limits.initialize_limits(self.Vfield.value, \
-                                         airborne=self.airborne, rhi=self.rhi)
+        
+        # Initialize limits   
+        self._set_default_limits()
         
         if self.Vlims.value is None:
-            self.Vlims.change(self.limits)
+            self.Vlims.change(self.limits, strong=False)
         
         # Set the default range rings
         self.RngRingList = ["None", "10 km", "20 km", "30 km", "50 km", "100 km"]
@@ -78,22 +110,22 @@ class Display(Component):
         # Create a figure for output
         self._set_fig_ax(nrows=1, ncols=1)
         
-        # Initiate no tool useage
-#        self.ToolSelect = "No Tools" #AG this is problably not the right way of doing this
-        self.zp = None
+        # Create tool dictionary
+        self.tools = {}
+        self.tools['zoompan'] = None
         
         # Launch the GUI interface
         self.LaunchGUI() 
         
         # AG - Initialize radar
-        self.NewRadar(None, None)
+        self.NewRadar(None, None, True)
         
         self.show()
         
-        self.pickPoint = self.fig.canvas.mpl_connect('button_press_event', self.onPick)
+#        self.pickPoint = self.fig.canvas.mpl_connect('button_press_event', self.onPick)
 
     def keyPressEvent(self, event):
-        '''Allow tilt adjustment via the Up-Down arrow keys'''
+        '''Allow tilt adjustment via the Up-Down arrow keys.'''
         if event.key() == QtCore.Qt.Key_Up:
             self.TiltSelectCmd(self.Vtilt.value + 1)
         elif event.key() == QtCore.Qt.Key_Down:
@@ -101,20 +133,20 @@ class Display(Component):
         else:
             super(Display, self).keyPressEvent(event)
 
-    def onPick(self, event):
-        '''Get value at the point selected by mouse click'''
-        xdata = event.xdata # get event x location
-        ydata = event.ydata # get event y location
-        az = np.arctan2(xdata, ydata)*180./np.pi
-        radar = self.Vradar.value #keep equantions clean
-        if az < 0:
-            az = az + 360.
-        rng = np.sqrt(xdata*xdata+ydata*ydata)
-        azindex = np.argmin(np.abs(radar.azimuth['data'][radar.sweep_start_ray_index['data'][self.Vtilt.value]:radar.sweep_end_ray_index['data'][self.Vtilt.value]]-az))+radar.sweep_start_ray_index['data'][self.Vtilt.value]
-        rngindex = np.argmin(np.abs(radar.range['data']-rng*1000.))
-        msg = 'x = %4.2f, y = %4.2f, Azimuth = %4.2f deg., Range = %4.2f km, %s = %4.2f %s'\
-        %(xdata, ydata, radar.azimuth['data'][azindex], radar.range['data'][rngindex]/1000., self.Vfield.value, radar.fields[self.Vfield.value]['data'][azindex][rngindex], self.units)
-        self.statusBar().showMessage(msg)
+#     def onPick(self, event):
+#         '''Get value at the point selected by mouse click.'''
+#         xdata = event.xdata # get event x location
+#         ydata = event.ydata # get event y location
+#         az = np.arctan2(xdata, ydata)*180./np.pi
+#         radar = self.Vradar.value #keep equantions clean
+#         if az < 0:
+#             az = az + 360.
+#         rng = np.sqrt(xdata*xdata+ydata*ydata)
+#         azindex = np.argmin(np.abs(radar.azimuth['data'][radar.sweep_start_ray_index['data'][self.Vtilt.value]:radar.sweep_end_ray_index['data'][self.Vtilt.value]]-az))+radar.sweep_start_ray_index['data'][self.Vtilt.value]
+#         rngindex = np.argmin(np.abs(radar.range['data']-rng*1000.))
+#         msg = 'x = %4.2f, y = %4.2f, Azimuth = %4.2f deg., Range = %4.2f km, %s = %4.2f %s'\
+#         %(xdata, ydata, radar.azimuth['data'][azindex], radar.range['data'][rngindex]/1000., self.Vfield.value, radar.fields[self.Vfield.value]['data'][azindex][rngindex], self.units)
+#         self.statusBar().showMessage(msg)
 
     ####################
     # GUI methods #
@@ -139,12 +171,15 @@ class Display(Component):
         # Add buttons along display for user control
         self.addButtons()
         self.setUILayout()
+        
+        # Set the status bar to display messages
+        self.statusbar = self.statusBar()
                     
     ##################################
     # User display interface methods #
     ##################################
     def addButtons(self):
-        '''Add a series of buttons for user control over display'''
+        '''Add a series of buttons for user control over display.'''
         # Create the Display controls
         self._add_displayBoxUI()
         # Create the Tilt controls
@@ -161,7 +196,7 @@ class Display(Component):
         #self._fillFieldBox() AG will be done by newRadar
         
     def setUILayout(self):
-        '''Setup the button/display UI layout'''
+        '''Setup the button/display UI layout.'''
         self.layout.addWidget(self.tiltBox, 0, 0)
         self.layout.addWidget(self.fieldBox, 0, 1)
         self.layout.addWidget(self.dispButton, 0, 2)
@@ -172,14 +207,14 @@ class Display(Component):
     #############################
         
     def _open_LimsDialog(self):
-#        self.limsDialog = QtGui.QDialog()
-#        self.limsDialog = Ui_LimsDialog(self.Vradar, self.Vlims, self.limits, \
-#                          name=self.name+" Limts Adjustment", parent=self.parent)
-        self.limits = limits.limits_dialog(self.limits, self.name)     
-        self._update_plot()
+        '''Open a dialog box to change display limits.'''
+        from limits import limits_dialog
+        self.limits, change = limits_dialog(self.limits, self.name)     
+        if change == 1:
+            self._update_plot()
     
     def _fillTiltBox(self):
-        '''Fill in the Tilt Window Box with current elevation angles'''
+        '''Fill in the Tilt Window Box with current elevation angles.'''
         self.tiltBox.clear()
         self.tiltBox.addItem("Tilt Window")
         # Loop through and create each tilt button
@@ -189,15 +224,15 @@ class Display(Component):
             self.tiltBox.addItem(btntxt)
     
     def _fillFieldBox(self):
-        '''Fill in the Field Window Box with current variable names'''
+        '''Fill in the Field Window Box with current variable names.'''
         self.fieldBox.clear()
         self.fieldBox.addItem("Field Window")
         # Loop through and create each field button
         for field in self.fieldnames:
             self.fieldBox.addItem(field)
-    
+
     def _lims_input(self, entry):
-        '''Retrieve new limits input'''
+        '''Retrieve new limits input.'''
         if entry['dmin'] is not None:
             self.limits['vmin'] = entry['dmin']
         if entry['dmax'] is not None:
@@ -213,7 +248,7 @@ class Display(Component):
         self._update_plot()
 
     def _tiltAction(self, text):
-        '''Define action for Tilt Button selection'''
+        '''Define action for Tilt Button selection.'''
         if text == "Tilt Window":
             self._open_tiltbuttonwindow()
         else:
@@ -221,52 +256,40 @@ class Display(Component):
             self.TiltSelectCmd(ntilt)
 
     def _fieldAction(self, text):
-        '''Define action for Field Button selection'''
+        '''Define action for Field Button selection.'''
         if text == "Field Window":
             self._open_fieldbuttonwindow()
         else:
             self.FieldSelectCmd(str(text))
 
     def _title_input(self):
-        '''Retrieve new plot title'''
-#        if self.title is None:
-#            old_val = ''
-#        else:
-#            old_val = self.title
-#        val, entry = QtGui.QInputDialog.getText(self, "Plot Title", \
-#                  "Title:", 0, old_val)
+        '''Retrieve new plot title.'''
         val, entry = common.string_dialog(self.title, "Plot Title", "Title:")
         if entry is True:
             self.title = val
             self._update_plot()
 
     def _units_input(self):
-        '''Retrieve new plot units'''
-#        if self.units is None:
-#            old_val = ''
-#        else:
-#            old_val = self.units
-#        val, entry = QtGui.QInputDialog.getText(self, "Plot Units", \
-#                  "Units:", 0, old_val)
+        '''Retrieve new plot units.'''
         val, entry = common.string_dialog(self.units, "Plot Units", "Units:")
         if entry is True:
             self.units = val
             self._update_plot()
             
     def _open_tiltbuttonwindow(self):
-        '''Open a TiltButtonWindow instance'''
+        '''Open a TiltButtonWindow instance.'''
         from tilt import TiltButtonWindow
         self.tiltbuttonwindow = TiltButtonWindow(self.Vradar, self.Vtilt, \
                             name=self.name+" Tilt Selection", parent=self.parent)
         
     def _open_fieldbuttonwindow(self):
-        '''Open a FieldButtonWindow instance'''
+        '''Open a FieldButtonWindow instance.'''
         from field import FieldButtonWindow
         self.fieldbuttonwindow = FieldButtonWindow(self.Vradar, self.Vfield, \
                             name=self.name+" Field Selection", parent=self.parent)
         
     def _add_RngRing_to_button(self):
-        '''Add a menu to display range rings on plot'''
+        '''Add a menu to display range rings on plot.'''
         for RngRing in self.RngRingList:
             RingAction = self.dispRngRingmenu.addAction(RngRing)
             RingAction.setStatusTip("Apply Range Rings every %s"%RngRing)
@@ -274,7 +297,7 @@ class Display(Component):
             self.dispRngRing.setMenu(self.dispRngRingmenu)
         
     def _add_cmaps_to_button(self):
-        '''Add a menu to change colormap used for plot'''
+        '''Add a menu to change colormap used for plot.'''
         for cm_name in self.cm_names:
             cmapAction = self.dispCmapmenu.addAction(cm_name)
             cmapAction.setStatusTip("Use the %s colormap"%cm_name)
@@ -282,7 +305,7 @@ class Display(Component):
             self.dispCmap.setMenu(self.dispCmapmenu)
             
     def _add_displayBoxUI(self):
-        '''Create the Display Options Button menu'''
+        '''Create the Display Options Button menu.'''
         self.dispButton = QtGui.QPushButton("Display Options")
         self.dispButton.setToolTip("Adjust display properties")
         self.dispButton.setFocusPolicy(QtCore.Qt.NoFocus)
@@ -317,7 +340,7 @@ class Display(Component):
         self.dispButton.setMenu(dispmenu)
         
     def _add_tiltBoxUI(self):
-        '''Create the Tilt Selection ComboBox'''
+        '''Create the Tilt Selection ComboBox.'''
         self.tiltBox = QtGui.QComboBox()
         self.tiltBox.setFocusPolicy(QtCore.Qt.NoFocus)
         self.tiltBox.setToolTip("Choose tilt elevation angle")
@@ -325,7 +348,7 @@ class Display(Component):
         #self._fillTiltBox() AG will be done by newRadar
 
     def _add_fieldBoxUI(self):
-        '''Create the Field Selection ComboBox'''
+        '''Create the Field Selection ComboBox.'''
         self.fieldBox = QtGui.QComboBox()
         self.fieldBox.setFocusPolicy(QtCore.Qt.NoFocus)
         self.fieldBox.setToolTip("Choose variable/field")
@@ -333,15 +356,19 @@ class Display(Component):
         #self._fillFieldBox() AG will be done by newRadar
                    
     def _add_toolsBoxUI(self):
-        '''Create the Tools Button menu'''
+        '''Create the Tools Button menu.'''
         self.toolsButton = QtGui.QPushButton("Toolbox")
         self.toolsButton.setFocusPolicy(QtCore.Qt.NoFocus)
         self.toolsButton.setToolTip("Choose a tool to apply")
         toolmenu = QtGui.QMenu(self)
         toolZoomPan = toolmenu.addAction("Zoom/Pan")
+        toolValueClick = toolmenu.addAction("Click for Value")
+        toolROI = toolmenu.addAction("Select a Region of Interest")
         toolCustom = toolmenu.addAction("Use Custom Tool")
-        toolDefault = toolmenu.addAction("Reset file defaults")
+        toolDefault = toolmenu.addAction("Reset File Defaults")
         toolZoomPan.triggered[()].connect(self.toolZoomPanCmd)
+        toolValueClick.triggered[()].connect(self.toolValueClickCmd)
+        toolROI.triggered[()].connect(self.toolROICmd)
         toolCustom.triggered[()].connect(self.toolCustomCmd)
         toolDefault.triggered[()].connect(self.toolDefaultCmd)
         self.toolsButton.setMenu(toolmenu)
@@ -350,8 +377,8 @@ class Display(Component):
     # Selectionion methods #
     ########################
 
-    def NewRadar(self, variable, value):
-        '''Display changes after radar Variable class is altered'''
+    def NewRadar(self, variable, value, strong):
+        '''Display changes after radar Variable class is altered.'''
         # In case the flags were not used at startup
         self._check_file_type()
         self._set_figure_canvas()
@@ -372,38 +399,41 @@ class Display(Component):
             pass
         self.units = None
         self.title = None
-        self._update_plot()
+        if strong:
+            self._update_plot()
 
-    def NewField(self, variable, value):
-        '''Display changes after field in Variable class is altered'''
-        self.limits, self.CMAP = limits.initialize_limits(self.Vfield.value, \
-                                         airborne=self.airborne, rhi=self.rhi)
+    def NewField(self, variable, value, strong):
+        '''Display changes after field in Variable class is altered.'''
+        self._set_default_limits()
         self.units = None
         idx = self.fieldBox.findText(value)
         self.fieldBox.setCurrentIndex(idx)
-        self._update_plot()
+        if strong:
+            self._update_plot()
 
-    def NewLims(self, variable, value):
-        '''Display changes after limits in Variable class is altered'''
-        self._update_plot()
+    def NewLims(self, variable, value, strong):
+        '''Display changes after limits in Variable class is altered.'''
+        if strong:
+            self._update_plot()
 
-    def NewTilt(self,variable,value):
-        '''Display changes after tilt in Variable class is altered'''
+    def NewTilt(self, variable, value, strong):
+        '''Display changes after tilt in Variable class is altered.'''
         # +1 since the first one is "Tilt Window"
         self.tiltBox.setCurrentIndex(value+1)  
-        self._update_plot()
+        if strong:
+            self._update_plot()
 
     def TiltSelectCmd(self, ntilt):
-        '''Captures tilt selection and redraws the field with new tilt'''
+        '''Captures tilt selection and redraws the field with new tilt.'''
         self.Vtilt.change(ntilt)
         #AG tilt is changed and signal sent, so this and other classes do what they need to do
 
     def FieldSelectCmd(self, nombre):
-        '''Captures field selection and redraws the new field'''
+        '''Captures field selection and redraws the new field.'''
         self.Vfield.change(nombre)
 
     def RngRingSelectCmd(self, ringSel):
-        '''Captures Range Ring selection and redraws the field with range rings'''
+        '''Captures Range Ring selection and redraws the field with range rings.'''
         if ringSel is "None":
             self.RngRing = False
         else:
@@ -432,33 +462,42 @@ class Display(Component):
         self._update_plot()
         
     def cmapSelectCmd(self, cm_name):
-        '''Captures colormap selection and redraws'''
+        '''Captures colormap selection and redraws.'''
         self.CMAP = cm_name
         self._update_plot()
         
     def toolZoomPanCmd(self):
-        '''Creates and connects to a Zoom/Pan instance'''
+        '''Creates and connects to a Zoom/Pan instance.'''
+        from tools import ZoomPan
         scale = 1.1
-        self.zp = ZoomPan(self.Vlims, self.ax, self.limits, \
+        self.tools['zoompan'] = ZoomPan(self.Vlims, self.ax, self.limits, \
                           base_scale = scale, parent=self.parent)
-        self.zp.connect()
+        self.tools['zoompan'].connect()
+                
+    def toolValueClickCmd(self):
+        '''Creates and connects to Point-and-click value retrieval'''
+        from tools import ValueClick
+        self.tools['valueclick'] = ValueClick(self.Vradar, self.Vtilt, self.Vfield, \
+                                   self.units, self.ax, self.statusbar, parent=self.parent)
+        self.tools['valueclick'].connect()
+        
+    def toolROICmd(self):
+        '''Creates and connects to Region of Interest instance'''
+        from tools import ROI
+        self.tools['roi'] = ROI(self.Vradar, self.Vtilt, self.ax, self.display, parent=self.parent)
+        self.tools['roi'].connect()
+        
         
     def toolCustomCmd(self):
-        '''Allow user to activate self-defined tool'''
-        if self.zp != None:
-            self.zp.disconnect()
-            self.zp = None
-        msg = "This feature is inactive at present"
-        print msg
-        warn = common.ShowWarning(msg)
+        '''Allow user to activate self-defined tool.'''
+        import tools
+        tools.custom_tool(self.tools)
                 
     def toolDefaultCmd(self):
-        '''Restore the Display defaults'''
-        if self.zp != None:
-            self.zp.disconnect()
-            self.zp = None
-        self.limits, self.CMAP = limits.initialize_limits(self.Vfield.value, \
-                                         airborne=self.airborne, rhi=self.rhi)
+        '''Restore the Display defaults.'''
+        import tools
+        self.tools['zoompan'], self.limits, self.CMAP = tools.restore_default_display(self.tools, \
+                                          self.Vfield.value, self.airborne, self.rhi)
         self._update_plot()
          
     ####################
@@ -466,7 +505,7 @@ class Display(Component):
     ####################
 
     def _set_fig_ax(self, nrows=1, ncols=1):
-        '''Set the figure and axis to plot'''
+        '''Set the figure and axis to plot.'''
         self.fig = Figure(figsize=(self.limits['xsize'], self.limits['ysize']))
         xwidth = 0.7
         yheight = 0.7 * float(self.limits['ysize'])/float(self.limits['xsize'])
@@ -477,23 +516,19 @@ class Display(Component):
         #self.axes.hold(False)
         
     def _set_fig_ax_rhi(self):
-        '''Change figure size and limits if RHI'''
-        self.limits, self.CMAP = limits.initialize_limits(self.Vfield.value, \
-                                         airborne=self.airborne, rhi=self.rhi)
+        '''Change figure size and limits if RHI.'''
+        self._set_default_limits()
         self.fig.set_size_inches(self.limits['xsize'], self.limits['ysize'])
         self._set_fig_ax()
 
     def _set_figure_canvas(self):
-        '''Set the figure canvas to draw in window area'''
+        '''Set the figure canvas to draw in window area.'''
         self.canvas = FigureCanvasQTAgg(self.fig)
         # Add the widget to the canvas
         self.layout.addWidget(self.canvas, 1, 0, 7, 6)
 
     def _update_plot(self):
-        '''Draw/Redraw the plot'''
-        # This is a bit of a hack to ensure that the viewer works with files
-        # withouth "standard" output as defined by PyArt
-        # Check to see if the field 'reflectivity' exists for the initial open
+        '''Draw/Redraw the plot.'''
         self._check_default_field()
     
         # Create the plot with PyArt RadarDisplay 
@@ -505,13 +540,11 @@ class Display(Component):
             self.title = None
         
         # If Zoom/Pan selected, Set up the zoom/pan functionality
-        if self.zp != None:
-            scale = 1.1
-            self.zp = ZoomPan(self.Vlims, self.ax, self.limits, \
-                              base_scale = scale, parent=self.parent)
-            #figZoom = self.zp.zoom()
-            #figPan = self.zp.pan_factory(self.limits)
-            self.zp.connect()
+#        if self.zp != None:
+#            scale = 1.1
+#            self.zp = ZoomPan(self.Vlims, self.ax, self.limits, \
+#                              base_scale = scale, parent=self.parent)
+#            self.zp.connect()
 
         if self.airborne:
             self.display = pyart.graph.RadarDisplay_Airborne(self.Vradar.value)
@@ -578,11 +611,13 @@ class Display(Component):
     #########################
         
     def _check_default_field(self):
-        '''Hack to perform a check on reflectivity to make it work with 
+        '''
+        Hack to perform a check on reflectivity to make it work with 
         a larger number of files as there are many nomenclature is the
         weather radar world.
         
-        This should only occur upon start up with a new file'''
+        This should only occur upon start up with a new file.
+        '''
         if self.Vfield.value == 'reflectivity':
             if self.Vfield.value in self.fieldnames:
                 pass
@@ -612,9 +647,15 @@ class Display(Component):
                       Thanks!"
                 common.ShowWarning(msg)
 
+    def _set_default_limits(self):
+        ''' Set limits and CMAP to pre-defined default.'''
+        from limits import initialize_limits
+        self.limits, self.CMAP = initialize_limits(self.Vfield.value, \
+                                 airborne=self.airborne, rhi=self.rhi)
+
                 
     def _check_file_type(self):
-        '''Check file to see if the file is airborne or rhi'''
+        '''Check file to see if the file is airborne or rhi.'''
         if self.Vradar.value.scan_type != 'rhi':
             pass
         else:
@@ -631,147 +672,16 @@ class Display(Component):
     # Image save methods #
     ########################
     def _quick_savefile(self, PTYPE=IMAGE_EXT):
-        '''Save the current display via PyArt'''
+        '''Save the current display via PyArt interface.'''
         PNAME = self.display.generate_filename(self.Vfield.value, self.Vtilt.value, ext=IMAGE_EXT)
         print "Creating "+ PNAME
         
     def _savefile(self, PTYPE=IMAGE_EXT):
-        '''Save the current display using PyQt dialog'''
+        '''Save the current display using PyQt dialog interface.'''
         PBNAME = self.display.generate_filename(self.Vfield.value, self.Vtilt.value, ext=IMAGE_EXT)
         file_choices = "PNG (*.png)|*.png"
         path = unicode(QtGui.QFileDialog.getSaveFileName(self, 'Save file', '', file_choices))
         if path:
             self.canvas.print_figure(path, dpi=DPI)
-            self.statusBar().showMessage('Saved to %s' % path)
-        
-##########################
-# Zoom/Pan Class Methods #
-##########################
-class ZoomPan(QtGui.QMainWindow):
-    '''
-    Class for Zoom and Pan of plot
-    Modified an original answer found here: http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-wheel
-    '''
-    def __init__(self, Vlims, ax, limits, base_scale = 2., name="ZoomPan", parent=None):
-        super(ZoomPan, self).__init__(parent)
-        self.parent = parent
-        self.name = name
-        
-        # Set up signal, so that DISPLAY can react to external 
-        # (or internal) changes in limits (Core.Variable instances expected)
-        # Send the new limits back to the main window
-#        self.Vradar = Vradar
-#        QtCore.QObject.connect(Vradar, QtCore.SIGNAL("ValueChanged"), self.NewRadar)
-        self.Vlims = Vlims
-        QtCore.QObject.connect(Vlims, QtCore.SIGNAL("ValueChanged"), self.NewLimits)
-        
-        self.press = None
-        self.cur_xlim = None
-        self.cur_ylim = None
-        self.x0 = None
-        self.y0 = None
-        self.x1 = None
-        self.y1 = None
-        self.xpress = None
-        self.ypress = None
-        self.entry = {}
-        self.entry['dmin'] = None
-        self.entry['dmax'] = None
-        #self.connect()
-        self.ax = ax
-        self.limits = limits
-        self.base_scale = base_scale
-        self.fig = ax.get_figure() # get the figure of interest
-        
-    def connect(self):
-        self.scrollID = self.fig.canvas.mpl_connect('scroll_event', self.onZoom)
-        self.pressID = self.fig.canvas.mpl_connect('button_press_event',self.onPress)
-        self.releaseID = self.fig.canvas.mpl_connect('button_release_event',self.onRelease)
-        self.motionID = self.fig.canvas.mpl_connect('motion_notify_event',self.onMotion)
-
-    def onZoom(self, event):
-        cur_xlim = self.ax.get_xlim()
-        cur_ylim = self.ax.get_ylim()
-
-        xdata = event.xdata # get event x location
-        ydata = event.ydata # get event y location
-
-        if event.button == 'down':
-            # deal with zoom in
-            scale_factor = 1 / self.base_scale
-        elif event.button == 'up':
-            # deal with zoom out
-            scale_factor = self.base_scale
-        else:
-            # deal with something that should never happen
-            scale_factor = 1
-            print event.button
-
-        new_width = (cur_xlim[1] - cur_xlim[0]) * scale_factor
-        new_height = (cur_ylim[1] - cur_ylim[0]) * scale_factor
-
-        relx = (cur_xlim[1] - xdata)/(cur_xlim[1] - cur_xlim[0])
-        rely = (cur_ylim[1] - ydata)/(cur_ylim[1] - cur_ylim[0])
-
-        self.ax.set_xlim([xdata - new_width * (1-relx), xdata + new_width * (relx)])
-        self.ax.set_ylim([ydata - new_height * (1-rely), ydata + new_height * (rely)])
-        self.ax.figure.canvas.draw()
-            
-        # Record the new limits and pass them to main window
-        self.limits['xmin'] = xdata - new_width * (1-relx)
-        self.limits['xmax'] = xdata + new_width * (relx)
-        self.limits['ymin'] = ydata - new_height * (1-rely)
-        self.limits['ymax'] = ydata + new_height * (rely)
-        
-    def onPress(self, event):
-        if event.inaxes != self.ax: return
-        self.cur_xlim = self.ax.get_xlim()
-        self.cur_ylim = self.ax.get_ylim()
-        self.press = self.x0, self.y0, event.xdata, event.ydata
-        self.x0, self.y0, self.xpress, self.ypress = self.press
-
-    def onRelease(self, event):
-        self.press = None
-        self.ax.figure.canvas.draw()
-
-    def onMotion(self, event):
-        if self.press is None: return
-        if event.inaxes != self.ax: return
-        dx = event.xdata - self.xpress
-        dy = event.ydata - self.ypress
-        self.cur_xlim -= dx
-        self.cur_ylim -= dy
-        self.ax.set_xlim(self.cur_xlim)
-        self.ax.set_ylim(self.cur_ylim)
-
-        self.ax.figure.canvas.draw()
-            
-        # Record the new limits and pass them to main window
-        self.limits['xmin'], self.limits['xmax'] = self.cur_xlim[0], self.cur_xlim[1]
-        self.limits['ymin'], self.limits['ymax'] = self.cur_ylim[0], self.cur_ylim[1]
-    
-    def disconnect(self):
-        self.fig.canvas.mpl_disconnect(self.scrollID)
-        self.fig.canvas.mpl_disconnect(self.pressID)
-        self.fig.canvas.mpl_disconnect(self.releaseID)
-        self.fig.canvas.mpl_disconnect(self.motionID)
-        
-    def _pass_lims(self):
-        self.limits['xmin'] = self.entry['xmin']
-        self.limits['xmax'] = self.entry['xmax']
-        self.limits['ymin'] = self.entry['ymin']
-        self.limits['ymax'] = self.entry['ymax']
-        
-        self.LimsDialog.accept()
-        self.Vlims.change(self.limits)
-             
-    def NewLimits(self, variable, value):
-        '''Retrieve new limits input'''
-        #self._pass_lims()
-        print "In NewLims"
-    
-    def NewRadar(self, variable, value):
-        # update Limits
-        #self._pass_lims()
-        print "In NewRadar"
-
+#            self.statusBar().
+            self.statusbar.showMessage('Saved to %s' % path)

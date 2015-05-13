@@ -13,6 +13,18 @@ VERSION = f.readline().strip()
 f.close()
 
 def parse(argv):
+    '''
+    Parse the input command line.
+    
+    Parameters::
+    ----------
+    argv - string
+        Input command line string.
+        
+    Notes::
+    -----
+    Returns directory and field for initialization.
+    '''
     parser = argparse.ArgumentParser(
               description="Start ARTview - the ARM Radar Toolkit Viewer.")
  
