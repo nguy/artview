@@ -168,6 +168,7 @@ class Display(QtGui.QMainWindow):
         # Create the widget
         self.central_widget = QtGui.QWidget()
         self.setCentralWidget(self.central_widget)
+        self._set_figure_canvas()
 #        self.statusBar()
         
         self.central_widget.setLayout(self.layout)
@@ -388,7 +389,7 @@ class Display(QtGui.QMainWindow):
         '''Display changes after radar Variable class is altered.'''
         # In case the flags were not used at startup
         self._check_file_type()
-        self._set_figure_canvas()
+        
 
         # Get the tilt angles
         self.rTilts = self.Vradar.value.sweep_number['data'][:] 
@@ -537,12 +538,12 @@ class Display(QtGui.QMainWindow):
     def _update_plot(self):
         '''Draw/Redraw the plot.'''
         self._check_default_field()
-    
+
         # Create the plot with PyArt RadarDisplay 
-        # Always intitiates at lowest elevation angle
-        self.ax.cla()
+        self.ax.cla()  # Clear the current axes
 
         # Reset to default title if user entered nothing w/ Title button
+        #XXX this should be handel else where
         if self.title == '':
             self.title = None
         
@@ -562,12 +563,13 @@ class Display(QtGui.QMainWindow):
                                 ax=self.ax, title=self.title)
             self.display.set_limits(xlim=(self.limits['xmin'], self.limits['xmax']),\
                                     ylim=(self.limits['ymin'], self.limits['ymax']),\
-                                    ax=self.ax)
+                                    ax=self.ax, fig=self.fig)
             self.display.plot_grid_lines()
         else:
             self.display = pyart.graph.RadarDisplay(self.Vradar.value)
             if self.Vradar.value.scan_type != 'rhi':
                 # Create Plot
+                #XXX this should be handel else where
                 if self.Vtilt.value < len(self.rTilts):
                     pass
                 else:
@@ -575,7 +577,7 @@ class Display(QtGui.QMainWindow):
                 self.plot = self.display.plot_ppi(self.Vfield.value, self.Vtilt.value,\
                                 vmin=self.limits['vmin'], vmax=self.limits['vmax'],\
                                 colorbar_flag=False, cmap=self.CMAP,\
-                                ax=self.ax, title=self.title)
+                                ax=self.ax, fig=self.fig, title=self.title)
                 # Set limits
                 self.display.set_limits(xlim=(self.limits['xmin'], self.limits['xmax']),\
                                         ylim=(self.limits['ymin'], self.limits['ymax']),\
@@ -589,7 +591,7 @@ class Display(QtGui.QMainWindow):
                 self.plot = self.display.plot_rhi(self.Vfield.value, self.Vtilt.value,\
                                 vmin=self.limits['vmin'], vmax=self.limits['vmax'],\
                                 colorbar_flag=False, cmap=self.CMAP,\
-                                ax=self.ax, title=self.title)
+                                ax=self.ax, fig=self.fig, title=self.title)
                 self.display.set_limits(xlim=(self.limits['xmin'], self.limits['xmax']),\
                                         ylim=(self.limits['ymin'], self.limits['ymax']),\
                                         ax=self.ax)
@@ -603,6 +605,7 @@ class Display(QtGui.QMainWindow):
                                                 norm=norm, orientation='horizontal')
         # colorbar - use specified units or default depending on
         # what has or has not been entered
+        #XXX this should be handel else where
         if self.units is None or self.units == '':
             try:
                 self.units = self.Vradar.value.fields[self.field]['units']
@@ -625,6 +628,7 @@ class Display(QtGui.QMainWindow):
         
         This should only occur upon start up with a new file.
         '''
+        #XXX this need re-thinking
         if self.Vfield.value == 'reflectivity':
             if self.Vfield.value in self.fieldnames:
                 pass
@@ -663,16 +667,19 @@ class Display(QtGui.QMainWindow):
                 
     def _check_file_type(self):
         '''Check file to see if the file is airborne or rhi.'''
-        if self.Vradar.value.scan_type != 'rhi':
-            pass
+        radar = self.Vradar.value
+        if radar.scan_type != 'rhi':
+            return
         else:
-            try:
-                (self.Vradar.value.metadata['platform_type'] == 'aircraft_tail') or \
-                (self.Vradar.value.metadata['platform_type'] == 'aircraft')
-                self.airborne = True
-            except:
+            if 'platform_type' in radar.metadata:
+                if (radar.metadata['platform_type'] == 'aircraft_tail' or
+                    radar.metadata['platform_type'] == 'aircraft'):
+                    self.airborne = True
+                else:
+                    self.rhi = True
+            else:
                 self.rhi = True
-            
+            #XXX this has only one effect: self._set_default_limits()
             self._set_fig_ax_rhi()
  
     ########################
