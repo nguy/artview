@@ -105,6 +105,7 @@ class ValueClick(QtGui.QMainWindow):
         '''Get value at the point selected by mouse click.'''
         xdata = event.xdata # get event x location
         ydata = event.ydata # get event y location
+        #XXX this fails if not inside plot region
         az = np.arctan2(xdata, ydata)*180./np.pi
         radar = self.Vradar.value #keep equantions clean
         if az < 0:
