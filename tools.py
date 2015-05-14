@@ -178,7 +178,7 @@ class ZoomPan(QtGui.QMainWindow):
         
         Notes::
         -----
-        This class records the selected button and passes the 
+        This class records the selected button and passes the
         change value back to variable.
         '''
         super(ZoomPan, self).__init__(parent)
@@ -241,6 +241,7 @@ class ZoomPan(QtGui.QMainWindow):
 
         self.ax.set_xlim([xdata - new_width * (1-relx), xdata + new_width * (relx)])
         self.ax.set_ylim([ydata - new_height * (1-rely), ydata + new_height * (rely)])
+        #XXX shouldn't zoom have direct acess to the canvas?
         self.ax.figure.canvas.draw()
             
         # Record the new limits and pass them to main window
