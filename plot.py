@@ -400,6 +400,7 @@ class Display(QtGui.QMainWindow):
         self._fillTiltBox()
         self._fillFieldBox()
 
+        #XXX if: pass, else: pass ?
         # Set up the menus associated with scanning ground radars
         if self.airborne or self.rhi:
             pass
