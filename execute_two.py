@@ -35,5 +35,14 @@ from component_control import ComponentsControl
 c = ComponentsControl()
 MainMenu.addLayoutWidget(c)
 MainMenu.addComponent(ComponentsControl)
+
+try:
+    import plugins
+    for plugin in plugins._plugins:
+        MainMenu.addComponent(plugin)
+except:
+    import warnings
+    warnings.warn("Loading Plugins Fail")
+
 app.exec_()
 
