@@ -408,4 +408,3 @@ class ROI(QtGui.QMainWindow):
     def NewRadar(self, variable, value, False):
         '''Update the display list when radar variable is changed.'''
         print "In NewRadar"
-            

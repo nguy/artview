@@ -8,9 +8,10 @@ Class instance used for modifying field via Display window.
 from PyQt4 import QtGui, QtCore
 from functools import partial
 
+from core import Variable, Component
 
-class FieldButtonWindow(QtGui.QMainWindow):
-    '''Class to display the Window with Field Buttons.'''
+class FieldButtonWindow(Component):
+    '''Class to display the Window with Field Buttons'''
 
     FieldClicked = QtCore.pyqtSignal()
     
@@ -37,18 +38,16 @@ class FieldButtonWindow(QtGui.QMainWindow):
         This class records the selected button and passes the 
         change value back to variable.
         '''
-        super(FieldButtonWindow, self).__init__(parent)
-        self.parent = parent
-        self.name = name
-        self.setWindowTitle(name)
-        self.Vradar = Vradar
-        
+        super(FieldButtonWindow, self).__init__(name=name, parent=parent)
+
         # Set up signal, so that DISPLAY can react to external 
         # (or internal) changes in field (Core.Variable instances expected)
-        # The change is sent through Vradar
+        # The change is sent through Vfield
+        self.Vradar = Vradar
         self.Vfield = Vfield
-        QtCore.QObject.connect(Vfield, QtCore.SIGNAL("ValueChanged"), self.NewField)
-        QtCore.QObject.connect(Vradar, QtCore.SIGNAL("ValueChanged"), self.NewRadar)
+        self.sharedVariables = {"Vradar": self.NewRadar,
+                                "Vfield": self.NewField}
+        self.connectAllVariables()
 
         self.CreateFieldWidget()
         self.SetFieldRadioButtons()

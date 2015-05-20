@@ -17,7 +17,7 @@ from matplotlib.pyplot import cm
 
 
 import common
-from core import Variable
+from core import Variable, Component
 
 # Save image file type and DPI (resolution)
 IMAGE_EXT = 'png'
@@ -28,7 +28,7 @@ DPI = 100
 #######################  
 
 
-class Display(QtGui.QMainWindow):
+class Display(Component):
     '''
     Class that creates a display plot, using a returned Radar structure 
     from the PyArt pyart.graph package.
@@ -67,26 +67,24 @@ class Display(QtGui.QMainWindow):
         This class records the selected button and passes the 
         change value back to variable.
         '''
-        super(Display, self).__init__(parent)
-        self.parent = parent
-        self.name = name
-        self.setWindowTitle(name)
-        
+        super(Display, self).__init__(name=name, parent=parent)
         #AG set up signal, so that DISPLAY can react to external (or internal) changes in radar,field and tilt
         #AG radar,field and tilt are expected to be Core.Variable instances
         #AG I use the capital V so people remember using ".value"
         self.Vradar = Vradar
-        QtCore.QObject.connect(Vradar,QtCore.SIGNAL("ValueChanged"),self.NewRadar)
         self.Vfield = Vfield
-        QtCore.QObject.connect(Vfield,QtCore.SIGNAL("ValueChanged"),self.NewField)
         self.Vtilt = Vtilt
-        QtCore.QObject.connect(Vtilt,QtCore.SIGNAL("ValueChanged"),self.NewTilt)
         if Vlims is None:
             self.Vlims = Variable(None)
         else:
             self.Vlims = Vlims
-        QtCore.QObject.connect(self.Vlims,QtCore.SIGNAL("ValueChanged"),self.NewLims)
-                
+
+        self.sharedVariables = {"Vradar": self.NewRadar,
+                                "Vfield": self.NewField,
+                                "Vtilt": self.NewTilt,
+                                "Vlims": self.NewLims}
+        self.connectAllVariables()
+
         self.airborne = airborne
         self.rhi = rhi
                 
@@ -133,13 +131,8 @@ class Display(QtGui.QMainWindow):
         elif event.key() == QtCore.Qt.Key_Down:
             self.TiltSelectCmd(self.Vtilt.value - 1)
         else:
-            if self.parent == None:
-                QtGui.QWidget.keyPressEvent(self, event)
-            else:
-                # Send event to parent to handle (Limitation of pyqt not having a 
-                # form that does this - AG)
-                self.parent.keyPressEvent(event)
-            
+            super(Display, self).keyPressEvent(event)
+
 #     def onPick(self, event):
 #         '''Get value at the point selected by mouse click.'''
 #         xdata = event.xdata # get event x location

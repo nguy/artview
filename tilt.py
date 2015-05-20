@@ -8,8 +8,9 @@ Class instance used for modifying tilt via Display window.
 from PyQt4 import QtGui, QtCore
 from functools import partial
 
+from core import Variable, Component
 
-class TiltButtonWindow(QtGui.QMainWindow):
+class TiltButtonWindow(Component):
     '''Class to display the Window with Tilt Buttons.'''
     tiltClicked = QtCore.pyqtSignal()
     
@@ -35,18 +36,16 @@ class TiltButtonWindow(QtGui.QMainWindow):
         This class records the selected button and passes the
         change value back to variable.
     '''
-        super(TiltButtonWindow, self).__init__(parent)
-        self.parent = parent
-        self.name = name
-        self.setWindowTitle(name)
-        self.Vradar = Vradar
-        
+        super(TiltButtonWindow, self).__init__(name=name, parent=parent)
+
         # Set up signal, so that DISPLAY can react to external 
         # (or internal) changes in tilt (Core.Variable instances expected)
-        # The change is sent through Vradar
+        # The change is sent through Vtilt
+        self.Vradar = Vradar
         self.Vtilt = Vtilt
-        QtCore.QObject.connect(Vtilt, QtCore.SIGNAL("ValueChanged"), self.NewTilt)
-#        QtCore.QObject.connect(Vradar, QtCore.SIGNAL("ValueChanged"), self.NewRadar)
+        self.sharedVariables = {"Vradar": self.NewRadar,
+                                "Vtilt": self.NewTilt}
+        self.connectAllVariables()
 
         self.CreateTiltWidget()
         self.SetTiltRadioButtons()
@@ -94,8 +93,8 @@ class TiltButtonWindow(QtGui.QMainWindow):
         if tilt >= 0 and tilt < len(self.tiltbutton):
             self.tiltbutton[tilt].setChecked(True)
     
-#    def NewRadar(self, variable, value, strong):
-#        '''Update the field list when radar variable is changed.'''
-#        # update tilt list
-#        self.CreateTiltWidget()
-#        self.SetTiltRadioButtons()
+    def NewRadar(self, variable, value, strong):
+        '''Update the field list when radar variable is changed.'''
+        # update tilt list
+        self.CreateTiltWidget()
+        self.SetTiltRadioButtons()
