@@ -558,7 +558,7 @@ class Display(Component):
                                     ax=self.ax)
             self.display.plot_grid_lines()
         else:
-            self.display = pyart.graph.RadarDisplay(self.Vradar.value)
+            self.display = pyart.graph.RadarMapDisplay(self.Vradar.value)
             if self.Vradar.value.scan_type != 'rhi':
                 # Create Plot
                 if self.Vtilt.value < len(self.rTilts):
