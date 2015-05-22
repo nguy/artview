@@ -565,6 +565,7 @@ class Display(Component):
                     pass
                 else:
                     self.Vtilt.change(0)
+                self.display.plot_basemap(ax=self.ax)
                 self.plot = self.display.plot_grid(self.Vfield.value, self.Vtilt.value,\
                                 vmin=self.limits['vmin'], vmax=self.limits['vmax'],cmap=self.CMAP,\
                                 )
