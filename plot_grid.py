@@ -380,6 +380,8 @@ class Display(Component):
     def NewRadar(self, variable, value, strong):
         '''Display changes after radar Variable class is altered.'''
         # In case the flags were not used at startup
+        if self.Vradar.value is None:
+            return
         self._check_file_type()
         self._set_figure_canvas()
 
@@ -570,14 +572,14 @@ class Display(Component):
                                 vmin=self.limits['vmin'], vmax=self.limits['vmax'],cmap=self.CMAP,\
                                 )
                 # Set limits
-                self.display.set_limits(xlim=(self.limits['xmin'], self.limits['xmax']),\
-                                        ylim=(self.limits['ymin'], self.limits['ymax']),\
-                                        ax=self.ax)
+                #self.display.set_limits(xlim=(self.limits['xmin'], self.limits['xmax']),\
+                #                        ylim=(self.limits['ymin'], self.limits['ymax']),\
+                #                        ax=self.ax)
                 # Add range rings
                 if self.RngRing:
                     self.display.plot_range_rings(self.RNG_RINGS, ax=self.ax)
                 # Add radar location
-                self.display.plot_cross_hair(5., ax=self.ax)
+                #self.display.plot_cross_hair(5., ax=self.ax)
             else:
                 self.plot = self.display.plot_rhi(self.Vfield.value, self.Vtilt.value,\
                                 vmin=self.limits['vmin'], vmax=self.limits['vmax'],\
