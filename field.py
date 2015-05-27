@@ -8,26 +8,46 @@ Class instance used for modifying field via Display window.
 from PyQt4 import QtGui, QtCore
 from functools import partial
 
+from core import Variable, Component
 
-class FieldButtonWindow(QtGui.QMainWindow):
+class FieldButtonWindow(Component):
     '''Class to display the Window with Field Buttons'''
 
     FieldClicked = QtCore.pyqtSignal()
     
     def __init__(self, Vradar, Vfield, name="FieldButtons", parent=None):
-        '''Initialize the class to create the interface'''
-        super(FieldButtonWindow, self).__init__(parent)
-        self.parent = parent
-        self.name = name
-        self.setWindowTitle(name)
-        self.Vradar = Vradar
-        
+        '''
+        Initialize the class to create the interface.
+    
+        Parameters::
+        ----------
+        Vradar - Variable instance
+            Radar signal variable to be used.
+        Vfield - Variable instance
+            Field signal variable to be used.
+    
+        [Optional]
+        name - string
+            Field Radiobutton window name.
+        parent - PyQt instance
+            Parent instance to associate to FieldButtonWindow.
+            If None, then Qt owns, otherwise associated with parent PyQt instance.
+                    
+        Notes::
+        -----
+        This class records the selected button and passes the 
+        change value back to variable.
+        '''
+        super(FieldButtonWindow, self).__init__(name=name, parent=parent)
+
         # Set up signal, so that DISPLAY can react to external 
         # (or internal) changes in field (Core.Variable instances expected)
-        # The change is sent through Vradar
+        # The change is sent through Vfield
+        self.Vradar = Vradar
         self.Vfield = Vfield
-        QtCore.QObject.connect(Vfield, QtCore.SIGNAL("ValueChanged"), self.NewField)
-        QtCore.QObject.connect(Vradar, QtCore.SIGNAL("ValueChanged"), self.NewRadar)
+        self.sharedVariables = {"Vradar": self.NewRadar,
+                                "Vfield": self.NewField}
+        self.connectAllVariables()
 
         self.CreateFieldWidget()
         self.SetFieldRadioButtons()
@@ -38,11 +58,11 @@ class FieldButtonWindow(QtGui.QMainWindow):
     ########################
         
     def FieldSelectCmd(self, field):
-        '''Captures a selection and redraws the field with new tilt'''
+        '''Captures a selection and redraws the field with new tilt.'''
         self.Vfield.change(field)
 
     def CreateFieldWidget(self):
-        '''Create a widget to store radio buttons to control tilt adjust'''
+        '''Create a widget to store radio buttons to control tilt adjust.'''
         self.radioBox = QtGui.QGroupBox("Field Selection", parent=self)
         self.rBox_layout = QtGui.QVBoxLayout(self.radioBox)
         self.radioBox.setLayout(self.rBox_layout)
@@ -62,13 +82,14 @@ class FieldButtonWindow(QtGui.QMainWindow):
             
             self.rBox_layout.addWidget(button)
         
-        self.NewField(self.Vfield, self.Vfield.value)  # setChecked the current field
+        self.NewField(self.Vfield, self.Vfield.value, True)  # setChecked the current field
     
-    def NewField(self, variable, value):
+    def NewField(self, variable, value, strong):
+        '''Record the selected button by updating the dictionary.'''
         if value in self.Vradar.value.fields:
             self.fieldbutton[value].setChecked(True)
         
-    def NewRadar(self, variable, value):
-        # update field list
+    def NewRadar(self, variable, value, strong):
+        '''Update the field list when radar variable is changed.'''
         self.CreateFieldWidget()
         self.SetFieldRadioButtons()

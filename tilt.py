@@ -8,26 +8,44 @@ Class instance used for modifying tilt via Display window.
 from PyQt4 import QtGui, QtCore
 from functools import partial
 
+from core import Variable, Component
 
-class TiltButtonWindow(QtGui.QMainWindow):
-    '''Class to display the Window with Tilt Buttons'''
-
+class TiltButtonWindow(Component):
+    '''Class to display the Window with Tilt Buttons.'''
     tiltClicked = QtCore.pyqtSignal()
     
     def __init__(self, Vradar, Vtilt, name="TiltButtons", parent=None):
-        '''Initialize the class to create the Tilt Selection interface'''
-        super(TiltButtonWindow, self).__init__(parent)
-        self.parent = parent
-        self.name = name
-        self.setWindowTitle(name)
-        self.Vradar = Vradar
+        '''Initialize the class to create the Tilt Selection interface.
+    
+        Parameters::
+        ----------
+        Vradar - Variable instance
+            Radar signal variable to be used.
+        Vtilt - Variable instance
+            Tilt signal variable to be used.
+    
+        [Optional]
+        name - string
+            Tilt Radiobutton window name.
+        parent - PyQt instance
+            Parent instance to associate to TiltButtonWindow window.
+            If None, then Qt owns, otherwise associated with parent PyQt instance.
         
+        Notes::
+        -----
+        This class records the selected button and passes the
+        change value back to variable.
+    '''
+        super(TiltButtonWindow, self).__init__(name=name, parent=parent)
+
         # Set up signal, so that DISPLAY can react to external 
         # (or internal) changes in tilt (Core.Variable instances expected)
-        # The change is sent through Vradar
+        # The change is sent through Vtilt
+        self.Vradar = Vradar
         self.Vtilt = Vtilt
-        QtCore.QObject.connect(Vtilt, QtCore.SIGNAL("ValueChanged"), self.NewTilt)
-#        QtCore.QObject.connect(Vradar, QtCore.SIGNAL("ValueChanged"), self.NewRadar)
+        self.sharedVariables = {"Vradar": self.NewRadar,
+                                "Vtilt": self.NewTilt}
+        self.connectAllVariables()
 
         self.CreateTiltWidget()
         self.SetTiltRadioButtons()
@@ -38,18 +56,18 @@ class TiltButtonWindow(QtGui.QMainWindow):
     ########################
         
     def TiltSelectCmd(self, ntilt):
-        '''Captures a selection and redraws the field with new tilt'''
+        '''Captures a selection and redraws the field with new tilt.'''
         self.Vtilt.change(ntilt)
 
     def CreateTiltWidget(self):
-        '''Create a widget to store radio buttons to control tilt adjust'''
+        '''Create a widget to store radio buttons to control tilt adjust.'''
         self.radioBox = QtGui.QGroupBox("Tilt Selection", parent=self)
         self.rBox_layout = QtGui.QVBoxLayout(self.radioBox)
         self.radioBox.setLayout(self.rBox_layout)
         self.setCentralWidget(self.radioBox)
                 
     def SetTiltRadioButtons(self):
-        '''Set a tilt selection using radio buttons'''
+        '''Set a tilt selection using radio buttons.'''
         # Instantiate the buttons into a list for future use
         self.tiltbutton = []
         
@@ -67,14 +85,16 @@ class TiltButtonWindow(QtGui.QMainWindow):
             
             self.rBox_layout.addWidget(self.tiltbutton[ntilt])
         
-        self.NewTilt(self.Vtilt, self.Vtilt.value)  # setChecked the current tilt
+        self.NewTilt(self.Vtilt, self.Vtilt.value, True)  # setChecked the current tilt
     
-    def NewTilt(self, variable, value):
+    def NewTilt(self, variable, value, strong):
+        '''Record the selected button by updating the list.'''
         tilt = self.Vtilt.value
         if tilt >= 0 and tilt < len(self.tiltbutton):
             self.tiltbutton[tilt].setChecked(True)
     
-#    def NewRadar(self, variable, value):
-#        # update tilt list
-#        self.CreateTiltWidget()
-#        self.SetTiltRadioButtons()
+    def NewRadar(self, variable, value, strong):
+        '''Update the field list when radar variable is changed.'''
+        # update tilt list
+        self.CreateTiltWidget()
+        self.SetTiltRadioButtons()

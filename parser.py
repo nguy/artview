@@ -7,12 +7,25 @@ Parse the input code from execution program.
 import argparse
 
 # Get the version
-f = open("version", "r")
+#f = open("version", "r")
+f = open("/home/software/usr/local64/pyart.new/artview/version", "r")
 NAME = f.readline().strip()
 VERSION = f.readline().strip()
 f.close()
 
 def parse(argv):
+    '''
+    Parse the input command line.
+    
+    Parameters::
+    ----------
+    argv - string
+        Input command line string.
+        
+    Notes::
+    -----
+    Returns directory and field for initialization.
+    '''
     parser = argparse.ArgumentParser(
               description="Start ARTview - the ARM Radar Toolkit Viewer.")
  
