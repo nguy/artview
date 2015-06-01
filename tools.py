@@ -327,7 +327,7 @@ class ROI(QtGui.QMainWindow):
         self.name = name
         self.Vradar = Vradar
         self.Vtilt = Vtilt
-        QtCore.QObject.connect(Vradar, QtCore.SIGNAL("ValueChanged"), self.NewRadar)
+        #QtCore.QObject.connect(Vradar, QtCore.SIGNAL("ValueChanged"), self.NewRadar)
         
         self.ax = ax
 #        self.statusbar = statusbar
@@ -341,9 +341,18 @@ class ROI(QtGui.QMainWindow):
         self.verts = []
         self.ind = []
         self.xys = []
-        self.xpts = self.display.x[:,self.Vtilt.value]
-        self.ypts = self.display.y[:,self.Vtilt.value]
+        self.xpts = self.display.x[:,self.Vtilt]
+        self.ypts = self.display.y[:,self.Vtilt]
         self.xys = np.array([self.xpts,self.ypts]).transpose()
+        print self.Vtilt
+        print self.display.x
+        print self.display.x[:,self.Vtilt]
+        print np.amin(self.xpts)
+        print np.amax(self.xpts)
+        print np.amin(self.ypts)
+        print np.amax(self.ypts)
+        print np.amin(self.xys)
+        print np.amax(self.xys)
 #        self.fig.canvas.draw()
 
     def motion_notify_callback(self, event):

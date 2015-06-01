@@ -67,6 +67,7 @@ from matplotlib.figure import Figure
 from matplotlib.colors import Normalize as mlabNormalize
 from matplotlib.colorbar import ColorbarBase as mlabColorbarBase
 from matplotlib.pyplot import cm
+from tools import ROI
 
 #use_pyside = qt_compat.QT_API == qt_compat.QT_API_PYSIDE
 #if use_pyside:
@@ -285,6 +286,7 @@ class Browse(QtGui.QMainWindow):
         self.toolsBox.setToolTip("Choose a tool to apply")
         self.toolsBox.addItem("No Tools")
         self.toolsBox.addItem("Zoom/Pan")
+        self.toolsBox.addItem("Select Region of Interest")
         self.toolsBox.addItem("Reset file defaults")
         
         self.toolsBox.activated[str].connect(self.comboAction)
@@ -294,6 +296,10 @@ class Browse(QtGui.QMainWindow):
         if self.ToolSelect == "Zoom/Pan":
             print "IN DISCONNECT"
             self.zp.disconnect()
+        # Check to see if Zoom/Pan was selected, if so disconnect 
+        if self.ToolSelect == "Select Region of Interest":
+            print "IN DISCONNECT"
+            self.sr.disconnect()
         # Set the Tool to use
         self.ToolSelect = text
         
@@ -771,11 +777,14 @@ class Browse(QtGui.QMainWindow):
         
         # If Zoom/Pan selected, Set up the zoom/pan functionality
         if self.ToolSelect == "Zoom/Pan":
-            scale = 1.1
+            scale = 1.7
             self.zp = ZoomPan(self.ax, self.limits, base_scale = scale)
             #figZoom = self.zp.zoom()
             #figPan = self.zp.pan_factory(self.limits)
             self.zp.connect()
+        if self.ToolSelect == "Select Region of Interest":
+            self.sr = ROI(self.radar, self.tilt, self.ax, self.display)
+            self.sr.connect()
         
         if self.airborne:
             self.display = pyart.graph.RadarDisplay_Airborne(self.radar)

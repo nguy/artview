@@ -113,6 +113,8 @@ class Display(Component):
         # Create tool dictionary
         self.tools = {}
         self.tools['zoompan'] = None
+        self.tools['roi'] = None
+        self.tools['valueclick'] = None
         
         # Launch the GUI interface
         self.LaunchGUI() 
