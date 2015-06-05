@@ -327,12 +327,9 @@ class ROI(QtGui.QMainWindow):
         self.name = name
         self.Vradar = Vradar
         self.Vtilt = Vtilt
-        #QtCore.QObject.connect(Vradar, QtCore.SIGNAL("ValueChanged"), self.NewRadar)
         
         self.ax = ax
-#        self.statusbar = statusbar
         self.fig = ax.get_figure()
-        self.display = display
         
         self.previous_point = []
         self.start_point = []
@@ -340,20 +337,13 @@ class ROI(QtGui.QMainWindow):
         self.line = None
         self.verts = []
         self.ind = []
-        self.xys = []
-        self.xpts = self.display.x[:,self.Vtilt]
-        self.ypts = self.display.y[:,self.Vtilt]
-        self.xys = np.array([self.xpts,self.ypts]).transpose()
-        print self.Vtilt
-        print self.display.x
-        print self.display.x[:,self.Vtilt]
-        print np.amin(self.xpts)
-        print np.amax(self.xpts)
-        print np.amin(self.ypts)
-        print np.amax(self.ypts)
-        print np.amin(self.xys)
-        print np.amax(self.xys)
-#        self.fig.canvas.draw()
+        self.az = self.Vradar.azimuth['data'][self.Vradar.sweep_start_ray_index['data'][self.Vtilt]:self.Vradar.sweep_end_ray_index['data'][self.Vtilt]]
+        self.r =  self.Vradar.range['data']/1000.
+        self.xys=np.zeros(shape=(self.az.size*self.r.size,2))
+        for j in range(self.r.size):
+            for i in range(self.az.size):
+                self.xys[i*j+i,1]=self.r[j]*np.sin(self.az[i])
+                self.xys[i*j+i,0]=self.r[j]*np.cos(self.az[i])
 
     def motion_notify_callback(self, event):
         if event.inaxes:
@@ -370,7 +360,6 @@ class ROI(QtGui.QMainWindow):
                 self.previous_point = [x, y]
                 self.verts.append([x, y])
                 self.fig.canvas.draw()
-
 
     def button_press_callback(self, event):
         if event.inaxes:
@@ -402,9 +391,13 @@ class ROI(QtGui.QMainWindow):
                 self.line = None
                 path = Path(self.verts)
                 self.ind = np.nonzero([path.contains_point(xy) for xy in self.xys])[0]
+                #self.ind = np.nonzero(np.array([path.contains_point(xy) for xy in self.xys]).reshape(self.az.size,self.r.size))
                 print self.ind
                 print "Closed Loop"
                 print self.verts
+                print self.xys[self.ind]
+                #print self.az[self.ind[0]]
+                #print self.r[self.ind[1]]
 
     def connect(self):
         self.motionID = self.fig.canvas.mpl_connect('motion_notify_event', self.motion_notify_callback)
