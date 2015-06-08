@@ -342,8 +342,8 @@ class ROI(QtGui.QMainWindow):
         self.xys=np.zeros(shape=(self.az.size*self.r.size,2))
         for j in range(self.r.size):
             for i in range(self.az.size):
-                self.xys[i*j+i,1]=self.r[j]*np.sin(self.az[i])
-                self.xys[i*j+i,0]=self.r[j]*np.cos(self.az[i])
+                self.xys[self.az.size*j+i,1]=self.r[j]*np.sin(self.az[i]*np.pi/180.)
+                self.xys[self.az.size*j+i,0]=self.r[j]*np.cos(self.az[i]*np.pi/180.)
 
     def motion_notify_callback(self, event):
         if event.inaxes:
@@ -391,13 +391,12 @@ class ROI(QtGui.QMainWindow):
                 self.line = None
                 path = Path(self.verts)
                 self.ind = np.nonzero([path.contains_point(xy) for xy in self.xys])[0]
-                #self.ind = np.nonzero(np.array([path.contains_point(xy) for xy in self.xys]).reshape(self.az.size,self.r.size))
-                print self.ind
-                print "Closed Loop"
+                print "Line/Loop Points"
                 print self.verts
+                print "Indices of Region"
+                print self.ind
+                print "Points of Region of Interest"
                 print self.xys[self.ind]
-                #print self.az[self.ind[0]]
-                #print self.r[self.ind[1]]
 
     def connect(self):
         self.motionID = self.fig.canvas.mpl_connect('motion_notify_event', self.motion_notify_callback)
