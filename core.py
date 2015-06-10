@@ -130,7 +130,7 @@ class Component(QtGui.QMainWindow):
         '''Reimplementations, pass keyEvent to parent,
         even if a diferent window'''
         if self.parent == None:
-            super(Component, self).keyPressEvent(self, event)
+            super(Component, self).keyPressEvent(event)
         else:
             # Send event to parent to handle (Limitation of pyqt not having a 
             # form that does this - AG)

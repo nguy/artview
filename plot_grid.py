@@ -34,15 +34,15 @@ class Display(Component):
     from the PyArt pyart.graph package.
     '''
 
-    def __init__(self, Vradar, Vfield, Vtilt, Vlims=None, \
+    def __init__(self, Vgrid, Vfield, Vtilt, Vlims=None, \
                  airborne=False, rhi=False, name="Display", parent=None):
         '''
         Initialize the class to create display.
     
         Parameters::
         ----------
-        Vradar - Variable instance
-            Radar signal variable to be used.
+        Vgrid - Variable instance
+            Grid signal variable to be used.
         Vfield - Variable instance
             Field signal variable to be used.
         Vtilt - Variable instance
@@ -71,7 +71,7 @@ class Display(Component):
         #AG set up signal, so that DISPLAY can react to external (or internal) changes in radar,field and tilt
         #AG radar,field and tilt are expected to be Core.Variable instances
         #AG I use the capital V so people remember using ".value"
-        self.Vradar = Vradar
+        self.Vgrid = Vgrid
         self.Vfield = Vfield
         self.Vtilt = Vtilt
         if Vlims is None:
@@ -79,7 +79,7 @@ class Display(Component):
         else:
             self.Vlims = Vlims
 
-        self.sharedVariables = {"Vradar": self.NewRadar,
+        self.sharedVariables = {"Vgrid": self.NewRadar,
                                 "Vfield": self.NewField,
                                 "Vtilt": self.NewTilt,
                                 "Vlims": self.NewLims}
@@ -138,7 +138,7 @@ class Display(Component):
 #         xdata = event.xdata # get event x location
 #         ydata = event.ydata # get event y location
 #         az = np.arctan2(xdata, ydata)*180./np.pi
-#         radar = self.Vradar.value #keep equantions clean
+#         radar = self.Vgrid.value #keep equantions clean
 #         if az < 0:
 #             az = az + 360.
 #         rng = np.sqrt(xdata*xdata+ydata*ydata)
@@ -218,7 +218,7 @@ class Display(Component):
         self.tiltBox.clear()
         self.tiltBox.addItem("Tilt Window")
         # Loop through and create each tilt button
-        elevs = self.Vradar.value.axes['z_disp']['data']
+        elevs = self.Vgrid.value.axes['z_disp']['data']
         for ntilt in self.rTilts:
             btntxt = "%2.1f m (Tilt %d)"%(elevs[ntilt], ntilt+1)
             self.tiltBox.addItem(btntxt)
@@ -279,13 +279,13 @@ class Display(Component):
     def _open_tiltbuttonwindow(self):
         '''Open a TiltButtonWindow instance.'''
         from tilt import TiltButtonWindow
-        self.tiltbuttonwindow = TiltButtonWindow(self.Vradar, self.Vtilt, \
+        self.tiltbuttonwindow = TiltButtonWindow(self.Vgrid, self.Vtilt, \
                             name=self.name+" Tilt Selection", parent=self.parent)
         
     def _open_fieldbuttonwindow(self):
         '''Open a FieldButtonWindow instance.'''
         from field import FieldButtonWindow
-        self.fieldbuttonwindow = FieldButtonWindow(self.Vradar, self.Vfield, \
+        self.fieldbuttonwindow = FieldButtonWindow(self.Vgrid, self.Vfield, \
                             name=self.name+" Field Selection", parent=self.parent)
         
     def _add_RngRing_to_button(self):
@@ -380,15 +380,15 @@ class Display(Component):
     def NewRadar(self, variable, value, strong):
         '''Display changes after radar Variable class is altered.'''
         # In case the flags were not used at startup
-        if self.Vradar.value is None:
+        if self.Vgrid.value is None:
             return
         self._check_file_type()
         self._set_figure_canvas()
 
         # Get the tilt angles
-        self.rTilts = range(len(self.Vradar.value.axes['z_disp']['data']))
+        self.rTilts = range(len(self.Vgrid.value.axes['z_disp']['data']))
         # Get field names
-        self.fieldnames = self.Vradar.value.fields.keys()
+        self.fieldnames = self.Vgrid.value.fields.keys()
 
         # Update field and tilt MenuBox
         self._fillTiltBox()
@@ -479,14 +479,14 @@ class Display(Component):
     def toolValueClickCmd(self):
         '''Creates and connects to Point-and-click value retrieval'''
         from tools import ValueClick
-        self.tools['valueclick'] = ValueClick(self.Vradar, self.Vtilt, self.Vfield, \
+        self.tools['valueclick'] = ValueClick(self.Vgrid, self.Vtilt, self.Vfield, \
                                    self.units, self.ax, self.statusbar, parent=self.parent)
         self.tools['valueclick'].connect()
         
     def toolROICmd(self):
         '''Creates and connects to Region of Interest instance'''
         from tools import ROI
-        self.tools['roi'] = ROI(self.Vradar, self.Vtilt, self.ax, self.display, parent=self.parent)
+        self.tools['roi'] = ROI(self.Vgrid, self.Vtilt, self.ax, self.display, parent=self.parent)
         self.tools['roi'].connect()
         
         
@@ -549,7 +549,7 @@ class Display(Component):
 #            self.zp.connect()
 
         if self.airborne:
-            self.display = pyart.graph.RadarDisplay_Airborne(self.Vradar.value)
+            self.display = pyart.graph.RadarDisplay_Airborne(self.Vgrid.value)
             
             self.plot = self.display.plot_sweep_grid(self.Vfield.value, \
                                 vmin=self.limits['vmin'], vmax=self.limits['vmax'],\
@@ -560,7 +560,7 @@ class Display(Component):
                                     ax=self.ax)
             self.display.plot_grid_lines()
         else:
-            self.display = pyart.graph.GridMapDisplay(self.Vradar.value)
+            self.display = pyart.graph.GridMapDisplay(self.Vgrid.value)
             if True:
                 # Create Plot
                 if self.Vtilt.value < len(self.rTilts):
@@ -600,7 +600,7 @@ class Display(Component):
         # what has or has not been entered
         if self.units is None or self.units == '':
             try:
-                self.units = self.Vradar.value.fields[self.field]['units']
+                self.units = self.Vgrid.value.fields[self.field]['units']
             except:
                 self.units = ''
         self.cbar.set_label(self.units)
@@ -662,8 +662,8 @@ class Display(Component):
             pass
         else:
             try:
-                (self.Vradar.value.metadata['platform_type'] == 'aircraft_tail') or \
-                (self.Vradar.value.metadata['platform_type'] == 'aircraft')
+                (self.Vgrid.value.metadata['platform_type'] == 'aircraft_tail') or \
+                (self.Vgrid.value.metadata['platform_type'] == 'aircraft')
                 self.airborne = True
             except:
                 self.rhi = True

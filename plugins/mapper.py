@@ -8,6 +8,8 @@ from functools import partial
 
 import core
 import common
+import pyart
+import time
 
 class Mapper(core.Component):
     @classmethod
@@ -31,8 +33,8 @@ class Mapper(core.Component):
             self.Vgrid = core.Variable(None)
         else:
             self.Vgrid = Vgrid
-        self.sharedVariables = {"Vradar": None,
-                                "Vfield": None}
+        self.sharedVariables = {"Vradar": self.newRadar,
+                                "Vgrid": None}
         self.connectAllVariables()
         
         self.generalLayout = QtGui.QGridLayout()
@@ -46,6 +48,8 @@ class Mapper(core.Component):
 
         self.addGeneralOptions()
         self.addEspecificOptions()
+
+        self.newRadar(None, None, True)
 
         self.show()
 
@@ -92,7 +96,7 @@ class Mapper(core.Component):
         self.generalLayout.addWidget(self.gridLimitsXmax, 2, 6)
 
         self.griddingAlgo = QtGui.QComboBox()
-        self.griddingAlgo.addItem('map_to_grid')
+        #self.griddingAlgo.addItem('map_to_grid')
         self.griddingAlgo.addItem('map_gates_to_grid')
         self.griddingAlgo.setCurrentIndex(0)
         self.generalLayout.addWidget(QtGui.QLabel("gridding_algo"), 3, 0)
@@ -103,103 +107,163 @@ class Mapper(core.Component):
 
         self.gridOriginLat = QtGui.QDoubleSpinBox()
         self.gridOriginLat.setRange(-90,90)
+        self.gridOriginLat.setDecimals(8)
         self.gridOriginLon = QtGui.QDoubleSpinBox()
         self.gridOriginLon.setRange(-180,180)
+        self.gridOriginLon.setDecimals(8)
         self.especificLayout.addWidget(QtGui.QLabel("grid_origin"), 0, 0)
         self.especificLayout.addWidget(self.gridOriginLat, 0, 1)
         self.especificLayout.addWidget(self.gridOriginLon, 0, 2)
 
+        self.fieldsbutton = QtGui.QToolButton(self)
+        self.fieldsbutton.setText('Select Fields')
+        self.fieldsmenu = QtGui.QMenu(self)
+        self.fieldsbutton.setMenu(self.fieldsmenu)
+        self.fieldsbutton.setPopupMode(QtGui.QToolButton.InstantPopup)
+        self.especificLayout.addWidget(self.fieldsbutton, 1, 1, 1 ,2)
+
         self.reflFilterFlag = QtGui.QCheckBox("refl_filter_flag")
         self.reflFilterFlag.setChecked(True)
-        self.especificLayout.addWidget(self.reflFilterFlag, 1, 1, 1 ,2)
+        self.especificLayout.addWidget(self.reflFilterFlag, 2, 1, 1 ,2)
 
         self.reflField = QtGui.QLineEdit("reflectivity")
-        self.especificLayout.addWidget(QtGui.QLabel("refl_field"), 2, 0)
-        self.especificLayout.addWidget(self.reflField, 2, 1, 1 ,2)
+        self.especificLayout.addWidget(QtGui.QLabel("refl_field"), 3, 0)
+        self.especificLayout.addWidget(self.reflField, 3, 1, 1 ,2)
 
         self.maxRefl = QtGui.QDoubleSpinBox()
         self.maxRefl.setRange(-1000,1000)
         self.maxRefl.setValue(100)
-        self.especificLayout.addWidget(QtGui.QLabel("max_refl"), 3, 0)
-        self.especificLayout.addWidget(self.maxRefl, 3, 1, 1 ,2)
+        self.especificLayout.addWidget(QtGui.QLabel("max_refl"), 4, 0)
+        self.especificLayout.addWidget(self.maxRefl, 4, 1, 1 ,2)
 
         self.mapRoi = QtGui.QCheckBox("map_roi")
         self.mapRoi.setChecked(True)
-        self.especificLayout.addWidget(self.mapRoi, 4, 1, 1 ,2)
+        self.especificLayout.addWidget(self.mapRoi, 5, 1, 1 ,2)
 
         self.weightingFunction = QtGui.QComboBox()
         self.weightingFunction.addItem('Barnes')
         self.weightingFunction.addItem('Cressman')
         self.weightingFunction.setCurrentIndex(0)
-        self.especificLayout.addWidget(QtGui.QLabel("weighting_function"), 5, 0)
-        self.especificLayout.addWidget(self.weightingFunction, 5, 1, 1 ,2)
+        self.especificLayout.addWidget(QtGui.QLabel("weighting_function"), 6, 0)
+        self.especificLayout.addWidget(self.weightingFunction, 6, 1, 1 ,2)
 
         self.toa = QtGui.QDoubleSpinBox()
         self.toa.setRange(0,30000)
         self.toa.setValue(17000)
         self.toa.setSingleStep(1000)
-        self.especificLayout.addWidget(QtGui.QLabel("toa"), 6, 0)
-        self.especificLayout.addWidget(self.toa, 6, 1, 1 ,2)
+        self.especificLayout.addWidget(QtGui.QLabel("toa"), 7, 0)
+        self.especificLayout.addWidget(self.toa, 7, 1, 1 ,2)
 
         self.roiFunc = QtGui.QComboBox()
         self.roiFunc.addItem('constant')
         self.roiFunc.addItem('dist')
         self.roiFunc.addItem('dist_beam')
         self.roiFunc.setCurrentIndex(2)
-        self.especificLayout.addWidget(QtGui.QLabel("roi_func"), 7, 0)
-        self.especificLayout.addWidget(self.roiFunc, 7, 1, 1 ,2)
+        self.especificLayout.addWidget(QtGui.QLabel("roi_func"), 8, 0)
+        self.especificLayout.addWidget(self.roiFunc, 8, 1, 1 ,2)
 
         self.constantRoi = QtGui.QDoubleSpinBox()
         self.constantRoi.setRange(0,30000)
         self.constantRoi.setValue(500)
         self.constantRoi.setSingleStep(100)
-        self.especificLayout.addWidget(QtGui.QLabel("constant_roi"), 8, 0)
-        self.especificLayout.addWidget(self.constantRoi, 8, 1, 1 ,2)
+        self.especificLayout.addWidget(QtGui.QLabel("constant_roi"), 9, 0)
+        self.especificLayout.addWidget(self.constantRoi, 9, 1, 1 ,2)
 
         self.zFactor = QtGui.QDoubleSpinBox()
         self.zFactor.setRange(0,30000)
         self.zFactor.setValue(0.05)
         self.zFactor.setSingleStep(0.01)
-        self.especificLayout.addWidget(QtGui.QLabel("z_factor"), 9, 0)
-        self.especificLayout.addWidget(self.zFactor, 9, 1, 1 ,2)
+        self.zFactor.setDecimals(3)
+        self.especificLayout.addWidget(QtGui.QLabel("z_factor"), 10, 0)
+        self.especificLayout.addWidget(self.zFactor, 10, 1, 1 ,2)
 
         self.xyFactor = QtGui.QDoubleSpinBox()
         self.xyFactor.setRange(0,30000)
         self.xyFactor.setValue(0.02)
         self.xyFactor.setSingleStep(0.01)
-        self.especificLayout.addWidget(QtGui.QLabel("xy_factor"), 10, 0)
-        self.especificLayout.addWidget(self.xyFactor, 10, 1, 1 ,2)
+        self.xyFactor.setDecimals(3)
+        self.especificLayout.addWidget(QtGui.QLabel("xy_factor"), 11, 0)
+        self.especificLayout.addWidget(self.xyFactor, 11, 1, 1 ,2)
 
         self.minRadius = QtGui.QDoubleSpinBox()
         self.minRadius.setRange(0,30000)
         self.minRadius.setValue(500)
         self.minRadius.setSingleStep(100)
-        self.especificLayout.addWidget(QtGui.QLabel("min_radius"), 11, 0)
-        self.especificLayout.addWidget(self.minRadius, 11, 1, 1 ,2)
+        self.especificLayout.addWidget(QtGui.QLabel("min_radius"), 12, 0)
+        self.especificLayout.addWidget(self.minRadius, 12, 1, 1 ,2)
 
         self.hFactor = QtGui.QDoubleSpinBox()
         self.hFactor.setRange(0,30000)
         self.hFactor.setValue(1.0)
         self.hFactor.setSingleStep(0.1)
-        self.especificLayout.addWidget(QtGui.QLabel("h_factor"), 12, 0)
-        self.especificLayout.addWidget(self.hFactor, 12, 1, 1 ,2)
+        self.especificLayout.addWidget(QtGui.QLabel("h_factor"), 13, 0)
+        self.especificLayout.addWidget(self.hFactor, 13, 1, 1 ,2)
 
         self.nb = QtGui.QDoubleSpinBox()
         self.nb.setRange(0,30000)
         self.nb.setValue(1.5)
         self.nb.setSingleStep(0.1)
-        self.especificLayout.addWidget(QtGui.QLabel("nb"), 13, 0)
-        self.especificLayout.addWidget(self.nb, 13, 1, 1 ,2)
+        self.especificLayout.addWidget(QtGui.QLabel("nb"), 14, 0)
+        self.especificLayout.addWidget(self.nb, 14, 1, 1 ,2)
 
         self.bsp = QtGui.QDoubleSpinBox()
         self.bsp.setRange(0,30000)
         self.bsp.setValue(1.0)
         self.bsp.setSingleStep(0.1)
-        self.especificLayout.addWidget(QtGui.QLabel("bsp"), 14, 0)
-        self.especificLayout.addWidget(self.bsp, 14, 1, 1 ,2)
+        self.especificLayout.addWidget(QtGui.QLabel("bsp"), 15, 0)
+        self.especificLayout.addWidget(self.bsp, 15, 1, 1 ,2)
+
+    def newRadar(self, variable, value, strong):
+        if self.Vradar.value is None:
+            return
+        self.fieldsmenu.clear()
+        for field in self.Vradar.value.fields.keys():
+            action = self.fieldsmenu.addAction(field)
+            action.setCheckable(True)
+            action.setChecked(True)
+        lat = float(self.Vradar.value.latitude['data'])
+        lon = float(self.Vradar.value.longitude['data'])
+        self.gridOriginLat.setValue(lat)
+        self.gridOriginLon.setValue(lon)
 
     def grid_from_radars(self):
-        print "map"
+        args = {
+            'radars': (self.Vradar.value,),
+            'grid_shape': (self.gridShapeZ.value(),
+                           self.gridShapeY.value(),
+                           self.gridShapeX.value()),
+            'grid_limits': (
+                (self.gridLimitsZmin.value(), self.gridLimitsZmax.value()),
+                (self.gridLimitsYmin.value(), self.gridLimitsYmax.value()),
+                (self.gridLimitsXmin.value(), self.gridLimitsXmax.value())),
+            'grid_origin': (self.gridOriginLat.value(),
+                            self.gridOriginLon.value()),
+            'grid_origin_alt': 0,
+            'fields': [str(a.text()) for a in self.fieldsmenu.actions() if a.isChecked()],
+            'refl_filter_flag': self.reflFilterFlag.isChecked(),
+            'refl_field': str(self.reflField.text()),
+            'max_refl': self.maxRefl.value(),
+            'map_roi': self.mapRoi.isChecked(),
+            'weighting_function': str(self.weightingFunction.currentText()),
+            'toa': self.toa.value(),
+            'roi_func': str(self.roiFunc.currentText()),
+            'constant_roi': self.constantRoi.value(),
+            'z_factor': self.zFactor.value(),
+            'xy_factor': self.xyFactor.value(),
+            'min_radius': self.minRadius.value(),
+            'h_factor': self.hFactor.value(),
+            'nb': self.nb.value(),
+            'bsp': self.bsp.value(),
+        }
+        print args
+        print "mapping .."
+        
+        t0 = time.time()
+        grid = pyart.map.grid_from_radars(**args)
+        t1 = time.time()
+        common.ShowWarning("Mapping took %fs"%(t1-t0))
+        self.Vgrid.change(grid)
+        print "Mapping took %fs"%(t1-t0)
 
     def close(self):
         super(Exemple2, self).close()

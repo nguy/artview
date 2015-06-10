@@ -7,8 +7,9 @@ from PyQt4 import QtGui, QtCore
 import sys
 
 from core import Variable
-from plot_grid import Display
-from menu_grid import Menu
+from plot import Display
+from plot_grid import Display as Display_grid
+from menu import Menu
 from tilt import TiltButtonWindow
 #import .resources.plot as plot
 #import .ui.menu as menu
@@ -24,11 +25,11 @@ app = QtGui.QApplication(sys.argv)
 
 MainMenu = Menu(DirIn, name="Menu") #initiate Vradar
 Vradar = MainMenu.Vradar
-Vradar.value=None
 
-Vtilt = Variable(0)
-Vtilt2 = Variable(0)
-plot1 = Display(Vradar, Variable(field), Vtilt, name="Display1", parent=MainMenu)
+
+Vfield = Variable(field)
+plot = Display(Vradar, Vfield, Variable(0), name="DisplayRadar", parent=MainMenu)
+plot1 = Display_grid(Variable(None), Vfield, Variable(0), name="DisplayGrid", parent=MainMenu)
 
 
 from component_control import ComponentsControl
