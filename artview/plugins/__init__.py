@@ -9,7 +9,7 @@ for module in os.listdir(os.path.dirname(__file__)):
         continue
     tmp = __import__(module[:-3], locals(), globals())
     for plugin in tmp._plugins:
-        setattr(thismodule, module[-3:], plugin)
+        setattr(thismodule, module[:-3], plugin)
         _plugins.append(plugin)
 
 del module

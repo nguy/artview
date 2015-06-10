@@ -16,8 +16,8 @@ from matplotlib.colorbar import ColorbarBase as mlabColorbarBase
 from matplotlib.pyplot import cm
 
 
-import common
-from core import Variable, Component
+
+from ..core import Variable, Component, common
 
 # Save image file type and DPI (resolution)
 IMAGE_EXT = 'png'

@@ -8,7 +8,7 @@ Class instance used for modifying field via Display window.
 from PyQt4 import QtGui, QtCore
 from functools import partial
 
-from core import Variable, Component
+from ..core import Variable, Component
 
 class FieldButtonWindow(Component):
     '''Class to display the Window with Field Buttons'''

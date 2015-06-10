@@ -8,8 +8,8 @@ Class instance for control variables shared between components.
 from PyQt4 import QtGui, QtCore
 from functools import partial
 
-import core
-import common
+from .. import core
+common = core.common
 
 class ComponentsControl(core.Component):
     '''Class instance for control variables shared between components.

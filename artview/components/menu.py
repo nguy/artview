@@ -9,8 +9,7 @@ import pyart
 import os
 from PyQt4 import QtGui, QtCore
 
-import common
-from core import Variable, Component
+from ..core import Variable, Component, common
 
 class Menu(Component):
     '''Class to display the MainMenu'''
@@ -84,7 +83,8 @@ class Menu(Component):
         self.CreateMenu()
 
     def showFileDialog(self):
-        '''Open a dialog box to choose file.'''    
+        '''Open a dialog box to choose file.'''
+
         self.qfilename = QtGui.QFileDialog.getOpenFileName(self, 'Open file', 
                 self.dirIn)
         self.filename = str(self.qfilename)
