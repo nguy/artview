@@ -339,11 +339,26 @@ class ROI(QtGui.QMainWindow):
         self.ind = []
         self.az = self.Vradar.azimuth['data'][self.Vradar.sweep_start_ray_index['data'][self.Vtilt]:self.Vradar.sweep_end_ray_index['data'][self.Vtilt]]
         self.r =  self.Vradar.range['data']/1000.
-        self.xys=np.zeros(shape=(self.az.size*self.r.size,2))
-        for j in range(self.r.size):
-            for i in range(self.az.size):
-                self.xys[self.az.size*j+i,1]=self.r[j]*np.sin(self.az[i]*np.pi/180.)
-                self.xys[self.az.size*j+i,0]=self.r[j]*np.cos(self.az[i]*np.pi/180.)
+        self.big=np.ones(shape=(self.az.size,self.r.size))
+        self.xys=np.empty(shape=(self.az.size*self.r.size,2))
+        self.rbig = self.big*self.r
+        self.azbig = self.big*self.az.reshape(self.az.size,1)
+        x = self.rbig*np.cos(self.azbig*np.pi/180.)
+        y = self.rbig*np.sin(self.azbig*np.pi/180.)
+        self.xys[:,0] = x.flatten()
+        self.xys[:,1] = y.flatten()
+   #     self.xys = self.convert2cart(self.r,self.az)
+        #for j in range(self.r.size):
+            #for i in range(self.az.size):
+                #self.xys[self.az.size*j+i,1]=self.r[j]*np.sin(self.az[i]*np.pi/180.)
+                #self.xys[self.az.size*j+i,0]=self.r[j]*np.cos(self.az[i]*np.pi/180.)
+
+   # @np.vectorize
+   # def convert2cart(r,az):
+   #     '''Convert range and azimuth to cartisian x,y'''
+   #     x = r*np.cos(az*np.pi/180.)
+   #     y = r*np.sin(az*np.pi/180.)
+   #     return [x,y]
 
     def motion_notify_callback(self, event):
         if event.inaxes:
@@ -397,6 +412,8 @@ class ROI(QtGui.QMainWindow):
                 print self.ind
                 print "Points of Region of Interest"
                 print self.xys[self.ind]
+                print self.az[self.ind/self.r.size], self.ind/self.r.size
+                print self.r[self.ind%self.r.size], self.ind%self.r.size
 
     def connect(self):
         self.motionID = self.fig.canvas.mpl_connect('motion_notify_event', self.motion_notify_callback)
