@@ -343,8 +343,8 @@ class ROI(QtGui.QMainWindow):
         self.xys=np.empty(shape=(self.az.size*self.r.size,2))
         self.rbig = self.big*self.r
         self.azbig = self.big*self.az.reshape(self.az.size,1)
-        x = self.rbig*np.cos(self.azbig*np.pi/180.)
-        y = self.rbig*np.sin(self.azbig*np.pi/180.)
+        x = self.rbig*np.sin(self.azbig*np.pi/180.)
+        y = self.rbig*np.cos(self.azbig*np.pi/180.)
         self.xys[:,0] = x.flatten()
         self.xys[:,1] = y.flatten()
    #     self.xys = self.convert2cart(self.r,self.az)
