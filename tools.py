@@ -299,7 +299,7 @@ class ROI(QtGui.QMainWindow):
     https://www.mail-archive.com/matplotlib-users@lists.sourceforge.net/msg00661.html
     '''
 
-    def __init__(self, Vradar, Vtilt, ax, display, name="ROI", parent=None):
+    def __init__(self, Vradar, Vtilt, ax, Vfield, name="ROI", parent=None):
         '''
         Initialize the class to select an ROI on display.
     
@@ -327,6 +327,7 @@ class ROI(QtGui.QMainWindow):
         self.name = name
         self.Vradar = Vradar
         self.Vtilt = Vtilt
+        self.Vfield = Vfield
         
         self.ax = ax
         self.fig = ax.get_figure()
@@ -347,18 +348,6 @@ class ROI(QtGui.QMainWindow):
         y = self.rbig*np.cos(self.azbig*np.pi/180.)
         self.xys[:,0] = x.flatten()
         self.xys[:,1] = y.flatten()
-   #     self.xys = self.convert2cart(self.r,self.az)
-        #for j in range(self.r.size):
-            #for i in range(self.az.size):
-                #self.xys[self.az.size*j+i,1]=self.r[j]*np.sin(self.az[i]*np.pi/180.)
-                #self.xys[self.az.size*j+i,0]=self.r[j]*np.cos(self.az[i]*np.pi/180.)
-
-   # @np.vectorize
-   # def convert2cart(r,az):
-   #     '''Convert range and azimuth to cartisian x,y'''
-   #     x = r*np.cos(az*np.pi/180.)
-   #     y = r*np.sin(az*np.pi/180.)
-   #     return [x,y]
 
     def motion_notify_callback(self, event):
         if event.inaxes:
@@ -406,14 +395,21 @@ class ROI(QtGui.QMainWindow):
                 self.line = None
                 path = Path(self.verts)
                 self.ind = np.nonzero([path.contains_point(xy) for xy in self.xys])[0]
-                print "Line/Loop Points"
-                print self.verts
-                print "Indices of Region"
-                print self.ind
-                print "Points of Region of Interest"
-                print self.xys[self.ind]
-                print self.az[self.ind/self.r.size], self.ind/self.r.size
-                print self.r[self.ind%self.r.size], self.ind%self.r.size
+                #print "Line/Loop Points"
+                #print self.verts
+                #print "Indices of Region"
+                #print self.ind
+                #print "X,Y Points in Region of Interest"
+                #print self.xys[self.ind]
+                #print "Azimuths of Points in Region of Interest"
+                #print self.az[self.ind/self.r.size], self.ind/self.r.size
+                #print "Ranges of Points in Region of Interest"
+                #print self.r[self.ind%self.r.size], self.ind%self.r.size
+                #print "Values of Points in Region of Interest"
+                #print self.Vradar.fields[self.Vfield]['data'][self.Vradar.sweep_start_ray_index['data'][self.Vtilt]+self.ind/self.r.size,self.ind%self.r.size]
+                print "     X        Y    Azimuth   Range     Value"
+                for i in range(self.ind.size):
+                    print "%8.2f %8.2f %8.2f %8.3f %8.2f" %(self.xys[self.ind[i],0], self.xys[self.ind[i],1], self.az[self.ind[i]/self.r.size], self.r[self.ind[i]%self.r.size], self.Vradar.fields[self.Vfield]['data'][self.Vradar.sweep_start_ray_index['data'][self.Vtilt]+self.ind[i]/self.r.size,self.ind[i]%self.r.size])
 
     def connect(self):
         self.motionID = self.fig.canvas.mpl_connect('motion_notify_event', self.motion_notify_callback)
