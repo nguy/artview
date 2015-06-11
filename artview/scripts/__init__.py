@@ -10,7 +10,7 @@ ARTview offer some function to start programs using basic configurations.
 .. autosummary::
     :toctree: generated/
 
-    Standard
+    standard
 """
 
 import os
@@ -25,8 +25,10 @@ for module in os.listdir(os.path.dirname(__file__)):
     tmp = __import__(module[:-3], locals(), globals())
     try:
         scripts[module[:-3]] = tmp.run
+        setattr(thismodule, module[:-3], tmp.run)
     except:
         pass
+
 
 del module
 del os

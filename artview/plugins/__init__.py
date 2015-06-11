@@ -1,3 +1,20 @@
+"""
+================================
+Plugings (:mod:`artview.plugins`)
+================================
+
+.. currentmodule:: artview.plugins
+
+ARTview offer some function to start programs using basic configurations.
+
+.. autosummary::
+    :toctree: generated/
+
+    exemple1
+    exemple2
+"""
+
+
 import os
 import sys
 

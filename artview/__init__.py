@@ -7,9 +7,10 @@ ARTView:
 from . import core
 from . import components
 from . import plugins
-from .scripts import scripts
+from . import scripts 
 
-run = scripts['standard']
+
+run = scripts.scripts['standard']
 
 
 if __name__ == "__main__":

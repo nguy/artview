@@ -5,6 +5,7 @@ Driver function that creates ARTView display.
 """
 
 def run(DirIn='./', field='reflectivity'):
+    """standard artview execution"""
     print DirIn
     from PyQt4 import QtGui, QtCore
     import sys
