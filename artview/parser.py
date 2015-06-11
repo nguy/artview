@@ -7,10 +7,10 @@ Parse the input code from execution program.
 import argparse
 
 # Get the version
-f = open("version", "r")
-NAME = f.readline().strip()
-VERSION = f.readline().strip()
-f.close()
+import version
+NAME = ARTview
+VERSION = version.version
+
 
 def parse(argv):
     '''
