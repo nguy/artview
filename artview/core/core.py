@@ -86,6 +86,7 @@ class Component(QtGui.QMainWindow):
     def __init__(self, name="Component", parent=None, flags=QtCore.Qt.Widget):
         '''Initialize the class to create the interface'''
         super(Component, self).__init__(parent=parent, flags=flags)
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose, True)
         self.name = name
         self.parent = parent
         self.setWindowTitle(name)
@@ -130,7 +131,7 @@ class Component(QtGui.QMainWindow):
         '''Reimplementations, pass keyEvent to parent,
         even if a diferent window'''
         if self.parent == None:
-            super(Component, self).keyPressEvent(self, event)
+            super(Component, self).keyPressEvent(event)
         else:
             # Send event to parent to handle (Limitation of pyqt not having a 
             # form that does this - AG)
@@ -139,6 +140,5 @@ class Component(QtGui.QMainWindow):
     def closeEvent(self, QCloseEvent):
         '''Reimplementations to remove from components list'''
         componentsList.remove(self)
+        self.disconnectAllVariables()
         super(Component, self).closeEvent(QCloseEvent)
-
-

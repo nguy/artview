@@ -331,12 +331,12 @@ class Menu(Component):
         if findex > len(self.filelist):
             print len(self.filelist)
             msg = "End of directory, cannot advance!"
-            self._ShowWarning(msg)
+            common.ShowWarning(msg)
             findex = (len(self.filelist) - 1)
             return
         if findex < 0:
             msg = "Beginning of directory, must move forward!"
-            self._ShowWarning(msg)
+            common.ShowWarning(msg)
             findex = 0
             return
         self.fileindex = findex
@@ -361,7 +361,7 @@ class Menu(Component):
      
         # Read the data from file
         try:
-            radar = pyart.io.read(self.filename)
+            radar = pyart.io.read(self.filename, delay_field_loading=True)
             self.Vradar.change(radar)
         except:
             msg = "This is not a recognized radar file!"

@@ -10,18 +10,18 @@ from PyQt4 import QtGui, QtCore
 def initialize_limits(field, airborne=False, rhi=False):
     '''
     Initialize limits to default program values.
-    
+
     Parameters::
     ----------
     field - string
         Field name to use for initialization (e.g. 'reflectivity').
-    
+
     [Optional]
     airborne - boolean
         Set True to display airborne type radar files (assumes tail radar setup such as NOAA P-3).
     rhi - boolean
         Set True to display RHI type radar files.
-        
+
     Notes::
     -----
     Returns a dictionary of display limits and colormap instance
@@ -36,24 +36,24 @@ def initialize_limits(field, airborne=False, rhi=False):
     NCP_LIMS = (0., 1.)
     SW_LIMS = (-1., 10.)
     TP_LIMS = (-200., 100.)
-        
+
     # X, Y range and size for airborne file typesAIR_XRNG = (-150., 150.)
     AIR_YRNG = (-10., 20.)
     AIR_XSIZE = 8
     AIR_YSIZE = 5
-        
+
     # X, Y range and size for PPI file types
     PPI_XRNG = (-150., 150.)
     PPI_YRNG = (-150., 150.)
     PPI_XSIZE = 8
     PPI_YSIZE = 8
-        
+
     # X, Y range and size for RHI file types
     RHI_XRNG = (0., 150.)
     RHI_YRNG = (0., 20.)
     RHI_XSIZE = 8
     RHI_YSIZE = 5
-        
+
     # Set size of plot
     XSIZE = PPI_XSIZE
     YSIZE = PPI_YSIZE
@@ -107,11 +107,10 @@ def initialize_limits(field, airborne=False, rhi=False):
     else:
         vminmax = (Z_LIMS[0], Z_LIMS[1])
         CMAP = 'gist_ncar'
-    
-       
+
     limit_strs = ('vmin', 'vmax', 'xmin', 'xmax', 'ymin', 'ymax')
     limits = {}
-        
+
     # Now pull the default values
     limits['vmin'] = vminmax[0]
     limits['vmax'] = vminmax[1]
@@ -121,7 +120,7 @@ def initialize_limits(field, airborne=False, rhi=False):
     limits['ymax'] = YRNG[1]
     limits['xsize'] = XSIZE
     limits['ysize'] = YSIZE
-        
+
     return limits, CMAP
 
 ###############################
@@ -130,14 +129,14 @@ def initialize_limits(field, airborne=False, rhi=False):
 
 def limits_dialog(limits, name):
     '''Function to instantiate a Display Limits Window.
-    
+
     Parameters::
     ----------
     limits - dict
         Dictionary containing display limits.
     name - string
         Window name to add as prefix in window title .
-        
+
     Notes::
     -----
     Returns a dictionary of display limits.
@@ -146,13 +145,13 @@ def limits_dialog(limits, name):
     LimsDialog.setObjectName("Limits Dialog")
     LimsDialog.setWindowModality(QtCore.Qt.WindowModal)
     LimsDialog.setWindowTitle(name+" Limits Entry")
-        
+
     # Setup window layout
     gridLayout_2 = QtGui.QGridLayout(LimsDialog)
     gridLayout_2.setObjectName("gridLayout_2")
     gridLayout = QtGui.QGridLayout()
     gridLayout.setObjectName("gridLayout")
-	
+
     # Set up the Labels for entry
     lab_dmin = QtGui.QLabel("Data Min")
     lab_dmax = QtGui.QLabel("Data Max")
@@ -160,7 +159,7 @@ def limits_dialog(limits, name):
     lab_xmax = QtGui.QLabel("X Max")
     lab_ymin = QtGui.QLabel("Y Min")
     lab_ymax = QtGui.QLabel("Y Max")
-	
+
     # Set up the Entry limits
     ent_dmin = QtGui.QLineEdit(LimsDialog)
     ent_dmax = QtGui.QLineEdit(LimsDialog)
@@ -168,7 +167,7 @@ def limits_dialog(limits, name):
     ent_xmax = QtGui.QLineEdit(LimsDialog)
     ent_ymin = QtGui.QLineEdit(LimsDialog)
     ent_ymax = QtGui.QLineEdit(LimsDialog)
-        
+
     # Input the current values
     ent_dmin.setText(str(limits['vmin']))
     ent_dmax.setText(str(limits['vmax']))
@@ -176,7 +175,7 @@ def limits_dialog(limits, name):
     ent_xmax.setText(str(limits['xmax']))
     ent_ymin.setText(str(limits['ymin']))
     ent_ymax.setText(str(limits['ymax']))
-	
+
     # Add to the layout
     gridLayout.addWidget(lab_dmin, 0, 0, 1, 1)
     gridLayout.addWidget(ent_dmin, 0, 1, 1, 1)
@@ -190,14 +189,14 @@ def limits_dialog(limits, name):
     gridLayout.addWidget(ent_ymin, 4, 1, 1, 1)
     gridLayout.addWidget(lab_ymax, 5, 0, 1, 1)
     gridLayout.addWidget(ent_ymax, 5, 1, 1, 1)
-	
+
     gridLayout_2.addLayout(gridLayout, 0, 0, 1, 1)
     buttonBox = QtGui.QDialogButtonBox(LimsDialog)
     buttonBox.setOrientation(QtCore.Qt.Horizontal)
     buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
     buttonBox.setObjectName("buttonBox")
     gridLayout_2.addWidget(buttonBox, 1, 0, 1, 1)
-        
+
     LimsDialog.setLayout(gridLayout_2)
 #    LimsDialog.setCentralWidget(LimsDialog)
 
@@ -215,4 +214,3 @@ def limits_dialog(limits, name):
         limits['ymax'] = float(ent_ymax.text())
 
     return limits, retval
-    

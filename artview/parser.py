@@ -8,7 +8,7 @@ import argparse
 
 # Get the version
 import version
-NAME = ARTview
+NAME = 'ARTview'
 VERSION = version.version
 
 

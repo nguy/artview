@@ -72,8 +72,7 @@ class TiltButtonWindow(Component):
         self.tiltbutton = []
         
         # Pull out the tilt indices and elevations for display
-        tilt_indices = self.Vradar.value.sweep_start_ray_index['data'][:]
-        elevs = self.Vradar.value.elevation['data'][tilt_indices]
+        elevs = self.Vradar.value.fixed_angle['data'][:]
         
         # Loop through and create each tilt button and connect a value when selected
         for ntilt in self.Vradar.value.sweep_number['data'][:]:
