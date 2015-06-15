@@ -15,7 +15,7 @@ from core import Variable, Component
 class Menu(Component):
     '''Class to display the MainMenu'''
 
-    def __init__(self, pathDir, Vradar=None, name="Menu", parent=None):
+    def __init__(self, pathDir, Vradar=None, Vgrid=None, mode="Radar", name="Menu", parent=None):
         '''
         Initialize the class to create the interface.
     
@@ -28,6 +28,11 @@ class Menu(Component):
         Vradar - Variable instance
             Radar signal variable. 
             A value of None initializes with this class.
+        Vgrid - Variable instance
+            Grid signal variable. 
+            A value of None initializes with this class.
+        mode - "Radar", "Grid" or "All"
+            Determine witch files will be open
         name - string
             Menu name.
         parent - PyQt instance
@@ -43,14 +48,21 @@ class Menu(Component):
 
         # Set some parameters
         self.dirIn = pathDir
+        self.mode = mode.lower()
         self.Vradar = Vradar
-        self.sharedVariables = {"Vradar": None,}
+        self.Vgrid = Vgrid
+        self.sharedVariables = {"Vradar": None,
+                                "Vgrid": None}
 
         # Show an "Open" dialog box and return the path to the selected file
         # Just do that if Vradar was not given
         if self.Vradar is None:
             self.Vradar = Variable(None)
+        if self.Vgrid is None:
+            self.Vgrid = Variable(None)
+        if Vradar is None and Vgrid is None:
             self.showFileDialog()
+
 
         # Launch the GUI interface
         self.LaunchApp()
@@ -346,25 +358,42 @@ class Menu(Component):
     ########################
     # Menu display methods #
     ########################
- 
+
     def _openfile(self):
         '''Open a file via a file selection window.'''
         print "Opening file " + self.filename
-        
+
         # Update to  current directory when file is chosen
         self.dirIn = os.path.dirname(self.filename)
-        
+
         # Get a list of files in the working directory
         self.filelist = os.listdir(self.dirIn)
-        
+
         self.fileindex = self.filelist.index(os.path.basename(self.filename))
-     
+
         # Read the data from file
-        try:
-            radar = pyart.io.read(self.filename)
-            self.Vradar.change(radar)
-        except:
-            msg = "This is not a recognized radar file!"
+        radar_warning = False
+        grid_warning = False
+        if self.mode in ("radar","all"):
+            try:
+                radar = pyart.io.read(self.filename)
+                self.Vradar.change(radar)
+                return
+            except:
+                radar_warning = True
+        if self.mode in ("grid","all"):
+            try:
+                grid = pyart.io.read_grid(self.filename)
+                self.Vgrid.change(grid)
+                return
+            except:
+                grid_warning = True
+
+        if grid_warning or radar_warning:
+            msg = "Py-ART didn't recognized this file!"
             common.ShowWarning(msg)
-            return
+        else:
+            msg = "Could not open file, invalid mode!"
+            common.ShowWarning(msg)
+        return
 
