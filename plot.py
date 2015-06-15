@@ -279,8 +279,9 @@ class Display(Component):
     def _open_tiltbuttonwindow(self):
         '''Open a TiltButtonWindow instance.'''
         from tilt import TiltButtonWindow
-        self.tiltbuttonwindow = TiltButtonWindow(self.Vradar, self.Vtilt, \
-                            name=self.name+" Tilt Selection", parent=self.parent)
+        self.tiltbuttonwindow = TiltButtonWindow(
+                self.Vtilt, Vradar=self.Vradar,
+                name=self.name+" Tilt Selection", parent=self.parent)
         
     def _open_fieldbuttonwindow(self):
         '''Open a FieldButtonWindow instance.'''
