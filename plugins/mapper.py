@@ -23,7 +23,7 @@ class Mapper(core.Component):
         self.central_widget = QtGui.QWidget()
         self.setCentralWidget(self.central_widget)
         self.layout = QtGui.QVBoxLayout(self.central_widget)
-
+        self.setSizePolicy (QtGui.QSizePolicy.Ignored)
         if Vradar is None:
             self.Vradar = core.Variable(None)
         else:
