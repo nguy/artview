@@ -30,12 +30,14 @@ Vradar = MainMenu.Vradar
 Vfield = Variable(field)
 plot = Display(Vradar, Vfield, Variable(0), name="DisplayRadar", parent=MainMenu)
 plot1 = Display_grid(Variable(None), Vfield, Variable(0), name="DisplayGrid", parent=MainMenu)
+import plugins
 
+mapper = plugins.mapper_simepar.Mapper(plot.Vradar, plot1.Vgrid, name="Mapper", parent=MainMenu)
 
 from component_control import ComponentsControl
 
-c = ComponentsControl()
-MainMenu.addLayoutWidget(c)
+#c = ComponentsControl()
+#MainMenu.addLayoutWidget(c)
 MainMenu.addComponent(ComponentsControl)
 
 try:
