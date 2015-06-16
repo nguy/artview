@@ -209,7 +209,7 @@ class Browse(QtGui.QMainWindow):
         if az < 0:
             az = az + 360.
         rng = np.sqrt(xdata*xdata+ydata*ydata)
-        azindex = np.argmin(np.abs(self.radar.azimuth['data'][self.radar.sweep_start_ray_index['data'][self.tilt]:self.radar.sweep_end_ray_index['data'][self.tilt]]-az))+self.radar.sweep_start_ray_index['data'][self.tilt]
+        azindex = np.argmin(np.abs(self.radar.azimuth['data'][self.radar.sweep_start_ray_index['data'][self.tilt]:self.radar.sweep_end_ray_index['data'][self.tilt]+1]-az))+self.radar.sweep_start_ray_index['data'][self.tilt]
         rngindex = np.argmin(np.abs(self.radar.range['data']-rng*1000.))
         msg = 'x = %4.2f, y = %4.2f, Azimuth = %4.2f deg., Range = %4.3f km, %s = %4.2f %s'\
         %(xdata, ydata, self.radar.azimuth['data'][azindex], self.radar.range['data'][rngindex]/1000., self.field, self.radar.fields[self.field]['data'][azindex][rngindex], self.units)
@@ -783,7 +783,7 @@ class Browse(QtGui.QMainWindow):
             #figPan = self.zp.pan_factory(self.limits)
             self.zp.connect()
         if self.ToolSelect == "Select Region of Interest":
-            self.sr = ROI(self.radar, self.tilt, self.ax, self.display)
+            self.sr = ROI(self.radar, self.tilt, self.ax, self.field)
             self.sr.connect()
         
         if self.airborne:

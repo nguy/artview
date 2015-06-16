@@ -338,7 +338,7 @@ class ROI(QtGui.QMainWindow):
         self.line = None
         self.verts = []
         self.ind = []
-        self.az = self.Vradar.azimuth['data'][self.Vradar.sweep_start_ray_index['data'][self.Vtilt]:self.Vradar.sweep_end_ray_index['data'][self.Vtilt]]
+        self.az = self.Vradar.azimuth['data'][self.Vradar.sweep_start_ray_index['data'][self.Vtilt]:self.Vradar.sweep_end_ray_index['data'][self.Vtilt]+1]
         self.r =  self.Vradar.range['data']/1000.
         self.big=np.ones(shape=(self.az.size,self.r.size))
         self.xys=np.empty(shape=(self.az.size*self.r.size,2))
@@ -395,21 +395,14 @@ class ROI(QtGui.QMainWindow):
                 self.line = None
                 path = Path(self.verts)
                 self.ind = np.nonzero([path.contains_point(xy) for xy in self.xys])[0]
-                #print "Line/Loop Points"
-                #print self.verts
-                #print "Indices of Region"
-                #print self.ind
-                #print "X,Y Points in Region of Interest"
-                #print self.xys[self.ind]
-                #print "Azimuths of Points in Region of Interest"
-                #print self.az[self.ind/self.r.size], self.ind/self.r.size
-                #print "Ranges of Points in Region of Interest"
-                #print self.r[self.ind%self.r.size], self.ind%self.r.size
-                #print "Values of Points in Region of Interest"
-                #print self.Vradar.fields[self.Vfield]['data'][self.Vradar.sweep_start_ray_index['data'][self.Vtilt]+self.ind/self.r.size,self.ind%self.r.size]
-                print "     X        Y    Azimuth   Range     Value"
+                outname='ROI_'+self.Vfield+'_'+str(self.xys[self.ind,0].mean())+'_'+str(self.xys[self.ind,1].mean())+'.txt'
+                outfile = open(outname,'w')
+                outfile.write("     X        Y    Azimuth   Range     Value   Az Index  R Index\n")
+                print "     X        Y    Azimuth   Range     Value   Az Index  R Index"
                 for i in range(self.ind.size):
-                    print "%8.2f %8.2f %8.2f %8.3f %8.2f" %(self.xys[self.ind[i],0], self.xys[self.ind[i],1], self.az[self.ind[i]/self.r.size], self.r[self.ind[i]%self.r.size], self.Vradar.fields[self.Vfield]['data'][self.Vradar.sweep_start_ray_index['data'][self.Vtilt]+self.ind[i]/self.r.size,self.ind[i]%self.r.size])
+                    print "%8.2f %8.2f %8.2f %8.3f %8.2f %8d %8d" %(self.xys[self.ind[i],0], self.xys[self.ind[i],1], self.az[self.ind[i]/self.r.size], self.r[self.ind[i]%self.r.size], self.Vradar.fields[self.Vfield]['data'][self.Vradar.sweep_start_ray_index['data'][self.Vtilt]+self.ind[i]/self.r.size,self.ind[i]%self.r.size],self.Vradar.sweep_start_ray_index['data'][self.Vtilt]+self.ind[i]/self.r.size,self.ind[i]%self.r.size)
+                    outfile.write("%8.2f %8.2f %8.2f %8.3f %8.2f %8d %8d\n" %(self.xys[self.ind[i],0], self.xys[self.ind[i],1], self.az[self.ind[i]/self.r.size], self.r[self.ind[i]%self.r.size], self.Vradar.fields[self.Vfield]['data'][self.Vradar.sweep_start_ray_index['data'][self.Vtilt]+self.ind[i]/self.r.size,self.ind[i]%self.r.size],self.Vradar.sweep_start_ray_index['data'][self.Vtilt]+self.ind[i]/self.r.size,self.ind[i]%self.r.size))
+                outfile.close()
 
     def connect(self):
         self.motionID = self.fig.canvas.mpl_connect('motion_notify_event', self.motion_notify_callback)
