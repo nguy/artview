@@ -11,9 +11,9 @@ import common
 
 class Exemple1(core.Component):
     @classmethod
-    def guiStart(self):
+    def guiStart(self, parent=None):
         val, entry = common.string_dialog("Exemple1", "Exemple1", "Name:")
-        return self(name=val)
+        return self(name=val, parent=parent)
 
     def __init__(self, name="Exemple1", parent=None):
         '''Initialize the class to create the interface'''
@@ -24,7 +24,7 @@ class Exemple1(core.Component):
         
         self.layout.addWidget(QtGui.QLabel("Vertical Plugin named: %s"%self.name), 0, 0)
         self.button = QtGui.QPushButton("Close")
-        self.button .clicked.connect(self.close)
+        self.button.clicked.connect(self.close)
         self.layout.addWidget(self.button, 1, 0)
         self.show()
 

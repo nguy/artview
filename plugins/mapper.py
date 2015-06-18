@@ -8,14 +8,17 @@ from functools import partial
 
 import core
 import common
+
 import pyart
 import time
 
 class Mapper(core.Component):
     @classmethod
-    def guiStart(self):
+    def guiStart(self, parent=None):
         val, entry = common.string_dialog("Mapper", "Mapper", "Name:")
-        return self(name=val)
+        #from variable_choose import VariableChoose
+        #print VariableChoose().chooseVariable()
+        return self(name=val, parent=parent)
 
     def __init__(self, Vradar=None, Vgrid=None, name="Mapper", parent=None):
         '''Initialize the class to create the interface'''
@@ -23,7 +26,7 @@ class Mapper(core.Component):
         self.central_widget = QtGui.QWidget()
         self.setCentralWidget(self.central_widget)
         self.layout = QtGui.QVBoxLayout(self.central_widget)
-        self.setSizePolicy (QtGui.QSizePolicy.Ignored)
+
         if Vradar is None:
             self.Vradar = core.Variable(None)
         else:
