@@ -8,7 +8,7 @@ Routines and class instances to create tools for the ToolBox in Display.
 from PyQt4 import QtGui, QtCore
 import numpy as np
 
-import .limits
+from . import limits
 from ..core import common
 
 from matplotlib.lines import Line2D

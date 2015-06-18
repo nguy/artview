@@ -17,7 +17,7 @@ from matplotlib.pyplot import cm
 
 
 
-from ..core import Variable, Component, common
+from ..core import Variable, Component, common, VariableChoose
 
 # Save image file type and DPI (resolution)
 IMAGE_EXT = 'png'
@@ -33,6 +33,11 @@ class Display(Component):
     Class that creates a display plot, using a returned Radar structure 
     from the PyArt pyart.graph package.
     '''
+
+    @classmethod
+    def guiStart(self, parent=None):
+        args = _DisplayStart().startDisplay()
+        return self(**args)
 
     def __init__(self, Vradar, Vfield, Vtilt, Vlims=None, \
                  airborne=False, rhi=False, name="Display", parent=None):
@@ -680,3 +685,119 @@ class Display(Component):
             self.canvas.print_figure(path, dpi=DPI)
 #            self.statusBar().
             self.statusbar.showMessage('Saved to %s' % path)
+
+
+
+
+
+class _DisplayStart(QtGui.QDialog):
+    '''
+    Dialog Class for grafical Start of Display, to be used in guiStart
+    '''
+
+    def __init__(self):
+        '''Initialize the class to create the interface'''
+        super(_DisplayStart, self).__init__()
+        self.result = {}
+        self.layout = QtGui.QGridLayout(self)
+        # set window as modal
+        self.setWindowModality(QtCore.Qt.ApplicationModal)
+
+        self.setupUi()
+
+    def chooseRadar(self):
+        item = VariableChoose().chooseVariable()
+        if item is None:
+            return
+        else:
+            self.result["Vradar"] = getattr(item[1],item[2])
+
+    def chooseField(self):
+        item = VariableChoose().chooseVariable()
+        if item is None:
+            return
+        else:
+            self.result["Vfield"] = getattr(item[1],item[2])
+
+    def chooseTilt(self):
+        item = VariableChoose().chooseVariable()
+        if item is None:
+            return
+        else:
+            self.result["Vtilt"] = getattr(item[1],item[2])
+
+    def chooseLims(self):
+        item = VariableChoose().chooseVariable()
+        if item is None:
+            return
+        else:
+            self.result["Vlims"] = getattr(item[1],item[2])
+
+    def setupUi(self):
+
+        self.radarButton = QtGui.QPushButton("Find Variable")
+        self.radarButton.clicked.connect(self.chooseRadar)
+        self.layout.addWidget(QtGui.QLabel("VRadar"), 0, 0)
+        self.layout.addWidget(self.radarButton, 0, 1, 1, 3)
+
+        self.fieldButton = QtGui.QPushButton("Find Variable")
+        self.fieldButton.clicked.connect(self.chooseField)
+        self.layout.addWidget(QtGui.QLabel("Vfield"), 1, 0)
+        self.field = QtGui.QLineEdit("")
+        self.layout.addWidget(self.field , 1, 1)
+        self.layout.addWidget(QtGui.QLabel("or"), 1, 2)
+        self.layout.addWidget(self.fieldButton, 1, 3)
+
+        self.tiltButton = QtGui.QPushButton("Find Variable")
+        self.tiltButton.clicked.connect(self.chooseTilt)
+        self.layout.addWidget(QtGui.QLabel("Vtilt"), 2, 0)
+        self.tilt = QtGui.QSpinBox()
+        self.layout.addWidget(self.tilt , 2, 1)
+        self.layout.addWidget(QtGui.QLabel("or"), 2, 2)
+        self.layout.addWidget(self.tiltButton, 2, 3)
+
+        self.limsButton = QtGui.QPushButton("Find Variable")
+        self.limsButton.clicked.connect(self.chooseLims)
+        self.layout.addWidget(QtGui.QLabel("Vlims"), 3, 0)
+        self.layout.addWidget(self.limsButton, 3, 1, 1, 3)
+
+        self.airborne = QtGui.QCheckBox("airborne")
+        self.airborne.setChecked(False)
+        self.layout.addWidget(self.airborne, 4, 1, 1, 3)
+
+        self.rhi = QtGui.QCheckBox("rhi")
+        self.rhi.setChecked(False)
+        self.layout.addWidget(self.rhi, 5, 1, 1, 3)
+
+        self.name = QtGui.QLineEdit("Display")
+        self.layout.addWidget(QtGui.QLabel("name"), 6, 0)
+        self.layout.addWidget(self.name, 6, 1, 1, 3)
+
+        self.closeButton = QtGui.QPushButton("Start")
+        self.closeButton.clicked.connect(self.closeDialog)
+        self.layout.addWidget(self.closeButton, 7, 0, 1, 5)
+
+    def closeDialog(self):
+        self.done(QtGui.QDialog.Accepted)
+
+    def startDisplay(self):
+        self.exec_()
+
+        # if no Vradar abort
+        if 'Vradar' not in self.result:
+            common.ShowWarning("Must select a variable for Vradar")
+            # I'm allowing this to continue, but this will result in error
+
+        # if Vfield, Vtilt, Vlims were not select create new
+        field = str(self.field.text())
+        tilt = self.tilt.value()
+        if 'Vfield' not in self.result:
+            self.result['Vfield'] = Variable(field)
+        if 'Vtilt' not in self.result:
+            self.result['Vtilt'] = Variable(tilt)
+
+        self.result['airborne'] = self.airborne.isChecked()
+        self.result['rhi'] = self.airborne.isChecked()
+        self.result['name'] = str(self.name.text())
+
+        return self.result

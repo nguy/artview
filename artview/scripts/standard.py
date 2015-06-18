@@ -26,6 +26,7 @@ def run(DirIn='./', field='reflectivity'):
     control = ComponentsControl()
     MainMenu.addLayoutWidget(control)
     MainMenu.addComponent(ComponentsControl)
+    MainMenu.addComponent(Display)
 
     try:
         from .. import plugins
