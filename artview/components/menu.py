@@ -361,7 +361,8 @@ class Menu(Component):
      
         # Read the data from file
         try:
-            radar = pyart.io.read(self.filename, delay_field_loading=True)
+            radar = pyart.io.read(self.filename)
+            #radar = pyart.io.read(self.filename, delay_field_loading=True)
             self.Vradar.change(radar)
         except:
             msg = "This is not a recognized radar file!"
