@@ -212,7 +212,7 @@ class Menu(Component):
     def startComponent(self, Comp):
         '''GUI start a Component and add to layout.'''
         comp = Comp.guiStart()
-        #self.addLayoutWidget(comp)
+        self.addLayoutWidget(comp)
 
     def addFileAdvanceMenu(self):
         '''Add an option to advance to next or previous file.'''
@@ -362,8 +362,8 @@ class Menu(Component):
      
         # Read the data from file
         try:
-            radar = pyart.io.read(self.filename, delay_field_loading=True)
-            radar.fields['PHIDP']['data'] = np.fmod(radar.fields['PHIDP']['data']+180,360)
+            radar = pyart.io.read(self.filename)
+            #radar = pyart.io.read(self.filename, delay_field_loading=True)
             self.Vradar.change(radar)
         except:
             msg = "This is not a recognized radar file!"

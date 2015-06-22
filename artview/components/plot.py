@@ -214,7 +214,7 @@ class Display(Component):
 
     def _open_LimsDialog(self):
         '''Open a dialog box to change display limits.'''
-        from limits import limits_dialog
+        from .limits import limits_dialog
         self.limits, change = limits_dialog(self.limits, self.name)     
         if change == 1:
             self._update_plot()
@@ -284,13 +284,13 @@ class Display(Component):
 
     def _open_tiltbuttonwindow(self):
         '''Open a TiltButtonWindow instance.'''
-        from tilt import TiltButtonWindow
+        from .tilt import TiltButtonWindow
         self.tiltbuttonwindow = TiltButtonWindow(self.Vradar, self.Vtilt, \
                             name=self.name+" Tilt Selection", parent=self.parent)
 
     def _open_fieldbuttonwindow(self):
         '''Open a FieldButtonWindow instance.'''
-        from field import FieldButtonWindow
+        from .field import FieldButtonWindow
         self.fieldbuttonwindow = FieldButtonWindow(self.Vradar, self.Vfield, \
                             name=self.name+" Field Selection", parent=self.parent)
         
@@ -468,7 +468,7 @@ class Display(Component):
 
     def toolZoomPanCmd(self):
         '''Creates and connects to a Zoom/Pan instance.'''
-        from tools import ZoomPan
+        from .tools import ZoomPan
         scale = 1.1
         self.tools['zoompan'] = ZoomPan(self.Vlims, self.ax, self.limits, \
                           base_scale = scale, parent=self.parent)
@@ -476,25 +476,25 @@ class Display(Component):
 
     def toolValueClickCmd(self):
         '''Creates and connects to Point-and-click value retrieval'''
-        from tools import ValueClick
+        from .tools import ValueClick
         self.tools['valueclick'] = ValueClick(self.Vradar, self.Vtilt, self.Vfield, \
                                    self.units, self.ax, self.statusbar, parent=self.parent)
         self.tools['valueclick'].connect()
 
     def toolROICmd(self):
         '''Creates and connects to Region of Interest instance'''
-        from tools import ROI
+        from .tools import ROI
         self.tools['roi'] = ROI(self.Vradar, self.Vtilt, self.ax, self.display, parent=self.parent)
         self.tools['roi'].connect()
 
     def toolCustomCmd(self):
         '''Allow user to activate self-defined tool.'''
-        import tools
+        from . import tools
         tools.custom_tool(self.tools)
 
     def toolDefaultCmd(self):
         '''Restore the Display defaults.'''
-        import tools
+        from . import tools
         self.tools['zoompan'], self.limits, self.CMAP = tools.restore_default_display(self.tools, \
                                           self.Vfield.value, self.airborne, self.rhi)
         self._update_plot()
@@ -647,7 +647,7 @@ class Display(Component):
 
     def _set_default_limits(self):
         ''' Set limits and CMAP to pre-defined default.'''
-        from limits import initialize_limits
+        from .limits import initialize_limits
         self.limits, self.CMAP = initialize_limits(self.Vfield.value, \
                                  airborne=self.airborne, rhi=self.rhi)
 
