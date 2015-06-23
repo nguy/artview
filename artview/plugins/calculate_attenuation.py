@@ -21,7 +21,7 @@ class calculateAttenuation(core.Component):
         #print VariableChoose().chooseVariable()
         return self(name=val, parent=parent)
 
-    def __init__(self, Vradar=None, Vgatefilter=None, name="calculateAttenuation", parent=None):
+    def __init__(self, Vradar=None, Vgatefilter=None, name="CalculateAttenuation", parent=None):
         '''Initialize the class to create the interface'''
         super(calculateAttenuation, self).__init__(name=name, parent=parent)
         self.central_widget = QtGui.QWidget()

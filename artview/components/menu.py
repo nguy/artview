@@ -14,15 +14,17 @@ from ..core import Variable, Component, common
 class Menu(Component):
     '''Class to display the MainMenu'''
 
-    def __init__(self, pathDir, Vradar=None, name="Menu", parent=None):
+    def __init__(self, pathDir, filename=None, Vradar=None, name="Menu", parent=None):
         '''
         Initialize the class to create the interface.
-    
+
         Parameters::
         ----------
         pathDir - string
             Input directory path to open.
-    
+        pathDir - string
+            File to open as first, this will skip the open file dialog.
+
         [Optional]
         Vradar - Variable instance
             Radar signal variable. 
@@ -32,7 +34,7 @@ class Menu(Component):
         parent - PyQt instance
             Parent instance to associate to menu.
             If None, then Qt owns, otherwise associated with parent PyQt instance.
-        
+
         Notes::
         -----
         This class creates the main application interface and creates
@@ -49,7 +51,11 @@ class Menu(Component):
         # Just do that if Vradar was not given
         if self.Vradar is None:
             self.Vradar = Variable(None)
-            self.showFileDialog()
+            if filename is None:
+                self.showFileDialog()
+            else:
+                self.filename = filename
+                self._openfile()
 
         # Launch the GUI interface
         self.LaunchApp()

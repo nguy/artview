@@ -31,4 +31,5 @@ class Exemple1(core.Component):
     def close(self):
         super(Exemple1, self).close()
 
-_plugins=[Exemple1]
+_plugins=[]
+#_plugins=[Exemple1]

@@ -530,6 +530,9 @@ class Display(Component):
         '''Draw/Redraw the plot.'''
         self._check_default_field()
 
+        if self.Vfield.value not in self.Vradar.value.fields.keys():
+            return
+
         # Create the plot with PyArt RadarDisplay 
         self.ax.cla() # Clear the current axes
 
@@ -609,7 +612,7 @@ class Display(Component):
         
         This should only occur upon start up with a new file.
         '''
-        if self.Vfield.value == 'reflectivity':
+        if self.Vfield.value == pyart.config.get_field_name('reflectivity'):
             if self.Vfield.value in self.fieldnames:
                 pass
             elif 'CZ' in self.fieldnames:
@@ -659,7 +662,7 @@ class Display(Component):
             else:
                 self.rhi = True
             #XXX this has only one effect: self._set_default_limits()
-            self._set_fig_ax_rhi()
+            #self._set_fig_ax_rhi()
 
     ########################
     # Image save methods #

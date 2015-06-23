@@ -21,7 +21,7 @@ class phaseProcLp(core.Component):
         #print VariableChoose().chooseVariable()
         return self(name=val, parent=parent)
 
-    def __init__(self, Vradar=None, Vgatefilter=None, name="phaseProcLp", parent=None):
+    def __init__(self, Vradar=None, Vgatefilter=None, name="PhaseProcLp", parent=None):
         '''Initialize the class to create the interface'''
         super(phaseProcLp, self).__init__(name=name, parent=parent)
         self.central_widget = QtGui.QWidget()

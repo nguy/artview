@@ -8,5 +8,5 @@ sys.path.insert(0, path)
 import artview
 
 from parser import parse
-DirIn, field = parse(sys.argv)
-artview.run(DirIn, field)
+DirIn, filename, field = parse(sys.argv)
+artview.run(DirIn, filename, field)
