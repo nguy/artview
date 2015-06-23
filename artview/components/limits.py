@@ -38,6 +38,7 @@ def initialize_limits(field, airborne=False, rhi=False):
     TP_LIMS = (-200., 100.)
 
     # X, Y range and size for airborne file typesAIR_XRNG = (-150., 150.)
+    AIR_XRNG = (-50., 50.)
     AIR_YRNG = (-10., 20.)
     AIR_XSIZE = 8
     AIR_YSIZE = 5

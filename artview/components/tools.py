@@ -7,6 +7,7 @@ Routines and class instances to create tools for the ToolBox in Display.
 # Load the needed packages
 from PyQt4 import QtGui, QtCore
 import numpy as np
+import warnings
 
 from . import limits
 from ..core import common
@@ -14,6 +15,10 @@ from ..core import common
 from matplotlib.lines import Line2D
 from matplotlib.path import Path
 
+
+# The following line is used to suppress NaN warnings thrown by Numpy 
+# when using some tools
+warnings.filterwarnings('ignore', category=UserWarning, append=True)
 ###############################
 # Restore the default Display #
 ###############################
@@ -36,10 +41,7 @@ def restore_default_display(tooldict, field, airborne, rhi):
     Returns updated zoompan class instance, limits dictionary, and colormap.
     '''
     # ****Need to check if this would work****
-#    if zoompan != None:
-#        zoompan.disconnect()
-#        zoompan = None
-    if tooldict['zoompan'] != None:
+    if tooldict['zoompan'] is not None:
         tooldict['zoompan'].disconnect()
         tooldict['zoompan'] = None
     display_limits, CMAP = limits.initialize_limits(field, airborne, rhi)
@@ -105,18 +107,20 @@ class ValueClick(QtGui.QMainWindow):
         '''Get value at the point selected by mouse click.'''
         xdata = event.xdata # get event x location
         ydata = event.ydata # get event y location
-        #XXX this fails if not inside plot region
-        az = np.arctan2(xdata, ydata)*180./np.pi
-        radar = self.Vradar.value #keep equantions clean
-        if az < 0:
-            az = az + 360.
-        rng = np.sqrt(xdata*xdata+ydata*ydata)
-        azindex = np.argmin(np.abs(radar.azimuth['data'][radar.sweep_start_ray_index['data'][self.Vtilt.value]:radar.sweep_end_ray_index['data'][self.Vtilt.value]]-az))+radar.sweep_start_ray_index['data'][self.Vtilt.value]
-        rngindex = np.argmin(np.abs(radar.range['data']-rng*1000.))
-        self.msg = 'x = %4.2f, y = %4.2f, Azimuth = %4.2f deg., Range = %4.2f km, %s = %4.2f %s'\
-                    %(xdata, ydata, radar.azimuth['data'][azindex], \
-                    radar.range['data'][rngindex]/1000., self.Vfield.value, \
-                    radar.fields[self.Vfield.value]['data'][azindex][rngindex], self.units)
+        if (xdata is None) or (ydata is None):
+            self.msg = "Please choose point inside plot area"
+        else:
+            az = np.arctan2(xdata, ydata)*180./np.pi
+            radar = self.Vradar.value #keep equantions clean
+            if az < 0:
+                az = az + 360.
+            rng = np.sqrt(xdata*xdata+ydata*ydata)
+            azindex = np.argmin(np.abs(radar.azimuth['data'][radar.sweep_start_ray_index['data'][self.Vtilt.value]:radar.sweep_end_ray_index['data'][self.Vtilt.value]]-az))+radar.sweep_start_ray_index['data'][self.Vtilt.value]
+            rngindex = np.argmin(np.abs(radar.range['data']-rng*1000.))
+            self.msg = 'x = %4.2f, y = %4.2f, Azimuth = %4.2f deg., Range = %4.2f km, %s = %4.2f %s'\
+                        %(xdata, ydata, radar.azimuth['data'][azindex], \
+                        radar.range['data'][rngindex]/1000., self.Vfield.value, \
+                        radar.fields[self.Vfield.value]['data'][azindex][rngindex], self.units)
         self.statusbar.showMessage(self.msg)
             
     def disconnect(self):
@@ -138,7 +142,7 @@ def custom_tool(tooldict):
     Notes::
     -----
     '''
-    if tooldict['zoompan'] != None:
+    if tooldict['zoompan'] is not None:
         tooldict['zoompan'].disconnect()
         tooldict['zoompan'] = None
     msg = "This feature is inactive at present"
@@ -283,7 +287,7 @@ class ZoomPan(QtGui.QMainWindow):
         self.fig.canvas.mpl_disconnect(self.releaseID)
         self.fig.canvas.mpl_disconnect(self.motionID)
         
-        self.LimsDialog.accept()
+        #self.LimsDialog.accept()
         self.Vlims.change(self.limits)
              
     def NewLimits(self, variable, value, strong):

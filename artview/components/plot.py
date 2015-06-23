@@ -495,7 +495,7 @@ class Display(Component):
     def toolDefaultCmd(self):
         '''Restore the Display defaults.'''
         from . import tools
-        self.tools['zoompan'], self.limits, self.CMAP = tools.restore_default_display(self.tools, \
+        self.tools, self.limits, self.CMAP = tools.restore_default_display(self.tools, \
                                           self.Vfield.value, self.airborne, self.rhi)
         self._update_plot()
 
@@ -537,23 +537,16 @@ class Display(Component):
         if self.title == '':
             self.title = None
 
-        # If Zoom/Pan selected, Set up the zoom/pan functionality
-#        if self.zp != None:
-#            scale = 1.1
-#            self.zp = ZoomPan(self.Vlims, self.ax, self.limits, \
-#                              base_scale = scale, parent=self.parent)
-#            self.zp.connect()
-
         if self.airborne:
             self.display = pyart.graph.RadarDisplay_Airborne(self.Vradar.value)
             
             self.plot = self.display.plot_sweep_grid(self.Vfield.value, \
                                 vmin=self.limits['vmin'], vmax=self.limits['vmax'],\
                                 colorbar_flag=False, cmap=self.CMAP,\
-                                ax=self.ax, title=self.title)
+                                ax=self.ax, fig=self.fig, title=self.title)
             self.display.set_limits(xlim=(self.limits['xmin'], self.limits['xmax']),\
                                     ylim=(self.limits['ymin'], self.limits['ymax']),\
-                                    ax=self.ax, fig=self.fig)
+                                    ax=self.ax)
             self.display.plot_grid_lines()
         else:
             self.display = pyart.graph.RadarDisplay(self.Vradar.value)
@@ -601,7 +594,7 @@ class Display(Component):
                 self.units = ''
         self.cbar.set_label(self.units)
 
-        print "Plotting %s field, Tilt %d" % (self.Vfield.value, self.Vtilt.value+1)
+        print "Plotting %s field, Tilt %d in %s" % (self.Vfield.value, self.Vtilt.value+1, self.name)
         self.canvas.draw()
 
     #########################
