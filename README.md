@@ -24,69 +24,81 @@ With ARTview you can:
     
     View PPI, sector or RHI type file scans.
     
-    Change scaling interactively.  
-         Change limits via popup window. 
-         Choose Zoom/Pan and use the mouse to zoom in/out or pan image.
+    Change display parametets such as scaling, title, units labels, colormap,  
+    and add range rings.
     
-    Modify title and units, and save image easily via drop down menu.
+    Save output images from a drop-down menu (Or Ctrl+s on linux, Cmd+S on MacOS)
+    
+    A toolbox which allows Zooming/Paning, find point values, select regions,
+    interface with PyArt routines and select a custom tools a user creates.
+    
+    The default two windows can be configured to share parameters or operate independently.
     
   
 ## News
-ARTView is undergoing changes to allow multiple windows to be opened, with functionality
-in each window.  It is still in beta testing, so not ready for heavy useage yet.
+ARTView has become and installable package!
+It is still undergoing further functionality development, so keep an eye out for new
+features.  It has performed well in internal testing, but we're sure there are bugs in
+there and we appreciate your help in finding and addressing them.
 
-BUT, the single stream, original version described below is still available in the directory.
+The single stream, original version is still available in the scripts directory. It is 
+much more limited in scope than the full version.
 The other code should not have any effect on it's useage.
 
 ## Installation
-Currently it is a standalone executable python script, but may eventually be wrapped into PyArt after maturation.
-See dependencies below.
+```python
+python setup.py install
+```
+
+or for a single user install
+```python
+python setup.py install --user
+```
 
 ## Usage
+Either cd into the installed folder and run:
 
 ```python
 python artview.py -d /some/directory/you/want/to/point/to
 ```
 
-The file can also be made executable by
+Or it can be run from anywhere with the following:
+
 ```python
-chmod +x artview.py
+python -m artview
 ```
 
-Then it can be run by calling :
+The above command will look in the current working directory. Command line options
+just like the original exist to specify directory, field, etc.
 ```python
-artview.py -d /some/directory/you/want/to/point/to
+python -m artview -d /some/directory/you/want/to/point/to
 ```
 
 To see the command line options:
 ```python
-artview.py -h
+python -m artview -h
 ```
 
 To plot an RHI formatted file, you can use the --rhi flag:
 ```python
-artview.py --rhi -d /some/directory/with/RHI/files
+python -m artview --rhi -d /some/directory/with/RHI/files
 ```
 
 To plot airborne sweep data, you can use the --airborne flag:
 ```python
-artview.py --airborne -d /some/directory/with/airbrone/sweep/files
+python -m artview --airborne -d /some/directory/with/airbrone/sweep/files
 ```
 
 ARTview should be able to recognize RHI and airborne files, though switching 
 between scan types has not been fully worked out yet.
 
 The default startup uses radar reflectivity and checks for a few common names.
-If you find a file with a field that does not load, let me know and I can add it
+If you find a file with a field that does not load, let us know and we can add it
 to the list.
 
 You can make publication quality images.
 Modify the title and/or units if you'd like:
 ![Screenshot2](https://github.com/nguy/artview/blob/master/ARTView_Screenshot_title_unit.png)
-
-Now you can save the image simply from the menubar.
-
-File -> Save Image (Or Ctrl+s on linux, Cmd+S on MacOS)
 
 ## Dependencies
 [Py-Art](https://github.com/ARM-DOE/pyart)
@@ -110,11 +122,10 @@ Paul Hein
 
 Anderson Gama
 
-NOTE:: This is open source software.  Contributions are very welcome, though this is not my primary project.  In addition it needs to be stated that no responsibility is taken by the author for any adverse effects.
+NOTE:: This is open source software.  Contributions are very welcome, though this is not any of our primary project.  In addition it needs to be stated that no responsibility is taken by the author for any adverse effects.
 
 ## Caveats
 There has not been extensive testing, but seems reasonably stable.
-
-The data structure used to load can cause lag time, please be patient.
+We are always looking for feedback.
 
 
