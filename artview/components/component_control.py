@@ -21,9 +21,10 @@ class ComponentsControl(core.Component):
     '''
 
     @classmethod
-    def guiStart(self):
-        val, entry = common.string_dialog("", "Component Name", "Name:")
-        return self(name=val)
+    def guiStart(self, parent=None):
+        kwargs, independent = common._SimplePluginStart("ComponentsControl").startDisplay()
+        kwargs['parent'] = parent
+        return self(**kwargs), independent
 
     def __init__(self, components=None, name="ComponentsControl", parent=None):
         '''Initialize the class to create the interface'''

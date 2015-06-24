@@ -16,10 +16,9 @@ class PhaseProcLp(core.Component):
 
     @classmethod
     def guiStart(self, parent=None):
-        val, entry = common.string_dialog("phaseProcLp", "phaseProcLp", "Name:")
-        #from variable_choose import VariableChoose
-        #print VariableChoose().chooseVariable()
-        return self(name=val, parent=parent)
+        kwargs, independent = common._SimplePluginStart("PhaseProcLp").startDisplay()
+        kwargs['parent'] = parent
+        return self(**kwargs), independent
 
     def __init__(self, Vradar=None, Vgatefilter=None, name="PhaseProcLp", parent=None):
         '''Initialize the class to create the interface'''

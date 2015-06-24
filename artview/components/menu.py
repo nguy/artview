@@ -226,8 +226,9 @@ class Menu(Component):
 
     def startComponent(self, Comp):
         '''GUI start a Component and add to layout.'''
-        comp = Comp.guiStart()
-        self.addLayoutWidget(comp)
+        comp, independent = Comp.guiStart(self)
+        if not independent:
+            self.addLayoutWidget(comp)
 
     def addFileAdvanceMenu(self):
         '''Add an option to advance to next or previous file.'''

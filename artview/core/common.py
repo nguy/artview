@@ -5,7 +5,7 @@ Common routines run throughout ARTView.
 """
 
 # Load the needed packages
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtCore
 
     ########################
     # Warning methods #
@@ -97,3 +97,47 @@ def string_dialog(stringIn, title, msg):
     stringOut, entry = QtGui.QInputDialog.getText(Dialog, title, msg, 0, old_val)
     
     return stringOut, entry
+
+
+
+class _SimplePluginStart(QtGui.QDialog):
+    '''
+    Dialog Class for grafical Start of Display, to be used in guiStart
+    '''
+
+    def __init__(self, name):
+        '''Initialize the class to create the interface'''
+        super(_SimplePluginStart, self).__init__()
+        self.result = {}
+        self.layout = QtGui.QGridLayout(self)
+        self._name = name
+        self.setWindowTitle(name)
+        # set window as modal
+        self.setWindowModality(QtCore.Qt.ApplicationModal)
+
+        self.setupUi()
+
+    def setupUi(self):
+
+        self.layout.addWidget(QtGui.QLabel("Name"), 0, 0)
+        self.name = QtGui.QLineEdit(self._name)
+        self.layout.addWidget(self.name , 0, 1)
+
+        self.independent = QtGui.QCheckBox("Independent Window")
+        self.independent.setChecked(True)
+        self.layout.addWidget(self.independent, 1, 1, 1, 1)
+
+        self.closeButton = QtGui.QPushButton("Start")
+        self.closeButton.clicked.connect(self.closeDialog)
+        self.layout.addWidget(self.closeButton, 2, 0, 1, 2)
+
+    def closeDialog(self):
+        self.done(QtGui.QDialog.Accepted)
+
+    def startDisplay(self):
+        self.exec_()
+
+        self.result['name'] = str(self.name.text())
+
+        return self.result, self.independent.isChecked()
+

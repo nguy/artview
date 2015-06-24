@@ -37,7 +37,7 @@ class Display(Component):
     @classmethod
     def guiStart(self, parent=None):
         args = _DisplayStart().startDisplay()
-        return self(**args)
+        return self(**args), True
 
     def __init__(self, Vradar, Vfield, Vtilt, Vlims=None, \
                  airborne=False, rhi=False, name="Display", parent=None):

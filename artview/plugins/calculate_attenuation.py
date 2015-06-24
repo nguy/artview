@@ -16,10 +16,10 @@ class CalculateAttenuation(core.Component):
 
     @classmethod
     def guiStart(self, parent=None):
-        val, entry = common.string_dialog("calculateAttenuation", "calculateAttenuation", "Name:")
-        #from variable_choose import VariableChoose
-        #print VariableChoose().chooseVariable()
-        return self(name=val, parent=parent)
+        kwargs, independent = common._SimplePluginStart("CalculateAttenuation").startDisplay()
+        kwargs['parent'] = parent
+        return self(**kwargs), independent
+
 
     def __init__(self, Vradar=None, Vgatefilter=None, name="CalculateAttenuation", parent=None):
         '''Initialize the class to create the interface'''

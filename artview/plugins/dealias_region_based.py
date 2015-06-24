@@ -15,10 +15,9 @@ import time
 class DealiasRegionBased(core.Component):
     @classmethod
     def guiStart(self, parent=None):
-        val, entry = common.string_dialog("DealiasRegionBased", "DealiasRegionBased", "Name:")
-        #from variable_choose import VariableChoose
-        #print VariableChoose().chooseVariable()
-        return self(name=val, parent=parent)
+        kwargs, independent = common._SimplePluginStart("DealiasRegionBased").startDisplay()
+        kwargs['parent'] = parent
+        return self(**kwargs), independent
 
     def __init__(self, Vradar=None, Vgatefilter=None, name="DealiasRegionBased", parent=None):
         '''Initialize the class to create the interface'''
