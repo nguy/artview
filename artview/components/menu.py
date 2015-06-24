@@ -84,6 +84,7 @@ class Menu(Component):
         self.setCentralWidget(self.central_widget)
         self.centralLayout = QtGui.QVBoxLayout(self.central_widget)
         self.centralLayout.setSpacing(8)
+        self.frames = {}
 
         # Create the menus
         self.CreateMenu()
@@ -101,13 +102,21 @@ class Menu(Component):
         Add a widget to central layout.
         This function is to be called both internal and external
         '''
-        self.centralLayout.addWidget(widget)
+        frame = QtGui.QFrame()
+        frame.setFrameShape(QtGui.QFrame.Box)
+        layout = QtGui.QVBoxLayout(frame)
+        layout.addWidget(widget)
+        self.frames[widget.__repr__()] = frame
+        self.centralLayout.addWidget(frame)
         self.addLayoutMenuItem(widget)
+
 
     def removeLayoutWidget(self, widget):
         '''Remove widget from central layout.'''
-        self.centralLayout.removeWidget(widget)
+        frame = self.frames[widget.__repr__()]
+        self.centralLayout.removeWidget(frame)
         self.removeLayoutMenuItem(widget)
+        frame.close()
         widget.close()
         widget.deleteLater()
 

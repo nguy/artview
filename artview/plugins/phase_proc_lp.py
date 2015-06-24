@@ -12,7 +12,7 @@ common = core.common
 import pyart
 import time
 
-class phaseProcLp(core.Component):
+class PhaseProcLp(core.Component):
 
     @classmethod
     def guiStart(self, parent=None):
@@ -23,7 +23,7 @@ class phaseProcLp(core.Component):
 
     def __init__(self, Vradar=None, Vgatefilter=None, name="PhaseProcLp", parent=None):
         '''Initialize the class to create the interface'''
-        super(phaseProcLp, self).__init__(name=name, parent=parent)
+        super(PhaseProcLp, self).__init__(name=name, parent=parent)
         self.central_widget = QtGui.QWidget()
         self.setCentralWidget(self.central_widget)
         self.layout = QtGui.QGridLayout(self.central_widget)
@@ -268,4 +268,4 @@ class phaseProcLp(core.Component):
             else:
                 self._clearLayout(item.layout())
 
-_plugins=[phaseProcLp]
+_plugins=[PhaseProcLp]

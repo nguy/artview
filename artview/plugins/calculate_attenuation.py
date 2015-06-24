@@ -12,7 +12,7 @@ common = core.common
 import pyart
 import time
 
-class calculateAttenuation(core.Component):
+class CalculateAttenuation(core.Component):
 
     @classmethod
     def guiStart(self, parent=None):
@@ -23,7 +23,7 @@ class calculateAttenuation(core.Component):
 
     def __init__(self, Vradar=None, Vgatefilter=None, name="CalculateAttenuation", parent=None):
         '''Initialize the class to create the interface'''
-        super(calculateAttenuation, self).__init__(name=name, parent=parent)
+        super(CalculateAttenuation, self).__init__(name=name, parent=parent)
         self.central_widget = QtGui.QWidget()
         self.setCentralWidget(self.central_widget)
         self.layout = QtGui.QGridLayout(self.central_widget)
@@ -219,4 +219,4 @@ class calculateAttenuation(core.Component):
             else:
                 self._clearLayout(item.layout())
 
-_plugins=[calculateAttenuation]
+_plugins=[CalculateAttenuation]
