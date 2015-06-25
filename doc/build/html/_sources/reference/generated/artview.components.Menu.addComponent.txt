@@ -1,0 +1,6 @@
+artview.components.Menu.addComponent
+====================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Menu.addComponent

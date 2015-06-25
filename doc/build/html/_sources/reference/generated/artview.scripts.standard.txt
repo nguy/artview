@@ -1,22 +1,6 @@
 artview.scripts.standard
 ========================
 
-.. automodule:: artview.scripts.standard
+.. currentmodule:: artview.scripts
 
-   
-   
-   .. rubric:: Functions
-
-   .. autosummary::
-   
-      run
-   
-   
-
-   
-   
-   
-
-   
-   
-   
+.. autofunction:: standard

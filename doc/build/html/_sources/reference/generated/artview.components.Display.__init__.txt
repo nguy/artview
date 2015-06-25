@@ -1,0 +1,6 @@
+artview.components.Display.__init__
+===================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Display.__init__

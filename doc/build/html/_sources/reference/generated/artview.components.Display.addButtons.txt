@@ -1,0 +1,6 @@
+artview.components.Display.addButtons
+=====================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Display.addButtons

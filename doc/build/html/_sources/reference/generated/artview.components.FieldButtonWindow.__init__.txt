@@ -1,0 +1,6 @@
+artview.components.FieldButtonWindow.__init__
+=============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: FieldButtonWindow.__init__

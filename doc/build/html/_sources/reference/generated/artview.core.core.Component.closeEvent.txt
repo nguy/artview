@@ -1,0 +1,6 @@
+artview.core.core.Component.closeEvent
+======================================
+
+.. currentmodule:: artview.core.core
+
+.. automethod:: Component.closeEvent

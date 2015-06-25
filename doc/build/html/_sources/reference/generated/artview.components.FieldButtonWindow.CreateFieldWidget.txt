@@ -1,0 +1,6 @@
+artview.components.FieldButtonWindow.CreateFieldWidget
+======================================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: FieldButtonWindow.CreateFieldWidget

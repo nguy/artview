@@ -11,22 +11,35 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys, os
+import sys, os, re
+
+# Check Sphinx version
 import sphinx
+if sphinx.__version__ < "1.0.1":
+    raise RuntimeError("Sphinx 1.0.1 or newer required")
 
-# If extensions (or modules to document with autodoc) are in another directory,
-# add these directories to sys.path here. If the directory is relative to the
-# documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.insert(0, os.path.abspath('.'))
+needs_sphinx = '1.0'
 
-# -- General configuration -----------------------------------------------------
-
-# If your documentation needs a minimal Sphinx version, state it here.
-#needs_sphinx = '1.0'
+#----------------------------------------------------------------------------
+# General configuration
+#----------------------------------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autosummary', 'sphinx.ext.autodoc', 'sphinx.ext.doctest', 'sphinx.ext.intersphinx', 'sphinx.ext.pngmath', 'sphinx.ext.mathjax', 'sphinx.ext.viewcode']
+
+sys.path.insert(0, os.path.abspath('../sphinxext'))
+
+# Try to override the matplotlib configuration
+try:
+    import gen_rst
+except:
+    pass
+
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.mathjax',
+              'autosummary', 'numpydoc', 'gen_rst']
+# don't include examples in CI builds
+if 'CI' in os.environ and os.environ['CI'] == 'true':
+    extensions.remove('gen_rst')
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -61,17 +74,17 @@ release = '0.2.2'
 # non-false value, then it is used:
 #today = ''
 # Else, today_fmt is used as the format for a strftime call.
-#today_fmt = '%B %d, %Y'
-
-# List of patterns, relative to source directory, that match files and
-# directories to ignore when looking for source files.
-exclude_patterns = []
+today_fmt = '%B %d, %Y'
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None
 
+# List of patterns, relative to source directory, that match files and
+# directories to ignore when looking for source files.
+exclude_patterns = ['_templates/*']
+
 # If true, '()' will be appended to :func: etc. cross-reference text.
-#add_function_parentheses = True
+add_function_parentheses = False
 
 # If true, the current module name will be prepended to all description
 # unit titles (such as .. function::).
@@ -79,28 +92,19 @@ exclude_patterns = []
 
 # If true, sectionauthor and moduleauthor directives will be shown in the
 # output. They are ignored by default.
-#show_authors = False
+show_authors = False
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
 
-# A list of ignored prefixes for module index sorting.
-#modindex_common_prefix = []
+# ---------------------------------------------------------------------------
+# HTML output
+# ---------------------------------------------------------------------------
 
-
-# -- Options for HTML output ---------------------------------------------------
-
-# The theme to use for HTML and HTML Help pages.  See the documentation for
-# a list of builtin themes.
-html_theme = 'default'
-
-# Theme options are theme-specific and customize the look and feel of a theme
-# further.  For a list of options available for each theme, see the
-# documentation.
-#html_theme_options = {}
-
-# Add any paths that contain custom themes here, relative to this directory.
-#html_theme_path = []
+# The style sheet to use for HTML and HTML Help pages. A file of that name
+# must exist either in Sphinx' static/ path, or in one of the custom paths
+# given in html_static_path.
+html_style = 'scipy.css'
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
@@ -125,7 +129,7 @@ html_static_path = ['_static']
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
-#html_last_updated_fmt = '%b %d, %Y'
+html_last_updated_fmt = '%b %d, %Y'
 
 # If true, SmartyPants will be used to convert quotes and dashes to
 # typographically correct entities.
@@ -139,7 +143,7 @@ html_static_path = ['_static']
 #html_additional_pages = {}
 
 # If false, no module index is generated.
-#html_domain_indices = True
+html_domain_indices = True
 
 # If false, no index is generated.
 #html_use_index = True
@@ -148,13 +152,13 @@ html_static_path = ['_static']
 #html_split_index = False
 
 # If true, links to the reST sources are added to the pages.
-#html_show_sourcelink = True
+html_show_sourcelink = True
 
 # If true, "Created using Sphinx" is shown in the HTML footer. Default is True.
-#html_show_sphinx = True
+html_show_sphinx = True
 
 # If true, "(C) Copyright ..." is shown in the HTML footer. Default is True.
-#html_show_copyright = True
+html_show_copyright = True
 
 # If true, an OpenSearch description file will be output, and all pages will
 # contain a <link> tag referring to it.  The value of this option must be the
@@ -162,13 +166,14 @@ html_static_path = ['_static']
 #html_use_opensearch = ''
 
 # This is the file name suffix for HTML files (e.g. ".xhtml").
-#html_file_suffix = None
+html_file_suffix = '.html'
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'ARTviewdoc'
 
-
-# -- Options for LaTeX output --------------------------------------------------
+# ---------------------------------------------------------------------------
+# LaTeX output
+#----------------------------------------------------------------------------
 
 latex_elements = {
 # The paper size ('letterpaper' or 'a4paper').
@@ -208,44 +213,12 @@ latex_documents = [
 # If false, no module index is generated.
 #latex_domain_indices = True
 
+#----------------------------------------------------------------------------
+# Numpydoc extension
+#----------------------------------------------------------------------------
 
-# -- Options for manual page output --------------------------------------------
-
-# One entry per manual page. List of tuples
-# (source start file, name, description, authors, manual section).
-man_pages = [
-    ('index', 'artview', u'ARTview Documentation',
-     [u'Nick Guy'], 1)
-]
-
-# If true, show URL addresses after external links.
-#man_show_urls = False
-
-
-# -- Options for Texinfo output ------------------------------------------------
-
-# Grouping the document tree into Texinfo files. List of tuples
-# (source start file, target name, title, author,
-#  dir menu entry, description, category)
-texinfo_documents = [
-  ('index', 'ARTview', u'ARTview Documentation',
-   u'Nick Guy', 'ARTview', 'One line description of project.',
-   'Miscellaneous'),
-]
-
-# Documents to append as an appendix to all manuals.
-#texinfo_appendices = []
-
-# If false, no module index is generated.
-#texinfo_domain_indices = True
-
-# How to display URL addresses: 'footnote', 'no', or 'inline'.
-#texinfo_show_urls = 'footnote'
-
-
-# Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'http://docs.python.org/': None}
-
+# Numpy autodoc attributes
+numpydoc_show_class_members = False
 
 #----------------------------------------------------------------------------
 # Autosummary
@@ -255,4 +228,71 @@ if sphinx.__version__ >= "0.7":
     import glob
     #autosummary_generate = glob.glob("*.rst")
     autosummary_generate = True
+
+#----------------------------------------------------------------------------
+# Source code links
+#----------------------------------------------------------------------------
+
+# these functions borrowed from the scipy project
+import inspect
+from os.path import relpath, dirname
+import artview
+
+for name in ['sphinx.ext.linkcode', 'linkcode', 'numpydoc.linkcode']:
+    try:
+        __import__(name)
+        extensions.append(name)
+        break
+    except ImportError:
+        pass
+else:
+    print "NOTE: linkcode extension not found -- no links to source generated"
+
+def linkcode_resolve(domain, info):
+    """
+    Determine the URL corresponding to Python object
+    """
+    if domain != 'py':
+        return None
+
+    modname = info['module']
+    fullname = info['fullname']
+
+    submod = sys.modules.get(modname)
+    if submod is None:
+        return None
+
+    obj = submod
+    for part in fullname.split('.'):
+        try:
+            obj = getattr(obj, part)
+        except:
+            return None
+
+    try:
+        fn = inspect.getsourcefile(obj)
+    except:
+        fn = None
+    if not fn:
+        try:
+            fn = inspect.getsourcefile(sys.modules[obj.__module__])
+        except:
+            fn = None
+    if not fn:
+        return None
+
+    try:
+        source, lineno = inspect.findsource(obj)
+    except:
+        lineno = None
+
+    if lineno:
+        linespec = "#L%d" % (lineno + 1)
+    else:
+        linespec = ""
+
+    fn = relpath(fn, start=dirname(artview.__file__))
+
+    return "http://%s%s" % (fn, linespec)
+
 

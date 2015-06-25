@@ -1,0 +1,6 @@
+artview.components.TiltButtonWindow.__init__
+============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: TiltButtonWindow.__init__

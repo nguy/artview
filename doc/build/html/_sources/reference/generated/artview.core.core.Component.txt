@@ -1,0 +1,27 @@
+artview.core.core.Component
+===========================
+
+.. currentmodule:: artview.core.core
+
+.. autoclass:: Component
+   :show-inheritance:
+   
+   .. automethod:: 
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+      Component.__init__
+      Component.closeEvent
+      Component.connectAllVariables
+      Component.connectSharedVariable
+      Component.disconnectAllVariables
+      Component.disconnectSharedVariable
+      Component.keyPressEvent
+   
+   
+
+

@@ -1,0 +1,6 @@
+artview.components.TiltButtonWindow.SetTiltRadioButtons
+=======================================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: TiltButtonWindow.SetTiltRadioButtons

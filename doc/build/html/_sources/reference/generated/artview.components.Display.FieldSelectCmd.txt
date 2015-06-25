@@ -1,0 +1,6 @@
+artview.components.Display.FieldSelectCmd
+=========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Display.FieldSelectCmd

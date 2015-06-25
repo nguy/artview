@@ -1,0 +1,6 @@
+artview.components.Menu.AdvanceFileSelect
+=========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Menu.AdvanceFileSelect

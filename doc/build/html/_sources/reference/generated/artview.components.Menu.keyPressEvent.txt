@@ -1,0 +1,6 @@
+artview.components.Menu.keyPressEvent
+=====================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Menu.keyPressEvent

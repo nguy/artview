@@ -1,0 +1,6 @@
+artview.core.core.Component.__init__
+====================================
+
+.. currentmodule:: artview.core.core
+
+.. automethod:: Component.__init__

@@ -1,0 +1,6 @@
+artview.components.Menu.showFileDialog
+======================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Menu.showFileDialog

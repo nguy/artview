@@ -1,0 +1,6 @@
+artview.components.Display.guiStart
+===================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Display.guiStart

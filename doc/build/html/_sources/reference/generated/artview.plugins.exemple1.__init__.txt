@@ -1,0 +1,6 @@
+artview.plugins.exemple1.__init__
+=================================
+
+.. currentmodule:: artview.plugins.exemple1
+
+.. autodata:: __init__

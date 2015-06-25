@@ -1,0 +1,6 @@
+artview.core.core.Variable.__init__
+===================================
+
+.. currentmodule:: artview.core.core
+
+.. automethod:: Variable.__init__

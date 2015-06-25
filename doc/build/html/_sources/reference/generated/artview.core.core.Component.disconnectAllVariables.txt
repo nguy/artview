@@ -1,0 +1,6 @@
+artview.core.core.Component.disconnectAllVariables
+==================================================
+
+.. currentmodule:: artview.core.core
+
+.. automethod:: Component.disconnectAllVariables
