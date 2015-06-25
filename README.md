@@ -59,7 +59,7 @@ python setup.py install --user
 Either cd into the installed folder and run:
 
 ```python
-python artview.py -d /some/directory/you/want/to/point/to
+python artview -d /some/directory/you/want/to/point/to
 ```
 
 Or it can be run from anywhere with the following:
@@ -95,10 +95,6 @@ between scan types has not been fully worked out yet.
 The default startup uses radar reflectivity and checks for a few common names.
 If you find a file with a field that does not load, let us know and we can add it
 to the list.
-
-You can make publication quality images.
-Modify the title and/or units if you'd like:
-![Screenshot2](https://github.com/nguy/artview/blob/master/ARTView_Screenshot_title_unit.png)
 
 ## Dependencies
 [Py-Art](https://github.com/ARM-DOE/pyart)

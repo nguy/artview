@@ -16,17 +16,12 @@ from matplotlib.colorbar import ColorbarBase as mlabColorbarBase
 from matplotlib.pyplot import cm
 
 
-
 from ..core import Variable, Component, common, VariableChoose
 
 # Save image file type and DPI (resolution)
 IMAGE_EXT = 'png'
 DPI = 100
 #========================================================================
-#######################
-# BEGIN PARV CODE #
-#######################  
-
 
 class Display(Component):
     '''
@@ -74,9 +69,9 @@ class Display(Component):
         '''
         super(Display, self).__init__(name=name, parent=parent)
         self.setFocusPolicy(QtCore.Qt.ClickFocus)
-        #AG set up signal, so that DISPLAY can react to external (or internal) changes in radar,field and tilt
-        #AG radar,field and tilt are expected to be Core.Variable instances
-        #AG I use the capital V so people remember using ".value"
+        # Set up signal, so that DISPLAY can react to external (or internal) changes 
+        # in radar, field, lims and tilt (expected to be Core.Variable instances)
+        # The capital V so people remember using ".value"
         self.Vradar = Vradar
         self.Vfield = Vfield
         self.Vtilt = Vtilt
@@ -89,6 +84,8 @@ class Display(Component):
                                 "Vfield": self.NewField,
                                 "Vtilt": self.NewTilt,
                                 "Vlims": self.NewLims}
+
+        # Connect the components
         self.connectAllVariables()
 
         self.airborne = airborne
@@ -98,12 +95,6 @@ class Display(Component):
         self.title = None
         self.units = None
 
-        # Initialize limits   
-        self._set_default_limits()
-
-        if self.Vlims.value is None:
-            self.Vlims.change(self.limits, strong=False)
-
         # Set the default range rings
         self.RngRingList = ["None", "10 km", "20 km", "30 km", "50 km", "100 km"]
         self.RngRing = False
@@ -112,22 +103,25 @@ class Display(Component):
         self.cm_names = [m for m in cm.datad if not m.endswith("_r")]
         self.cm_names.sort()
 
-        # Create a figure for output
-        self._set_fig_ax(nrows=1, ncols=1)
-
         # Create tool dictionary
         self.tools = {}
-        self.tools['zoompan'] = None
+
+        # Check the file type and initialize limts
+        # Create a figure for output
+        self._check_file_type()
+        self._set_fig_ax(nrows=1, ncols=1)
 
         # Launch the GUI interface
         self.LaunchGUI()
 
-        # AG - Initialize radar
+        # Send a signal to Vlims variable if not indicated
+        if self.Vlims.value is None:
+            self.Vlims.change(self.limits, strong=False)
+
+        # Initialize radar variable
         self.NewRadar(None, None, True)
 
         self.show()
-
-#        self.pickPoint = self.fig.canvas.mpl_connect('button_press_event', self.onPick)
 
     def keyPressEvent(self, event):
         '''Allow tilt adjustment via the Up-Down arrow keys.'''
@@ -137,21 +131,6 @@ class Display(Component):
             self.TiltSelectCmd(self.Vtilt.value - 1)
         else:
             super(Display, self).keyPressEvent(event)
-
-#     def onPick(self, event):
-#         '''Get value at the point selected by mouse click.'''
-#         xdata = event.xdata # get event x location
-#         ydata = event.ydata # get event y location
-#         az = np.arctan2(xdata, ydata)*180./np.pi
-#         radar = self.Vradar.value #keep equantions clean
-#         if az < 0:
-#             az = az + 360.
-#         rng = np.sqrt(xdata*xdata+ydata*ydata)
-#         azindex = np.argmin(np.abs(radar.azimuth['data'][radar.sweep_start_ray_index['data'][self.Vtilt.value]:radar.sweep_end_ray_index['data'][self.Vtilt.value]]-az))+radar.sweep_start_ray_index['data'][self.Vtilt.value]
-#         rngindex = np.argmin(np.abs(radar.range['data']-rng*1000.))
-#         msg = 'x = %4.2f, y = %4.2f, Azimuth = %4.2f deg., Range = %4.2f km, %s = %4.2f %s'\
-#         %(xdata, ydata, radar.azimuth['data'][azindex], radar.range['data'][rngindex]/1000., self.Vfield.value, radar.fields[self.Vfield.value]['data'][azindex][rngindex], self.units)
-#         self.statusBar().showMessage(msg)
 
     ####################
     # GUI methods #
@@ -167,12 +146,8 @@ class Display(Component):
         self.central_widget = QtGui.QWidget()
         self.setCentralWidget(self.central_widget)
         self._set_figure_canvas()
-#        self.statusBar()
 
         self.central_widget.setLayout(self.layout)
-        #self.setLayout(self.layout)
-        # Create the Tilt buttons
-        #self.CreateTiltWidget()
 
         # Add buttons along display for user control
         self.addButtons()
@@ -194,12 +169,6 @@ class Display(Component):
         self._add_fieldBoxUI()
         # Create the Tools controls
         self._add_toolsBoxUI()
-
-#        tiltsb = QtGui.QPushButton("Tilt Select")
-#        tiltsb.setToolTip("Choose tilt elevation angle")
-#        tiltsb.clicked.connect(self._open_tiltbuttonwindow)
-
-        #self._fillFieldBox() AG will be done by newRadar
 
     def setUILayout(self):
         '''Setup the button/display UI layout.'''
@@ -293,7 +262,7 @@ class Display(Component):
         from .field import FieldButtonWindow
         self.fieldbuttonwindow = FieldButtonWindow(self.Vradar, self.Vfield, \
                             name=self.name+" Field Selection", parent=self.parent)
-        
+
     def _add_RngRing_to_button(self):
         '''Add a menu to display range rings on plot.'''
         for RngRing in self.RngRingList:
@@ -351,7 +320,6 @@ class Display(Component):
         self.tiltBox.setFocusPolicy(QtCore.Qt.NoFocus)
         self.tiltBox.setToolTip("Choose tilt elevation angle")
         self.tiltBox.activated[str].connect(self._tiltAction)
-        #self._fillTiltBox() AG will be done by newRadar
 
     def _add_fieldBoxUI(self):
         '''Create the Field Selection ComboBox.'''
@@ -359,7 +327,6 @@ class Display(Component):
         self.fieldBox.setFocusPolicy(QtCore.Qt.NoFocus)
         self.fieldBox.setToolTip("Choose variable/field")
         self.fieldBox.activated[str].connect(self._fieldAction)
-        #self._fillFieldBox() AG will be done by newRadar
 
     def _add_toolsBoxUI(self):
         '''Create the Tools Button menu.'''
@@ -426,7 +393,6 @@ class Display(Component):
     def TiltSelectCmd(self, ntilt):
         '''Captures tilt selection and redraws the field with new tilt.'''
         self.Vtilt.change(ntilt)
-        #AG tilt is changed and signal sent, so this and other classes do what they need to do
 
     def FieldSelectCmd(self, nombre):
         '''Captures field selection and redraws the new field.'''
@@ -443,7 +409,7 @@ class Display(Component):
                 unrng = int(self.radar.instrument_parameters['unambiguous_range']['data'][0]/1000)
             except:
                 unrng = int(self.limits['xmax'])
-            
+
             # Set the step
             if ringSel == '10 km':
                 ringdel = 10
@@ -455,7 +421,7 @@ class Display(Component):
                 ringdel = 50
             if ringSel == '100 km':
                 ringdel = 100
-                
+
             # Calculate an array of range rings
             self.RNG_RINGS = range(ringdel, unrng, ringdel)
 
@@ -484,7 +450,8 @@ class Display(Component):
     def toolROICmd(self):
         '''Creates and connects to Region of Interest instance'''
         from .tools import ROI
-        self.tools['roi'] = ROI(self.Vradar, self.Vtilt, self.ax, self.display, parent=self.parent)
+        self.tools['roi'] = ROI(self.Vradar, self.Vtilt, self.Vfield, self.statusbar, \
+                                self.ax, self.display, parent=self.parent)
         self.tools['roi'].connect()
 
     def toolCustomCmd(self):
@@ -510,9 +477,6 @@ class Display(Component):
         yheight = 0.7 * float(self.limits['ysize'])/float(self.limits['xsize'])
         self.ax = self.fig.add_axes([0.2, 0.2, xwidth, yheight])
         self.cax = self.fig.add_axes([0.2,0.10, xwidth, 0.02])
-        
-        # We want the axes cleared every time plot() is called
-        #self.axes.hold(False)
 
     def _set_fig_ax_rhi(self):
         '''Change figure size and limits if RHI.'''
@@ -648,7 +612,7 @@ class Display(Component):
         '''Check file to see if the file is airborne or rhi.'''
         radar = self.Vradar.value
         if radar.scan_type != 'rhi':
-            return
+            pass
         else:
             if 'platform_type' in radar.metadata:
                 if (radar.metadata['platform_type'] == 'aircraft_tail' or
@@ -658,8 +622,7 @@ class Display(Component):
                     self.rhi = True
             else:
                 self.rhi = True
-            #XXX this has only one effect: self._set_default_limits()
-            self._set_fig_ax_rhi()
+        self._set_default_limits()
 
     ########################
     # Image save methods #
@@ -668,7 +631,7 @@ class Display(Component):
         '''Save the current display via PyArt interface.'''
         PNAME = self.display.generate_filename(self.Vfield.value, self.Vtilt.value, ext=IMAGE_EXT)
         print "Creating "+ PNAME
-        
+
     def _savefile(self, PTYPE=IMAGE_EXT):
         '''Save the current display using PyQt dialog interface.'''
         PBNAME = self.display.generate_filename(self.Vfield.value, self.Vtilt.value, ext=IMAGE_EXT)
@@ -676,16 +639,11 @@ class Display(Component):
         path = unicode(QtGui.QFileDialog.getSaveFileName(self, 'Save file', '', file_choices))
         if path:
             self.canvas.print_figure(path, dpi=DPI)
-#            self.statusBar().
             self.statusbar.showMessage('Saved to %s' % path)
-
-
-
-
 
 class _DisplayStart(QtGui.QDialog):
     '''
-    Dialog Class for grafical Start of Display, to be used in guiStart
+    Dialog Class for graphical Start of Display, to be used in guiStart
     '''
 
     def __init__(self):
