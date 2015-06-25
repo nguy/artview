@@ -1,27 +1,30 @@
 """
-standard.py
+map_to_grid.py
 
 Driver function that creates ARTView display.
 """
 
 def run(DirIn='./', field='reflectivity'):
-    """standard artview execution"""
+    """artview execution"""
     print DirIn
     from PyQt4 import QtGui, QtCore
     import sys
 
     from ..core import Variable
-    from ..components import Display, Menu, TiltButtonWindow, ComponentsControl
+    from ..components import Display, Display_grid, Menu, TiltButtonWindow, ComponentsControl
 
     app = QtGui.QApplication(sys.argv)
 
     MainMenu = Menu(DirIn, name="Menu") #initiate Vradar
     Vradar = MainMenu.Vradar
 
-    Vtilt = Variable(0)
-    Vtilt2 = Variable(0)
-    plot1 = Display(Vradar, Variable(field), Vtilt, name="Display1", parent=MainMenu)
-    plot2 = Display(Vradar, Variable(field), Vtilt2, name="Display2", parent=MainMenu)
+    Vfield = Variable(field)
+    plot = Display(Vradar, Vfield, Variable(0), name="DisplayRadar", parent=MainMenu)
+    plot1 = Display_grid(Variable(None), Vfield, Variable(0), name="DisplayGrid", parent=MainMenu)
+    from .. import plugins
+
+    mapper = plugins.mapper(plot.Vradar, plot1.Vgrid, name="Mapper", parent=MainMenu)
+
 
     control = ComponentsControl()
     MainMenu.addLayoutWidget(control)
@@ -29,7 +32,7 @@ def run(DirIn='./', field='reflectivity'):
     MainMenu.addComponent(Display)
 
     try:
-        from .. import plugins
+        import plugins
         for plugin in plugins._plugins:
             MainMenu.addComponent(plugin)
     except:
@@ -37,4 +40,9 @@ def run(DirIn='./', field='reflectivity'):
         warnings.warn("Loading Plugins Fail")
 
     app.exec_()
+
+
+
+
+
 

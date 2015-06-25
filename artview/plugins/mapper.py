@@ -6,8 +6,8 @@
 from PyQt4 import QtGui, QtCore
 from functools import partial
 
-import core
-import common
+from .. import core
+common = core.common
 
 import pyart
 import time
