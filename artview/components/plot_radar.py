@@ -1,5 +1,5 @@
 """
-plot.py
+plot_radar.py
 
 Class instance used to make Display.
 """
@@ -106,20 +106,18 @@ class Display(Component):
         # Create tool dictionary
         self.tools = {}
 
-        # Check the file type and initialize limts
         # Create a figure for output
-        self._check_file_type()
-        self._set_fig_ax(nrows=1, ncols=1)
+        self.fig = Figure()
 
         # Launch the GUI interface
         self.LaunchGUI()
 
+        # Initialize radar variable
+        self.NewRadar(None, None, True)
+
         # Send a signal to Vlims variable if not indicated
         if self.Vlims.value is None:
             self.Vlims.change(self.limits, strong=False)
-
-        # Initialize radar variable
-        self.NewRadar(None, None, True)
 
         self.show()
 
@@ -352,7 +350,8 @@ class Display(Component):
 
     def NewRadar(self, variable, value, strong):
         '''Display changes after radar Variable class is altered.'''
-        # In case the flags were not used at startup
+        # Check the file type and initialize limts
+        # Create a figure for output
         self._check_file_type()
 
         # Get the tilt angles
@@ -472,17 +471,11 @@ class Display(Component):
 
     def _set_fig_ax(self, nrows=1, ncols=1):
         '''Set the figure and axis to plot.'''
-        self.fig = Figure(figsize=(self.limits['xsize'], self.limits['ysize']))
+        self.fig.set_size_inches(self.limits['xsize'], self.limits['ysize'], forward=True)
         xwidth = 0.7
         yheight = 0.7 * float(self.limits['ysize'])/float(self.limits['xsize'])
         self.ax = self.fig.add_axes([0.2, 0.2, xwidth, yheight])
         self.cax = self.fig.add_axes([0.2,0.10, xwidth, 0.02])
-
-    def _set_fig_ax_rhi(self):
-        '''Change figure size and limits if RHI.'''
-        self._set_default_limits()
-        self.fig.set_size_inches(self.limits['xsize'], self.limits['ysize'])
-        self._set_fig_ax()
 
     def _set_figure_canvas(self):
         '''Set the figure canvas to draw in window area.'''
@@ -623,6 +616,7 @@ class Display(Component):
             else:
                 self.rhi = True
         self._set_default_limits()
+        self._set_fig_ax()
 
     ########################
     # Image save methods #
