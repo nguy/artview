@@ -14,16 +14,17 @@ class TiltButtonWindow(Component):
     '''Class to display the Window with Tilt Buttons.'''
     tiltClicked = QtCore.pyqtSignal()
     
-    def __init__(self, Vradar, Vtilt, name="TiltButtons", parent=None):
+    def __init__(self, Vtilt, Vradar=None, Vgrid=None, name="TiltButtons", parent=None):
         '''Initialize the class to create the Tilt Selection interface.
     
         Parameters::
         ----------
-        Vradar - Variable instance
-            Radar signal variable to be used.
         Vtilt - Variable instance
             Tilt signal variable to be used.
-    
+        Vradar, Vgrid - Variable instance
+            Radar/Grid signal variable to be used. None will create empty variable.
+            For correct behavior one and just one of those should be provided
+
         [Optional]
         name - string
             Tilt Radiobutton window name.
@@ -41,14 +42,25 @@ class TiltButtonWindow(Component):
         # Set up signal, so that DISPLAY can react to external 
         # (or internal) changes in tilt (Core.Variable instances expected)
         # The change is sent through Vtilt
-        self.Vradar = Vradar
+        if Vradar is None:
+            self.Vradar = Variable(None)
+        else:
+            self.Vradar = Vradar
+        if Vgrid is None:
+            self.Vgrid = Variable(None)
+        else:
+            self.Vgrid = Vgrid
         self.Vtilt = Vtilt
         self.sharedVariables = {"Vradar": self.NewRadar,
+                                "Vgrid": self.NewGrid,
                                 "Vtilt": self.NewTilt}
         self.connectAllVariables()
 
         self.CreateTiltWidget()
-        self.SetTiltRadioButtons()
+        if Vradar is not None:
+            self.SetTiltRadioButtonsRadar()
+        if Vgrid is not None:
+            self.SetTiltRadioButtonsGrid()
         self.show()
            
     ########################
@@ -66,7 +78,7 @@ class TiltButtonWindow(Component):
         self.radioBox.setLayout(self.rBox_layout)
         self.setCentralWidget(self.radioBox)
                 
-    def SetTiltRadioButtons(self):
+    def SetTiltRadioButtonsRadar(self):
         '''Set a tilt selection using radio buttons.'''
         # Instantiate the buttons into a list for future use
         self.tiltbutton = []
@@ -85,7 +97,27 @@ class TiltButtonWindow(Component):
             self.rBox_layout.addWidget(self.tiltbutton[ntilt])
         
         self.NewTilt(self.Vtilt, self.Vtilt.value, True)  # setChecked the current tilt
-    
+
+    def SetTiltRadioButtonsGrid(self):
+        '''Set a tilt selection using radio buttons.'''
+        # Instantiate the buttons into a list for future use
+        self.tiltbutton = []
+        
+        # Pull out the tilt indices and elevations for display
+        elevs = self.Vgrid.value.axes["z_disp"]["data"]
+        
+        # Loop through and create each tilt button and connect a value when selected
+        for ntilt in range(len(elevs)):
+            btntxt = "%2.1f m (Tilt %d)"%(elevs[ntilt], ntilt+1)
+            button = QtGui.QRadioButton(btntxt, self.radioBox)
+            self.tiltbutton.append(button)
+            QtCore.QObject.connect(self.tiltbutton[ntilt], QtCore.SIGNAL("clicked()"), \
+                         partial(self.TiltSelectCmd, ntilt))
+            
+            self.rBox_layout.addWidget(self.tiltbutton[ntilt])
+        
+        self.NewTilt(self.Vtilt, self.Vtilt.value, True)  # setChecked the current tilt
+
     def NewTilt(self, variable, value, strong):
         '''Record the selected button by updating the list.'''
         tilt = self.Vtilt.value
@@ -96,4 +128,10 @@ class TiltButtonWindow(Component):
         '''Update the field list when radar variable is changed.'''
         # update tilt list
         self.CreateTiltWidget()
-        self.SetTiltRadioButtons()
+        self.SetTiltRadioButtonsRadar()
+
+    def NewGrid(self, variable, value, strong):
+        '''Update the field list when grid variable is changed.'''
+        # update tilt list
+        self.CreateTiltWidget()
+        self.SetTiltRadioButtonsGrid()
