@@ -79,18 +79,7 @@ To see the command line options:
 python -m artview -h
 ```
 
-To plot an RHI formatted file, you can use the --rhi flag:
-```python
-python -m artview --rhi -d /some/directory/with/RHI/files
-```
-
-To plot airborne sweep data, you can use the --airborne flag:
-```python
-python -m artview --airborne -d /some/directory/with/airbrone/sweep/files
-```
-
-ARTview should be able to recognize RHI and airborne files, though switching 
-between scan types has not been fully worked out yet.
+ARTview should be able to recognize and correctly handle PPI, RHI and airborne files.
 
 The default startup uses radar reflectivity and checks for a few common names.
 If you find a file with a field that does not load, let us know and we can add it

@@ -8,7 +8,7 @@ from . import core
 from . import components
 from . import plugins
 from . import scripts 
-
+from . import parser
 
 run = scripts.scripts['standard']
 
