@@ -113,7 +113,7 @@ class Display(Component):
         # Initialize radar variable
         self.NewRadar(None, None, True)
 
-        # Send a signal to Vlims variable if not indicated
+        # Update Vlims variable if empty
         if self.Vlims.value is None:
             self.Vlims.change(self.limits, strong=False)
 
@@ -501,7 +501,9 @@ class Display(Component):
 
         # Reset to default title if user entered nothing w/ Title button
         if self.title == '':
-            self.title = None
+            title = None
+        else:
+            title = self.title
 
         if self.scan_type == "airborne":
             self.display = pyart.graph.RadarDisplay_Airborne(self.Vradar.value)
@@ -509,10 +511,10 @@ class Display(Component):
             self.plot = self.display.plot_sweep_grid(self.Vfield.value, \
                                 vmin=self.limits['vmin'], vmax=self.limits['vmax'],\
                                 colorbar_flag=False, cmap=self.CMAP,\
-                                ax=self.ax, fig=self.fig, title=self.title)
+                                ax=self.ax, fig=self.fig, title=title)
             self.display.set_limits(xlim=(self.limits['xmin'], self.limits['xmax']),\
                                     ylim=(self.limits['ymin'], self.limits['ymax']),\
-                                    ax=self.ax)
+                                    ax=self.ax, fig=self.fig)
             self.display.plot_grid_lines()
 
         elif self.scan_type == "ppi":
