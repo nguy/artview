@@ -35,7 +35,7 @@ class Display(Component):
         return self(**args)
 
     def __init__(self, Vradar, Vfield, Vtilt, Vlims=None, \
-                 airborne=False, rhi=False, name="Display", parent=None):
+                 name="Display", parent=None):
         '''
         Initialize the class to create display.
 
@@ -52,10 +52,6 @@ class Display(Component):
         Vlims - Variable instance
             Limits signal variable to be used.
             A value of None will instantiate a limits variable.
-        airborne - boolean
-            Set True to display airborne type radar files (assumes tail radar setup such as NOAA P-3).
-        rhi - boolean
-            Set True to display RHI type radar files.
         name - string
             Display window name.
         parent - PyQt instance
@@ -88,9 +84,7 @@ class Display(Component):
         # Connect the components
         self.connectAllVariables()
 
-        self.airborne = airborne
-        self.rhi = rhi
-        self.scan_type = Vradar.value.scan_type
+        self.scan_type = None
 
         # Set plot title and colorbar units to defaults
         self.title = None
@@ -111,10 +105,6 @@ class Display(Component):
         self._set_default_limits()
 
         # Create a figure for output
-        # Size will be changed if RHI or Airborne later
-        self.XSIZE = 8
-        self.YSIZE = 8
-        self.fig = Figure(figsize=(self.XSIZE, self.YSIZE))
         self._set_fig_ax()
 
         # Launch the GUI interface
@@ -358,14 +348,13 @@ class Display(Component):
 
     def NewRadar(self, variable, value, strong):
         '''Display changes after radar Variable class is altered.'''
-        # Check the file type and initialize limts
-        # Create a figure for output
-        self._check_file_type()
-
         # Get the tilt angles
         self.rTilts = self.Vradar.value.sweep_number['data'][:] 
         # Get field names
         self.fieldnames = self.Vradar.value.fields.keys()
+
+        # Check the file type and initialize limts
+        self._check_file_type()
 
         # Update field and tilt MenuBox
         self._fillTiltBox()
@@ -470,7 +459,7 @@ class Display(Component):
         '''Restore the Display defaults.'''
         from . import tools
         self.tools, self.limits, self.CMAP = tools.restore_default_display(self.tools, \
-                                          self.Vfield.value, self.airborne, self.rhi)
+                                          self.scan_type, self.rhi)
         self._update_plot()
 
     ####################
@@ -479,13 +468,22 @@ class Display(Component):
 
     def _set_fig_ax(self):
         '''Set the figure and axis to plot.'''
-        if (self.airborne) or (self.rhi):
+        self.XSIZE = 8
+        self.YSIZE = 8
+        self.fig = Figure(figsize=(self.XSIZE, self.YSIZE))
+        self.ax = self.fig.add_axes([0.2, 0.2, 0.7, 0.7])
+        self.cax = self.fig.add_axes([0.2,0.10, 0.7, 0.02])
+
+    def _update_fig_ax(self):
+        '''Set the figure and axis to plot.'''
+        if self.scan_type in ("airborne", "rhi"):
             self.YSIZE = 5
-        self.fig.set_size_inches(self.XSIZE, self.YSIZE, forward=True)
+        else:
+            self.YSIZE = 8
         xwidth = 0.7
         yheight = 0.7 * float(self.YSIZE)/float(self.XSIZE)
-        self.ax = self.fig.add_axes([0.2, 0.2, xwidth, yheight])
-        self.cax = self.fig.add_axes([0.2,0.10, xwidth, 0.02])
+        self.ax.set_position([0.2, 0.55-0.5*yheight, xwidth, yheight])
+        self.cax.set_position([0.2,0.10, xwidth, 0.02])
 
     def _set_figure_canvas(self):
         '''Set the figure canvas to draw in window area.'''
@@ -498,14 +496,14 @@ class Display(Component):
         self._check_default_field()
 
         # Create the plot with PyArt RadarDisplay 
-        self.ax.cla() # Clear the current axes
-        self.cax.cla() ##NG
+        self.ax.cla() # Clear the plot axes
+        self.cax.cla() # Clear the colorbar axes
 
         # Reset to default title if user entered nothing w/ Title button
         if self.title == '':
             self.title = None
 
-        if self.airborne:
+        if self.scan_type == "airborne":
             self.display = pyart.graph.RadarDisplay_Airborne(self.Vradar.value)
             
             self.plot = self.display.plot_sweep_grid(self.Vfield.value, \
@@ -516,38 +514,41 @@ class Display(Component):
                                     ylim=(self.limits['ymin'], self.limits['ymax']),\
                                     ax=self.ax)
             self.display.plot_grid_lines()
-        else:
+
+        elif self.scan_type == "ppi":
             self.display = pyart.graph.RadarDisplay(self.Vradar.value)
-            if self.Vradar.value.scan_type != 'rhi':
-                # Create Plot
-                if self.Vtilt.value < len(self.rTilts):
-                    pass
-                else:
-                    self.Vtilt.change(0)
-                self.plot = self.display.plot_ppi(self.Vfield.value, self.Vtilt.value,\
-                                vmin=self.limits['vmin'], vmax=self.limits['vmax'],\
-                                colorbar_flag=False, cmap=self.CMAP,\
-                                ax=self.ax, fig=self.fig, title=self.title)
-                # Set limits
-                self.display.set_limits(xlim=(self.limits['xmin'], self.limits['xmax']),\
-                                        ylim=(self.limits['ymin'], self.limits['ymax']),\
-                                        ax=self.ax)
-                # Add range rings
-                if self.RngRing:
-                    self.display.plot_range_rings(self.RNG_RINGS, ax=self.ax)
-                # Add radar location
-                self.display.plot_cross_hair(5., ax=self.ax)
+            # Create Plot
+            if self.Vtilt.value < len(self.rTilts):
+                pass
             else:
-                self.plot = self.display.plot_rhi(self.Vfield.value, self.Vtilt.value,\
-                                vmin=self.limits['vmin'], vmax=self.limits['vmax'],\
-                                colorbar_flag=False, cmap=self.CMAP,\
-                                ax=self.ax, fig=self.fig, title=self.title)
-                self.display.set_limits(xlim=(self.limits['xmin'], self.limits['xmax']),\
-                                        ylim=(self.limits['ymin'], self.limits['ymax']),\
-                                        ax=self.ax)
-                # Add range rings
-                if self.RngRing:
-                    self.display.plot_range_rings(self.RNG_RINGS, ax=self.ax)
+                self.Vtilt.change(0)
+            self.plot = self.display.plot_ppi(self.Vfield.value, self.Vtilt.value,\
+                            vmin=self.limits['vmin'], vmax=self.limits['vmax'],\
+                            colorbar_flag=False, cmap=self.CMAP,\
+                            ax=self.ax, fig=self.fig, title=self.title)
+            # Set limits
+            self.display.set_limits(xlim=(self.limits['xmin'], self.limits['xmax']),\
+                                    ylim=(self.limits['ymin'], self.limits['ymax']),\
+                                    ax=self.ax)
+            # Add range rings
+            if self.RngRing:
+                self.display.plot_range_rings(self.RNG_RINGS, ax=self.ax)
+            # Add radar location
+            self.display.plot_cross_hair(5., ax=self.ax)
+
+        elif self.scan_type == "rhi":
+            self.display = pyart.graph.RadarDisplay(self.Vradar.value)
+            # Create Plot
+            self.plot = self.display.plot_rhi(self.Vfield.value, self.Vtilt.value,\
+                            vmin=self.limits['vmin'], vmax=self.limits['vmax'],\
+                            colorbar_flag=False, cmap=self.CMAP,\
+                            ax=self.ax, fig=self.fig, title=self.title)
+            self.display.set_limits(xlim=(self.limits['xmin'], self.limits['xmax']),\
+                                    ylim=(self.limits['ymin'], self.limits['ymax']),\
+                                    ax=self.ax)
+            # Add range rings
+            if self.RngRing:
+                self.display.plot_range_rings(self.RNG_RINGS, ax=self.ax)
 
         norm = mlabNormalize(vmin=self.limits['vmin'],\
                                            vmax=self.limits['vmax'])
@@ -610,36 +611,29 @@ class Display(Component):
         ''' Set limits and CMAP to pre-defined default.'''
         from .limits import _default_limits
         self.limits, self.CMAP = _default_limits(self.Vfield.value, \
-                                 airborne=self.airborne, rhi=self.rhi)
+                                 self.scan_type)
 
     def _check_file_type(self):
         '''Check file to see if the file is airborne or rhi.'''
         radar = self.Vradar.value
-        new_scan_type = radar.scan_type
+        old_scan_type = self.scan_type
         if radar.scan_type != 'rhi':
-            self.rhi = False
-            self.airborne = False
+            self.scan_type = "ppi"
         else:
             if 'platform_type' in radar.metadata:
                 if (radar.metadata['platform_type'] == 'aircraft_tail' or
                     radar.metadata['platform_type'] == 'aircraft'):
-                    self.airborne = True
+                    self.scan_type = "airborne"
                 else:
-                    self.rhi = True
+                    self.scan_type = "rhi"
             else:
-                self.rhi = True
+                self.scan_type = "rhi"
 
-        if self.scan_type != new_scan_type:
+        if self.scan_type != old_scan_type:
             print "Changed Scan types, reinitializing"
-            self.fig.clf(keep_observers=True)
-##            self.fig = Figure()
-##            self._set_figure_canvas()
-            self.ax.cla()
-            self.cax.cla()
-#            self.cbar.remove()
             self._check_default_field()
             self._set_default_limits()
-            self._set_fig_ax()
+            self._update_fig_ax()
 
     ########################
     # Image save methods #
@@ -657,6 +651,7 @@ class Display(Component):
         if path:
             self.canvas.print_figure(path, dpi=DPI)
             self.statusbar.showMessage('Saved to %s' % path)
+
 
 class _DisplayStart(QtGui.QDialog):
     '''
@@ -729,21 +724,13 @@ class _DisplayStart(QtGui.QDialog):
         self.layout.addWidget(QtGui.QLabel("Vlims"), 3, 0)
         self.layout.addWidget(self.limsButton, 3, 1, 1, 3)
 
-        self.airborne = QtGui.QCheckBox("airborne")
-        self.airborne.setChecked(False)
-        self.layout.addWidget(self.airborne, 4, 1, 1, 3)
-
-        self.rhi = QtGui.QCheckBox("rhi")
-        self.rhi.setChecked(False)
-        self.layout.addWidget(self.rhi, 5, 1, 1, 3)
-
         self.name = QtGui.QLineEdit("Display")
-        self.layout.addWidget(QtGui.QLabel("name"), 6, 0)
-        self.layout.addWidget(self.name, 6, 1, 1, 3)
+        self.layout.addWidget(QtGui.QLabel("name"), 4, 0)
+        self.layout.addWidget(self.name, 4, 1, 1, 3)
 
         self.closeButton = QtGui.QPushButton("Start")
         self.closeButton.clicked.connect(self.closeDialog)
-        self.layout.addWidget(self.closeButton, 7, 0, 1, 5)
+        self.layout.addWidget(self.closeButton, 5, 0, 1, 5)
 
     def closeDialog(self):
         self.done(QtGui.QDialog.Accepted)
@@ -764,8 +751,6 @@ class _DisplayStart(QtGui.QDialog):
         if 'Vtilt' not in self.result:
             self.result['Vtilt'] = Variable(tilt)
 
-        self.result['airborne'] = self.airborne.isChecked()
-        self.result['rhi'] = self.airborne.isChecked()
         self.result['name'] = str(self.name.text())
 
         return self.result
