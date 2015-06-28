@@ -46,11 +46,8 @@ def restore_default_display(tooldict, field, airborne, rhi):
         if tooldict[tool] is not None:
             tooldict[tool].disconnect()
             tooldict[tool] = None
-        
-#    if tooldict['zoompan'] is not None:
-#        tooldict['zoompan'].disconnect()
-#        tooldict['zoompan'] = None
-    display_limits, CMAP = limits.initialize_limits(field, airborne, rhi)
+
+    display_limits, CMAP = limits._default_limits(field, airborne, rhi)
     
     return tooldict, display_limits, CMAP
 

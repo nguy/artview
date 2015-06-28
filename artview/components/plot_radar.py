@@ -90,6 +90,7 @@ class Display(Component):
 
         self.airborne = airborne
         self.rhi = rhi
+        self.scan_type = Vradar.value.scan_type
 
         # Set plot title and colorbar units to defaults
         self.title = None
@@ -105,9 +106,16 @@ class Display(Component):
 
         # Create tool dictionary
         self.tools = {}
+        
+        # Set up Default limits
+        self._set_default_limits()
 
         # Create a figure for output
-        self.fig = Figure()
+        # Size will be changed if RHI or Airborne later
+        self.XSIZE = 8
+        self.YSIZE = 8
+        self.fig = Figure(figsize=(self.XSIZE, self.YSIZE))
+        self._set_fig_ax()
 
         # Launch the GUI interface
         self.LaunchGUI()
@@ -469,11 +477,13 @@ class Display(Component):
     # Plotting methods #
     ####################
 
-    def _set_fig_ax(self, nrows=1, ncols=1):
+    def _set_fig_ax(self):
         '''Set the figure and axis to plot.'''
-        self.fig.set_size_inches(self.limits['xsize'], self.limits['ysize'], forward=True)
+        if (self.airborne) or (self.rhi):
+            self.YSIZE = 5
+        self.fig.set_size_inches(self.XSIZE, self.YSIZE, forward=True)
         xwidth = 0.7
-        yheight = 0.7 * float(self.limits['ysize'])/float(self.limits['xsize'])
+        yheight = 0.7 * float(self.YSIZE)/float(self.XSIZE)
         self.ax = self.fig.add_axes([0.2, 0.2, xwidth, yheight])
         self.cax = self.fig.add_axes([0.2,0.10, xwidth, 0.02])
 
@@ -489,6 +499,7 @@ class Display(Component):
 
         # Create the plot with PyArt RadarDisplay 
         self.ax.cla() # Clear the current axes
+        self.cax.cla() ##NG
 
         # Reset to default title if user entered nothing w/ Title button
         if self.title == '':
@@ -597,15 +608,17 @@ class Display(Component):
 
     def _set_default_limits(self):
         ''' Set limits and CMAP to pre-defined default.'''
-        from .limits import initialize_limits
-        self.limits, self.CMAP = initialize_limits(self.Vfield.value, \
+        from .limits import _default_limits
+        self.limits, self.CMAP = _default_limits(self.Vfield.value, \
                                  airborne=self.airborne, rhi=self.rhi)
 
     def _check_file_type(self):
         '''Check file to see if the file is airborne or rhi.'''
         radar = self.Vradar.value
+        new_scan_type = radar.scan_type
         if radar.scan_type != 'rhi':
-            pass
+            self.rhi = False
+            self.airborne = False
         else:
             if 'platform_type' in radar.metadata:
                 if (radar.metadata['platform_type'] == 'aircraft_tail' or
@@ -615,8 +628,18 @@ class Display(Component):
                     self.rhi = True
             else:
                 self.rhi = True
-        self._set_default_limits()
-        self._set_fig_ax()
+
+        if self.scan_type != new_scan_type:
+            print "Changed Scan types, reinitializing"
+            self.fig.clf(keep_observers=True)
+##            self.fig = Figure()
+##            self._set_figure_canvas()
+            self.ax.cla()
+            self.cax.cla()
+#            self.cbar.remove()
+            self._check_default_field()
+            self._set_default_limits()
+            self._set_fig_ax()
 
     ########################
     # Image save methods #

@@ -329,7 +329,7 @@ class Menu(Component):
     
     def AdvanceFileSelect(self, findex):
         '''Captures a selection and redraws figure with new file.'''
-        if findex > len(self.filelist):
+        if findex > (len(self.filelist)-1):
             print len(self.filelist)
             msg = "End of directory, cannot advance!"
             common.ShowWarning(msg)
