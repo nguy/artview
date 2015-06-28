@@ -7,7 +7,7 @@ Routines used for modifying limits via Display window.
 # Load the needed packages
 from PyQt4 import QtGui, QtCore
 
-def initialize_limits(field, airborne=False, rhi=False):
+def _default_limits(field, airborne=False, rhi=False):
     '''
     Initialize limits to default program values.
 
@@ -46,28 +46,18 @@ def initialize_limits(field, airborne=False, rhi=False):
     # X, Y range and size for PPI file types
     PPI_XRNG = (-150., 150.)
     PPI_YRNG = (-150., 150.)
-    PPI_XSIZE = 8
-    PPI_YSIZE = 8
 
     # X, Y range and size for RHI file types
     RHI_XRNG = (0., 150.)
     RHI_YRNG = (0., 20.)
-    RHI_XSIZE = 8
-    RHI_YSIZE = 5
 
     # Set size of plot
-    XSIZE = PPI_XSIZE
-    YSIZE = PPI_YSIZE
     XRNG = PPI_XRNG
     YRNG = PPI_YRNG
     if airborne:
-        XSIZE = AIR_XSIZE
-        YSIZE = AIR_YSIZE
         XRNG = AIR_XRNG
         YRNG = AIR_YRNG
     if rhi:
-        XSIZE = RHI_XSIZE
-        YSIZE = RHI_YSIZE
         XRNG = RHI_XRNG
         YRNG = RHI_YRNG
 
@@ -119,8 +109,6 @@ def initialize_limits(field, airborne=False, rhi=False):
     limits['xmax'] = XRNG[1]
     limits['ymin'] = YRNG[0]
     limits['ymax'] = YRNG[1]
-    limits['xsize'] = XSIZE
-    limits['ysize'] = YSIZE
 
     return limits, CMAP
 
