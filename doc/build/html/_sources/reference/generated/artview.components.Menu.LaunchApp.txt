@@ -1,0 +1,6 @@
+artview.components.Menu.LaunchApp
+=================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Menu.LaunchApp

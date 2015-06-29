@@ -40,7 +40,7 @@ class Display(Component):
         '''
         Initialize the class to create display.
 
-        Parameters::
+        Parameters
         ----------
         Vradar - Variable instance
             Radar signal variable to be used.
@@ -48,7 +48,6 @@ class Display(Component):
             Field signal variable to be used.
         Vtilt - Variable instance
             Tilt signal variable to be used.
-
         [Optional]
         Vlims - Variable instance
             Limits signal variable to be used.
@@ -59,7 +58,7 @@ class Display(Component):
             Parent instance to associate to Display window.
             If None, then Qt owns, otherwise associated with parent PyQt instance.
 
-        Notes::
+        Notes
         -----
         This class records the selected button and passes the 
         change value back to variable.

@@ -1,0 +1,6 @@
+artview.components.Menu.CreateMenu
+==================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Menu.CreateMenu

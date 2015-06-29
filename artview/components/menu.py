@@ -18,13 +18,12 @@ class Menu(Component):
         '''
         Initialize the class to create the interface.
 
-        Parameters::
+        Parameters
         ----------
         pathDir - string
             Input directory path to open.
         filename - string
             File to open as first, this will skip the open file dialog.
-
         [Optional]
         Vradar - Variable instance
             Radar signal variable. 
@@ -40,7 +39,7 @@ class Menu(Component):
             Parent instance to associate to menu.
             If None, then Qt owns, otherwise associated with parent PyQt instance.
 
-        Notes::
+        Notes
         -----
         This class creates the main application interface and creates
         a menubar for the program.

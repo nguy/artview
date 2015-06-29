@@ -1,0 +1,6 @@
+artview.components.Display.RngRingSelectCmd
+===========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Display.RngRingSelectCmd

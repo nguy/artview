@@ -13,26 +13,25 @@ from ..core import Variable, Component
 class TiltButtonWindow(Component):
     '''Class to display the Window with Tilt Buttons.'''
     tiltClicked = QtCore.pyqtSignal()
-    
+
     def __init__(self, Vtilt, Vradar=None, Vgrid=None, name="TiltButtons", parent=None):
         '''Initialize the class to create the Tilt Selection interface.
-    
-        Parameters::
+
+        Parameters
         ----------
         Vtilt - Variable instance
             Tilt signal variable to be used.
         Vradar, Vgrid - Variable instance
             Radar/Grid signal variable to be used. None will create empty variable.
             For correct behavior one and just one of those should be provided
-
         [Optional]
         name - string
             Tilt Radiobutton window name.
         parent - PyQt instance
             Parent instance to associate to TiltButtonWindow window.
             If None, then Qt owns, otherwise associated with parent PyQt instance.
-        
-        Notes::
+
+        Notes
         -----
         This class records the selected button and passes the
         change value back to variable.

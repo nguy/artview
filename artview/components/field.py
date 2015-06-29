@@ -19,21 +19,20 @@ class FieldButtonWindow(Component):
         '''
         Initialize the class to create the interface.
     
-        Parameters::
+        Parameters
         ----------
         Vradar - Variable instance
             Radar signal variable to be used.
         Vfield - Variable instance
             Field signal variable to be used.
-    
         [Optional]
         name - string
             Field Radiobutton window name.
         parent - PyQt instance
             Parent instance to associate to FieldButtonWindow.
             If None, then Qt owns, otherwise associated with parent PyQt instance.
-                    
-        Notes::
+
+        Notes
         -----
         This class records the selected button and passes the 
         change value back to variable.

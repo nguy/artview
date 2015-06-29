@@ -1,0 +1,6 @@
+artview.components.Display.TiltSelectCmd
+========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Display.TiltSelectCmd
