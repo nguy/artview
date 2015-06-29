@@ -1,0 +1,6 @@
+artview.plugins.DealiasUnwrapPhase.guiStart
+===========================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: DealiasUnwrapPhase.guiStart

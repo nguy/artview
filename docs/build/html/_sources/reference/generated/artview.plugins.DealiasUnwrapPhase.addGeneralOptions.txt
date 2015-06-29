@@ -1,0 +1,6 @@
+artview.plugins.DealiasUnwrapPhase.addGeneralOptions
+====================================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: DealiasUnwrapPhase.addGeneralOptions

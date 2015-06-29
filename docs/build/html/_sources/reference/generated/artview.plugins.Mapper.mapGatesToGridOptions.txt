@@ -1,0 +1,6 @@
+artview.plugins.Mapper.mapGatesToGridOptions
+============================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: Mapper.mapGatesToGridOptions

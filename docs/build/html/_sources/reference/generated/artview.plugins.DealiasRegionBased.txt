@@ -1,0 +1,26 @@
+artview.plugins.DealiasRegionBased
+==================================
+
+.. currentmodule:: artview.plugins
+
+.. autoclass:: DealiasRegionBased
+   :show-inheritance:
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+         DealiasRegionBased.addGeneralOptions
+         DealiasRegionBased.chooseRadar
+         DealiasRegionBased.dealias_region_based
+         DealiasRegionBased.displayHelp
+         DealiasRegionBased.guiStart
+         DealiasRegionBased.newRadar
+   
+   
+
+

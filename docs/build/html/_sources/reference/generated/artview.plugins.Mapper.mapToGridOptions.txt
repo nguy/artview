@@ -1,0 +1,6 @@
+artview.plugins.Mapper.mapToGridOptions
+=======================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: Mapper.mapToGridOptions

@@ -1,0 +1,6 @@
+artview.plugins.PhaseProcLp.addGeneralOptions
+=============================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: PhaseProcLp.addGeneralOptions

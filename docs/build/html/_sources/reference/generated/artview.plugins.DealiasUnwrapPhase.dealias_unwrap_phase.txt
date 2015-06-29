@@ -1,0 +1,6 @@
+artview.plugins.DealiasUnwrapPhase.dealias_unwrap_phase
+=======================================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: DealiasUnwrapPhase.dealias_unwrap_phase

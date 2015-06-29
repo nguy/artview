@@ -1,0 +1,6 @@
+artview.plugins.DealiasRegionBased.dealias_region_based
+=======================================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: DealiasRegionBased.dealias_region_based

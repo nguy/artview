@@ -1,0 +1,6 @@
+artview.plugins.Mapper.guiStart
+===============================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: Mapper.guiStart

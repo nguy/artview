@@ -1,0 +1,6 @@
+artview.components.TiltButtonWindow.NewGrid
+===========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: TiltButtonWindow.NewGrid
