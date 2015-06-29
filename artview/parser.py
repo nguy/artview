@@ -33,15 +33,12 @@ def parse(argv):
 
     #Directory argument now optional
     parser.add_argument('-d', '--directory', type=str, help='directory to open', default='./')
-    parser.add_argument('-f', '--field', type=str, help='field to show', default='reflectivity')
-
+    parser.add_argument('-f', '--field', type=str, help='field to show', default=None)
+    parser.add_argument('-F', '--file', type=str, help='File to show', default=None)
+    parser.add_argument('-s', '--script', type=str, help='Select from artview.scripts a script to execute', default=None)
+    
     # Parse the args
     args = parser.parse_args(argv[1::])
-    # Check if there is an input directory
-    if args.directory:
-        fDirIn = args.directory
-    else: 
-        fDirIn = "./"
 
-    return args.directory, args.field
+    return args.script, args.directory, args.file, args.field
 

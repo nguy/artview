@@ -7,5 +7,9 @@ sys.path.insert(0, path)
 
 import artview
 
-DirIn, field = artview.parser.parse(sys.argv)
-artview.run(DirIn, field)
+script, DirIn, filename, field = artview.parser.parse(sys.argv)
+
+if script:
+    artview.scripts.scripts[script](DirIn, filename, field)
+else:
+    artview.run(DirIn, filename, field)

@@ -14,15 +14,17 @@ from ..core import Variable, Component, common
 class Menu(Component):
     '''Class to display the MainMenu'''
 
-    def __init__(self, pathDir, Vradar=None, Vgrid=None, mode="Radar", name="Menu", parent=None):
+    def __init__(self, pathDir, filename=None, Vradar=None, Vgrid=None, mode="Radar", name="Menu", parent=None):
         '''
         Initialize the class to create the interface.
-    
+
         Parameters::
         ----------
         pathDir - string
             Input directory path to open.
-    
+        filename - string
+            File to open as first, this will skip the open file dialog.
+
         [Optional]
         Vradar - Variable instance
             Radar signal variable. 
@@ -37,7 +39,7 @@ class Menu(Component):
         parent - PyQt instance
             Parent instance to associate to menu.
             If None, then Qt owns, otherwise associated with parent PyQt instance.
-        
+
         Notes::
         -----
         This class creates the main application interface and creates
@@ -60,8 +62,11 @@ class Menu(Component):
         if self.Vgrid is None:
             self.Vgrid = Variable(None)
         if Vradar is None and Vgrid is None:
-            self.showFileDialog()
-
+            if filename is None:
+                self.showFileDialog()
+            else:
+                self.filename = filename
+                self._openfile()
 
         # Launch the GUI interface
         self.LaunchApp()
@@ -90,6 +95,7 @@ class Menu(Component):
         self.setCentralWidget(self.central_widget)
         self.centralLayout = QtGui.QVBoxLayout(self.central_widget)
         self.centralLayout.setSpacing(8)
+        self.frames = {}
 
         # Create the menus
         self.CreateMenu()
@@ -107,13 +113,21 @@ class Menu(Component):
         Add a widget to central layout.
         This function is to be called both internal and external
         '''
-        self.centralLayout.addWidget(widget)
+        frame = QtGui.QFrame()
+        frame.setFrameShape(QtGui.QFrame.Box)
+        layout = QtGui.QVBoxLayout(frame)
+        layout.addWidget(widget)
+        self.frames[widget.__repr__()] = frame
+        self.centralLayout.addWidget(frame)
         self.addLayoutMenuItem(widget)
+
 
     def removeLayoutWidget(self, widget):
         '''Remove widget from central layout.'''
-        self.centralLayout.removeWidget(widget)
+        frame = self.frames[widget.__repr__()]
+        self.centralLayout.removeWidget(frame)
         self.removeLayoutMenuItem(widget)
+        frame.close()
         widget.close()
         widget.deleteLater()
 
@@ -223,8 +237,9 @@ class Menu(Component):
 
     def startComponent(self, Comp):
         '''GUI start a Component and add to layout.'''
-        comp = Comp.guiStart(self)
-        #self.addLayoutWidget(comp)
+        comp, independent = Comp.guiStart(self)
+        if not independent:
+            self.addLayoutWidget(comp)
 
     def addFileAdvanceMenu(self):
         '''Add an option to advance to next or previous file.'''

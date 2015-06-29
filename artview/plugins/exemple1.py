@@ -13,7 +13,7 @@ class Exemple1(core.Component):
     @classmethod
     def guiStart(self, parent=None):
         val, entry = common.string_dialog("Exemple1", "Exemple1", "Name:")
-        return self(name=val, parent=parent)
+        return self(name=val, parent=parent), True
 
     def __init__(self, name="Exemple1", parent=None):
         '''Initialize the class to create the interface'''
@@ -31,4 +31,5 @@ class Exemple1(core.Component):
     def close(self):
         super(Exemple1, self).close()
 
-_plugins=[Exemple1]
+_plugins=[]
+#_plugins=[Exemple1]

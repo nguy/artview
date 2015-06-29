@@ -4,18 +4,22 @@ map_to_grid.py
 Driver function that creates ARTView display.
 """
 
-def run(DirIn='./', field='reflectivity'):
+def run(DirIn='./', filename=None, field=None):
     """artview execution"""
     print DirIn
     from PyQt4 import QtGui, QtCore
     import sys
+
+    if field is None:
+        import pyart
+        field = pyart.config.get_field_name('reflectivity')
 
     from ..core import Variable
     from ..components import Display, Display_grid, Menu, TiltButtonWindow, ComponentsControl
 
     app = QtGui.QApplication(sys.argv)
 
-    MainMenu = Menu(DirIn, name="Menu") #initiate Vradar
+    MainMenu = Menu(DirIn, filename, name="Menu") #initiate Vradar
     Vradar = MainMenu.Vradar
 
     Vfield = Variable(field)
@@ -32,7 +36,7 @@ def run(DirIn='./', field='reflectivity'):
     MainMenu.addComponent(Display)
 
     try:
-        import plugins
+        from .. import plugins
         for plugin in plugins._plugins:
             MainMenu.addComponent(plugin)
     except:

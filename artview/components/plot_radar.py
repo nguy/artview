@@ -16,6 +16,7 @@ from matplotlib.colorbar import ColorbarBase as mlabColorbarBase
 from matplotlib.pyplot import cm
 
 
+
 from ..core import Variable, Component, common, VariableChoose
 
 # Save image file type and DPI (resolution)
@@ -32,7 +33,7 @@ class Display(Component):
     @classmethod
     def guiStart(self, parent=None):
         args = _DisplayStart().startDisplay()
-        return self(**args)
+        return self(**args), True
 
     def __init__(self, Vradar, Vfield, Vtilt, Vlims=None, \
                  name="Display", parent=None):
@@ -499,6 +500,9 @@ class Display(Component):
         '''Draw/Redraw the plot.'''
         self._check_default_field()
 
+        if self.Vfield.value not in self.Vradar.value.fields.keys():
+            return
+
         # Create the plot with PyArt RadarDisplay 
         self.ax.cla() # Clear the plot axes
         self.cax.cla() # Clear the colorbar axes
@@ -580,7 +584,7 @@ class Display(Component):
         
         This should only occur upon start up with a new file.
         '''
-        if self.Vfield.value == 'reflectivity':
+        if self.Vfield.value == pyart.config.get_field_name('reflectivity'):
             if self.Vfield.value in self.fieldnames:
                 pass
             elif 'CZ' in self.fieldnames:
