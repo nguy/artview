@@ -1,0 +1,38 @@
+artview.components.Menu
+=======================
+
+.. currentmodule:: artview.components
+
+.. autoclass:: Menu
+   :show-inheritance:
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+         Menu.AdvanceFileSelect
+         Menu.CreateMenu
+         Menu.LaunchApp
+         Menu.addAboutMenu
+         Menu.addComponent
+         Menu.addComponentMenu
+         Menu.addComponentMenuItem
+         Menu.addFileAdvanceMenu
+         Menu.addFileMenu
+         Menu.addLayoutMenu
+         Menu.addLayoutMenuItem
+         Menu.addLayoutWidget
+         Menu.addPlotMenu
+         Menu.keyPressEvent
+         Menu.removeLayoutMenuItem
+         Menu.removeLayoutWidget
+         Menu.showFileDialog
+         Menu.startComponent
+   
+   
+
+

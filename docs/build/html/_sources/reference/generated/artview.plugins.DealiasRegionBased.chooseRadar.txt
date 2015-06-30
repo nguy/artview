@@ -1,0 +1,6 @@
+artview.plugins.DealiasRegionBased.chooseRadar
+==============================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: DealiasRegionBased.chooseRadar

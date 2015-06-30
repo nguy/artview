@@ -15,8 +15,9 @@ import time
 class DealiasUnwrapPhase(core.Component):
     @classmethod
     def guiStart(self, parent=None):
-        val, entry = common.string_dialog("DealiasUnwrapPhase", "DealiasUnwrapPhase", "Name:")
-        return self(name=val, parent=parent)
+        kwargs, independent = common._SimplePluginStart("DealiasUnwrapPhase").startDisplay()
+        kwargs['parent'] = parent
+        return self(**kwargs), independent
 
     def __init__(self, Vradar=None, Vgatefilter=None, name="DealiasUnwrapPhase", parent=None):
         '''Initialize the class to create the interface'''

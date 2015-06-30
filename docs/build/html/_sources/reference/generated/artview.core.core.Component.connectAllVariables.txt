@@ -1,0 +1,6 @@
+artview.core.core.Component.connectAllVariables
+===============================================
+
+.. currentmodule:: artview.core.core
+
+.. automethod:: Component.connectAllVariables

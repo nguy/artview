@@ -1,0 +1,33 @@
+artview.plugins.Mapper
+======================
+
+.. currentmodule:: artview.plugins
+
+.. autoclass:: Mapper
+   :show-inheritance:
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+         Mapper.addEspecificOptions
+         Mapper.addGeneralOptions
+         Mapper.constantRoiOptions
+         Mapper.distBeamRoiOptions
+         Mapper.distRoiOptions
+         Mapper.fieldsOptions
+         Mapper.grid_from_radars
+         Mapper.guiStart
+         Mapper.interpolationOptions
+         Mapper.mapGatesToGridOptions
+         Mapper.mapToGridOptions
+         Mapper.newRadar
+         Mapper.roiFuncOptions
+   
+   
+
+

@@ -1,6 +1,6 @@
 """
 ================================
-Plugings (:mod:`artview.plugins`)
+Plugins (:mod:`artview.plugins`)
 ================================
 
 .. currentmodule:: artview.plugins
@@ -10,8 +10,6 @@ ARTview offer some function to start programs using basic configurations.
 .. autosummary::
     :toctree: generated/
 
-    exemple1
-    exemple2
 """
 
 
@@ -26,8 +24,10 @@ for module in os.listdir(os.path.dirname(__file__)):
         continue
     tmp = __import__(module[:-3], locals(), globals())
     for plugin in tmp._plugins:
-        setattr(thismodule, module[:-3], plugin)
+        setattr(thismodule, plugin.__name__, plugin)
         _plugins.append(plugin)
+        #update docstring to add plugin
+        __doc__ = __doc__ + """    %s\n""" % plugin.__name__
 
 del module
 del os
@@ -35,3 +35,5 @@ del sys
 del thismodule
 del tmp
 del plugin
+
+

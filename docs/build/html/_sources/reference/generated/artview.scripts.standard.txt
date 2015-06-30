@@ -1,0 +1,6 @@
+artview.scripts.standard
+========================
+
+.. currentmodule:: artview.scripts
+
+.. autofunction:: standard

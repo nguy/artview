@@ -1,0 +1,6 @@
+artview.plugins.CalculateAttenuation.addGeneralOptions
+======================================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: CalculateAttenuation.addGeneralOptions

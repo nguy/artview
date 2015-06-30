@@ -1,0 +1,6 @@
+artview.components.FieldButtonWindow.NewField
+=============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: FieldButtonWindow.NewField

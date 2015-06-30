@@ -1,0 +1,6 @@
+artview.plugins.PhaseProcLp.displayHelp
+=======================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: PhaseProcLp.displayHelp

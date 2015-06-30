@@ -1,0 +1,6 @@
+artview.plugins.PhaseProcLp.guiStart
+====================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: PhaseProcLp.guiStart

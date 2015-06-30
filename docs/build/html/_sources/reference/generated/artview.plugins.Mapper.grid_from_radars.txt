@@ -1,0 +1,6 @@
+artview.plugins.Mapper.grid_from_radars
+=======================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: Mapper.grid_from_radars

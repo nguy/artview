@@ -7,7 +7,7 @@ Routines used for modifying limits via Display window.
 # Load the needed packages
 from PyQt4 import QtGui, QtCore
 
-def _default_limits(field, airborne=False, rhi=False):
+def _default_limits(field, scan_type):
     '''
     Initialize limits to default program values.
 
@@ -17,10 +17,8 @@ def _default_limits(field, airborne=False, rhi=False):
         Field name to use for initialization (e.g. 'reflectivity').
 
     [Optional]
-    airborne - boolean
-        Set True to display airborne type radar files (assumes tail radar setup such as NOAA P-3).
-    rhi - boolean
-        Set True to display RHI type radar files.
+    scan_type - "ppi", "rhi", "airborne" or None
+        Scan_type of the plot
 
     Notes::
     -----
@@ -54,10 +52,10 @@ def _default_limits(field, airborne=False, rhi=False):
     # Set size of plot
     XRNG = PPI_XRNG
     YRNG = PPI_YRNG
-    if airborne:
+    if scan_type == "airborne":
         XRNG = AIR_XRNG
         YRNG = AIR_YRNG
-    if rhi:
+    if scan_type == "rhi":
         XRNG = RHI_XRNG
         YRNG = RHI_YRNG
 

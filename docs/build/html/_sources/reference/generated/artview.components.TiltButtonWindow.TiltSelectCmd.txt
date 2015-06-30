@@ -1,0 +1,6 @@
+artview.components.TiltButtonWindow.TiltSelectCmd
+=================================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: TiltButtonWindow.TiltSelectCmd

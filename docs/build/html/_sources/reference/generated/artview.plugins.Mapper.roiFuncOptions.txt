@@ -1,0 +1,6 @@
+artview.plugins.Mapper.roiFuncOptions
+=====================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: Mapper.roiFuncOptions

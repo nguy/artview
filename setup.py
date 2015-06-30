@@ -92,7 +92,7 @@ if os.path.exists('MANIFEST'):
     os.remove('MANIFEST')
 
 # This is a bit hackish: we are setting a global variable so that the main
-# pyart __init__ can detect if it is being loaded by the setup routine, to
+# artview __init__ can detect if it is being loaded by the setup routine, to
 # avoid attempting to load components that aren't built yet. While ugly, it's
 # a lot more robust than what was previously being used.
 builtins.__ARTVIEW_SETUP__ = True
@@ -111,17 +111,17 @@ if not release:
     version = full_version
 """
     # Adding the git rev number needs to be done inside write_version_py(),
-    # otherwise the import of pyart.version messes up the build under Python 3.
+    # otherwise the import of artview.version messes up the build under Python 3.
     FULLVERSION = VERSION
     if os.path.exists('.git'):
         GIT_REVISION = git_version()
     elif os.path.exists('artview/version.py'):
         # must be a source distribution, use existing version file
         try:
-            from pyart.version import git_revision as GIT_REVISION
+            from artview.version import git_revision as GIT_REVISION
         except ImportError:
             raise ImportError("Unable to import git_revision. Try removing "
-                              "pyart/version.py and the build directory "
+                              "artview/version.py and the build directory "
                               "before building.")
     else:
         GIT_REVISION = "Unknown"

@@ -1,0 +1,6 @@
+artview.plugins.CalculateAttenuation.guiStart
+=============================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: CalculateAttenuation.guiStart

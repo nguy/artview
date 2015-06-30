@@ -2,13 +2,16 @@
 __pycache__/
 *.py[cod]
 
+# backup files
+*~
+
 # C extensions
 *.so
 
 # Distribution / packaging
 .Python
 env/
-build/
+#build/
 develop-eggs/
 dist/
 eggs/
@@ -20,6 +23,9 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+
+# version file
+artview/version.py
 
 # PyInstaller
 #  Usually these files are written by a python script from a template 
@@ -47,7 +53,9 @@ coverage.xml
 *.log
 
 # Sphinx documentation
-docs/_build/
+# docs/_build/
+docs/build/doctrees/
+docs/source/reference/generated/
 
 # PyBuilder
 target/

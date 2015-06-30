@@ -1,0 +1,6 @@
+artview.plugins.CalculateAttenuation.calculate_attenuation
+==========================================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: CalculateAttenuation.calculate_attenuation

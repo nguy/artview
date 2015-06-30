@@ -1,0 +1,6 @@
+artview.components.Display.NewLims
+==================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Display.NewLims

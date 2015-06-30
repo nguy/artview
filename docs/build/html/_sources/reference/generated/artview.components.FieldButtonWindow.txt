@@ -1,0 +1,25 @@
+artview.components.FieldButtonWindow
+====================================
+
+.. currentmodule:: artview.components
+
+.. autoclass:: FieldButtonWindow
+   :show-inheritance:
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+         FieldButtonWindow.CreateFieldWidget
+         FieldButtonWindow.FieldSelectCmd
+         FieldButtonWindow.NewField
+         FieldButtonWindow.NewRadar
+         FieldButtonWindow.SetFieldRadioButtons
+   
+   
+
+

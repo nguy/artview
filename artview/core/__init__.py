@@ -8,10 +8,12 @@ Core (:mod:`artview.core`)
 ARTview is based in the abstract Component class and shared Variables.
 
 .. autosummary::
+
     :toctree: generated/
 
-    Variable
-    Component
+    ~core.Variable
+    ~core.Component
+
 """
 
 

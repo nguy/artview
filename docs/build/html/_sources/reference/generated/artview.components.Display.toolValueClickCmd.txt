@@ -1,0 +1,6 @@
+artview.components.Display.toolValueClickCmd
+============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Display.toolValueClickCmd

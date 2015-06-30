@@ -2,6 +2,9 @@
 core.py
 
 Class instance to create Variables and establish change signals.
+
+
+
 """
 
 # Load the needed packages
@@ -12,21 +15,24 @@ from PyQt4 import QtGui, QtCore
 
 
 
-class Variable (QtCore.QObject):
+class Variable(QtCore.QObject):
+    '''
+    Class that holds a value, changing that with change() emits a signal
+    '''
+
     def __init__(self,value=None):
-        """Class that holds a value, changing that with change() emits a signal"""
+        ''' initialize '''
         QtCore.QObject.__init__(self)
         self.value = value
 
     def change(self, value, strong=True):
-        """
+        '''
         Change the Variable value and emit 'ValueChanged' signal.
 
-        Parameters::
+        Parameters
         ----------
         value : 
             New Value to be assigned to the variable.
-        
         [Optional]
         strong : bool, optional
             Define if this is a strong, or a soft change. This is a some what
@@ -39,11 +45,11 @@ class Variable (QtCore.QObject):
                 Defining how to respond to strong/soft changes is
                 responsibility of the slot, most can just ignore the
                 difference, but the costly ones should be aware.
-        
-        Notes::
+
+        Notes
         -----
         The arguments of the emitted signal are (self, value, strong).
-        """
+        '''
         self.value = value
         self.emit(QtCore.SIGNAL("ValueChanged"), self, value, strong)
 
@@ -80,8 +86,9 @@ class ComponentsList(QtCore.QObject):
 componentsList = ComponentsList()
 
 class Component(QtGui.QMainWindow):
-    '''Abstract class for a ART-view component'''
-    
+    '''
+    Abstract class for a ART-view component
+    '''
 
     def __init__(self, name="Component", parent=None, flags=QtCore.Qt.Widget):
         '''Initialize the class to create the interface'''
