@@ -23,21 +23,19 @@ warnings.filterwarnings('ignore', category=UserWarning, append=True)
 ###############################
 # Restore the default Display #
 ###############################
-def restore_default_display(tooldict, field, airborne, rhi):
+def restore_default_display(tooldict, field, scan_type):
     '''Restore the Display defaults.
     
-    Parameters::
+    Parameters
     ----------
     zoompan - ZoomPan class instance
         A ZoomPan class instance.
     field - string
         Name of field to display.
-    airborne - boolean
-        True for airborne-type radar file.
-    rhi - boolean
-        True for RHI-type radar file.
+    scan_type - "ppi", "rhi", "airborne" or None
+        Scan type for radar file.
         
-    Notes::
+    Notes
     -----
     Returns updated zoompan class instance, limits dictionary, and colormap.
     '''
@@ -47,10 +45,9 @@ def restore_default_display(tooldict, field, airborne, rhi):
             tooldict[tool].disconnect()
             tooldict[tool] = None
 
-    display_limits, CMAP = limits._default_limits(field, airborne, rhi)
+    display_limits, CMAP = limits._default_limits(field, scan_type)
     
     return tooldict, display_limits, CMAP
-
 ##################################
 # Mouse Click Value Class Method #
 ##################################
