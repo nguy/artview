@@ -463,7 +463,7 @@ class Display(Component):
         '''Restore the Display defaults.'''
         from . import tools
         self.tools, self.limits, self.CMAP = tools.restore_default_display(self.tools, \
-                                          self.scan_type, self.rhi)
+                                          self.Vfield.value, self.scan_type)
         self._update_plot()
 
     ####################
