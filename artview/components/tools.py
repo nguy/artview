@@ -567,3 +567,52 @@ class ROI(QtGui.QMainWindow):
     def NewRadar(self, variable, value, False):
         '''Update the display list when radar variable is changed.'''
         print "In NewRadar"
+
+##########################################################
+###                   Auxiliary Functions              ###
+##########################################################
+
+
+def interior(path, radar, tilt):
+    '''
+    Return the bins of the Radar in the interior of the path.
+
+    Parameters
+    ----------
+    path - Matplotlib Path instance
+    radar - Pyart Radar Instance
+    tilt - int
+        Scan from the radar to be considered.
+    
+    Returns
+    -------
+    xy : Numpy Array
+        Array of the shape (bins,2) containing the x,y
+        coordinate for every bin inside path
+    index : Numpy Array
+        Array of the shape (bins,2) containing the ray and range
+        coordinate for every bin inside path
+    '''
+    az = radar.azimuth['data'][radar.sweep_start_ray_index['data'][tilt]:radar.sweep_end_ray_index['data'][tilt]+1]
+    r =  radar.range['data'] / 1000.
+    ngates = r.size
+    nrays = az.size
+    xys = np.empty(shape=(nrays*ngates,2))
+    r, az = np.meshgrid(r, az)
+    # XXX Disconsidering elevation and Projetion
+    # XXX should use pyart.io.common.radar_coords_to_cart
+    # XXX but this is not public (not in user manual or Radar)
+    x = r*np.sin(az * np.pi / 180.)
+    y = r*np.cos(az * np.pi / 180.)
+    xys[:,0] = x.flatten()
+    xys[:,1] = y.flatten()
+    # XXX in new versions (1.3) of mpl there is contains_pointS function
+    ind = np.nonzero([path.contains_point(xy) for xy in xys])[0]
+
+    rayIndex = radar.sweep_start_ray_index['data'][tilt] + ind / ngates
+    gateIndex = ind % ngates
+    index = np.concatenate((rayIndex[np.newaxis], gateIndex[np.newaxis]), axis=0)
+    return (xys[ind], index.transpose)
+
+
+

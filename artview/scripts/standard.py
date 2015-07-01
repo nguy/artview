@@ -55,4 +55,5 @@ def run(DirIn='./', filename=None, field=None):
     plot2.setGeometry(width/2,height-plot_size,plot_size,plot_size)
 
     app.exec_()
+    return plot1,plot2
 

@@ -27,7 +27,7 @@ def run(DirIn='./', filename=None, field=None):
     plot1 = Display_grid(Variable(None), Vfield, Variable(0), name="DisplayGrid", parent=MainMenu)
     from .. import plugins
 
-    mapper = plugins.mapper(plot.Vradar, plot1.Vgrid, name="Mapper", parent=MainMenu)
+    mapper = plugins.Mapper(plot.Vradar, plot1.Vgrid, name="Mapper", parent=MainMenu)
 
 
     control = ComponentsControl()
