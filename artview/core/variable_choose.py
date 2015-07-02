@@ -15,7 +15,7 @@ from . import common
 
 class VariableChoose(QtGui.QDialog):
     '''
-    Class instance for finding and choosing shared variable
+    Class instance for finding and choosing component and shared variable
     from other components.
     '''
 
@@ -23,10 +23,13 @@ class VariableChoose(QtGui.QDialog):
     def guiStart(self, parent=None):
         return self(parent=parent)
 
-    def __init__(self, components=None, name="VariableChoose", parent=None):
+    def __init__(self, components=None, compSelect=False, varSelect=True,
+                 name="VariableChoose", parent=None):
         '''Initialize the class to create the interface'''
         super(VariableChoose, self).__init__(parent=parent)
         self.result = None
+        self.compSelect = compSelect
+        self.varSelect = varSelect
         #self.central_widget = QtGui.QWidget()
         #self.setCentralWidget(self.central_widget)
         self.layout = QtGui.QGridLayout(self)
@@ -85,10 +88,11 @@ class VariableChoose(QtGui.QDialog):
     def addItems(self):
         for component in self.components:
             item = QtGui.QStandardItem(component.name)
-            item.setSelectable(False)
+            item.setSelectable(self.compSelect)
             self.model.appendRow(item)
             for var in component.sharedVariables.keys():
                 item_var = QtGui.QStandardItem(var)
+                item_var.setSelectable(self.varSelect)
                 item.appendRow(item_var)
 
     def cancel(self):
@@ -99,10 +103,15 @@ class VariableChoose(QtGui.QDialog):
         selection = self.treeView.selectedIndexes()
         if selection:
             item = selection[0]
-            variable= item.data().toString()
-            component = item.parent().data().toString()
             row = item.parent().row()
-            self.result = (str(component),self.components[row], str(variable))
+            if row>=0:
+                variable= item.data().toString()
+                component = item.parent().data().toString()
+                self.result = (str(component),self.components[row], str(variable))
+            else:
+                row = item.row()
+                component = item.data().toString()
+                self.result = (str(component),self.components[row], None)
             self.done(QtGui.QDialog.Accepted)
         else:
             self.cancel()

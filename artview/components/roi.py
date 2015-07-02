@@ -18,18 +18,22 @@ class ROI(Component):
     https://www.mail-archive.com/matplotlib-users@lists.sourceforge.net/msg00661.html
     '''
 
-    def __init__(self, ax, display, name="ROI", parent=None):
+    @classmethod
+    def guiStart(self, parent=None):
+        args, independent = _RoiStart().startDisplay()
+        return self(**args), independent
+
+    def __init__(self, display, name="ROI", parent=None):
         '''
         Initialize the class to select an ROI on display.
     
         Parameters::
         ----------
-        ax - Matplotlib axis instance
-            Axis instance to use.
         display - ARTView Display
             Display instance to associate ROI. Must have the following elements:
-                statusbar - QtGui.QStatusBar
-                pathInteriorValues - Function
+                getPlotAxis() - Matplotlib axis instance
+                getStatusBar() - QtGui.QStatusBar
+                getPathInteriorValues(Path) - Function
 
         [Optional]
         name - string
@@ -41,17 +45,18 @@ class ROI(Component):
         Notes::
         -----
         '''
-        super(ROI, self).__init__(parent)
+        print display,name
+        super(ROI, self).__init__(name=name, parent=parent)
         self.VroiData = Variable(None)
         self.sharedVariables = {"VroiData": None}
 
         # Connect the components
         self.connectAllVariables()
 
-        self.ax = ax
-        self.statusbar = display.statusbar
-        self.fig = ax.get_figure()
-        self.pathInteriorValues = display.pathInteriorValues
+        self.ax = display.getPlotAxis()
+        self.statusbar = display.getStatusBar()
+        self.fig = self.ax.get_figure()
+        self.pathInteriorValues = display.getPathInteriorValues
 #        self.display = display
         self.columns = ("X", "Y", "Azimuth", "Range", "Value", "Az Index", "R Index")
         self.statusbar.showMessage("Select Region with Mouse")
@@ -111,7 +116,6 @@ class ROI(Component):
         if event.inaxes:
             x, y = event.xdata, event.ydata
             ax = event.inaxes
-            radar = self.Vradar.value
             if event.button == 1:  # If you press the right button
                 if self.line == None: # if there is no line, create a line
                     self.line = Line2D([x, x], [y, y], marker = 'o')
@@ -144,8 +148,8 @@ class ROI(Component):
 
                 # Create arrays for indices/data
                 data = self.pathInteriorValues(path)
-                data = np.concatenate(date).reshape(7,-1).transpose()
-                self.VroiTable.change(data)
+                data = np.concatenate(data).reshape(7,-1).transpose()
+                self.VroiData.change(data)
 
                 # Instantiate Table
                 self.table = common.CreateTable(self.columns)
@@ -247,6 +251,67 @@ class ROI(Component):
 #        self._setup_ROI_vars()
         self.statusbar.showMessage("Select Region with Mouse")
 
+
+    def closeEvent(self, QCloseEvent):
+        '''Reimplementations to remove from components list'''
+        self.resetROI()
+        self.disconect()
+        super(ROI, self).closeEvent(QCloseEvent)
+
 #    def NewRadar(self, variable, value, False):
 #        '''Update the display list when radar variable is changed.'''
 #        print "In NewRadar"
+
+
+
+class _RoiStart(QtGui.QDialog):
+    '''
+    Dialog Class for graphical Start of Roi, to be used in guiStart
+    '''
+
+    def __init__(self):
+        '''Initialize the class to create the interface'''
+        super(_RoiStart, self).__init__()
+        self.result = {"display": None}
+        self.layout = QtGui.QGridLayout(self)
+        # set window as modal
+        self.setWindowModality(QtCore.Qt.ApplicationModal)
+
+        self.setupUi()
+
+    def chooseDisplay(self):
+        item = VariableChoose(compSelect=True, varSelect=False).chooseVariable()
+        if item is None:
+            return
+        else:
+            self.result["display"] = item[1]
+
+    def setupUi(self):
+
+        self.displayButton = QtGui.QPushButton("Find Component")
+        self.displayButton.clicked.connect(self.chooseDisplay)
+        self.layout.addWidget(QtGui.QLabel("display"), 0, 0)
+        self.layout.addWidget(self.displayButton, 0, 1, 1, 3)
+
+        self.name = QtGui.QLineEdit("Roi")
+        self.layout.addWidget(QtGui.QLabel("name"), 1, 0)
+        self.layout.addWidget(self.name, 1, 1, 1, 3)
+
+        self.independent = QtGui.QCheckBox("Independent Window")
+        self.independent.setChecked(True)
+        self.layout.addWidget(self.independent, 2, 1, 1, 1)
+
+        self.closeButton = QtGui.QPushButton("Start")
+        self.closeButton.clicked.connect(self.closeDialog)
+        self.layout.addWidget(self.closeButton, 3, 0, 1, 5)
+
+    def closeDialog(self):
+        self.done(QtGui.QDialog.Accepted)
+
+    def startDisplay(self):
+        self.exec_()
+
+        self.result['name'] = str(self.name.text())
+        print self.result['name']
+
+        return self.result, self.independent.isChecked()

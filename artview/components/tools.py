@@ -612,7 +612,7 @@ def interior(path, radar, tilt):
     rayIndex = radar.sweep_start_ray_index['data'][tilt] + ind / ngates
     gateIndex = ind % ngates
     index = np.concatenate((rayIndex[np.newaxis], gateIndex[np.newaxis]), axis=0)
-    return (xys[ind], index.transpose)
+    return (xys[ind], index.transpose())
 
 
 

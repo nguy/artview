@@ -466,7 +466,7 @@ class Display(Component):
                                           self.scan_type, self.rhi)
         self._update_plot()
 
-    def pathInteriorValues(self, path):
+    def getPathInteriorValues(self, path):
         '''
         Return the bins values path.
 
@@ -680,6 +680,16 @@ class Display(Component):
         if path:
             self.canvas.print_figure(path, dpi=DPI)
             self.statusbar.showMessage('Saved to %s' % path)
+
+    ########################
+    #      get methods     #
+    ########################
+
+    def getPlotAxis(self):
+        return self.ax
+
+    def getStatusBar(self):
+        return self.statusbar
 
 
 class _DisplayStart(QtGui.QDialog):
