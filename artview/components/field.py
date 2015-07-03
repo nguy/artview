@@ -14,21 +14,21 @@ class FieldButtonWindow(Component):
     '''Class to display the Window with Field Buttons'''
 
     FieldClicked = QtCore.pyqtSignal()
-    
+
     def __init__(self, Vradar, Vfield, name="FieldButtons", parent=None):
         '''
         Initialize the class to create the interface.
-    
+
         Parameters
         ----------
-        Vradar - Variable instance
-            Radar signal variable to be used.
-        Vfield - Variable instance
-            Field signal variable to be used.
+        Vradar : :py:class:`~artview.core.core.Variable` instance
+            Radar signal variable.
+        Vfield : :py:class:`~artview.core.core.Variable` instance
+            Field signal variable.
         [Optional]
-        name - string
+        name : string
             Field Radiobutton window name.
-        parent - PyQt instance
+        parent : PyQt instance
             Parent instance to associate to FieldButtonWindow.
             If None, then Qt owns, otherwise associated with parent PyQt instance.
 
@@ -57,11 +57,11 @@ class FieldButtonWindow(Component):
     ########################
         
     def FieldSelectCmd(self, field):
-        '''Captures a selection and redraws the field with new tilt.'''
+        '''Captures a selection and update field variable.'''
         self.Vfield.change(field)
 
     def CreateFieldWidget(self):
-        '''Create a widget to store radio buttons to control tilt adjust.'''
+        '''Create a widget to store radio buttons to control field adjust.'''
         self.radioBox = QtGui.QGroupBox("Field Selection", parent=self)
         self.rBox_layout = QtGui.QVBoxLayout(self.radioBox)
         self.radioBox.setLayout(self.rBox_layout)
@@ -84,11 +84,21 @@ class FieldButtonWindow(Component):
         self.NewField(self.Vfield, self.Vfield.value, True)  # setChecked the current field
     
     def NewField(self, variable, value, strong):
-        '''Record the selected button by updating the dictionary.'''
+        '''Slot for 'ValueChanged' signal of :py:class:`Vfield <artview.core.core.Variable>`.
+
+        This will:
+
+        * Update radio check
+        '''
         if value in self.Vradar.value.fields:
             self.fieldbutton[value].setChecked(True)
         
     def NewRadar(self, variable, value, strong):
-        '''Update the field list when radar variable is changed.'''
+        '''Slot for 'ValueChanged' signal of :py:class:`Vradar <artview.core.core.Variable>`.
+
+        This will:
+
+        * Recreate radio itens
+        '''
         self.CreateFieldWidget()
         self.SetFieldRadioButtons()

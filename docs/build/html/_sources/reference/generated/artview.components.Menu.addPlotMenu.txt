@@ -1,6 +1,0 @@
-artview.components.Menu.addPlotMenu
-===================================
-
-.. currentmodule:: artview.components
-
-.. automethod:: Menu.addPlotMenu

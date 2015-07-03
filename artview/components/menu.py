@@ -20,22 +20,22 @@ class Menu(Component):
 
         Parameters
         ----------
-        pathDir - string
+        pathDir : string
             Input directory path to open.
-        filename - string
-            File to open as first, this will skip the open file dialog.
         [Optional]
-        Vradar - Variable instance
+        filename : string
+            File to open as first, this will skip the open file dialog.
+        Vradar : :py:class:`~artview.core.core.Variable` instance
             Radar signal variable. 
-            A value of None initializes with this class.
-        Vgrid - Variable instance
+            A value of None initializes an empty Variable.
+        Vgrid : :py:class:`~artview.core.core.Variable` instance
             Grid signal variable. 
-            A value of None initializes with this class.
-        mode - "Radar", "Grid" or "All"
-            Determine witch files will be open
-        name - string
+            A value of None initializes an empty Variable.
+        mode : "Radar", "Grid" or "All"
+            Determine which type of files will be open
+        name : string
             Menu name.
-        parent - PyQt instance
+        parent : PyQt instance
             Parent instance to associate to menu.
             If None, then Qt owns, otherwise associated with parent PyQt instance.
 
@@ -74,6 +74,7 @@ class Menu(Component):
     # Allow advancement via left and right arrow keys
     # and tilt adjustment via the Up-Down arrow keys
     def keyPressEvent(self, event):
+        '''Reimplementation, change files with right left button'''
         if event.key()==QtCore.Qt.Key_Right:
             self.AdvanceFileSelect(self.fileindex + 1) #Menu control the file and open the radar
         elif event.key()==QtCore.Qt.Key_Left:
@@ -138,76 +139,64 @@ class Menu(Component):
             return
         self.addComponentMenuItem(Comp)
 
-        
     ######################
     # Menu build methods #
     ######################
- 
+
     def CreateMenu(self):
         '''Create the main menubar.'''
         self.menubar = self.menuBar()
-        
+
         self.addFileMenu()
         self.addAboutMenu()
-#        self.AddPlotMenu()
         self.addFileAdvanceMenu()
         self.addLayoutMenu()
         self.addComponentMenu()
 
     def addFileMenu(self):
-        '''Add the File item to menubar.'''
+        '''Add the File Menu to menubar.'''
         self.filemenu = self.menubar.addMenu('&File')
-               
+
         openFile = QtGui.QAction('Open', self)
         openFile.setShortcut('Ctrl+O')
         openFile.setStatusTip('Open new File')
         openFile.triggered.connect(self.showFileDialog)
-                
+
         exitApp = QtGui.QAction('Close', self)  
         exitApp.setShortcut('Ctrl+Q')
         exitApp.setStatusTip('Exit ARTView')
         exitApp.triggered.connect(self.close)
-        
+
         self.filemenu.addAction(openFile)
         self.filemenu.addAction(exitApp)
-        
+
     def addAboutMenu(self):
-        '''Add Help item to menubar.'''
+        '''Add Help menu to menubar.'''
         self.aboutmenu = self.menubar.addMenu('About')
 
         self._aboutArtview = QtGui.QAction('ARTView', self)
         self._aboutArtview.setStatusTip('About ARTView')
         self._aboutArtview.triggered.connect(self._about)
-        
+
         self.RadarShort = QtGui.QAction('Radar Short', self)
         self.RadarShort.setStatusTip('Print Short Radar Structure Info')
         self.RadarShort.triggered.connect(self._get_RadarShortInfo)
-        
+
         self.RadarLong = QtGui.QAction('Radar Long', self)
         self.RadarLong.setStatusTip('Print Long Radar Structure Info')
         self.RadarLong.triggered.connect(self._get_RadarLongInfo)
-        
+
         self.aboutmenu.addAction(self._aboutArtview)
         self.aboutmenu.addAction(self.RadarShort)
         self.aboutmenu.addAction(self.RadarLong)
-        
-    def addPlotMenu(self):
-        '''Add Plot item to menubar.'''
-        self.plotmenu = self.menubar.addMenu('&Plot')
-        
-        # Add submenus
-        self.fieldmenu = self.plotmenu.addMenu('Field')
-        self.tiltmenu = self.plotmenu.addMenu('Tilt')
-        self.rngringmenu = self.plotmenu.addMenu('Set Range Rings')
-        self.cmapmenu = self.plotmenu.addMenu('Colormap')
 
     def addLayoutMenu(self):
-        '''Add Layout item to menu bar.'''
+        '''Add Layout Menu to menubar.'''
         self.layoutmenu = self.menubar.addMenu('&Layout')
         self.layoutmenuItems = {}
 
     def addComponentMenu(self):
-        '''Add Component item to menu bar.'''
+        '''Add Component Menu to menu bar.'''
         self.componentmenu = self.menubar.addMenu('&Components')
 
     def addLayoutMenuItem(self, widget):
@@ -221,7 +210,7 @@ class Menu(Component):
         remove.triggered[()].connect(lambda widget=widget: self.removeLayoutWidget(widget))
 
     def removeLayoutMenuItem(self, widget):
-        '''Remove widget item to Layout Menu.'''
+        '''Remove widget item from Layout Menu.'''
         rep = widget.__repr__()
         if rep in self.layoutmenuItems:
             self.layoutmenuItems[rep].clear()
@@ -235,13 +224,13 @@ class Menu(Component):
         action.triggered[()].connect(lambda Comp=Comp: self.startComponent(Comp))
 
     def startComponent(self, Comp):
-        '''GUI start a Component and add to layout.'''
+        '''Execute the GUI start of Component and add to layout if not independent.'''
         comp, independent = Comp.guiStart(self)
         if not independent:
             self.addLayoutWidget(comp)
 
     def addFileAdvanceMenu(self):
-        '''Add an option to advance to next or previous file.'''
+        '''Add an menu actions to advance to next or previous file.'''
         self.advancemenu = self.menubar.addMenu("Advance file")
         nextAction = self.advancemenu.addAction("Next")
         nextAction.triggered[()].connect(lambda findex=self.fileindex + 1: self.AdvanceFileSelect(findex))
@@ -354,7 +343,7 @@ class Menu(Component):
     ########################
     
     def AdvanceFileSelect(self, findex):
-        '''Captures a selection and redraws figure with new file.'''
+        '''Captures a selection and open file.'''
         if findex > (len(self.filelist)-1):
             print len(self.filelist)
             msg = "End of directory, cannot advance!"

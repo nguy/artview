@@ -1,6 +1,0 @@
-artview.plugins.CalculateAttenuation.newRadar
-=============================================
-
-.. currentmodule:: artview.plugins
-
-.. automethod:: CalculateAttenuation.newRadar

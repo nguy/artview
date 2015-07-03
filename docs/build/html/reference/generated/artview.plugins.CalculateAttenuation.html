@@ -29,7 +29,7 @@
     <link rel="top" title="ARTview 0.2.2 documentation" href="../../index.html" />
     <link rel="up" title="Plugins (artview.plugins)" href="../plugins.html" />
     <link rel="next" title="artview.plugins.CalculateAttenuation.addGeneralOptions" href="artview.plugins.CalculateAttenuation.addGeneralOptions.html" />
-    <link rel="prev" title="artview.plugins.PhaseProcLp.newRadar" href="artview.plugins.PhaseProcLp.newRadar.html" /> 
+    <link rel="prev" title="artview.plugins.PhaseProcLp.phase_proc_lp" href="artview.plugins.PhaseProcLp.phase_proc_lp.html" /> 
   </head>
   <body>
     <div class="related">
@@ -48,7 +48,7 @@
           <a href="artview.plugins.CalculateAttenuation.addGeneralOptions.html" title="artview.plugins.CalculateAttenuation.addGeneralOptions"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="artview.plugins.PhaseProcLp.newRadar.html" title="artview.plugins.PhaseProcLp.newRadar"
+          <a href="artview.plugins.PhaseProcLp.phase_proc_lp.html" title="artview.plugins.PhaseProcLp.phase_proc_lp"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">ARTview 0.2.2 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Reference Manual</a> &raquo;</li>
@@ -65,12 +65,36 @@
 <h1>artview.plugins.CalculateAttenuation<a class="headerlink" href="#artview-plugins-calculateattenuation" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="artview.plugins.CalculateAttenuation">
-<em class="property">class </em><tt class="descclassname">artview.plugins.</tt><tt class="descname">CalculateAttenuation</tt><big>(</big><em>Vradar=None</em>, <em>Vgatefilter=None</em>, <em>name='CalculateAttenuation'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="http://plugins/calculate_attenuation.py#L15"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.plugins.CalculateAttenuation" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">artview.plugins.</tt><tt class="descname">CalculateAttenuation</tt><big>(</big><em>Vradar=None</em>, <em>name='CalculateAttenuation'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="http://plugins/calculate_attenuation.py#L15"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.plugins.CalculateAttenuation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><tt class="xref py py-class docutils literal"><span class="pre">artview.core.core.Component</span></tt></a></p>
+<p>Interfase for executing <tt class="xref py py-class docutils literal"><span class="pre">pyart.correct.calculate_attenuation</span></tt></p>
 <dl class="method">
 <dt id="artview.plugins.CalculateAttenuation.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>Vradar=None</em>, <em>Vgatefilter=None</em>, <em>name='CalculateAttenuation'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="http://plugins/calculate_attenuation.py#L24"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.plugins.CalculateAttenuation.__init__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__init__</tt><big>(</big><em>Vradar=None</em>, <em>name='CalculateAttenuation'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="http://plugins/calculate_attenuation.py#L27"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.plugins.CalculateAttenuation.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize the class to create the interface</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>[Optional]</strong> :</p>
+<p><strong>Vradar</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
+<blockquote>
+<div><p>Radar signal variable. 
+A value of None initializes an empty Variable.</p>
+</div></blockquote>
+<p><strong>name</strong> : string</p>
+<blockquote>
+<div><p>Field Radiobutton window name.</p>
+</div></blockquote>
+<p><strong>parent</strong> : PyQt instance</p>
+<blockquote class="last">
+<div><p>Parent instance to associate to this class.
+If None, then Qt owns, otherwise associated with parent PyQt instance.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <p class="rubric">Methods</p>
@@ -81,22 +105,19 @@
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="artview.plugins.CalculateAttenuation.addGeneralOptions.html#artview.plugins.CalculateAttenuation.addGeneralOptions" title="artview.plugins.CalculateAttenuation.addGeneralOptions"><tt class="xref py py-obj docutils literal"><span class="pre">CalculateAttenuation.addGeneralOptions</span></tt></a>()</td>
-<td></td>
+<td>Mount Options Layout</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="artview.plugins.CalculateAttenuation.calculate_attenuation.html#artview.plugins.CalculateAttenuation.calculate_attenuation" title="artview.plugins.CalculateAttenuation.calculate_attenuation"><tt class="xref py py-obj docutils literal"><span class="pre">CalculateAttenuation.calculate_attenuation</span></tt></a>()</td>
-<td></td>
+<td>Mount Options and execute <tt class="xref py py-class docutils literal"><span class="pre">calculate_attenuation</span></tt>.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="artview.plugins.CalculateAttenuation.chooseRadar.html#artview.plugins.CalculateAttenuation.chooseRadar" title="artview.plugins.CalculateAttenuation.chooseRadar"><tt class="xref py py-obj docutils literal"><span class="pre">CalculateAttenuation.chooseRadar</span></tt></a>()</td>
-<td></td>
+<td>Get Radar with <tt class="xref py py-class docutils literal"><span class="pre">VariableChoose</span></tt></td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="artview.plugins.CalculateAttenuation.displayHelp.html#artview.plugins.CalculateAttenuation.displayHelp" title="artview.plugins.CalculateAttenuation.displayHelp"><tt class="xref py py-obj docutils literal"><span class="pre">CalculateAttenuation.displayHelp</span></tt></a>()</td>
-<td></td>
+<td>Display pyart&#8217;s docstring for help</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="artview.plugins.CalculateAttenuation.guiStart.html#artview.plugins.CalculateAttenuation.guiStart" title="artview.plugins.CalculateAttenuation.guiStart"><tt class="xref py py-obj docutils literal"><span class="pre">CalculateAttenuation.guiStart</span></tt></a>([parent])</td>
-<td></td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="artview.plugins.CalculateAttenuation.newRadar.html#artview.plugins.CalculateAttenuation.newRadar" title="artview.plugins.CalculateAttenuation.newRadar"><tt class="xref py py-obj docutils literal"><span class="pre">CalculateAttenuation.newRadar</span></tt></a>(variable,&nbsp;...)</td>
-<td></td>
+<td>Grafical Interface for Starting this Class</td>
 </tr>
 </tbody>
 </table>
@@ -111,8 +132,8 @@
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="artview.plugins.PhaseProcLp.newRadar.html"
-                        title="previous chapter">artview.plugins.PhaseProcLp.newRadar</a></p>
+  <p class="topless"><a href="artview.plugins.PhaseProcLp.phase_proc_lp.html"
+                        title="previous chapter">artview.plugins.PhaseProcLp.phase_proc_lp</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="artview.plugins.CalculateAttenuation.addGeneralOptions.html"
                         title="next chapter">artview.plugins.CalculateAttenuation.addGeneralOptions</a></p>
@@ -154,7 +175,7 @@
           <a href="artview.plugins.CalculateAttenuation.addGeneralOptions.html" title="artview.plugins.CalculateAttenuation.addGeneralOptions"
              >next</a> |</li>
         <li class="right" >
-          <a href="artview.plugins.PhaseProcLp.newRadar.html" title="artview.plugins.PhaseProcLp.newRadar"
+          <a href="artview.plugins.PhaseProcLp.phase_proc_lp.html" title="artview.plugins.PhaseProcLp.phase_proc_lp"
              >previous</a> |</li>
         <li><a href="../../index.html">ARTview 0.2.2 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Reference Manual</a> &raquo;</li>
@@ -163,7 +184,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Jun 29, 2015.
+      Last updated on Jul 03, 2015.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>

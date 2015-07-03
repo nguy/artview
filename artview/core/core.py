@@ -31,7 +31,7 @@ class Variable(QtCore.QObject):
 
         Parameters
         ----------
-        value : 
+        value :
             New Value to be assigned to the variable.
         [Optional]
         strong : bool, optional
@@ -41,7 +41,8 @@ class Variable(QtCore.QObject):
             any costly computation. Reasons for this are: When initialising
             variables, variable is likely to change again shortly, another
             more important variable is being changed as well etc.
-            .. note:
+
+            .. note::
                 Defining how to respond to strong/soft changes is
                 responsibility of the slot, most can just ignore the
                 difference, but the costly ones should be aware.
@@ -91,7 +92,18 @@ class Component(QtGui.QMainWindow):
     '''
 
     def __init__(self, name="Component", parent=None, flags=QtCore.Qt.Widget):
-        '''Initialize the class to create the interface'''
+        '''
+        Initialize the class
+
+        Parameters
+        ----------
+        [Optional]
+        name : string
+            Display window name.
+        parent : PyQt instance
+            Parent instance to associate to Component. If None, then Qt owns,
+            otherwise associated with parent PyQt instance.
+        '''
         super(Component, self).__init__(parent=parent, flags=flags)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose, True)
         self.name = name
@@ -110,7 +122,7 @@ class Component(QtGui.QMainWindow):
         for var in self.sharedVariables.keys():
             self.disconnectSharedVariable(var)
 
-    def connectSharedVariable(self,var):
+    def connectSharedVariable(self, var):
         '''Connect variable 'var' to its slot as defined in
         sharedVariables dictionary'''
         if var in self.sharedVariables:
@@ -122,7 +134,7 @@ class Component(QtGui.QMainWindow):
             raise ValueError("Variable %s is not a shared variable of %s"
                             %(var,self.name))
 
-    def disconnectSharedVariable(self,var):
+    def disconnectSharedVariable(self, var):
         '''Connect variable 'var' to its slot as defined in
         sharedVariables dictionary'''
         if var in self.sharedVariables:
@@ -135,7 +147,7 @@ class Component(QtGui.QMainWindow):
                             %(var,self.name))
 
     def keyPressEvent(self, event):
-        '''Reimplementations, pass keyEvent to parent,
+        '''Reimplementation, pass keyEvent to parent,
         even if a diferent window'''
         if self.parent == None:
             super(Component, self).keyPressEvent(event)
@@ -145,7 +157,7 @@ class Component(QtGui.QMainWindow):
             self.parent.keyPressEvent(event)
 
     def closeEvent(self, QCloseEvent):
-        '''Reimplementations to remove from components list'''
+        '''Reimplementation to remove from components list'''
         componentsList.remove(self)
         self.disconnectAllVariables()
         super(Component, self).closeEvent(QCloseEvent)

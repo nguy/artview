@@ -29,7 +29,7 @@
     <link rel="top" title="ARTview 0.2.2 documentation" href="../../index.html" />
     <link rel="up" title="Main Components (artview.components)" href="../components.html" />
     <link rel="next" title="artview.components.Display.FieldSelectCmd" href="artview.components.Display.FieldSelectCmd.html" />
-    <link rel="prev" title="artview.components.FieldButtonWindow.SetFieldRadioButtons" href="artview.components.FieldButtonWindow.SetFieldRadioButtons.html" /> 
+    <link rel="prev" title="artview.components.ComponentsControl.setupUi" href="artview.components.ComponentsControl.setupUi.html" /> 
   </head>
   <body>
     <div class="related">
@@ -48,11 +48,11 @@
           <a href="artview.components.Display.FieldSelectCmd.html" title="artview.components.Display.FieldSelectCmd"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="artview.components.FieldButtonWindow.SetFieldRadioButtons.html" title="artview.components.FieldButtonWindow.SetFieldRadioButtons"
+          <a href="artview.components.ComponentsControl.setupUi.html" title="artview.components.ComponentsControl.setupUi"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">ARTview 0.2.2 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Reference Manual</a> &raquo;</li>
-          <li><a href="../components.html" accesskey="U">Main Components (<tt class="docutils literal docutils literal docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
+          <li><a href="../components.html" accesskey="U">Main Components (<tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -71,35 +71,35 @@
 from the PyArt pyart.graph package.</p>
 <dl class="method">
 <dt id="artview.components.Display.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>Vradar</em>, <em>Vfield</em>, <em>Vtilt</em>, <em>Vlims=None</em>, <em>name='Display'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="http://components/plot_radar.py#L38"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.Display.__init__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__init__</tt><big>(</big><em>Vradar</em>, <em>Vfield</em>, <em>Vtilt</em>, <em>Vlims=None</em>, <em>name='Display'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="http://components/plot_radar.py#L39"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.Display.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize the class to create display.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>Vradar - Variable instance</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>Vradar</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
 <blockquote>
-<div><p>Radar signal variable to be used.</p>
+<div><p>Radar signal variable.</p>
 </div></blockquote>
-<p><strong>Vfield - Variable instance</strong> :</p>
+<p><strong>Vfield</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
 <blockquote>
-<div><p>Field signal variable to be used.</p>
+<div><p>Field signal variable.</p>
 </div></blockquote>
-<p><strong>Vtilt - Variable instance</strong> :</p>
+<p><strong>Vtilt</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
 <blockquote>
-<div><p>Tilt signal variable to be used.</p>
+<div><p>Tilt signal variable.</p>
 </div></blockquote>
 <p><strong>[Optional]</strong> :</p>
-<p><strong>Vlims - Variable instance</strong> :</p>
+<p><strong>Vlims</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
 <blockquote>
-<div><p>Limits signal variable to be used.
+<div><p>Limits signal variable.
 A value of None will instantiate a limits variable.</p>
 </div></blockquote>
-<p><strong>name - string</strong> :</p>
+<p><strong>name</strong> : string</p>
 <blockquote>
 <div><p>Display window name.</p>
 </div></blockquote>
-<p><strong>parent - PyQt instance</strong> :</p>
+<p><strong>parent</strong> : PyQt instance</p>
 <blockquote class="last">
 <div><p>Parent instance to associate to Display window.
 If None, then Qt owns, otherwise associated with parent PyQt instance.</p>
@@ -120,29 +120,29 @@ change value back to variable.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="artview.components.Display.FieldSelectCmd.html#artview.components.Display.FieldSelectCmd" title="artview.components.Display.FieldSelectCmd"><tt class="xref py py-obj docutils literal"><span class="pre">Display.FieldSelectCmd</span></tt></a>(nombre)</td>
-<td>Captures field selection and redraws the new field.</td>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.Display.FieldSelectCmd.html#artview.components.Display.FieldSelectCmd" title="artview.components.Display.FieldSelectCmd"><tt class="xref py py-obj docutils literal"><span class="pre">Display.FieldSelectCmd</span></tt></a>(name)</td>
+<td>Captures field selection and update field <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a>.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="artview.components.Display.LaunchGUI.html#artview.components.Display.LaunchGUI" title="artview.components.Display.LaunchGUI"><tt class="xref py py-obj docutils literal"><span class="pre">Display.LaunchGUI</span></tt></a>()</td>
 <td>Launches a GUI interface.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="artview.components.Display.NewField.html#artview.components.Display.NewField" title="artview.components.Display.NewField"><tt class="xref py py-obj docutils literal"><span class="pre">Display.NewField</span></tt></a>(variable,&nbsp;value,&nbsp;strong)</td>
-<td>Display changes after field in Variable class is altered.</td>
+<td>Slot for &#8216;ValueChanged&#8217; signal of <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Vfield</span></tt></a>.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="artview.components.Display.NewLims.html#artview.components.Display.NewLims" title="artview.components.Display.NewLims"><tt class="xref py py-obj docutils literal"><span class="pre">Display.NewLims</span></tt></a>(variable,&nbsp;value,&nbsp;strong)</td>
-<td>Display changes after limits in Variable class is altered.</td>
+<td>Slot for &#8216;ValueChanged&#8217; signal of <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Vlims</span></tt></a>.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="artview.components.Display.NewRadar.html#artview.components.Display.NewRadar" title="artview.components.Display.NewRadar"><tt class="xref py py-obj docutils literal"><span class="pre">Display.NewRadar</span></tt></a>(variable,&nbsp;value,&nbsp;strong)</td>
-<td>Display changes after radar Variable class is altered.</td>
+<td>Slot for &#8216;ValueChanged&#8217; signal of <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Vradar</span></tt></a>.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="artview.components.Display.NewTilt.html#artview.components.Display.NewTilt" title="artview.components.Display.NewTilt"><tt class="xref py py-obj docutils literal"><span class="pre">Display.NewTilt</span></tt></a>(variable,&nbsp;value,&nbsp;strong)</td>
-<td>Display changes after tilt in Variable class is altered.</td>
+<td>Slot for &#8216;ValueChanged&#8217; signal of <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Vtilt</span></tt></a>.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="artview.components.Display.RngRingSelectCmd.html#artview.components.Display.RngRingSelectCmd" title="artview.components.Display.RngRingSelectCmd"><tt class="xref py py-obj docutils literal"><span class="pre">Display.RngRingSelectCmd</span></tt></a>(ringSel)</td>
 <td>Captures Range Ring selection and redraws the field with range rings.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="artview.components.Display.TiltSelectCmd.html#artview.components.Display.TiltSelectCmd" title="artview.components.Display.TiltSelectCmd"><tt class="xref py py-obj docutils literal"><span class="pre">Display.TiltSelectCmd</span></tt></a>(ntilt)</td>
-<td>Captures tilt selection and redraws the field with new tilt.</td>
+<td>Captures tilt selection and update tilt <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a>.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="artview.components.Display.addButtons.html#artview.components.Display.addButtons" title="artview.components.Display.addButtons"><tt class="xref py py-obj docutils literal"><span class="pre">Display.addButtons</span></tt></a>()</td>
 <td>Add a series of buttons for user control over display.</td>
@@ -151,10 +151,10 @@ change value back to variable.</p>
 <td>Captures colormap selection and redraws.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="artview.components.Display.guiStart.html#artview.components.Display.guiStart" title="artview.components.Display.guiStart"><tt class="xref py py-obj docutils literal"><span class="pre">Display.guiStart</span></tt></a>([parent])</td>
-<td></td>
+<td>Grafical Interface for Starting this Class</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="artview.components.Display.keyPressEvent.html#artview.components.Display.keyPressEvent" title="artview.components.Display.keyPressEvent"><tt class="xref py py-obj docutils literal"><span class="pre">Display.keyPressEvent</span></tt></a>(event)</td>
-<td>Allow tilt adjustment via the Up-Down arrow keys.</td>
+<td>Reimplementation, allow tilt adjustment via the Up-Down arrow keys.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="artview.components.Display.setUILayout.html#artview.components.Display.setUILayout" title="artview.components.Display.setUILayout"><tt class="xref py py-obj docutils literal"><span class="pre">Display.setUILayout</span></tt></a>()</td>
 <td>Setup the button/display UI layout.</td>
@@ -187,8 +187,8 @@ change value back to variable.</p>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="artview.components.FieldButtonWindow.SetFieldRadioButtons.html"
-                        title="previous chapter">artview.components.FieldButtonWindow.SetFieldRadioButtons</a></p>
+  <p class="topless"><a href="artview.components.ComponentsControl.setupUi.html"
+                        title="previous chapter">artview.components.ComponentsControl.setupUi</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="artview.components.Display.FieldSelectCmd.html"
                         title="next chapter">artview.components.Display.FieldSelectCmd</a></p>
@@ -230,16 +230,16 @@ change value back to variable.</p>
           <a href="artview.components.Display.FieldSelectCmd.html" title="artview.components.Display.FieldSelectCmd"
              >next</a> |</li>
         <li class="right" >
-          <a href="artview.components.FieldButtonWindow.SetFieldRadioButtons.html" title="artview.components.FieldButtonWindow.SetFieldRadioButtons"
+          <a href="artview.components.ComponentsControl.setupUi.html" title="artview.components.ComponentsControl.setupUi"
              >previous</a> |</li>
         <li><a href="../../index.html">ARTview 0.2.2 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Reference Manual</a> &raquo;</li>
-          <li><a href="../components.html" >Main Components (<tt class="docutils literal docutils literal docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
+          <li><a href="../components.html" >Main Components (<tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Jun 29, 2015.
+      Last updated on Jul 03, 2015.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>

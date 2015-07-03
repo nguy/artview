@@ -19,7 +19,6 @@ artview.plugins.CalculateAttenuation
          CalculateAttenuation.chooseRadar
          CalculateAttenuation.displayHelp
          CalculateAttenuation.guiStart
-         CalculateAttenuation.newRadar
    
    
 

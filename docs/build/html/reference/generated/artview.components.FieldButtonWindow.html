@@ -52,7 +52,7 @@
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">ARTview 0.2.2 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Reference Manual</a> &raquo;</li>
-          <li><a href="../components.html" accesskey="U">Main Components (<tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
+          <li><a href="../components.html" accesskey="U">Main Components (<tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -76,20 +76,20 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>Vradar - Variable instance</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>Vradar</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
 <blockquote>
-<div><p>Radar signal variable to be used.</p>
+<div><p>Radar signal variable.</p>
 </div></blockquote>
-<p><strong>Vfield - Variable instance</strong> :</p>
+<p><strong>Vfield</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
 <blockquote>
-<div><p>Field signal variable to be used.</p>
+<div><p>Field signal variable.</p>
 </div></blockquote>
 <p><strong>[Optional]</strong> :</p>
-<p><strong>name - string</strong> :</p>
+<p><strong>name</strong> : string</p>
 <blockquote>
 <div><p>Field Radiobutton window name.</p>
 </div></blockquote>
-<p><strong>parent - PyQt instance</strong> :</p>
+<p><strong>parent</strong> : PyQt instance</p>
 <blockquote class="last">
 <div><p>Parent instance to associate to FieldButtonWindow.
 If None, then Qt owns, otherwise associated with parent PyQt instance.</p>
@@ -111,16 +111,16 @@ change value back to variable.</p>
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="artview.components.FieldButtonWindow.CreateFieldWidget.html#artview.components.FieldButtonWindow.CreateFieldWidget" title="artview.components.FieldButtonWindow.CreateFieldWidget"><tt class="xref py py-obj docutils literal"><span class="pre">FieldButtonWindow.CreateFieldWidget</span></tt></a>()</td>
-<td>Create a widget to store radio buttons to control tilt adjust.</td>
+<td>Create a widget to store radio buttons to control field adjust.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="artview.components.FieldButtonWindow.FieldSelectCmd.html#artview.components.FieldButtonWindow.FieldSelectCmd" title="artview.components.FieldButtonWindow.FieldSelectCmd"><tt class="xref py py-obj docutils literal"><span class="pre">FieldButtonWindow.FieldSelectCmd</span></tt></a>(field)</td>
-<td>Captures a selection and redraws the field with new tilt.</td>
+<td>Captures a selection and update field variable.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="artview.components.FieldButtonWindow.NewField.html#artview.components.FieldButtonWindow.NewField" title="artview.components.FieldButtonWindow.NewField"><tt class="xref py py-obj docutils literal"><span class="pre">FieldButtonWindow.NewField</span></tt></a>(variable,&nbsp;value,&nbsp;...)</td>
-<td>Record the selected button by updating the dictionary.</td>
+<td>Slot for &#8216;ValueChanged&#8217; signal of <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Vfield</span></tt></a>.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="artview.components.FieldButtonWindow.NewRadar.html#artview.components.FieldButtonWindow.NewRadar" title="artview.components.FieldButtonWindow.NewRadar"><tt class="xref py py-obj docutils literal"><span class="pre">FieldButtonWindow.NewRadar</span></tt></a>(variable,&nbsp;value,&nbsp;...)</td>
-<td>Update the field list when radar variable is changed.</td>
+<td>Slot for &#8216;ValueChanged&#8217; signal of <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Vradar</span></tt></a>.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="artview.components.FieldButtonWindow.SetFieldRadioButtons.html#artview.components.FieldButtonWindow.SetFieldRadioButtons" title="artview.components.FieldButtonWindow.SetFieldRadioButtons"><tt class="xref py py-obj docutils literal"><span class="pre">FieldButtonWindow.SetFieldRadioButtons</span></tt></a>()</td>
 <td>Set a field selection using radio buttons</td>
@@ -185,12 +185,12 @@ change value back to variable.</p>
              >previous</a> |</li>
         <li><a href="../../index.html">ARTview 0.2.2 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Reference Manual</a> &raquo;</li>
-          <li><a href="../components.html" >Main Components (<tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
+          <li><a href="../components.html" >Main Components (<tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Jun 29, 2015.
+      Last updated on Jul 03, 2015.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>

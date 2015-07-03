@@ -26,7 +26,6 @@ artview.components.Menu
          Menu.addLayoutMenu
          Menu.addLayoutMenuItem
          Menu.addLayoutWidget
-         Menu.addPlotMenu
          Menu.keyPressEvent
          Menu.removeLayoutMenuItem
          Menu.removeLayoutWidget

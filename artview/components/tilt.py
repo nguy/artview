@@ -19,15 +19,15 @@ class TiltButtonWindow(Component):
 
         Parameters
         ----------
-        Vtilt - Variable instance
-            Tilt signal variable to be used.
-        Vradar, Vgrid - Variable instance
-            Radar/Grid signal variable to be used. None will create empty variable.
+        Vtilt : :py:class:`~artview.core.core.Variable` instance
+            Tilt signal variable.
+        Vradar, Vgrid : :py:class:`~artview.core.core.Variable` instance
+            Radar/Grid signal variable. None will create empty variable.
             For correct behavior one and just one of those should be provided
         [Optional]
-        name - string
+        name : string
             Tilt Radiobutton window name.
-        parent - PyQt instance
+        parent : PyQt instance
             Parent instance to associate to TiltButtonWindow window.
             If None, then Qt owns, otherwise associated with parent PyQt instance.
 
@@ -35,7 +35,7 @@ class TiltButtonWindow(Component):
         -----
         This class records the selected button and passes the
         change value back to variable.
-    '''
+        '''
         super(TiltButtonWindow, self).__init__(name=name, parent=parent)
 
         # Set up signal, so that DISPLAY can react to external 
@@ -67,7 +67,7 @@ class TiltButtonWindow(Component):
     ########################
         
     def TiltSelectCmd(self, ntilt):
-        '''Captures a selection and redraws the field with new tilt.'''
+        '''Captures a selection and update tilt variable.'''
         self.Vtilt.change(ntilt)
 
     def CreateTiltWidget(self):
@@ -118,19 +118,34 @@ class TiltButtonWindow(Component):
         self.NewTilt(self.Vtilt, self.Vtilt.value, True)  # setChecked the current tilt
 
     def NewTilt(self, variable, value, strong):
-        '''Record the selected button by updating the list.'''
+        '''Slot for 'ValueChanged' signal of :py:class:`Vtilt <artview.core.core.Variable>`.
+
+        This will:
+
+        * Update radio check
+        '''
         tilt = self.Vtilt.value
         if tilt >= 0 and tilt < len(self.tiltbutton):
             self.tiltbutton[tilt].setChecked(True)
     
     def NewRadar(self, variable, value, strong):
-        '''Update the field list when radar variable is changed.'''
+        '''Slot for 'ValueChanged' signal of :py:class:`Vradar <artview.core.core.Variable>`.
+
+        This will:
+
+        * Recreate radio itens
+        '''
         # update tilt list
         self.CreateTiltWidget()
         self.SetTiltRadioButtonsRadar()
 
     def NewGrid(self, variable, value, strong):
-        '''Update the field list when grid variable is changed.'''
+        '''Slot for 'ValueChanged' signal of :py:class:`Vgrid <artview.core.core.Variable>`.
+
+        This will:
+
+        * Recreate radio itens
+        '''
         # update tilt list
         self.CreateTiltWidget()
         self.SetTiltRadioButtonsGrid()

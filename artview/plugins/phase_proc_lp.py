@@ -13,15 +13,31 @@ import pyart
 import time
 
 class PhaseProcLp(core.Component):
-
+    '''
+    Interfase for executing :py:class:`pyart.correct.phase_proc_lp`
+    '''
     @classmethod
     def guiStart(self, parent=None):
+        '''Grafical Interface for Starting this Class'''
         kwargs, independent = common._SimplePluginStart("PhaseProcLp").startDisplay()
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
-    def __init__(self, Vradar=None, Vgatefilter=None, name="PhaseProcLp", parent=None):
-        '''Initialize the class to create the interface'''
+    def __init__(self, Vradar=None, name="PhaseProcLp", parent=None):
+        '''Initialize the class to create the interface
+
+        Parameters
+        ----------
+        [Optional]
+        Vradar : :py:class:`~artview.core.core.Variable` instance
+            Radar signal variable. 
+            A value of None initializes an empty Variable.
+        name : string
+            Field Radiobutton window name.
+        parent : PyQt instance
+            Parent instance to associate to this class.
+            If None, then Qt owns, otherwise associated with parent PyQt instance.
+        '''
         super(PhaseProcLp, self).__init__(name=name, parent=parent)
         self.central_widget = QtGui.QWidget()
         self.setCentralWidget(self.central_widget)
@@ -32,7 +48,7 @@ class PhaseProcLp(core.Component):
         else:
             self.Vradar = Vradar
 
-        self.sharedVariables = {"Vradar": self.newRadar}
+        self.sharedVariables = {"Vradar": None}
         self.connectAllVariables()
         
         self.generalLayout = QtGui.QGridLayout()
@@ -43,7 +59,7 @@ class PhaseProcLp(core.Component):
         self.layout.addWidget(self.button, 1, 0, 1, 1)
 
         self.button = QtGui.QPushButton("Correct")
-        self.button.clicked.connect(self.calculate_attenuation)
+        self.button.clicked.connect(self.phase_proc_lp)
         self.layout.addWidget(self.button, 1, 1, 1, 1)
 
         self.addGeneralOptions()
@@ -53,7 +69,7 @@ class PhaseProcLp(core.Component):
         self.show()
 
     def addGeneralOptions(self):
-
+        '''Mount Options Layout'''
         self.radarButton = QtGui.QPushButton("Find Variable")
         self.radarButton.clicked.connect(self.chooseRadar)
         self.generalLayout.addWidget(QtGui.QLabel("Radar"), 0, 0)
@@ -183,23 +199,27 @@ class PhaseProcLp(core.Component):
         self.generalLayout.addWidget(self.sobKdp, 24, 1)
 
     def chooseRadar(self):
+        '''Get Radar with :py:class:`~artview.core.VariableChoose`'''
         item = core.VariableChoose().chooseVariable()
         if item is None:
             return
         else:
             self.Vradar = getattr(item[1],item[2])
 
-    def newRadar(self, variable, value, strong):
-        if self.Vradar.value is None:
-            return
-
     def displayHelp(self):
+        '''Display pyart's docstring for help'''
         common.ShowLongText(pyart.correct.phase_proc_lp.__doc__)
 
-    def calculate_attenuation(self):
+    def phase_proc_lp(self):
+        '''Mount Options and execute :py:class:`~pyart.correct.phase_proc_lp`.
+        The resulting fields are added to Vradar.
+        Vradar is updated, strong or weak depending on overwriting old fields.
+        '''
+        # test radar
         if self.Vradar.value is None:
             common.ShowWarning("Radar is None, can not perform correction")
             return
+        # mount options
         args = {
             'radar': self.Vradar.value,
             'offset': self.offset.value(),
@@ -225,36 +245,38 @@ class PhaseProcLp(core.Component):
             'window_len': self.windowLen.value(),
             'proc': self.proc.value(),
         }
-
         print args
-        print "Correcting .."
 
+        # execute
+        print "Correcting .."
         t0 = time.time()
         reproc_phase, sob_kdp = pyart.correct.phase_proc_lp(**args)
         t1 = time.time()
         common.ShowWarning("Correction took %fs"%(t1-t0))
 
+        # verify field overwriting
         reproc_phase_name = str(self.reprocPhase.text())
         sob_kdp_name = str(self.sobKdp.text())
 
         strong_update = False #insertion is weak, overwrite strong
         if reproc_phase_name in self.Vradar.value.fields.keys():
-            resp=common.ShowQuestion("Field %s already exists! Do you want to over write it?"%reproc_phase_name)
+            resp=common.ShowQuestion("Field %s already exists! Do you want to overwrite it?"%reproc_phase_name)
             if resp != QtGui.QMessageBox.Ok:
                 return
             else:
                 strong_update = True
 
         if sob_kdp_name in self.Vradar.value.fields.keys():
-            resp=common.ShowQuestion("Field %s already exists! Do you want to over write it?"%sob_kdp_name)
+            resp=common.ShowQuestion("Field %s already exists! Do you want to overwrite it?"%sob_kdp_name)
             if resp != QtGui.QMessageBox.Ok:
                 return
             else:
                 strong_update = True
 
+        # add fields and update
         self.Vradar.value.add_field(reproc_phase_name, reproc_phase, True)
         self.Vradar.value.add_field(sob_kdp_name, sob_kdp, True)
-        self.Vradar.change(self.Vradar.value, strong_update) #XXX weak/strong update!?!
+        self.Vradar.change(self.Vradar.value, strong_update)
         print "Correction took %fs"%(t1-t0)
 
     def _clearLayout(self, layout):

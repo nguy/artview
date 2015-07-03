@@ -14,6 +14,7 @@ ARTview offer some basic Components for visualisation of data using Py-ART.
     Menu
     TiltButtonWindow
     FieldButtonWindow
+    ComponentsControl
 """
 
 from .plot_radar import Display

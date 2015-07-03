@@ -1,6 +1,0 @@
-artview.plugins.Mapper.constantRoiOptions
-=========================================
-
-.. currentmodule:: artview.plugins
-
-.. automethod:: Mapper.constantRoiOptions
