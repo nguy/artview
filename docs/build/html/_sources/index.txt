@@ -12,7 +12,7 @@ Contents:
    :maxdepth: 1
 
    reference/index
-
+   tutorial
 
 
 Indices and tables

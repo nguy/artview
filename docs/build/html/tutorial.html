@@ -1,0 +1,236 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Tutorial: Writing your own Script &mdash; ARTview 0.2.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/scipy.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.2.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="ARTview 0.2.2 documentation" href="index.html" />
+    <link rel="prev" title="artview.scripts.map_to_grid" href="reference/generated/artview.scripts.map_to_grid.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="reference/generated/artview.scripts.map_to_grid.html" title="artview.scripts.map_to_grid"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">ARTview 0.2.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="tutorial-writing-your-own-script">
+<h1>Tutorial: Writing your own Script<a class="headerlink" href="#tutorial-writing-your-own-script" title="Permalink to this headline">¶</a></h1>
+<blockquote>
+<div>This Section is intended as a walkthrough for the creation of custom script in
+artview. It is also usefull to undertand how to use artview package. It covers
+the basics of starting components and how to make they interact with each
+other.</div></blockquote>
+<div class="section" id="the-basics">
+<h2>The Basics<a class="headerlink" href="#the-basics" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>Artview run over PyQt, therefore before before using any component you need to
+start a PyQt aplication. After defining what you want, you need to get it to
+run, otherwise windows will not respond. Your basic script look like this</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">artview</span>
+<span class="kn">from</span> <span class="nn">PyQt4</span> <span class="kn">import</span> <span class="n">QtGui</span>
+
+<span class="c"># start pyqt</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QApplication</span><span class="p">()</span>
+
+<span class="c">###########################</span>
+<span class="c">#     do something        #</span>
+<span class="c">###########################</span>
+
+<span class="c"># start program</span>
+<span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span> <span class="c"># lock until all windows are closed</span>
+</pre></div>
+</div>
+<p>So the whole question is about what do between those line. The most simple
+thing you can do is start a single component (or plugin), for instance
+<a class="reference internal" href="reference/generated/artview.components.Menu.html#artview.components.Menu" title="artview.components.Menu"><tt class="xref py py-class docutils literal"><span class="pre">Menu</span></tt></a>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">artview</span>
+<span class="kn">from</span> <span class="nn">PyQt4</span> <span class="kn">import</span> <span class="n">QtGui</span>
+
+<span class="c"># start pyqt</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QApplication</span><span class="p">()</span>
+
+<span class="c"># start Menu</span>
+<span class="n">menu</span> <span class="o">=</span> <span class="n">Menu</span><span class="p">(</span><span class="n">DirIn</span><span class="o">=</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;Menu&quot;</span><span class="p">)</span>
+
+<span class="c"># start program</span>
+<span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span> <span class="c"># lock until all windows are closed</span>
+</pre></div>
+</div>
+<p>This will open a Menu instance with name &#8220;Menu&#8221;, giving every new instance a
+diferent name is important for identifing them afterwards.</p>
+<p>A slightly more useful component is a <a class="reference internal" href="reference/generated/artview.components.Display.html#artview.components.Display" title="artview.components.Display"><tt class="xref py py-class docutils literal"><span class="pre">Display</span></tt></a>,
+but this new a <tt class="xref py py-class docutils literal"><span class="pre">pyart.core.Radar</span></tt> instance. Luckly Py-ART has some
+exemple we can use:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">artview</span>
+<span class="kn">from</span> <span class="nn">PyQt4</span> <span class="kn">import</span> <span class="n">QtGui</span>
+
+<span class="c"># start pyqt</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QApplication</span><span class="p">()</span>
+
+<span class="c"># get exemple radar from pyart</span>
+<span class="kn">import</span> <span class="nn">pyart</span>
+<span class="n">radar</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">make_target_radar</span><span class="p">()</span>
+
+<span class="c"># start shared variables</span>
+<span class="n">Vradar</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">radar</span><span class="p">)</span>
+<span class="n">Vfield</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="s">&#39;reflectivity&#39;</span><span class="p">)</span>
+<span class="n">Vtilt</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c">#  first sweep</span>
+
+<span class="c"># start display</span>
+<span class="n">display</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Display</span><span class="p">(</span><span class="n">Vradar</span><span class="p">,</span> <span class="n">Vfield</span><span class="p">,</span> <span class="n">Vtilt</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;DisplayRadar&quot;</span><span class="p">)</span>
+
+<span class="c"># start program</span>
+<span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span> <span class="c"># lock until all windows are closed</span>
+</pre></div>
+</div>
+<p>So here things start to get more complicated, why we couldn&#8217;t pass radar to
+<a class="reference internal" href="reference/generated/artview.components.Display.html#artview.components.Display" title="artview.components.Display"><tt class="xref py py-class docutils literal"><span class="pre">Display</span></tt></a>, but rather need to put it inside
+<a class="reference internal" href="reference/generated/artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a>? The thing we want display to be
+able to share this radar with other components, in C this could be done
+using points, this is kind of an equivalent for python.</p>
+</div></blockquote>
+</div>
+<div class="section" id="shared-variables">
+<h2>Shared Variables<a class="headerlink" href="#shared-variables" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>The use of shared variables is a important part of ARTview, all variables
+that expect <a class="reference internal" href="reference/generated/artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> are marked with a capital
+V. Let see how this work, <a class="reference internal" href="reference/generated/artview.components.Menu.html#artview.components.Menu" title="artview.components.Menu"><tt class="xref py py-class docutils literal"><span class="pre">Menu</span></tt></a> has the
+possibility of opennig radar files and put them in <tt class="xref py py-class docutils literal"><span class="pre">Menu.Vradar</span></tt>, we
+want to use display to plot this files. This is simple instead of creating a
+new <a class="reference internal" href="reference/generated/artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> we take it from
+<a class="reference internal" href="reference/generated/artview.components.Menu.html#artview.components.Menu" title="artview.components.Menu"><tt class="xref py py-class docutils literal"><span class="pre">Menu</span></tt></a> and pass to
+<a class="reference internal" href="reference/generated/artview.components.Display.html#artview.components.Display" title="artview.components.Display"><tt class="xref py py-class docutils literal"><span class="pre">Display</span></tt></a>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">artview</span>
+<span class="kn">from</span> <span class="nn">PyQt4</span> <span class="kn">import</span> <span class="n">QtGui</span>
+
+<span class="c"># start pyqt</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QApplication</span><span class="p">()</span>
+
+<span class="c"># start Menu</span>
+<span class="n">menu</span> <span class="o">=</span> <span class="n">Menu</span><span class="p">(</span><span class="n">DirIn</span><span class="o">=</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;Menu&quot;</span><span class="p">)</span>
+
+<span class="c"># get Vradar from menu</span>
+<span class="n">Vradar</span> <span class="o">=</span> <span class="n">menu</span><span class="o">.</span><span class="n">Vradar</span>
+
+<span class="c"># start the other shared variables</span>
+<span class="n">Vfield</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="s">&#39;reflectivity&#39;</span><span class="p">)</span>
+<span class="n">Vtilt</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c">#  first sweep</span>
+
+<span class="c"># start display</span>
+<span class="n">display</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Display</span><span class="p">(</span><span class="n">Vradar</span><span class="p">,</span> <span class="n">Vfield</span><span class="p">,</span> <span class="n">Vtilt</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;DisplayRadar&quot;</span><span class="p">)</span>
+
+<span class="c"># start program</span>
+<span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span> <span class="c"># lock until all windows are closed</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Tutorial: Writing your own Script</a><ul>
+<li><a class="reference internal" href="#the-basics">The Basics</a></li>
+<li><a class="reference internal" href="#shared-variables">Shared Variables</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="reference/generated/artview.scripts.map_to_grid.html"
+                        title="previous chapter">artview.scripts.map_to_grid</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/tutorial.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="reference/generated/artview.scripts.map_to_grid.html" title="artview.scripts.map_to_grid"
+             >previous</a> |</li>
+        <li><a href="index.html">ARTview 0.2.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Nick Guy.
+      Last updated on Jul 03, 2015.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
