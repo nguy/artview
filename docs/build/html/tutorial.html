@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -13,7 +15,7 @@
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
+        URL_ROOT:    '',
         VERSION:     '0.2.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
@@ -25,7 +27,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="ARTview 0.2.2 documentation" href="index.html" />
-    <link rel="prev" title="artview.scripts.standard" href="reference/generated/artview.scripts.standard.html" /> 
+    <link rel="prev" title="artview.scripts.map_to_grid" href="reference/generated/artview.scripts.map_to_grid.html" /> 
   </head>
   <body>
     <div class="related">
@@ -41,7 +43,7 @@
           <a href="np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="reference/generated/artview.scripts.standard.html" title="artview.scripts.standard"
+          <a href="reference/generated/artview.scripts.map_to_grid.html" title="artview.scripts.map_to_grid"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">ARTview 0.2.2 documentation</a> &raquo;</li> 
       </ul>
@@ -101,7 +103,7 @@ simple thing you can do is start a single
 instance a different name is important for identifying them afterward.</p>
 <p>A slightly more useful component is a
 <a class="reference internal" href="reference/generated/artview.components.Display.html#artview.components.Display" title="artview.components.Display"><tt class="xref py py-class docutils literal"><span class="pre">Display</span></tt></a>, but this need a
-<tt class="xref py py-class docutils literal"><span class="pre">pyart.core.Radar</span></tt> instance. Luckily Py-ART has some example we
+<a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.core.Radar.html#pyart.core.Radar" title="(in Py-ART v1.4)"><tt class="xref py py-class docutils literal"><span class="pre">pyart.core.Radar</span></tt></a> instance. Luckily Py-ART has some example we
 can use:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">artview</span>
 <span class="kn">from</span> <span class="nn">PyQt4</span> <span class="kn">import</span> <span class="n">QtGui</span>
@@ -137,11 +139,11 @@ an equivalent for python, more about that in the next section.</p>
 <div class="section" id="shared-variables">
 <h2>Shared Variables<a class="headerlink" href="#shared-variables" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><p>The use of shared variables is an important part of ARTview, all variables
+<div><p>The use of shared variables is an important part of ARTview, all attributes
 that expect a <a class="reference internal" href="reference/generated/artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance are marked
 with a capital V. Let see how this work, lets try the following:
 <a class="reference internal" href="reference/generated/artview.components.Menu.html#artview.components.Menu" title="artview.components.Menu"><tt class="xref py py-class docutils literal"><span class="pre">Menu</span></tt></a> has the possibility of opening radar
-files and put them in <tt class="xref py py-class docutils literal"><span class="pre">Menu.Vradar</span></tt>, we want to use display to
+files and put them in <tt class="xref py py-attr docutils literal"><span class="pre">Menu.Vradar</span></tt>, we want to use display to
 plot this files. This is simple: instead of creating a new
 <a class="reference internal" href="reference/generated/artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> we take it from
 <a class="reference internal" href="reference/generated/artview.components.Menu.html#artview.components.Menu" title="artview.components.Menu"><tt class="xref py py-class docutils literal"><span class="pre">Menu</span></tt></a> and pass to
@@ -336,7 +338,7 @@ there.</p>
 <h2>Plug-ins<a class="headerlink" href="#plug-ins" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>Plug-ins are define as user specific components that don&#8217;t interfere in
-the over all working of ARTview, they are all found in the artview/plugins
+the over all working of ARTview, they are all found in the <a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/plugins">artview/plugins</a>
 folder and accessed in <a class="reference internal" href="reference/plugins.html#module-artview.plugins" title="artview.plugins"><tt class="xref py py-class docutils literal"><span class="pre">artview.plugins</span></tt></a>. For specific
 information on what each plug-in does please see the reference-manual, I
 just want to say that by default we ask that all plug-ins have the
@@ -355,16 +357,16 @@ following at your script</p>
 <div class="section" id="official-scripts">
 <h2>Official Scripts<a class="headerlink" href="#official-scripts" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><p>ARTview has a artview/scripts folder where some &#8220;official&#8221; scripts are
+<div><p>ARTview has a <a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/scripts">artview/scripts</a> folder where some &#8220;official&#8221; scripts are
 found, including the standard one that is executed with the
-<cite>python -m artview</cite> command. We don&#8217;t particularly recommend putting your
+<tt class="docutils literal"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">artview</span></tt> command. We don&#8217;t particularly recommend putting your
 script there as some details on how that folder work may change with time.
 However as for now if you want to put it there you should do two things:</p>
 <ul class="simple">
 <li>Put your script inside a run function
-<cite>def run(DirIn=&#8217;./&#8217;, filename=None, field=None):</cite></li>
+<tt class="docutils literal"><span class="pre">def</span> <span class="pre">run(DirIn='./',</span> <span class="pre">filename=None,</span> <span class="pre">field=None):</span></tt></li>
 <li>Don&#8217;t import artview, but its parts relatively, that is:
-<cite>from .. import core, components, plugins</cite></li>
+<tt class="docutils literal"><span class="pre">from</span> <span class="pre">..</span> <span class="pre">import</span> <span class="pre">core,</span> <span class="pre">components,</span> <span class="pre">plugins</span></tt></li>
 </ul>
 <p>Doing this you may found your script according to its file name in
 <a class="reference internal" href="reference/scripts.html#module-artview.scripts" title="artview.scripts"><tt class="xref py py-class docutils literal"><span class="pre">artview.scripts</span></tt></a></p>
@@ -391,8 +393,8 @@ However as for now if you want to put it there you should do two things:</p>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="reference/generated/artview.scripts.standard.html"
-                        title="previous chapter">artview.scripts.standard</a></p>
+  <p class="topless"><a href="reference/generated/artview.scripts.map_to_grid.html"
+                        title="previous chapter">artview.scripts.map_to_grid</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/tutorial.txt"
@@ -428,7 +430,7 @@ However as for now if you want to put it there you should do two things:</p>
           <a href="np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="reference/generated/artview.scripts.standard.html" title="artview.scripts.standard"
+          <a href="reference/generated/artview.scripts.map_to_grid.html" title="artview.scripts.map_to_grid"
              >previous</a> |</li>
         <li><a href="index.html">ARTview 0.2.2 documentation</a> &raquo;</li> 
       </ul>
@@ -436,7 +438,7 @@ However as for now if you want to put it there you should do two things:</p>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
       Last updated on Jul 06, 2015.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

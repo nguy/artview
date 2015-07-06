@@ -90,11 +90,11 @@ The Basics
 Shared Variables
 ----------------
 
-    The use of shared variables is an important part of ARTview, all variables
+    The use of shared variables is an important part of ARTview, all attributes
     that expect a :py:class:`~artview.core.core.Variable` instance are marked
     with a capital V. Let see how this work, lets try the following:
     :py:class:`~artview.components.Menu` has the possibility of opening radar
-    files and put them in :py:class:`Menu.Vradar`, we want to use display to
+    files and put them in :py:attr:`Menu.Vradar`, we want to use display to
     plot this files. This is simple: instead of creating a new
     :py:class:`~artview.core.core.Variable` we take it from
     :py:class:`~artview.components.Menu` and pass to
@@ -302,7 +302,7 @@ Plug-ins
 --------
 
     Plug-ins are define as user specific components that don't interfere in
-    the over all working of ARTview, they are all found in the artview/plugins
+    the over all working of ARTview, they are all found in the :file:`artview/plugins`
     folder and accessed in :py:class:`artview.plugins`. For specific
     information on what each plug-in does please see the reference-manual, I
     just want to say that by default we ask that all plug-ins have the
@@ -321,17 +321,17 @@ Plug-ins
 Official Scripts
 ----------------
 
-    ARTview has a artview/scripts folder where some "official" scripts are
+    ARTview has a :file:`artview/scripts` folder where some "official" scripts are
     found, including the standard one that is executed with the
-    `python -m artview` command. We don't particularly recommend putting your
+    ``python -m artview`` command. We don't particularly recommend putting your
     script there as some details on how that folder work may change with time.
     However as for now if you want to put it there you should do two things:
 
     * Put your script inside a run function
-      `def run(DirIn='./', filename=None, field=None):`
+      ``def run(DirIn='./', filename=None, field=None):``
 
     * Don't import artview, but its parts relatively, that is:
-      `from .. import core, components, plugins`
+      ``from .. import core, components, plugins``
 
     Doing this you may found your script according to its file name in
     :py:class:`artview.scripts`

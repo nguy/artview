@@ -18,6 +18,32 @@ from PyQt4 import QtGui, QtCore
 class Variable(QtCore.QObject):
     '''
     Class that holds a value, changing that with change() emits a signal
+
+    There is no mandatory naming for instances of this Class, however ARTview
+    components name variable according to the following table, using it is
+    recommended:
+
+    +-----------+------------------------------+-----------------------------+
+    | Name      | Function                     | Valid values                |
+    +===========+==============================+=============================+
+    | Vradar    | Hold radar open with pyart   | :py:class:`pyart.core.Radar`|
+    |           |                              | instance                    |
+    +-----------+------------------------------+-----------------------------+
+    | Vfield    | Name of a Field in radar file|string in radar.fields.keys()|
+    +-----------+------------------------------+-----------------------------+
+    | Vtitl     | Tilt (sweep) of a radar file | int between 0 and           |
+    |           |                              | (number of sweeps)-1        |
+    +-----------+------------------------------+-----------------------------+
+    | Vlims     | Limits of display            | dict containing keys:'vmin',|
+    |           |                              | 'vmax', 'xmin', 'xmax',     |
+    |           |                              | 'ymin', 'ymax' and holding  |
+    |           |                              | float values                |
+    +-----------+------------------------------+-----------------------------+
+
+    .. note::
+        *  we want to make None a valid value for Vradar, but this need some
+           changes in :file:`artview/components/plot_radar.py`
+        *  Vlims is deprecated in favor of a not shared variable
     '''
 
     def __init__(self,value=None):
@@ -35,15 +61,15 @@ class Variable(QtCore.QObject):
             New Value to be assigned to the variable.
         [Optional]
         strong : bool, optional
-            Define if this is a strong, or a soft change. This is a some what
-            subjective decision: strong is default, a soft change should be
+            Define if this is a strong, or a weak change. This is a some what
+            subjective decision: strong is default, a weak change should be
             used to indicate to the slot that this change should not trigger
             any costly computation. Reasons for this are: When initialising
             variables, variable is likely to change again shortly, another
             more important variable is being changed as well etc.
 
             .. note::
-                Defining how to respond to strong/soft changes is
+                Defining how to respond to strong/weak changes is
                 responsibility of the slot, most can just ignore the
                 difference, but the costly ones should be aware.
 
