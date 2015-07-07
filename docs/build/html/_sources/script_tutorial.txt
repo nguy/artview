@@ -20,7 +20,7 @@ The Basics
         from PyQt4 import QtGui
 
         # start pyqt
-        app = QtGui.QApplication()
+        app = QtGui.QApplication([])
 
         ###########################
         #     do something        #
@@ -31,7 +31,7 @@ The Basics
 
     So the whole question is about what to do between those line. The most
     simple thing you can do is start a single
-    :py:class:`~artview.core.Component` (or plugin), for instance
+    :py:class:`~artview.core.core.Component` (or plugin), for instance
     :py:class:`~artview.components.Menu`:
 
     .. code-block:: python
@@ -40,10 +40,10 @@ The Basics
         from PyQt4 import QtGui
 
         # start pyqt
-        app = QtGui.QApplication()
+        app = QtGui.QApplication([])
 
         # start Menu
-        menu = Menu(DirIn="/", name="Menu")
+        menu = artview.components.Menu(DirIn="/", name="Menu")
 
         # start program
         app.exec_() # lock until all windows are closed
@@ -62,7 +62,7 @@ The Basics
         from PyQt4 import QtGui
 
         # start pyqt
-        app = QtGui.QApplication()
+        app = QtGui.QApplication([])
 
         # get example radar from pyart
         import pyart
@@ -74,7 +74,7 @@ The Basics
         Vtilt = artview.core.Variable(0) #  first sweep
 
         # start display
-        display = artview.core.Display(Vradar, Vfield, Vtilt,
+        display = artview.components.Display(Vradar, Vfield, Vtilt,
                                        name="DisplayRadar")
 
         # start program
@@ -106,10 +106,10 @@ Shared Variables
         from PyQt4 import QtGui
 
         # start pyqt
-        app = QtGui.QApplication()
+        app = QtGui.QApplication([])
 
         # start Menu
-        menu = Menu(DirIn="/", name="Menu")
+        menu = artview.components.Menu(DirIn="/", name="Menu")
 
         # get Vradar from menu
         Vradar = menu.Vradar
@@ -119,7 +119,7 @@ Shared Variables
         Vtilt = artview.core.Variable(0) #  first sweep
 
         # start display
-        display = artview.core.Display(Vradar, Vfield, Vtilt,
+        display = artview.components.Display(Vradar, Vfield, Vtilt,
                                        name="DisplayRadar")
 
         # start program
@@ -137,10 +137,10 @@ Shared Variables
         from PyQt4 import QtGui
 
         # start pyqt
-        app = QtGui.QApplication()
+        app = QtGui.QApplication([])
 
         # start Menu
-        menu = Menu(DirIn="/", name="Menu")
+        menu = artview.components.Menu(DirIn="/", name="Menu")
 
         # DISPLAY 1
 
@@ -152,7 +152,7 @@ Shared Variables
         Vtilt1 = artview.core.Variable(0) #  first sweep
 
         # start display
-        display1 = artview.core.Display(Vradar1, Vfield1, Vtilt1,
+        display1 = artview.components.Display(Vradar1, Vfield1, Vtilt1,
                                         name="DisplayRadar")
 
         # DISPLAY 2
@@ -167,7 +167,7 @@ Shared Variables
         Vtilt2 = artview.core.Variable(0) #  first sweep
 
         # start display
-        display = artview.core.Display(Vradar2, Vfield2, Vtilt2,
+        display = artview.components.Display(Vradar2, Vfield2, Vtilt2,
                                        name="DisplayRadar")
 
         # start program
@@ -189,10 +189,10 @@ Shared Variables
         from PyQt4 import QtGui
 
         # start pyqt
-        app = QtGui.QApplication()
+        app = QtGui.QApplication([])
 
         # start Menu
-        menu = Menu(DirIn="/", name="Menu")
+        menu = artview.components.Menu(DirIn="/", name="Menu")
 
         # DISPLAY 1
 
@@ -204,7 +204,7 @@ Shared Variables
         Vtilt1 = artview.core.Variable(0) #  first sweep
 
         # start display
-        display1 = artview.core.Display(Vradar1, Vfield1, Vtilt1,
+        display1 = artview.components.Display(Vradar1, Vfield1, Vtilt1,
                                         name="DisplayRadar")
 
         # DISPLAY 2
@@ -216,12 +216,12 @@ Shared Variables
 
         # start the other shared variables
         Vfield2 = artview.core.Variable('radial_velocity')
-        # wrong: Vtilt2 = artview.core.Variable(0) #  first sweep
+        # wrong: Vtilt2 = artview.core.Variable(0)
         # correct:
         Vtilt2 = Vtilt1
 
         # start display
-        display2 = artview.core.Display(Vradar2, Vfield2, Vtilt2,
+        display2 = artview.components.Display(Vradar2, Vfield2, Vtilt2,
                                         name="DisplayRadar")
 
         # start program
@@ -247,13 +247,13 @@ Graphical Tools
 
     The Problem here is that now we got 4 independent windows floating around
     our Desktop, to avoid that :py:class:`~artview.components.Menu` has the
-    method :py:class:`~artview.components.Menu.addLayoutWidget`, this allow
+    method :py:func:`~artview.components.Menu.addLayoutWidget`, this allow
     putting other Components inside Menu, for instance like this:
 
     .. code-block:: python
 
         # start Menu
-        menu = Menu(DirIn="/", name="Menu")
+        menu = artview.components.Menu(DirIn="/", name="Menu")
 
         # start Control
         control = artview.components.ComponentsControl()
@@ -274,7 +274,7 @@ Graphical Tools
     .. code-block:: python
 
         # start Menu
-        menu = Menu(DirIn="/", name="Menu")
+        menu = artview.components.Menu(DirIn="/", name="Menu")
 
         # start Control
         control = artview.components.ComponentsControl(parent=menu)
@@ -284,13 +284,13 @@ Graphical Tools
     the script, but some other like :py:class:`~artview.components.Display`
     and :py:class:`~artview.components.ComponentsControl` have the `GUIstart`
     method and can be started by the user at execution time, for that use the
-    Menu method :py:class:`~artview.components.Menu.addComponentMenuItem`, for
+    Menu method :py:func:`~artview.components.Menu.addComponentMenuItem`, for
     instance
 
     .. code-block:: python
 
         # start Menu
-        menu = Menu(DirIn="/", name="Menu")
+        menu = artview.components.Menu(DirIn="/", name="Menu")
 
         # start Control
         menu.addComponentMenuItem(artview.components.Display)
@@ -302,8 +302,8 @@ Plug-ins
 --------
 
     Plug-ins are define as user specific components that don't interfere in
-    the over all working of ARTview, they are all found in the :file:`artview/plugins`
-    folder and accessed in :py:class:`artview.plugins`. For specific
+    the over all working of ARTview, they are all found in the :artview:`artview/plugins`
+    folder and accessed in :py:mod:`artview.plugins`. For specific
     information on what each plug-in does please see the reference-manual, I
     just want to say that by default we ask that all plug-ins have the
     `GUIstart` method, therefore to access them at execution time add the
@@ -312,16 +312,18 @@ Plug-ins
     .. code-block:: python
 
         # start Menu
-        menu = Menu(DirIn="/", name="Menu")
+        menu = artview.components.Menu(DirIn="/", name="Menu")
 
         # add plugins
         for plugin in artview.plugins._plugins:
             menu.addComponent(plugin)
 
+    For more on Plug-ins see :ref:`plugin_tutorial`
+
 Official Scripts
 ----------------
 
-    ARTview has a :file:`artview/scripts` folder where some "official" scripts are
+    ARTview has a :artview:`artview/scripts` folder where some "official" scripts are
     found, including the standard one that is executed with the
     ``python -m artview`` command. We don't particularly recommend putting your
     script there as some details on how that folder work may change with time.
@@ -334,4 +336,4 @@ Official Scripts
       ``from .. import core, components, plugins``
 
     Doing this you may found your script according to its file name in
-    :py:class:`artview.scripts`
+    :py:mod:`artview.scripts`

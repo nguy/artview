@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Tutorial: Writing your own Plugin &mdash; ARTview 0.2.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/scipy.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="ARTview 0.2.2 documentation" href="index.html" />
+    <link rel="prev" title="Tutorial: Writing your own Script" href="script_tutorial.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="script_tutorial.html" title="Tutorial: Writing your own Script"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">ARTview 0.2.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="tutorial-writing-your-own-plugin">
+<span id="plugin-tutorial"></span><h1>Tutorial: Writing your own Plugin<a class="headerlink" href="#tutorial-writing-your-own-plugin" title="Permalink to this headline">¶</a></h1>
+<blockquote>
+<div>This Section is intended some points of awardness for any one wanting to create a of custom
+plug-in for ARTview. As plug-ins are just a special form of Component and ARTview is all based in Components this is also important to anyone (user or programer) wanting to understand ARTview. Of course we can not say you how do your plug-in, for that you can use all the tools availible in the python programming language, we however sugest before starting programing let us know your intensions and needs though our <a class="reference external" href="https://github.com/nguy/artview/issues">GitHub issues page</a>, we may provide some valiable information and ideas on how to solve the problem.</div></blockquote>
+<div class="section" id="the-basics">
+<h2>The Basics<a class="headerlink" href="#the-basics" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>To allow the integration of plugins in ARTview we have made some rules that must be follow, in the risk of your plug-in or in the worse case ARTview not working. I will list those here and after I will instruct on how to follow them.</p>
+<ul>
+<li><p class="first">Plug-ins must be located in one single file in <a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/plugins">artview/plugins</a> ending in <strong>.py</strong>.</p>
+</li>
+<li><p class="first">The plug-in file must contain a variable <tt class="docutils literal"><span class="pre">_plugins</span></tt>, this is a list of plug-ins, normaly just one.</p>
+</li>
+<li><p class="first">Plug-ins are always a class, moreover they are always child classes of <a class="reference internal" href="reference/generated/artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><tt class="xref py py-class docutils literal"><span class="pre">Component</span></tt></a>. Like this <tt class="docutils literal"><span class="pre">class</span> <span class="pre">YourPlugin(core.Component):</span></tt></p>
+</li>
+<li><p class="first">If plug-ins must interact with other ARTview components they use <a class="reference internal" href="reference/generated/artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a>, not  direct call.</p>
+</li>
+<li><p class="first">Plug-ins must have a GUIstart class method, like this</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="nd">@classmethod</span>
+<span class="k">def</span> <span class="nf">guiStart</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="c">################################</span>
+    <span class="c">#    Define Call Parameters    #</span>
+    <span class="c">################################</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="o">...</span><span class="p">),</span> <span class="bp">True</span><span class="o">/</span><span class="bp">False</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="the-plug-in-file">
+<h2>The Plug-in File<a class="headerlink" href="#the-plug-in-file" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>ARTview expect all files present in <a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/plugins">artview/plugins</a> and ending in <strong>.py</strong> (e.g <strong>your_plugin.py</strong>) to be importable into python and have a (possibily empty) list of plug-ins in the variable <tt class="docutils literal"><span class="pre">_plugins</span></tt> (e.g <tt class="docutils literal"><span class="pre">_plugins</span> <span class="pre">=</span> <span class="pre">[YourPlugin]</span></tt>. Only plug-ins present in such list are added to <a class="reference internal" href="reference/plugins.html#module-artview.plugins" title="artview.plugins"><tt class="xref py py-mod docutils literal"><span class="pre">plugins</span></tt></a>. File starting with underscore are ignored, this allow you to separate your plugin in multiple file or even folders if needed.</p>
+<p>As the file <strong>your_plugin.py</strong> is imported inside ARTview you should not import it in absolut, but rather make a relative imports. That is instead of <tt class="docutils literal"><span class="pre">from</span> <span class="pre">artview</span> <span class="pre">import</span> <span class="pre">core,</span> <span class="pre">components</span></tt> do <tt class="docutils literal"><span class="pre">from</span> <span class="pre">..</span> <span class="pre">import</span> <span class="pre">core,</span> <span class="pre">components</span></tt>.</p>
+</div></blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Tutorial: Writing your own Plugin</a><ul>
+<li><a class="reference internal" href="#the-basics">The Basics</a></li>
+<li><a class="reference internal" href="#the-plug-in-file">The Plug-in File</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="script_tutorial.html"
+                        title="previous chapter">Tutorial: Writing your own Script</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/plugin_tutorial.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="script_tutorial.html" title="Tutorial: Writing your own Script"
+             >previous</a> |</li>
+        <li><a href="index.html">ARTview 0.2.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Nick Guy.
+      Last updated on Jul 07, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

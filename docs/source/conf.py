@@ -234,7 +234,7 @@ if sphinx.__version__ >= "0.7":
 # Source code links
 #----------------------------------------------------------------------------
 
-extlinks = {'file': ('https://github.com/nguy/artview/blob/master/%s',
+extlinks = {'artview': ('https://github.com/nguy/artview/blob/master/%s',
                       '')}
 
 intersphinx_mapping = {'pyart': ('https://arm-doe.github.io/pyart/dev/', None),
