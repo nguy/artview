@@ -30,6 +30,11 @@ class Display(Component):
     from the PyArt pyart.graph package.
     '''
 
+    Vradar = None #: see :ref:`shared_variable`
+    Vfield = None #: see :ref:`shared_variable`
+    Vtilt = None #: see :ref:`shared_variable`
+    Vlims = None #: see :ref:`shared_variable`
+
     @classmethod
     def guiStart(self, parent=None):
         '''Grafical Interface for Starting this Class'''

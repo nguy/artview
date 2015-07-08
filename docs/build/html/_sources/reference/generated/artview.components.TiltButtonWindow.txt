@@ -24,4 +24,15 @@ artview.components.TiltButtonWindow
    
    
 
+   
+   
+   .. rubric:: Attributes
+   
+   
+   .. autoattribute:: Vgrid
+   .. autoattribute:: Vradar
+   .. autoattribute:: Vtilt
+   .. autoattribute:: tiltClicked
+   
+   
 

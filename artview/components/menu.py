@@ -14,6 +14,9 @@ from ..core import Variable, Component, common
 class Menu(Component):
     '''Class to display the MainMenu'''
 
+    Vradar = None #: see :ref:`shared_variable`
+    Vgrid = None #: see :ref:`shared_variable`
+
     def __init__(self, pathDir, filename=None, Vradar=None, Vgrid=None, mode="Radar", name="Menu", parent=None):
         '''
         Initialize the class to create the interface.

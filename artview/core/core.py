@@ -23,22 +23,25 @@ class Variable(QtCore.QObject):
     components name variable according to the following table, using it is
     recommended:
 
-    +-----------+------------------------------+-----------------------------+
-    | Name      | Function                     | Valid values                |
-    +===========+==============================+=============================+
-    | Vradar    | Hold radar open with pyart   | :py:class:`pyart.core.Radar`|
-    |           |                              | instance                    |
-    +-----------+------------------------------+-----------------------------+
-    | Vfield    | Name of a Field in radar file|string in radar.fields.keys()|
-    +-----------+------------------------------+-----------------------------+
-    | Vtitl     | Tilt (sweep) of a radar file | int between 0 and           |
-    |           |                              | (number of sweeps)-1        |
-    +-----------+------------------------------+-----------------------------+
-    | Vlims     | Limits of display            | dict containing keys:'vmin',|
-    |           |                              | 'vmax', 'xmin', 'xmax',     |
-    |           |                              | 'ymin', 'ymax' and holding  |
-    |           |                              | float values                |
-    +-----------+------------------------------+-----------------------------+
+    .. _shared_variable:
+    .. table:: Shared Variables Table
+
+        +-----------+------------------------------+-----------------------------+
+        | Name      | Function                     | Valid values                |
+        +===========+==============================+=============================+
+        | Vradar    | Hold radar open with pyart   | :py:class:`pyart.core.Radar`|
+        |           |                              | instance                    |
+        +-----------+------------------------------+-----------------------------+
+        | Vfield    | Name of a Field in radar file|string in radar.fields.keys()|
+        +-----------+------------------------------+-----------------------------+
+        | Vtitl     | Tilt (sweep) of a radar file | int between 0 and           |
+        |           |                              | (number of sweeps)-1        |
+        +-----------+------------------------------+-----------------------------+
+        | Vlims     | Limits of display            | dict containing keys:'vmin',|
+        |           |                              | 'vmax', 'xmin', 'xmax',     |
+        |           |                              | 'ymin', 'ymax' and holding  |
+        |           |                              | float values                |
+        +-----------+------------------------------+-----------------------------+
 
     .. note::
         *  we want to make None a valid value for Vradar, but this need some

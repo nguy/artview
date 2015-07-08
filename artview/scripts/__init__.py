@@ -19,7 +19,7 @@ thismodule = sys.modules[__name__]
 scripts = {}
 
 for module in os.listdir(os.path.dirname(__file__)):
-    if module == '__init__.py' or module[-3:] != '.py':
+    if module.startswith("_") or module[-3:] != '.py':
         continue
     tmp = __import__(module[:-3], locals(), globals())
     try:

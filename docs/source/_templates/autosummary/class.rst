@@ -21,5 +21,14 @@
    {% endif %}
    {% endblock %}
 
+   {% block attributes %}
+   {% if attributes %}
+   .. rubric:: Attributes
+   
+   {% for item in attributes %}
+   .. autoattribute:: {{ item }}
+   {%- endfor %}
+   {% endif %}
+   {% endblock %}
 
 

@@ -1,3 +1,5 @@
+.. _script_tutorial:
+
 Tutorial: Writing your own Script
 =================================
 

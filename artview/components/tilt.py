@@ -14,6 +14,10 @@ class TiltButtonWindow(Component):
     '''Class to display the Window with Tilt Buttons.'''
     tiltClicked = QtCore.pyqtSignal()
 
+    Vradar = None #: see :ref:`shared_variable`
+    Vgrid = None #: see :ref:`shared_variable`
+    Vtilt = None #: see :ref:`shared_variable`
+
     def __init__(self, Vtilt, Vradar=None, Vgrid=None, name="TiltButtons", parent=None):
         '''Initialize the class to create the Tilt Selection interface.
 
