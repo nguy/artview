@@ -15,7 +15,7 @@ def run(DirIn='./', filename=None, field=None):
         field = pyart.config.get_field_name('reflectivity')
 
     from ..core import Variable
-    from ..components import Display, Menu, TiltButtonWindow, ComponentsControl
+    from ..components import Display, Menu, TiltButtonWindow, ComponentsControl, ROI
 
     app = QtGui.QApplication(sys.argv)
 
@@ -31,6 +31,7 @@ def run(DirIn='./', filename=None, field=None):
     MainMenu.addLayoutWidget(control)
     MainMenu.addComponent(ComponentsControl)
     MainMenu.addComponent(Display)
+    MainMenu.addComponent(ROI)
 
     try:
         from .. import plugins
@@ -55,4 +56,5 @@ def run(DirIn='./', filename=None, field=None):
     plot2.setGeometry(width/2,height-plot_size,plot_size,plot_size)
 
     app.exec_()
+    return app
 
