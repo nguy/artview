@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>artview.components.Display.NewTilt &mdash; ARTview 0.2.2 documentation</title>
+    <title>artview.components.Display.getPathInteriorValues &mdash; ARTview 0.2.2 documentation</title>
     
     <link rel="stylesheet" href="../../_static/scipy.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -28,8 +28,8 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="ARTview 0.2.2 documentation" href="../../index.html" />
     <link rel="up" title="artview.components.Display" href="artview.components.Display.html" />
-    <link rel="next" title="artview.components.Display.RngRingSelectCmd" href="artview.components.Display.RngRingSelectCmd.html" />
-    <link rel="prev" title="artview.components.Display.NewRadar" href="artview.components.Display.NewRadar.html" /> 
+    <link rel="next" title="artview.components.Display.getPlotAxis" href="artview.components.Display.getPlotAxis.html" />
+    <link rel="prev" title="artview.components.Display.cmapSelectCmd" href="artview.components.Display.cmapSelectCmd.html" /> 
   </head>
   <body>
     <div class="related">
@@ -45,14 +45,14 @@
           <a href="../../np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="artview.components.Display.RngRingSelectCmd.html" title="artview.components.Display.RngRingSelectCmd"
+          <a href="artview.components.Display.getPlotAxis.html" title="artview.components.Display.getPlotAxis"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="artview.components.Display.NewRadar.html" title="artview.components.Display.NewRadar"
+          <a href="artview.components.Display.cmapSelectCmd.html" title="artview.components.Display.cmapSelectCmd"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">ARTview 0.2.2 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Reference Manual</a> &raquo;</li>
-          <li><a href="../components.html" >Main Components (<tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li>
+          <li><a href="../components.html" >Main Components (<tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li>
           <li><a href="artview.components.Display.html" accesskey="U">artview.components.Display</a> &raquo;</li> 
       </ul>
     </div>  
@@ -62,17 +62,29 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="artview-components-display-newtilt">
-<h1>artview.components.Display.NewTilt<a class="headerlink" href="#artview-components-display-newtilt" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="artview-components-display-getpathinteriorvalues">
+<h1>artview.components.Display.getPathInteriorValues<a class="headerlink" href="#artview-components-display-getpathinteriorvalues" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
-<dt id="artview.components.Display.NewTilt">
-<tt class="descclassname">Display.</tt><tt class="descname">NewTilt</tt><big>(</big><em>variable</em>, <em>value</em>, <em>strong</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/plot_radar.py#L409"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.Display.NewTilt" title="Permalink to this definition">¶</a></dt>
-<dd><p>Slot for &#8216;ValueChanged&#8217; signal of <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Vtilt</span></tt></a>.</p>
-<p>This will:</p>
-<ul class="simple">
-<li>Update tilt MenuBox</li>
-<li>If strong update: update plot</li>
-</ul>
+<dt id="artview.components.Display.getPathInteriorValues">
+<tt class="descclassname">Display.</tt><tt class="descname">getPathInteriorValues</tt><big>(</big><em>path</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/plot_radar.py#L502"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.Display.getPathInteriorValues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the bins values path.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>path</strong> : Matplotlib Path instance</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>x, y, azi, range, value, ray_idx, range_inx: ndarray</strong> :</p>
+<blockquote class="last">
+<div><p>Truplet of 1arrays containing x,y coordinate, azimuth,
+range, current field value, ray index and range index
+for all bin of the current radar and tilt inside path</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -84,14 +96,14 @@
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="artview.components.Display.NewRadar.html"
-                        title="previous chapter">artview.components.Display.NewRadar</a></p>
+  <p class="topless"><a href="artview.components.Display.cmapSelectCmd.html"
+                        title="previous chapter">artview.components.Display.cmapSelectCmd</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="artview.components.Display.RngRingSelectCmd.html"
-                        title="next chapter">artview.components.Display.RngRingSelectCmd</a></p>
+  <p class="topless"><a href="artview.components.Display.getPlotAxis.html"
+                        title="next chapter">artview.components.Display.getPlotAxis</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
-    <li><a href="../../_sources/reference/generated/artview.components.Display.NewTilt.txt"
+    <li><a href="../../_sources/reference/generated/artview.components.Display.getPathInteriorValues.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
 <div id="searchbox" style="display: none">
@@ -124,14 +136,14 @@
           <a href="../../np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="artview.components.Display.RngRingSelectCmd.html" title="artview.components.Display.RngRingSelectCmd"
+          <a href="artview.components.Display.getPlotAxis.html" title="artview.components.Display.getPlotAxis"
              >next</a> |</li>
         <li class="right" >
-          <a href="artview.components.Display.NewRadar.html" title="artview.components.Display.NewRadar"
+          <a href="artview.components.Display.cmapSelectCmd.html" title="artview.components.Display.cmapSelectCmd"
              >previous</a> |</li>
         <li><a href="../../index.html">ARTview 0.2.2 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Reference Manual</a> &raquo;</li>
-          <li><a href="../components.html" >Main Components (<tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li>
+          <li><a href="../components.html" >Main Components (<tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li>
           <li><a href="artview.components.Display.html" >artview.components.Display</a> &raquo;</li> 
       </ul>
     </div>

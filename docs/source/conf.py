@@ -238,8 +238,8 @@ extlinks = {'artview': ('https://github.com/nguy/artview/blob/master/%s',
                       '')}
 
 intersphinx_mapping = {'pyart': ('https://arm-doe.github.io/pyart/dev/', None),
-                       'PyQt4': ('http://pyqt.sourceforge.net/Docs/PyQt4/', None)}
-
+                       'PyQt4': ('http://pyqt.sourceforge.net/Docs/PyQt4/', None),
+                       'matplotlib': ('http://matplotlib.org/', None)}
 
 # these functions borrowed from the scipy project
 import inspect

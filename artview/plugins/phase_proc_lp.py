@@ -14,8 +14,11 @@ import time
 
 class PhaseProcLp(core.Component):
     '''
-    Interfase for executing :py:class:`pyart.correct.phase_proc_lp`
+    Interfase for executing :py:func:`pyart.correct.phase_proc_lp`
     '''
+
+    Vradar = None #: see :ref:`shared_variable`
+
     @classmethod
     def guiStart(self, parent=None):
         '''Grafical Interface for Starting this Class'''
@@ -211,7 +214,7 @@ class PhaseProcLp(core.Component):
         common.ShowLongText(pyart.correct.phase_proc_lp.__doc__)
 
     def phase_proc_lp(self):
-        '''Mount Options and execute :py:class:`~pyart.correct.phase_proc_lp`.
+        '''Mount Options and execute :py:func:`~pyart.correct.phase_proc_lp`.
         The resulting fields are added to Vradar.
         Vradar is updated, strong or weak depending on overwriting old fields.
         '''

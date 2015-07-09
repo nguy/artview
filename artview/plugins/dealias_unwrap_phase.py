@@ -14,8 +14,12 @@ import time
 
 class DealiasUnwrapPhase(core.Component):
     '''
-    Interfase for executing :py:class:`pyart.correct.dealias_unwrap_phase`
+    Interfase for executing :py:func:`pyart.correct.dealias_unwrap_phase`
     '''
+
+    Vradar = None #: see :ref:`shared_variable`
+    Vgatefilter = None #: see :ref:`shared_variable`
+
     @classmethod
     def guiStart(self, parent=None):
         '''Grafical Interface for Starting this Class'''
@@ -151,7 +155,7 @@ class DealiasUnwrapPhase(core.Component):
         common.ShowLongText(pyart.correct.dealias_unwrap_phase.__doc__)
 
     def dealias_unwrap_phase(self):
-        '''Mount Options and execute :py:class:`~pyart.correct.dealias_unwrap_phase`.
+        '''Mount Options and execute :py:func:`~pyart.correct.dealias_unwrap_phase`.
         The resulting fields are added to Vradar.
         Vradar is updated, strong or weak depending on overwriting old fields.
         '''

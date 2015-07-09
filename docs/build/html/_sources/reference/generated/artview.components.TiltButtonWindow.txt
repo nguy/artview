@@ -32,7 +32,6 @@ artview.components.TiltButtonWindow
    .. autoattribute:: Vgrid
    .. autoattribute:: Vradar
    .. autoattribute:: Vtilt
-   .. autoattribute:: tiltClicked
    
    
 

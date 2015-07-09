@@ -24,5 +24,10 @@ artview.plugins.PhaseProcLp
 
    
    
+   .. rubric:: Attributes
+   
+   
+   .. autoattribute:: Vradar
+   
    
 

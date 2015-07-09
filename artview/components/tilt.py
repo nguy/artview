@@ -12,7 +12,6 @@ from ..core import Variable, Component
 
 class TiltButtonWindow(Component):
     '''Class to display the Window with Tilt Buttons.'''
-    tiltClicked = QtCore.pyqtSignal()
 
     Vradar = None #: see :ref:`shared_variable`
     Vgrid = None #: see :ref:`shared_variable`

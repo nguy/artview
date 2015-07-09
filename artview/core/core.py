@@ -26,28 +26,35 @@ class Variable(QtCore.QObject):
     .. _shared_variable:
     .. table:: Shared Variables Table
 
-        +-----------+------------------------------+-----------------------------+
-        | Name      | Function                     | Valid values                |
-        +===========+==============================+=============================+
-        | Vradar    | Hold radar open with pyart   | :py:class:`pyart.core.Radar`|
-        |           |                              | instance                    |
-        +-----------+------------------------------+-----------------------------+
-        | Vfield    | Name of a Field in radar file|string in radar.fields.keys()|
-        +-----------+------------------------------+-----------------------------+
-        | Vtitl     | Tilt (sweep) of a radar file | int between 0 and           |
-        |           |                              | (number of sweeps)-1        |
-        +-----------+------------------------------+-----------------------------+
-        | Vlims     | Limits of display            | dict containing keys:'vmin',|
-        |           |                              | 'vmax', 'xmin', 'xmax',     |
-        |           |                              | 'ymin', 'ymax' and holding  |
-        |           |                              | float values                |
-        +-----------+------------------------------+-----------------------------+
+        +-----------+------------------------------+------------------------------------+
+        | Name      | Function                     | Valid values                       |
+        +===========+==============================+====================================+
+        | Vradar    | Hold radar open with pyart   | :py:class:`pyart.core.Radar`       |
+        |           |                              | instance                           |
+        +-----------+------------------------------+------------------------------------+
+        | Vgrid     | Hold grid open or generated  | :py:class:`pyart.core.Grid`        |
+        |           | with pyart                   | instance                           |
+        +-----------+------------------------------+------------------------------------+
+        | Vfield    | Name of a Field in radar file|string in radar.fields.keys()       |
+        +-----------+------------------------------+------------------------------------+
+        | Vtitl     | Tilt (sweep) of a radar file | int between 0 and                  |
+        |           |                              | (number of sweeps)-1               |
+        +-----------+------------------------------+------------------------------------+
+        | Vlims     | Limits of display            | dict containing keys:'vmin',       |
+        |           |                              | 'vmax', 'xmin', 'xmax', 'ymin',    |
+        |           |                              | 'ymax' and holding float values    |
+        +-----------+------------------------------+------------------------------------+
+        |Vgatefilter| Hold pyart GateFilter        |:py:class:`pyart.correct.GateFilter`|
+        |           |                              |instance                            |
+        +-----------+------------------------------+------------------------------------+
 
     .. note::
         *  we want to make None a valid value for Vradar, but this need some
            changes in :file:`artview/components/plot_radar.py`
         *  Vlims is deprecated in favor of a not shared variable
     '''
+
+    value = None #: Value of the Variable
 
     def __init__(self,value=None):
         ''' initialize '''

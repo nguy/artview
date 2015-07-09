@@ -505,7 +505,7 @@ class Display(Component):
 
         Parameters
         ----------
-        path - Matplotlib Path instance
+        path : Matplotlib Path instance
 
         Returns
         -------
@@ -719,9 +719,11 @@ class Display(Component):
     ########################
 
     def getPlotAxis(self):
+        ''' get :py:class:`matplotlib.axes.Axes` instance of main plot '''
         return self.ax
 
     def getStatusBar(self):
+        ''' get :py:class:`PyQt4.QtGui.QStatusBar` instance'''
         return self.statusbar
 
 

@@ -27,7 +27,6 @@ artview.components.FieldButtonWindow
    .. rubric:: Attributes
    
    
-   .. autoattribute:: FieldClicked
    .. autoattribute:: Vfield
    .. autoattribute:: Vradar
    

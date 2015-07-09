@@ -14,8 +14,11 @@ import time
 
 class CalculateAttenuation(core.Component):
     '''
-    Interfase for executing :py:class:`pyart.correct.calculate_attenuation`
+    Interfase for executing :py:func:`pyart.correct.calculate_attenuation`
     '''
+
+    Vradar = None #: see :ref:`shared_variable`
+
     @classmethod
     def guiStart(self, parent=None):
         '''Grafical Interface for Starting this Class'''
@@ -159,7 +162,7 @@ class CalculateAttenuation(core.Component):
         common.ShowLongText(pyart.correct.calculate_attenuation.__doc__)
 
     def calculate_attenuation(self):
-        '''Mount Options and execute :py:class:`~pyart.correct.calculate_attenuation`.
+        '''Mount Options and execute :py:func:`~pyart.correct.calculate_attenuation`.
         The resulting fields are added to Vradar.
         Vradar is updated, strong or weak depending on overwriting old fields.
         '''

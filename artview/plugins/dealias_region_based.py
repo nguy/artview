@@ -14,8 +14,12 @@ import time
 
 class DealiasRegionBased(core.Component):
     '''
-    Interfase for executing :py:class:`pyart.correct.dealias_region_based`
+    Interfase for executing :py:func:`pyart.correct.dealias_region_based`
     '''
+
+    Vradar = None #: see :ref:`shared_variable`
+    Vgatefilter = None #: see :ref:`shared_variable`
+
     @classmethod
     def guiStart(self, parent=None):
         '''Grafical Interface for Starting this Class'''
@@ -163,7 +167,7 @@ class DealiasRegionBased(core.Component):
         common.ShowLongText(pyart.correct.dealias_region_based.__doc__)
 
     def dealias_region_based(self):
-        '''Mount Options and execute :py:class:`~pyart.correct.dealias_region_based`.
+        '''Mount Options and execute :py:func:`~pyart.correct.dealias_region_based`.
         The resulting fields are added to Vradar.
         Vradar is updated, strong or weak depending on overwriting old fields.
         '''

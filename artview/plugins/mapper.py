@@ -14,8 +14,12 @@ import time
 
 class Mapper(core.Component):
     '''
-    Interfase for executing :py:class:`pyart.map.grid_from_radars`
+    Interfase for executing :py:func:`pyart.map.grid_from_radars`
     '''
+
+    Vradar = None #: see :ref:`shared_variable`
+    Vgrid = None #: see :ref:`shared_variable`
+
     @classmethod
     def guiStart(self, parent=None):
         '''Grafical Interface for Starting this Class'''
@@ -75,7 +79,7 @@ class Mapper(core.Component):
         self.show()
 
     def addGeneralOptions(self):
-        '''Mount Options Layout for :py:class:`~pyart.map.grid_from_radars`'''
+        '''Mount Options Layout for :py:func:`~pyart.map.grid_from_radars`'''
         self.generalLayout.addWidget(QtGui.QLabel("Z"), 0, 1, 1, 2)
         self.generalLayout.addWidget(QtGui.QLabel("Y"), 0, 3, 1, 2)
         self.generalLayout.addWidget(QtGui.QLabel("X"), 0, 5, 1, 2)
@@ -145,12 +149,12 @@ class Mapper(core.Component):
         self.newRadar(None, None, True)
 
     def mapGatesToGridOptions(self):
-        '''Mount Options Layout for :py:class:`~pyart.map.map_gates_to_grid`'''
+        '''Mount Options Layout for :py:func:`~pyart.map.map_gates_to_grid`'''
         self._fieldsOptions()
         self._interpolationOptions()
 
     def mapToGridOptions(self):
-        '''Mount Options Layout for :py:class:`~pyart.map.map_to_grid`'''
+        '''Mount Options Layout for :py:func:`~pyart.map.map_to_grid`'''
         self._fieldsOptions()
         self._interpolationOptions()
 
@@ -333,7 +337,7 @@ class Mapper(core.Component):
         self.gridOriginAlt.setValue(alt)
 
     def grid_from_radars(self):
-        '''Mount Options and execute :py:class:`~pyart.correct.grid_from_radars`.
+        '''Mount Options and execute :py:func:`~pyart.correct.grid_from_radars`.
         The resulting grid is update in Vgrid.
         '''
         # test radar
