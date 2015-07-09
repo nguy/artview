@@ -395,17 +395,25 @@ class Menu(Component):
                 self.Vradar.change(radar)
                 return
             except:
+                radar = pyart.io.read(self.filename)
+                self.Vradar.change(radar)
+                return
+            else:
                 radar_warning = True
-        if self.mode in ("grid","all"):
+        elif self.mode in ("grid","all"):
             try:
                 grid = pyart.io.read_grid(self.filename, delay_field_loading=True)
                 self.Vgrid.change(grid)
                 return
             except:
+                grid = pyart.io.read_grid(self.filename)
+                self.Vgrid.change(grid)
+                return
+            else:
                 grid_warning = True
 
         if grid_warning or radar_warning:
-            msg = "Py-ART didn't recognized this file!"
+            msg = "Py-ART didn't recognize this file!"
             common.ShowWarning(msg)
         else:
             msg = "Could not open file, invalid mode!"
