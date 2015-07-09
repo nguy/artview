@@ -499,6 +499,30 @@ class Display(Component):
                                           self.Vfield.value, self.scan_type)
         self._update_plot()
 
+    def getPathInteriorValues(self, path):
+        '''
+        Return the bins values path.
+
+        Parameters
+        ----------
+        path - Matplotlib Path instance
+
+        Returns
+        -------
+        x, y, azi, range, value, ray_idx, range_inx: ndarray
+            Truplet of 1arrays containing x,y coordinate, azimuth,
+            range, current field value, ray index and range index
+            for all bin of the current radar and tilt inside path
+        '''
+        from .tools import interior
+        radar = self.Vradar.value
+        xy, idx = interior(path, self.Vradar.value, self.Vtilt.value)
+        aux = (xy[:, 0], xy[:, 1], radar.azimuth['data'][idx[:, 0]],
+               radar.range['data'][idx[:, 1]] / 1000.,
+               radar.fields[self.Vfield.value]['data'][idx[:, 0], idx[:, 1]],
+               idx[:, 0], idx[:, 1])
+        return aux
+
     ####################
     # Plotting methods #
     ####################
@@ -689,6 +713,16 @@ class Display(Component):
         if path:
             self.canvas.print_figure(path, dpi=DPI)
             self.statusbar.showMessage('Saved to %s' % path)
+
+    ########################
+    #      get methods     #
+    ########################
+
+    def getPlotAxis(self):
+        return self.ax
+
+    def getStatusBar(self):
+        return self.statusbar
 
 
 class _DisplayStart(QtGui.QDialog):

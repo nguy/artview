@@ -21,14 +21,16 @@ def run(DirIn='./', filename=None, field=None):
     import sys
 
     from ..core import Variable
-    from ..components import Display, Menu, TiltButtonWindow, ComponentsControl
+    from ..components import Display, Menu, TiltButtonWindow, ComponentsControl, ROI
 
     # handle input
     if field is None:
         import pyart
         field = pyart.config.get_field_name('reflectivity')
 
-    # start pyqt
+    from ..core import Variable
+    from ..components import Display, Menu, TiltButtonWindow, ComponentsControl
+
     app = QtGui.QApplication(sys.argv)
 
     # start Menu
@@ -50,6 +52,7 @@ def run(DirIn='./', filename=None, field=None):
     # add grafical starts
     MainMenu.addComponent(ComponentsControl)
     MainMenu.addComponent(Display)
+    MainMenu.addComponent(ROI)
 
     # add all plugins to grafical start
     try:
