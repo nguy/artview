@@ -307,7 +307,10 @@ class _RoiStart(QtGui.QDialog):
         self.layout.addWidget(self.closeButton, 3, 0, 1, 5)
 
     def closeDialog(self):
-        self.done(QtGui.QDialog.Accepted)
+        if self.result["display"] is not None:
+            self.done(QtGui.QDialog.Accepted)
+        else:
+            warn = common.ShowWarning("Must Select Display")
 
     def startDisplay(self):
         self.exec_()
