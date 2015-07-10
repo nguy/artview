@@ -273,10 +273,9 @@ class Menu(Component):
         '''Print out the radar info to text box and terminal.'''
         # Get the radar info form rada object and print it
         txOut = self.Vradar.value.info()
-        common.ShowLongText(txOut, modal=False)
-        
+
         print txOut
-#        QtGui.QMessageBox.information(self, "Long Radar Info", "See terminal window") 
+        QtGui.QMessageBox.information(self, "Long Radar Info", "See terminal window") 
 
     def _get_RadarShortInfo(self):
         '''Print out some basic info about the radar.'''
