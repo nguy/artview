@@ -545,7 +545,7 @@ class Display(Component):
                                 ax=self.ax, fig=self.fig, title=title)
             self.display.set_limits(xlim=(self.limits['xmin'], self.limits['xmax']),\
                                     ylim=(self.limits['ymin'], self.limits['ymax']),\
-                                    ax=self.ax, fig=self.fig)
+                                    ax=self.ax)
             self.display.plot_grid_lines()
 
         elif self.scan_type == "ppi":

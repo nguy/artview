@@ -3,7 +3,7 @@ ARTview
 
 ARM Radar Toolkit Viewer
 
-ARTview is an interactive viewing browser that uses the [PyArt](https://github.com/ARM-DOE/pyart) toolkit.  
+ARTview is an interactive viewing browser that uses the [Py-Art](https://github.com/ARM-DOE/pyart) toolkit.  
 It allows one to easily scroll through a directory of weather radar data files 
 and visualize the data.  All file types available in PyArt can be opened with
 the ARTview browser.
@@ -34,6 +34,11 @@ With ARTview you can:
     
     The default two windows can be configured to share parameters or operate independently.
     
+## Links
+    [Code repository](https://github.com/nguy/artview)
+    [Documentation](https://rawgit.com/nguy/artview/master/docs/build/html/index.html)
+    [Issues](https://github.com/nguy/artview/issues)
+    [Py-ART](https://github.com/ARM-DOE/pyart)
   
 ## News
 ARTView has become and installable package!
@@ -95,22 +100,30 @@ to the list.
 Note that the TkInter version is an older deprecated version of the code.
 
 Developed on Python 2.7.7 and 2.7.9 :: Anaconda 2.0.1 and 2.1.0
-MacOSX 10.9.4 and 10.10.2
+
+ARTView has been tested on:
+MacOSX 10.9.4, 10.10.2, 10.10.4
+Linux Debian (Jessie)
+Linux Red Hat (RHEL6)
 
 ##Contributors
 
-Nick Guy (nick.guy@uwyo.edu)
+Anderson Gama
 
-Timothy Lang 
+Nick Guy (nick.guy@uwyo.edu)
 
 Paul Hein
 
-Anderson Gama
+Timothy Lang 
 
 NOTE:: This is open source software.  Contributions are very welcome, though this is not any of our primary project.  In addition it needs to be stated that no responsibility is taken by the author for any adverse effects.
 
 ## Caveats
 There has not been extensive testing, but seems reasonably stable.
 We are always looking for feedback.
+
+Please contact Nick Guy at above email or preferably open an [Issue](https://github.com/nguy/artview/issues) with any problems you encounter.
+
+Known issues exist when using python 2.6, we are trying to track these down currently.
 
 
