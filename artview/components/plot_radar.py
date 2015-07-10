@@ -357,6 +357,12 @@ class Display(Component):
         * Reset units and title
         * If strong update: update plot
         '''
+        # test for None
+        if self.Vradar.value is None:
+            self.fieldBox.clear()
+            self.tiltBox.clear()
+            return
+
         # Get the tilt angles
         self.rTilts = self.Vradar.value.sweep_number['data'][:] 
         # Get field names
@@ -388,7 +394,7 @@ class Display(Component):
         self.units = None
         idx = self.fieldBox.findText(value)
         self.fieldBox.setCurrentIndex(idx)
-        if strong:
+        if strong and self.Vradar.value is not None:
             self._update_plot()
 
     def NewLims(self, variable, value, strong):
@@ -398,7 +404,7 @@ class Display(Component):
 
         * If strong update: update plot
         '''
-        if strong:
+        if strong and self.Vradar.value is not None:
             self._update_plot()
 
     def NewTilt(self, variable, value, strong):
@@ -411,7 +417,7 @@ class Display(Component):
         '''
         # +1 since the first one is "Tilt Window"
         self.tiltBox.setCurrentIndex(value+1)  
-        if strong:
+        if strong and self.Vradar.value is not None:
             self._update_plot()
 
     def TiltSelectCmd(self, ntilt):
@@ -434,7 +440,7 @@ class Display(Component):
             self.RngRing = True
             # Find the unambigous range of the radar
             try:
-                unrng = int(self.radar.instrument_parameters['unambiguous_range']['data'][0]/1000)
+                unrng = int(self.Vradar.value.instrument_parameters['unambiguous_range']['data'][0]/1000)
             except:
                 unrng = int(self.limits['xmax'])
 
@@ -453,12 +459,15 @@ class Display(Component):
             # Calculate an array of range rings
             self.RNG_RINGS = range(ringdel, unrng, ringdel)
 
-        self._update_plot()
+        if self.Vradar.value is not None:
+            self._update_plot()
 
     def cmapSelectCmd(self, cm_name):
         '''Captures colormap selection and redraws.'''
         self.CMAP = cm_name
-        self._update_plot()
+        if self.Vradar.value is not None:
+            self._update_plot()
+
 
     def toolZoomPanCmd(self):
         '''Creates and connects to a Zoom/Pan instance.'''
@@ -492,7 +501,8 @@ class Display(Component):
         from . import tools
         self.tools, self.limits, self.CMAP = tools.restore_default_display(self.tools, \
                                           self.Vfield.value, self.scan_type)
-        self._update_plot()
+        if self.Vradar.value is not None:
+            self._update_plot()
 
     def getPathInteriorValues(self, path):
         '''
@@ -507,11 +517,18 @@ class Display(Component):
         x, y, azi, range, value, ray_idx, range_inx: ndarray
             Truplet of 1arrays containing x,y coordinate, azimuth,
             range, current field value, ray index and range index
-            for all bin of the current radar and tilt inside path
+            for all bin of the current radar and tilt inside path.
+
+        Notes
+        -----
+            If Vradar.value is None, returns None
         '''
         from .tools import interior
         radar = self.Vradar.value
-        xy, idx = interior(path, self.Vradar.value, self.Vtilt.value)
+        if radar is None:
+            return (np.array([]),)*7
+
+        xy, idx = interior(path, radar, self.Vtilt.value)
         aux = (xy[:, 0], xy[:, 1], radar.azimuth['data'][idx[:, 0]],
                radar.range['data'][idx[:, 1]] / 1000.,
                radar.fields[self.Vfield.value]['data'][idx[:, 0], idx[:, 1]],
