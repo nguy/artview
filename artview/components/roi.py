@@ -148,11 +148,12 @@ class ROI(Component):
 
                 # Create arrays for indices/data
                 data = self.pathInteriorValues(path)
-                data = np.concatenate(data).reshape(7,-1).transpose()
-                self.VroiData.change(data)
+                if data is not None:
+                    data = np.concatenate(data).reshape(7,-1).transpose()
+                    self.VroiData.change(data)
 
-                # Instantiate Table
-                self.table = common.CreateTable(self.columns)
+                    # Instantiate Table
+                    self.table = common.CreateTable(self.columns)
 
     def connect(self):
         '''Connect the ROI instance'''
@@ -255,7 +256,7 @@ class ROI(Component):
     def closeEvent(self, QCloseEvent):
         '''Reimplementations to remove from components list'''
         self.resetROI()
-        self.disconect()
+        self.disconnect()
         super(ROI, self).closeEvent(QCloseEvent)
 
 #    def NewRadar(self, variable, value, False):
