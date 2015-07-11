@@ -25,10 +25,8 @@ else:
     from . import core
     from . import components
     from . import plugins
-    from . import scripts 
+    from . import scripts
     from . import parser
 
     # define standard execution
     run = scripts.scripts['standard']
-
-

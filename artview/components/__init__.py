@@ -23,4 +23,3 @@ from .tilt import TiltButtonWindow
 from .field import FieldButtonWindow
 from .component_control import ComponentsControl
 from .roi import ROI
-

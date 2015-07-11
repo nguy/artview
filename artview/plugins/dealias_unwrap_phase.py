@@ -6,20 +6,23 @@
 from PyQt4 import QtGui, QtCore
 from functools import partial
 
+import pyart
+import time
+
 from .. import core
 common = core.common
 
-import pyart
-import time
 
 class DealiasUnwrapPhase(core.Component):
     @classmethod
     def guiStart(self, parent=None):
-        kwargs, independent = common._SimplePluginStart("DealiasUnwrapPhase").startDisplay()
+        kwargs, independent = \
+            common._SimplePluginStart("DealiasUnwrapPhase").startDisplay()
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
-    def __init__(self, Vradar=None, Vgatefilter=None, name="DealiasUnwrapPhase", parent=None):
+    def __init__(self, Vradar=None, Vgatefilter=None,
+                 name="DealiasUnwrapPhase", parent=None):
         '''Initialize the class to create the interface'''
         super(DealiasUnwrapPhase, self).__init__(name=name, parent=parent)
         self.central_widget = QtGui.QWidget()
@@ -72,8 +75,9 @@ class DealiasUnwrapPhase(core.Component):
         self.generalLayout.addWidget(QtGui.QLabel("unwrap_unit"), 1, 0)
         self.generalLayout.addWidget(self.unwrapUnit, 1, 1)
 
-        self.nyquistVelocity = QtGui.QDoubleSpinBox() #XXX must implement desactvation
-        self.nyquistVelocity.setRange(-1,1000)
+        # XXX must implement deactivation
+        self.nyquistVelocity = QtGui.QDoubleSpinBox()
+        self.nyquistVelocity.setRange(-1, 1000)
         self.nyquistVelocity.setValue(-1)
         self.generalLayout.addWidget(QtGui.QLabel("nyquist_velocity"), 2, 0)
         self.generalLayout.addWidget(self.nyquistVelocity, 2, 1)
@@ -110,7 +114,7 @@ class DealiasUnwrapPhase(core.Component):
         if item is None:
             return
         else:
-            self.Vradar = getattr(item[1],item[2])
+            self.Vradar = getattr(item[1], item[2])
 
     def newRadar(self, variable, value, strong):
         if self.Vradar.value is None:
@@ -131,13 +135,16 @@ class DealiasUnwrapPhase(core.Component):
         args = {
             'radar': self.Vradar.value,
             'unwrap_unit': str(self.unwrapUnit.currentText()),
-            'nyquist_velocity': [i if i>=0 else None for i in (self.nyquistVelocity.value(),)][0],
+            'nyquist_velocity': [i if i >= 0 else None for i in (
+                self.nyquistVelocity.value(),)][0],
             'check_nyquist_uniform': self.checkNyquistUniform.isChecked(),
             'gatefilter': False,
             'rays_wrap_around': self.raysWrapAround.isChecked(),
             'keep_original': self.keepOriginal.isChecked(),
-            'vel_field': [None if a=="" else a for a in (str(self.velField.text()),)][0],
-            'corr_vel_field': [None if a=="" else a for a in (str(self.corrVelField.text()),)][0],
+            'vel_field': [None if a == "" else a for a in (
+                str(self.velField.text()),)][0],
+            'corr_vel_field': [None if a == "" else a for a in (
+                str(self.corrVelField.text()),)][0],
             'skip_checks': self.skipChecks.isChecked(),
         }
 
@@ -147,23 +154,26 @@ class DealiasUnwrapPhase(core.Component):
         t0 = time.time()
         field = pyart.correct.dealias_unwrap_phase(**args)
         t1 = time.time()
-        common.ShowWarning("Correction took %fs"%(t1-t0))
+        common.ShowWarning("Correction took %fs" % (t1-t0))
         if args['corr_vel_field'] is None:
             name = "dealiased_velocity"
         else:
             name = args['corr_vel_field']
 
-        strong_update = False #insertion is weak, overwrite strong
+        strong_update = False  # insertion is weak, overwrite strong
         if name in self.Vradar.value.fields.keys():
-            resp=common.ShowQuestion("Field %s already exists! Do you want to over write it?"%name)
+            resp = common.ShowQuestion(
+                "Field %s already exists! Do you want to over write it?" %
+                name)
             if resp != QtGui.QMessageBox.Ok:
                 return
             else:
                 strong_update = True
 
         self.Vradar.value.add_field(name, field, True)
-        self.Vradar.change(self.Vradar.value, strong_update) #XXX weak/strong update!?!
-        print "Correction took %fs"%(t1-t0)
+        # XXX weak/strong update!?!
+        self.Vradar.change(self.Vradar.value, strong_update)
+        print "Correction took %fs" % (t1-t0)
 
     def _clearLayout(self, layout):
         '''recursively remove items from layout'''
@@ -175,4 +185,4 @@ class DealiasUnwrapPhase(core.Component):
             else:
                 self._clearLayout(item.layout())
 
-_plugins=[DealiasUnwrapPhase]
+_plugins = [DealiasUnwrapPhase]

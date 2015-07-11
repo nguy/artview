@@ -14,13 +14,12 @@ from PyQt4 import QtGui, QtCore
 # for some control utilities
 
 
-
 class Variable(QtCore.QObject):
     '''
     Class that holds a value, changing that with change() emits a signal
     '''
 
-    def __init__(self,value=None):
+    def __init__(self, value=None):
         ''' initialize '''
         QtCore.QObject.__init__(self)
         self.value = value
@@ -31,7 +30,7 @@ class Variable(QtCore.QObject):
 
         Parameters
         ----------
-        value : 
+        value :
             New Value to be assigned to the variable.
         [Optional]
         strong : bool, optional
@@ -74,16 +73,21 @@ class ComponentsList(QtCore.QObject):
 
     def index(self, item):
         return self.list.index(item)
+
     def __delitem__(self, key):
         self.list.__delitem__(key)
+
     def __getitem__(self, key):
         return self.list.__getitem__(key)
+
     def __setitem__(self, key, value):
         self.list.__setitem__(key, value)
+
     def __len__(self):
         return len(self.list)
 
 componentsList = ComponentsList()
+
 
 class Component(QtGui.QMainWindow):
     '''
@@ -110,7 +114,7 @@ class Component(QtGui.QMainWindow):
         for var in self.sharedVariables.keys():
             self.disconnectSharedVariable(var)
 
-    def connectSharedVariable(self,var):
+    def connectSharedVariable(self, var):
         '''Connect variable 'var' to its slot as defined in
         sharedVariables dictionary'''
         if var in self.sharedVariables:
@@ -120,9 +124,9 @@ class Component(QtGui.QMainWindow):
                     self.sharedVariables[var])
         else:
             raise ValueError("Variable %s is not a shared variable of %s"
-                            %(var,self.name))
+                             % (var, self.name))
 
-    def disconnectSharedVariable(self,var):
+    def disconnectSharedVariable(self, var):
         '''Connect variable 'var' to its slot as defined in
         sharedVariables dictionary'''
         if var in self.sharedVariables:
@@ -132,15 +136,15 @@ class Component(QtGui.QMainWindow):
                     self.sharedVariables[var])
         else:
             raise ValueError("Variable %s is not a shared variable of %s"
-                            %(var,self.name))
+                             % (var, self.name))
 
     def keyPressEvent(self, event):
         '''Reimplementations, pass keyEvent to parent,
         even if a diferent window'''
-        if self.parent == None:
+        if self.parent is None:
             super(Component, self).keyPressEvent(event)
         else:
-            # Send event to parent to handle (Limitation of pyqt not having a 
+            # Send event to parent to handle (Limitation of pyqt not having a
             # form that does this - AG)
             self.parent.keyPressEvent(event)
 

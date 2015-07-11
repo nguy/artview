@@ -30,13 +30,13 @@ class VariableChoose(QtGui.QDialog):
         self.result = None
         self.compSelect = compSelect
         self.varSelect = varSelect
-        #self.central_widget = QtGui.QWidget()
-        #self.setCentralWidget(self.central_widget)
+        # self.central_widget = QtGui.QWidget()
+        # self.setCentralWidget(self.central_widget)
         self.layout = QtGui.QGridLayout(self)
         # set window as modal
         self.setWindowModality(QtCore.Qt.ApplicationModal)
-        
-        if components == None:
+
+        if components is None:
             self.components = core.componentsList[:]
 #            QtCore.QObject.connect(
 #                self.components, QtCore.SIGNAL("ComponentAppended"),
@@ -70,7 +70,7 @@ class VariableChoose(QtGui.QDialog):
 
         self.model = QtGui.QStandardItemModel()
         self.addItems()
-        
+
         self.treeView = QtGui.QTreeView()
         self.treeView.setModel(self.model)
         self.treeView.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
@@ -104,14 +104,15 @@ class VariableChoose(QtGui.QDialog):
         if selection:
             item = selection[0]
             row = item.parent().row()
-            if row>=0:
-                variable= item.data().toString()
+            if row >= 0:
+                variable = item.data().toString()
                 component = item.parent().data().toString()
-                self.result = (str(component),self.components[row], str(variable))
+                self.result = (
+                    str(component), self.components[row], str(variable))
             else:
                 row = item.row()
                 component = item.data().toString()
-                self.result = (str(component),self.components[row], None)
+                self.result = (str(component), self.components[row], None)
             self.done(QtGui.QDialog.Accepted)
         else:
             self.cancel()
@@ -125,4 +126,3 @@ class VariableChoose(QtGui.QDialog):
                 widget.deleteLater()
             else:
                 self._clearLayout(item.layout())
-
