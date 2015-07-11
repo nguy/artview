@@ -15,12 +15,19 @@ artview.plugins.PhaseProcLp
       :toctree:
    
          PhaseProcLp.addGeneralOptions
-         PhaseProcLp.calculate_attenuation
          PhaseProcLp.chooseRadar
          PhaseProcLp.displayHelp
          PhaseProcLp.guiStart
-         PhaseProcLp.newRadar
+         PhaseProcLp.phase_proc_lp
    
    
 
+   
+   
+   .. rubric:: Attributes
+   
+   
+   .. autoattribute:: Vradar
+   
+   
 

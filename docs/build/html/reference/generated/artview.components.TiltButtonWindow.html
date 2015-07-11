@@ -52,7 +52,7 @@
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">ARTview 0.2.2 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Reference Manual</a> &raquo;</li>
-          <li><a href="../components.html" accesskey="U">Main Components (<tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
+          <li><a href="../components.html" accesskey="U">Main Components (<tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -65,32 +65,32 @@
 <h1>artview.components.TiltButtonWindow<a class="headerlink" href="#artview-components-tiltbuttonwindow" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="artview.components.TiltButtonWindow">
-<em class="property">class </em><tt class="descclassname">artview.components.</tt><tt class="descname">TiltButtonWindow</tt><big>(</big><em>Vtilt</em>, <em>Vradar=None</em>, <em>Vgrid=None</em>, <em>name='TiltButtons'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="http://components/tilt.py#L13"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.TiltButtonWindow" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">artview.components.</tt><tt class="descname">TiltButtonWindow</tt><big>(</big><em>Vtilt</em>, <em>Vradar=None</em>, <em>Vgrid=None</em>, <em>name='TiltButtons'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/tilt.py#L13"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.TiltButtonWindow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><tt class="xref py py-class docutils literal"><span class="pre">artview.core.core.Component</span></tt></a></p>
 <p>Class to display the Window with Tilt Buttons.</p>
 <dl class="method">
 <dt id="artview.components.TiltButtonWindow.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>Vtilt</em>, <em>Vradar=None</em>, <em>Vgrid=None</em>, <em>name='TiltButtons'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="http://components/tilt.py#L17"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.TiltButtonWindow.__init__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__init__</tt><big>(</big><em>Vtilt</em>, <em>Vradar=None</em>, <em>Vgrid=None</em>, <em>name='TiltButtons'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/tilt.py#L20"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.TiltButtonWindow.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize the class to create the Tilt Selection interface.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>Vtilt - Variable instance</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>Vtilt</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
 <blockquote>
-<div><p>Tilt signal variable to be used.</p>
+<div><p>Tilt signal variable.</p>
 </div></blockquote>
-<p><strong>Vradar, Vgrid - Variable instance</strong> :</p>
+<p><strong>Vradar, Vgrid</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
 <blockquote>
-<div><p>Radar/Grid signal variable to be used. None will create empty variable.
+<div><p>Radar/Grid signal variable. None will create empty variable.
 For correct behavior one and just one of those should be provided</p>
 </div></blockquote>
 <p><strong>[Optional]</strong> :</p>
-<p><strong>name - string</strong> :</p>
+<p><strong>name</strong> : string</p>
 <blockquote>
 <div><p>Tilt Radiobutton window name.</p>
 </div></blockquote>
-<p><strong>parent - PyQt instance</strong> :</p>
+<p><strong>parent</strong> : PyQt instance</p>
 <blockquote class="last">
 <div><p>Parent instance to associate to TiltButtonWindow window.
 If None, then Qt owns, otherwise associated with parent PyQt instance.</p>
@@ -115,13 +115,13 @@ change value back to variable.</p>
 <td>Create a widget to store radio buttons to control tilt adjust.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="artview.components.TiltButtonWindow.NewGrid.html#artview.components.TiltButtonWindow.NewGrid" title="artview.components.TiltButtonWindow.NewGrid"><tt class="xref py py-obj docutils literal"><span class="pre">TiltButtonWindow.NewGrid</span></tt></a>(variable,&nbsp;value,&nbsp;strong)</td>
-<td>Update the field list when grid variable is changed.</td>
+<td>Slot for &#8216;ValueChanged&#8217; signal of <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Vgrid</span></tt></a>.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="artview.components.TiltButtonWindow.NewRadar.html#artview.components.TiltButtonWindow.NewRadar" title="artview.components.TiltButtonWindow.NewRadar"><tt class="xref py py-obj docutils literal"><span class="pre">TiltButtonWindow.NewRadar</span></tt></a>(variable,&nbsp;value,&nbsp;...)</td>
-<td>Update the field list when radar variable is changed.</td>
+<td>Slot for &#8216;ValueChanged&#8217; signal of <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Vradar</span></tt></a>.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="artview.components.TiltButtonWindow.NewTilt.html#artview.components.TiltButtonWindow.NewTilt" title="artview.components.TiltButtonWindow.NewTilt"><tt class="xref py py-obj docutils literal"><span class="pre">TiltButtonWindow.NewTilt</span></tt></a>(variable,&nbsp;value,&nbsp;strong)</td>
-<td>Record the selected button by updating the list.</td>
+<td>Slot for &#8216;ValueChanged&#8217; signal of <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Vtilt</span></tt></a>.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="artview.components.TiltButtonWindow.SetTiltRadioButtonsGrid.html#artview.components.TiltButtonWindow.SetTiltRadioButtonsGrid" title="artview.components.TiltButtonWindow.SetTiltRadioButtonsGrid"><tt class="xref py py-obj docutils literal"><span class="pre">TiltButtonWindow.SetTiltRadioButtonsGrid</span></tt></a>()</td>
 <td>Set a tilt selection using radio buttons.</td>
@@ -130,10 +130,29 @@ change value back to variable.</p>
 <td>Set a tilt selection using radio buttons.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="artview.components.TiltButtonWindow.TiltSelectCmd.html#artview.components.TiltButtonWindow.TiltSelectCmd" title="artview.components.TiltButtonWindow.TiltSelectCmd"><tt class="xref py py-obj docutils literal"><span class="pre">TiltButtonWindow.TiltSelectCmd</span></tt></a>(ntilt)</td>
-<td>Captures a selection and redraws the field with new tilt.</td>
+<td>Captures a selection and update tilt variable.</td>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Attributes</p>
+<dl class="attribute">
+<dt id="artview.components.TiltButtonWindow.Vgrid">
+<tt class="descname">Vgrid</tt><em class="property"> = None</em><a class="headerlink" href="#artview.components.TiltButtonWindow.Vgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="artview.components.TiltButtonWindow.Vradar">
+<tt class="descname">Vradar</tt><em class="property"> = None</em><a class="headerlink" href="#artview.components.TiltButtonWindow.Vradar" title="Permalink to this definition">¶</a></dt>
+<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="artview.components.TiltButtonWindow.Vtilt">
+<tt class="descname">Vtilt</tt><em class="property"> = None</em><a class="headerlink" href="#artview.components.TiltButtonWindow.Vtilt" title="Permalink to this definition">¶</a></dt>
+<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a></p>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -192,12 +211,12 @@ change value back to variable.</p>
              >previous</a> |</li>
         <li><a href="../../index.html">ARTview 0.2.2 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Reference Manual</a> &raquo;</li>
-          <li><a href="../components.html" >Main Components (<tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
+          <li><a href="../components.html" >Main Components (<tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Jun 29, 2015.
+      Last updated on Jul 09, 2015.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>

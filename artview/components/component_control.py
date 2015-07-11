@@ -22,12 +22,27 @@ class ComponentsControl(core.Component):
 
     @classmethod
     def guiStart(self, parent=None):
+        '''Grafical Interface for Starting this Class'''
         kwargs, independent = common._SimplePluginStart("ComponentsControl").startDisplay()
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
     def __init__(self, components=None, name="ComponentsControl", parent=None):
-        '''Initialize the class to create the interface'''
+        '''Initialize the class to create the interface
+
+        Parameters
+        ----------
+        [Optional]
+        components : list of :py:class:`~artview.core.core.Component` instance
+            Components to control. If None will use the global list present in
+            artview.core.core.componentsList
+        name : string
+            Field Radiobutton window name.
+        parent : PyQt instance
+            Parent instance to associate to this class.
+            If None, then Qt owns, otherwise associated with parent PyQt instance.
+
+        '''
         super(ComponentsControl, self).__init__(name=name, parent=parent)
         self.central_widget = QtGui.QWidget()
         self.setCentralWidget(self.central_widget)
@@ -168,7 +183,7 @@ class ComponentsControl(core.Component):
         print "disconnect var %s of %s from %s"%(var, self.comp1.name, self.comp0.name)
 
     def _clearLayout(self, layout):
-        '''recursively remove items from layout'''
+        '''Recursively remove items from layout'''
         while layout.count():
             item = layout.takeAt(0)
             widget = item.widget()
@@ -178,6 +193,7 @@ class ComponentsControl(core.Component):
                 self._clearLayout(item.layout())
 
     def _updateComponentList(self, item):
+        '''Rebuild main layout'''
         self._clearLayout(self.layout)
         self.setupUi()
 

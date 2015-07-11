@@ -13,15 +13,38 @@ import pyart
 import time
 
 class Mapper(core.Component):
+    '''
+    Interfase for executing :py:func:`pyart.map.grid_from_radars`
+    '''
+
+    Vradar = None #: see :ref:`shared_variable`
+    Vgrid = None #: see :ref:`shared_variable`
+
     @classmethod
     def guiStart(self, parent=None):
-        val, entry = common.string_dialog("Mapper", "Mapper", "Name:")
-        #from variable_choose import VariableChoose
-        #print VariableChoose().chooseVariable()
-        return self(name=val, parent=parent)
+        '''Grafical Interface for Starting this Class'''
+        kwargs, independent = common._SimplePluginStart("Mapper").startDisplay()
+        kwargs['parent'] = parent
+        return self(**kwargs), independent
 
     def __init__(self, Vradar=None, Vgrid=None, name="Mapper", parent=None):
-        '''Initialize the class to create the interface'''
+        '''Initialize the class to create the interface
+
+        Parameters
+        ----------
+        [Optional]
+        Vradar : :py:class:`~artview.core.core.Variable` instance
+            Radar signal variable. 
+            A value of None initializes an empty Variable.
+        Vgrid : :py:class:`~artview.core.core.Variable` instance
+            Grid signal variable. 
+            A value of None initializes an empty Variable.
+        name : string
+            Field Radiobutton window name.
+        parent : PyQt instance
+            Parent instance to associate to this class.
+            If None, then Qt owns, otherwise associated with parent PyQt instance.
+        '''
         super(Mapper, self).__init__(name=name, parent=parent)
         self.central_widget = QtGui.QWidget()
         self.setCentralWidget(self.central_widget)
@@ -56,6 +79,7 @@ class Mapper(core.Component):
         self.show()
 
     def addGeneralOptions(self):
+        '''Mount Options Layout for :py:func:`~pyart.map.grid_from_radars`'''
         self.generalLayout.addWidget(QtGui.QLabel("Z"), 0, 1, 1, 2)
         self.generalLayout.addWidget(QtGui.QLabel("Y"), 0, 3, 1, 2)
         self.generalLayout.addWidget(QtGui.QLabel("X"), 0, 5, 1, 2)
@@ -116,6 +140,7 @@ class Mapper(core.Component):
         self.griddingAlgo.setCurrentIndex(1)
 
     def addEspecificOptions(self, item):
+        '''Mount Options Layout depending on gridding algorithm'''
         self._clearLayout(self.especificLayout)
         if item == 'map_gates_to_grid':
             self.mapGatesToGridOptions()
@@ -124,12 +149,14 @@ class Mapper(core.Component):
         self.newRadar(None, None, True)
 
     def mapGatesToGridOptions(self):
-        self.fieldsOptions()
-        self.interpolationOptions()
+        '''Mount Options Layout for :py:func:`~pyart.map.map_gates_to_grid`'''
+        self._fieldsOptions()
+        self._interpolationOptions()
 
     def mapToGridOptions(self):
-        self.fieldsOptions()
-        self.interpolationOptions()
+        '''Mount Options Layout for :py:func:`~pyart.map.map_to_grid`'''
+        self._fieldsOptions()
+        self._interpolationOptions()
 
         self.copyFieldData = QtGui.QCheckBox("copy_field_data")
         self.copyFieldData.setChecked(True)
@@ -148,7 +175,8 @@ class Mapper(core.Component):
         self.especificLayout.addWidget(QtGui.QLabel("leafsize"), 13, 0)
         self.especificLayout.addWidget(self.leafsize, 13, 1, 1, 2)
 
-    def fieldsOptions(self):
+    def _fieldsOptions(self):
+        '''Mount Options Layout related to field'''
         self.gridOriginLat = QtGui.QDoubleSpinBox()
         self.gridOriginLat.setRange(-90,90)
         self.gridOriginLat.setDecimals(8)
@@ -185,7 +213,8 @@ class Mapper(core.Component):
         self.especificLayout.addWidget(QtGui.QLabel("max_refl"), 5, 0)
         self.especificLayout.addWidget(self.maxRefl, 5, 1, 1 ,2)
 
-    def interpolationOptions(self):
+    def _interpolationOptions(self):
+        '''Mount Options Layout related to interpolation'''
         self.mapRoi = QtGui.QCheckBox("map_roi")
         self.mapRoi.setChecked(True)
         self.especificLayout.addWidget(self.mapRoi, 6, 1, 1 ,2)
@@ -214,10 +243,11 @@ class Mapper(core.Component):
         self.roiFuncLayout = QtGui.QGridLayout()
         self.especificLayout.addLayout(self.roiFuncLayout, 10, 0, 1, 3)
 
-        self.roiFunc.currentIndexChanged[str].connect(self.roiFuncOptions)
+        self.roiFunc.currentIndexChanged[str].connect(self._roiFuncOptions)
         self.roiFunc.setCurrentIndex(2)
 
-    def roiFuncOptions(self, item):
+    def _roiFuncOptions(self, item):
+        '''Mount Options Layout related to radius of influence'''
         self._clearLayout(self.roiFuncLayout)
         if item == 'constant':
             self.constantRoiOptions()
@@ -226,7 +256,8 @@ class Mapper(core.Component):
         elif item == 'dist_beam':
             self.distBeamRoiOptions()
 
-    def constantRoiOptions(self):
+    def _constantRoiOptions(self):
+        '''Mount Options Layout for constant roi'''
         self.constantRoi = QtGui.QDoubleSpinBox()
         self.constantRoi.setRange(0,30000)
         self.constantRoi.setValue(500)
@@ -235,6 +266,7 @@ class Mapper(core.Component):
         self.roiFuncLayout.addWidget(self.constantRoi, 0, 1, 1 ,2)
 
     def distRoiOptions(self):
+        '''Mount Options Layout for dist roi'''
         self.zFactor = QtGui.QDoubleSpinBox()
         self.zFactor.setRange(0,30000)
         self.zFactor.setValue(0.05)
@@ -259,6 +291,7 @@ class Mapper(core.Component):
         self.roiFuncLayout.addWidget(self.minRadius, 2, 1, 1 ,2)
 
     def distBeamRoiOptions(self):
+        '''Mount Options Layout for dist beam roi'''
         self.hFactor = QtGui.QDoubleSpinBox()
         self.hFactor.setRange(0,30000)
         self.hFactor.setValue(1.0)
@@ -288,6 +321,7 @@ class Mapper(core.Component):
         self.roiFuncLayout.addWidget(self.minRadius, 3, 1, 1 ,2)
 
     def newRadar(self, variable, value, strong):
+        '''Display pyart's docstring for help'''
         if self.Vradar.value is None:
             return
         self.fieldsmenu.clear()
@@ -303,6 +337,14 @@ class Mapper(core.Component):
         self.gridOriginAlt.setValue(alt)
 
     def grid_from_radars(self):
+        '''Mount Options and execute :py:func:`~pyart.correct.grid_from_radars`.
+        The resulting grid is update in Vgrid.
+        '''
+        # test radar
+        if self.Vradar.value is None:
+            common.ShowWarning("Radar is None, can not perform correction")
+            return
+        # mount options
         args = {
             'radars': (self.Vradar.value,),
             'grid_shape': (self.gridShapeZ.value(),
@@ -344,12 +386,15 @@ class Mapper(core.Component):
             args['leafsize'] = self.leafsize.value()
 
         print args
-        print "mapping .."
 
+        # execute
+        print "mapping .."
         t0 = time.time()
         grid = pyart.map.grid_from_radars(**args)
         t1 = time.time()
         common.ShowWarning("Mapping took %fs"%(t1-t0))
+
+        # update
         self.Vgrid.change(grid)
         print "Mapping took %fs"%(t1-t0)
 
