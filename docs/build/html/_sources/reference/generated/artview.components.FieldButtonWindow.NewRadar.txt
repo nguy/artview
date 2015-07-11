@@ -1,0 +1,6 @@
+artview.components.FieldButtonWindow.NewRadar
+=============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: FieldButtonWindow.NewRadar

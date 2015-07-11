@@ -1,0 +1,6 @@
+artview.plugins.CalculateAttenuation.chooseRadar
+================================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: CalculateAttenuation.chooseRadar

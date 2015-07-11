@@ -1,0 +1,6 @@
+artview.plugins.PhaseProcLp.newRadar
+====================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: PhaseProcLp.newRadar

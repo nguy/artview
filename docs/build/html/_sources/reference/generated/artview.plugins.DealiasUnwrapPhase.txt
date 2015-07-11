@@ -1,0 +1,26 @@
+artview.plugins.DealiasUnwrapPhase
+==================================
+
+.. currentmodule:: artview.plugins
+
+.. autoclass:: DealiasUnwrapPhase
+   :show-inheritance:
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+         DealiasUnwrapPhase.addGeneralOptions
+         DealiasUnwrapPhase.chooseRadar
+         DealiasUnwrapPhase.dealias_unwrap_phase
+         DealiasUnwrapPhase.displayHelp
+         DealiasUnwrapPhase.guiStart
+         DealiasUnwrapPhase.newRadar
+   
+   
+
+

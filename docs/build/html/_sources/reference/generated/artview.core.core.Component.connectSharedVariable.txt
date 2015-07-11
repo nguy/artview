@@ -1,0 +1,6 @@
+artview.core.core.Component.connectSharedVariable
+=================================================
+
+.. currentmodule:: artview.core.core
+
+.. automethod:: Component.connectSharedVariable

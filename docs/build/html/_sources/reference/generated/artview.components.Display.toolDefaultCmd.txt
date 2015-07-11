@@ -1,0 +1,6 @@
+artview.components.Display.toolDefaultCmd
+=========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Display.toolDefaultCmd

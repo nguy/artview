@@ -1,0 +1,6 @@
+artview.components.FieldButtonWindow.SetFieldRadioButtons
+=========================================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: FieldButtonWindow.SetFieldRadioButtons

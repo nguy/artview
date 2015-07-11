@@ -1,0 +1,6 @@
+artview.plugins.Mapper.interpolationOptions
+===========================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: Mapper.interpolationOptions

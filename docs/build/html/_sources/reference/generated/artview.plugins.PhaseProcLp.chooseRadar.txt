@@ -1,0 +1,6 @@
+artview.plugins.PhaseProcLp.chooseRadar
+=======================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: PhaseProcLp.chooseRadar

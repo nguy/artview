@@ -1,0 +1,6 @@
+artview.plugins.DealiasRegionBased.newRadar
+===========================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: DealiasRegionBased.newRadar

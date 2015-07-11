@@ -1,0 +1,6 @@
+artview.plugins.DealiasUnwrapPhase.chooseRadar
+==============================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: DealiasUnwrapPhase.chooseRadar

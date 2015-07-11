@@ -1,0 +1,6 @@
+artview.components.Display.toolROICmd
+=====================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Display.toolROICmd

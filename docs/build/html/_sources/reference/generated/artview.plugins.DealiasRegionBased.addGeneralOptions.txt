@@ -1,0 +1,6 @@
+artview.plugins.DealiasRegionBased.addGeneralOptions
+====================================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: DealiasRegionBased.addGeneralOptions

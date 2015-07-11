@@ -1,0 +1,6 @@
+artview.components.Menu.removeLayoutWidget
+==========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Menu.removeLayoutWidget

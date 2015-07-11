@@ -1,0 +1,6 @@
+artview.plugins.Mapper.distBeamRoiOptions
+=========================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: Mapper.distBeamRoiOptions

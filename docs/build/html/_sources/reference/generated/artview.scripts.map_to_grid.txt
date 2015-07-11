@@ -1,0 +1,6 @@
+artview.scripts.map_to_grid
+===========================
+
+.. currentmodule:: artview.scripts
+
+.. autofunction:: map_to_grid

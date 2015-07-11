@@ -1,0 +1,26 @@
+artview.plugins.CalculateAttenuation
+====================================
+
+.. currentmodule:: artview.plugins
+
+.. autoclass:: CalculateAttenuation
+   :show-inheritance:
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+         CalculateAttenuation.addGeneralOptions
+         CalculateAttenuation.calculate_attenuation
+         CalculateAttenuation.chooseRadar
+         CalculateAttenuation.displayHelp
+         CalculateAttenuation.guiStart
+         CalculateAttenuation.newRadar
+   
+   
+
+

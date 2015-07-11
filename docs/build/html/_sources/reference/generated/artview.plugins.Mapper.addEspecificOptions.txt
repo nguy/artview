@@ -1,0 +1,6 @@
+artview.plugins.Mapper.addEspecificOptions
+==========================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: Mapper.addEspecificOptions

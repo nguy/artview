@@ -1,0 +1,38 @@
+artview.components.Display
+==========================
+
+.. currentmodule:: artview.components
+
+.. autoclass:: Display
+   :show-inheritance:
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+         Display.FieldSelectCmd
+         Display.LaunchGUI
+         Display.NewField
+         Display.NewLims
+         Display.NewRadar
+         Display.NewTilt
+         Display.RngRingSelectCmd
+         Display.TiltSelectCmd
+         Display.addButtons
+         Display.cmapSelectCmd
+         Display.guiStart
+         Display.keyPressEvent
+         Display.setUILayout
+         Display.toolCustomCmd
+         Display.toolDefaultCmd
+         Display.toolROICmd
+         Display.toolValueClickCmd
+         Display.toolZoomPanCmd
+   
+   
+
+
