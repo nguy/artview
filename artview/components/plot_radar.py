@@ -30,8 +30,14 @@ class Display(Component):
     from the PyArt pyart.graph package.
     '''
 
+    Vradar = None #: see :ref:`shared_variable`
+    Vfield = None #: see :ref:`shared_variable`
+    Vtilt = None #: see :ref:`shared_variable`
+    Vlims = None #: see :ref:`shared_variable`
+
     @classmethod
     def guiStart(self, parent=None):
+        '''Grafical Interface for Starting this Class'''
         args = _DisplayStart().startDisplay()
         return self(**args), True
 
@@ -42,19 +48,19 @@ class Display(Component):
 
         Parameters
         ----------
-        Vradar - Variable instance
-            Radar signal variable to be used.
-        Vfield - Variable instance
-            Field signal variable to be used.
-        Vtilt - Variable instance
-            Tilt signal variable to be used.
+        Vradar : :py:class:`~artview.core.core.Variable` instance
+            Radar signal variable.
+        Vfield : :py:class:`~artview.core.core.Variable` instance
+            Field signal variable.
+        Vtilt : :py:class:`~artview.core.core.Variable` instance
+            Tilt signal variable.
         [Optional]
-        Vlims - Variable instance
-            Limits signal variable to be used.
+        Vlims : :py:class:`~artview.core.core.Variable` instance
+            Limits signal variable.
             A value of None will instantiate a limits variable.
-        name - string
+        name : string
             Display window name.
-        parent - PyQt instance
+        parent : PyQt instance
             Parent instance to associate to Display window.
             If None, then Qt owns, otherwise associated with parent PyQt instance.
 
@@ -120,7 +126,7 @@ class Display(Component):
         self.show()
 
     def keyPressEvent(self, event):
-        '''Allow tilt adjustment via the Up-Down arrow keys.'''
+        '''Reimplementation, allow tilt adjustment via the Up-Down arrow keys.'''
         if event.key() == QtCore.Qt.Key_Up:
             self.TiltSelectCmd(self.Vtilt.value + 1)
         elif event.key() == QtCore.Qt.Key_Down:
@@ -347,7 +353,15 @@ class Display(Component):
     ########################
 
     def NewRadar(self, variable, value, strong):
-        '''Display changes after radar Variable class is altered.'''
+        '''Slot for 'ValueChanged' signal of :py:class:`Vradar <artview.core.core.Variable>`.
+
+        This will:
+
+        * Update fields and tilts lists and MenuBoxes
+        * Check radar scan type and reset limits if needed
+        * Reset units and title
+        * If strong update: update plot
+        '''
         # Get the tilt angles
         self.rTilts = self.Vradar.value.sweep_number['data'][:] 
         # Get field names
@@ -366,7 +380,15 @@ class Display(Component):
             self._update_plot()
 
     def NewField(self, variable, value, strong):
-        '''Display changes after field in Variable class is altered.'''
+        '''Slot for 'ValueChanged' signal of :py:class:`Vfield <artview.core.core.Variable>`.
+
+        This will:
+
+        * Reset limits
+        * Reset units
+        * Update fields MenuBox
+        * If strong update: update plot
+        '''
         self._set_default_limits()
         self.units = None
         idx = self.fieldBox.findText(value)
@@ -380,23 +402,29 @@ class Display(Component):
             self._update_plot()
 
     def NewTilt(self, variable, value, strong):
-        '''Display changes after tilt in Variable class is altered.'''
+        '''Slot for 'ValueChanged' signal of :py:class:`Vtilt <artview.core.core.Variable>`.
+
+        This will:
+
+        * Update tilt MenuBox
+        * If strong update: update plot
+        '''
         # +1 since the first one is "Tilt Window"
         self.tiltBox.setCurrentIndex(value+1)  
         if strong and self.Vradar.value is not None:
             self._update_plot()
 
     def TiltSelectCmd(self, ntilt):
-        '''Captures tilt selection and redraws the field with new tilt.'''
+        '''Captures tilt selection and update tilt :py:class:`~artview.core.core.Variable`.'''
         if ntilt < 0:
             ntilt = len(self.rTilts)-1
         elif ntilt >= len(self.rTilts):
             ntilt = 0
         self.Vtilt.change(ntilt)
 
-    def FieldSelectCmd(self, nombre):
-        '''Captures field selection and redraws the new field.'''
-        self.Vfield.change(nombre)
+    def FieldSelectCmd(self, name):
+        '''Captures field selection and update field :py:class:`~artview.core.core.Variable`.'''
+        self.Vfield.change(name)
 
     def RngRingSelectCmd(self, ringSel):
         '''Captures Range Ring selection and redraws the field with range rings.'''
@@ -476,7 +504,7 @@ class Display(Component):
 
         Parameters
         ----------
-        path - Matplotlib Path instance
+        path : Matplotlib Path instance
 
         Returns
         -------
@@ -697,9 +725,11 @@ class Display(Component):
     ########################
 
     def getPlotAxis(self):
+        ''' get :py:class:`matplotlib.axes.Axes` instance of main plot '''
         return self.ax
 
     def getStatusBar(self):
+        ''' get :py:class:`PyQt4.QtGui.QStatusBar` instance'''
         return self.statusbar
 
 

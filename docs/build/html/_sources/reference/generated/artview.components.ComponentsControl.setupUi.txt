@@ -1,0 +1,6 @@
+artview.components.ComponentsControl.setupUi
+============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: ComponentsControl.setupUi

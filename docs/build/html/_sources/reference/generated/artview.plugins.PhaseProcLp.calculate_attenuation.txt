@@ -1,6 +1,0 @@
-artview.plugins.PhaseProcLp.calculate_attenuation
-=================================================
-
-.. currentmodule:: artview.plugins
-
-.. automethod:: PhaseProcLp.calculate_attenuation

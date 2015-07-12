@@ -13,16 +13,35 @@ import pyart
 import time
 
 class CalculateAttenuation(core.Component):
+    '''
+    Interfase for executing :py:func:`pyart.correct.calculate_attenuation`
+    '''
+
+    Vradar = None #: see :ref:`shared_variable`
 
     @classmethod
     def guiStart(self, parent=None):
+        '''Grafical Interface for Starting this Class'''
         kwargs, independent = common._SimplePluginStart("CalculateAttenuation").startDisplay()
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
 
-    def __init__(self, Vradar=None, Vgatefilter=None, name="CalculateAttenuation", parent=None):
-        '''Initialize the class to create the interface'''
+    def __init__(self, Vradar=None, name="CalculateAttenuation", parent=None):
+        '''Initialize the class to create the interface
+
+        Parameters
+        ----------
+        [Optional]
+        Vradar : :py:class:`~artview.core.core.Variable` instance
+            Radar signal variable. 
+            A value of None initializes an empty Variable.
+        name : string
+            Field Radiobutton window name.
+        parent : PyQt instance
+            Parent instance to associate to this class.
+            If None, then Qt owns, otherwise associated with parent PyQt instance.
+        '''
         super(CalculateAttenuation, self).__init__(name=name, parent=parent)
         self.central_widget = QtGui.QWidget()
         self.setCentralWidget(self.central_widget)
@@ -33,13 +52,7 @@ class CalculateAttenuation(core.Component):
         else:
             self.Vradar = Vradar
 
-        if Vgatefilter is None:
-            self.Vgatefilter = core.Variable(None)
-        else:
-            self.Vgatefilter = Vgatefilter
-
-        self.sharedVariables = {"Vradar": self.newRadar,
-                                "Vgatefilter": None}
+        self.sharedVariables = {"Vradar": None}
         self.connectAllVariables()
         
         self.generalLayout = QtGui.QGridLayout()
@@ -60,6 +73,7 @@ class CalculateAttenuation(core.Component):
         self.show()
 
     def addGeneralOptions(self):
+        '''Mount Options Layout'''
 
         self.radarButton = QtGui.QPushButton("Find Variable")
         self.radarButton.clicked.connect(self.chooseRadar)
@@ -136,23 +150,27 @@ class CalculateAttenuation(core.Component):
         self.generalLayout.addWidget(self.corrReflField, 14, 1)
 
     def chooseRadar(self):
+        '''Get Radar with :py:class:`~artview.core.VariableChoose`'''
         item = core.VariableChoose().chooseVariable()
         if item is None:
             return
         else:
             self.Vradar = getattr(item[1],item[2])
 
-    def newRadar(self, variable, value, strong):
-        if self.Vradar.value is None:
-            return
-
     def displayHelp(self):
+        '''Display pyart's docstring for help'''
         common.ShowLongText(pyart.correct.calculate_attenuation.__doc__)
 
     def calculate_attenuation(self):
+        '''Mount Options and execute :py:func:`~pyart.correct.calculate_attenuation`.
+        The resulting fields are added to Vradar.
+        Vradar is updated, strong or weak depending on overwriting old fields.
+        '''
+        # test radar
         if self.Vradar.value is None:
             common.ShowWarning("Radar is None, can not perform correction")
             return
+        # mount options
         args = {
             'radar': self.Vradar.value,
             'z_offset': self.zOffset.value(),
@@ -170,15 +188,16 @@ class CalculateAttenuation(core.Component):
             'spec_at_field': [None if a=="" else a for a in (str(self.specAtField.text()),)][0],
             'corr_refl_field': [None if a=="" else a for a in (str(self.corrReflField.text()),)][0],
         }
-
         print args
-        print "Correcting .."
 
+        # execute
+        print "Correcting .."
         t0 = time.time()
         spec_at, cor_z = pyart.correct.calculate_attenuation(**args)
         t1 = time.time()
         common.ShowWarning("Correction took %fs"%(t1-t0))
 
+        # verify field overwriting
         if args['spec_at_field'] is None:
             spec_at_field_name = "specific_attenuation"
         else:
@@ -191,22 +210,23 @@ class CalculateAttenuation(core.Component):
 
         strong_update = False #insertion is weak, overwrite strong
         if spec_at_field_name in self.Vradar.value.fields.keys():
-            resp=common.ShowQuestion("Field %s already exists! Do you want to over write it?"%spec_at_field_name)
+            resp=common.ShowQuestion("Field %s already exists! Do you want to overwrite it?"%spec_at_field_name)
             if resp != QtGui.QMessageBox.Ok:
                 return
             else:
                 strong_update = True
 
         if corr_refl_field_name in self.Vradar.value.fields.keys():
-            resp=common.ShowQuestion("Field %s already exists! Do you want to over write it?"%corr_refl_field_name)
+            resp=common.ShowQuestion("Field %s already exists! Do you want to overwrite it?"%corr_refl_field_name)
             if resp != QtGui.QMessageBox.Ok:
                 return
             else:
                 strong_update = True
 
+        # add fields and update
         self.Vradar.value.add_field(spec_at_field_name, spec_at, True)
         self.Vradar.value.add_field(corr_refl_field_name, cor_z, True)
-        self.Vradar.change(self.Vradar.value, strong_update) #XXX weak/strong update!?!
+        self.Vradar.change(self.Vradar.value, strong_update)
         print "Correction took %fs"%(t1-t0)
 
     def _clearLayout(self, layout):
