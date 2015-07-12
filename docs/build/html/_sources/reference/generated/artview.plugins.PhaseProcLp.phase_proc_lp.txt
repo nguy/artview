@@ -1,0 +1,6 @@
+artview.plugins.PhaseProcLp.phase_proc_lp
+=========================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: PhaseProcLp.phase_proc_lp

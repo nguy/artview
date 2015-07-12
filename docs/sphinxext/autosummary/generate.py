@@ -28,7 +28,7 @@ from jinja2 import FileSystemLoader, TemplateNotFound
 from jinja2.sandbox import SandboxedEnvironment
 
 from sphinx import package_dir
-from sphinx.ext.autosummary import import_by_name, get_documenter
+from .__init__ import import_by_name, get_documenter
 from sphinx.jinja2glue import BuiltinTemplateLoader
 from sphinx.util.osutil import ensuredir
 from sphinx.util.inspect import safe_getattr
@@ -170,6 +170,10 @@ def generate_autosummary_docs(sources, output_dir=None, suffix='.rst',
                     ([item for item in ns['methods'] if item in obj.__dict__])
                 ns['attributes'], ns['all_attributes'] = \
                                  get_members(obj, 'attribute')
+                ns['attributes'] = \
+                    ([item for item in ns['attributes'] if item in obj.__dict__])
+
+
             parts = name.split('.')
             if doc.objtype in ('method', 'attribute'):
                 mod_name = '.'.join(parts[:-2])

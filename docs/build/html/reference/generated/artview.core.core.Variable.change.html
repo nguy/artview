@@ -54,7 +54,7 @@
 <h1>artview.core.core.Variable.change<a class="headerlink" href="#artview-core-core-variable-change" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="artview.core.core.Variable.change">
-<tt class="descclassname">Variable.</tt><tt class="descname">change</tt><big>(</big><em>value</em>, <em>strong=True</em><big>)</big><a class="reference external" href="http://core/core.py#L28"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.core.core.Variable.change" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">Variable.</tt><tt class="descname">change</tt><big>(</big><em>value</em>, <em>strong=True</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/core/core.py#L64"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.core.core.Variable.change" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the Variable value and emit &#8216;ValueChanged&#8217; signal.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -67,18 +67,18 @@
 <p><strong>[Optional]</strong> :</p>
 <p><strong>strong</strong> : bool, optional</p>
 <blockquote class="last">
-<div><p>Define if this is a strong, or a soft change. This is a some what
-subjective decision: strong is default, a soft change should be
+<div><p>Define if this is a strong, or a weak change. This is a some what
+subjective decision: strong is default, a weak change should be
 used to indicate to the slot that this change should not trigger
 any costly computation. Reasons for this are: When initialising
 variables, variable is likely to change again shortly, another
-more important variable is being changed as well etc.
-.. note:</p>
-<blockquote>
-<div><p>Defining how to respond to strong/soft changes is
+more important variable is being changed as well etc.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Defining how to respond to strong/weak changes is
 responsibility of the slot, most can just ignore the
 difference, but the costly ones should be aware.</p>
-</div></blockquote>
+</div>
 </div></blockquote>
 </td>
 </tr>
@@ -135,7 +135,7 @@ difference, but the costly ones should be aware.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Jun 29, 2015.
+      Last updated on Jul 09, 2015.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>

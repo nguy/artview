@@ -1,6 +1,0 @@
-artview.plugins.Mapper.fieldsOptions
-====================================
-
-.. currentmodule:: artview.plugins
-
-.. automethod:: Mapper.fieldsOptions

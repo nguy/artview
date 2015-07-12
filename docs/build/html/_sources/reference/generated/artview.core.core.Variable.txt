@@ -18,4 +18,12 @@ artview.core.core.Variable
    
    
 
+   
+   
+   .. rubric:: Attributes
+   
+   
+   .. autoattribute:: value
+   
+   
 

@@ -23,4 +23,13 @@ artview.plugins.DealiasRegionBased
    
    
 
+   
+   
+   .. rubric:: Attributes
+   
+   
+   .. autoattribute:: Vgatefilter
+   .. autoattribute:: Vradar
+   
+   
 
