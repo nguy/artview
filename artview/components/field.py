@@ -52,11 +52,11 @@ class FieldButtonWindow(Component):
         self.CreateFieldWidget()
         self.SetFieldRadioButtons()
         self.show()
-           
+
     ########################
     # Button methods #
     ########################
-        
+
     def FieldSelectCmd(self, field):
         '''Captures a selection and update field variable.'''
         self.Vfield.change(field)
@@ -67,23 +67,26 @@ class FieldButtonWindow(Component):
         self.rBox_layout = QtGui.QVBoxLayout(self.radioBox)
         self.radioBox.setLayout(self.rBox_layout)
         self.setCentralWidget(self.radioBox)
-                
+
     def SetFieldRadioButtons(self):
         '''Set a field selection using radio buttons'''
         # Instantiate the buttons into a list for future use
         self.fieldbutton = {}
-        
+
+        if self.Vradar.value is None:
+            return
+
         # Loop through and create each field button and connect a value when selected
         for field in self.Vradar.value.fields.keys():
             button = QtGui.QRadioButton(field, self.radioBox)
             self.fieldbutton[field] = button
             QtCore.QObject.connect(button, QtCore.SIGNAL("clicked()"), \
                          partial(self.FieldSelectCmd, field))
-            
+
             self.rBox_layout.addWidget(button)
-        
+
         self.NewField(self.Vfield, self.Vfield.value, True)  # setChecked the current field
-    
+
     def NewField(self, variable, value, strong):
         '''Slot for 'ValueChanged' signal of :py:class:`Vfield <artview.core.core.Variable>`.
 

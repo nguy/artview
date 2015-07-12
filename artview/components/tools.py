@@ -110,6 +110,13 @@ class ValueClick(QtGui.QMainWindow):
         ydata = event.ydata # get event y location
         if (xdata is None) or (ydata is None):
             self.msg = "Please choose point inside plot area"
+        elif self.Vradar.value is None:
+            az = np.arctan2(xdata, ydata)*180./np.pi
+            if az < 0:
+                az = az + 360.
+            rng = np.sqrt(xdata*xdata + ydata*ydata)
+            self.msg = 'x = %4.2f, y = %4.2f, Azimuth = %4.2f deg., Range = %4.3f km'\
+                        %(xdata, ydata, az, rng)
         else:
             az = np.arctan2(xdata, ydata)*180./np.pi
             radar = self.Vradar.value #keep equantions clean
