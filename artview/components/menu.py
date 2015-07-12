@@ -102,10 +102,14 @@ class Menu(Component):
     def showFileDialog(self):
         '''Open a dialog box to choose file.'''
 
-        self.qfilename = QtGui.QFileDialog.getOpenFileName(self, 'Open file', 
+        filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file', 
                 self.dirIn)
-        self.filename = str(self.qfilename)
-        self._openfile()
+        filename = str(filename)
+        if filename == '':
+            return
+        else:
+            self.filename = filename
+            self._openfile()
 
     def addLayoutWidget(self, widget):
         '''
@@ -264,13 +268,13 @@ class Menu(Component):
         txOut = "This is a simple radar file browser to allow \
                  quicklooks using the DoE PyArt software"
         QtGui.QMessageBox.about(self, "About ARTView", txOut)
- 
+
     def _get_RadarLongInfo(self):
-        '''Print out the radar info to text box.'''
+        '''Print out the radar info to text box and terminal.'''
         # Get the radar info form rada object and print it
         txOut = self.Vradar.value.info()
+
         print txOut
-        
         QtGui.QMessageBox.information(self, "Long Radar Info", "See terminal window") 
 
     def _get_RadarShortInfo(self):
@@ -331,7 +335,7 @@ class Menu(Component):
             nsweeps = str(self.Vradar.value.nsweeps)
         except:
             nsweeps = "Info not available"
-        
+
         txOut = (('Radar Name: %s\n'% rname) +\
         ('Radar longitude: %s\n'% rlon) + \
         ('Radar latitude: %s\n'% rlat) + \
@@ -346,13 +350,13 @@ class Menu(Component):
         ('    \n') + \
         ('Number of gates: %s\n'% ngates) + \
         ('Number of sweeps: %s\n'% nsweeps))
-        
+
         QtGui.QMessageBox.information(self, "Short Radar Info", txOut)
-        
+
     ########################
     # Selectionion methods #
     ########################
-    
+
     def AdvanceFileSelect(self, findex):
         '''Captures a selection and redraws figure with new file.'''
         if findex > (len(self.filelist)-1):
@@ -373,19 +377,22 @@ class Menu(Component):
     ########################
     # Menu display methods #
     ########################
- 
+
     def _openfile(self):
         '''Open a file via a file selection window.'''
         print "Opening file " + self.filename
-        
-        # Update to  current directory when file is chosen
+
+        # Update to current directory when file is chosen
         self.dirIn = os.path.dirname(self.filename)
-        
+
         # Get a list of files in the working directory
         self.filelist = os.listdir(self.dirIn)
-        
-        self.fileindex = self.filelist.index(os.path.basename(self.filename))
-     
+
+        if os.path.basename(self.filename) in self.filelist:
+            self.fileindex = self.filelist.index(os.path.basename(self.filename))
+        else:
+            self.fileindex = 0
+
         # Read the data from file
         radar_warning = False
         grid_warning = False
@@ -395,22 +402,28 @@ class Menu(Component):
                 self.Vradar.change(radar)
                 return
             except:
-                radar = pyart.io.read(self.filename)
-                self.Vradar.change(radar)
-                return
-            else:
-                radar_warning = True
+                try:
+                    radar = pyart.io.read(self.filename)
+                    self.Vradar.change(radar)
+                    return
+                except:
+                    import traceback
+                    print traceback.format_exc()
+                    radar_warning = True
         elif self.mode in ("grid","all"):
             try:
                 grid = pyart.io.read_grid(self.filename, delay_field_loading=True)
                 self.Vgrid.change(grid)
                 return
             except:
-                grid = pyart.io.read_grid(self.filename)
-                self.Vgrid.change(grid)
-                return
-            else:
-                grid_warning = True
+                try:
+                    grid = pyart.io.read_grid(self.filename)
+                    self.Vgrid.change(grid)
+                    return
+                except:
+                    import traceback
+                    print traceback.format_exc()
+                    grid_warning = True
 
         if grid_warning or radar_warning:
             msg = "Py-ART didn't recognize this file!"

@@ -50,7 +50,7 @@ def ShowQuestion(msg):
     return response
 
 
-def ShowLongText(msg):
+def ShowLongText(msg, modal=True):
     '''
     Show a Long message with QTextEdit.
     
@@ -67,8 +67,12 @@ def ShowLongText(msg):
     text.setAcceptRichText(True)
     text.setReadOnly(True)
     text.setText(msg)
-    response = Dialog.exec_()
-    return response
+    if modal is True:
+        response = Dialog.exec_()
+        return response
+    else:
+        Dialog.show()
+        return
 
 
 def string_dialog(stringIn, title, msg):
@@ -160,9 +164,12 @@ class CreateTable(QtGui.QTableWidget):
             the table """
 
         if len(data)==0:
-            data = ["No data for selected ROI."]
+            data = [["No data for selected ROI."]]
+            nrows = 0
+            ncols = 0
+        else:
+            nrows, ncols = data.shape[0], data.shape[1]
 
-        nrows, ncols = data.shape[0], data.shape[1]
         self.setRowCount(nrows)
         self.setColumnCount(ncols)
         self.setHorizontalHeaderLabels(self.colnames)
