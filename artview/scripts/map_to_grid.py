@@ -4,6 +4,7 @@ map_to_grid.py
 Driver function that creates ARTView display.
 """
 
+
 def run(DirIn='./', filename=None, field=None):
     """
     artview execution to pyart mapping
@@ -14,7 +15,7 @@ def run(DirIn='./', filename=None, field=None):
 
     :py:class:`~artview.plugins.Mapper` connected to both displays
 
-    grafical start for:
+    graphical start for:
         * All :py:class:`~artview.plugins`
         * :py:class:`~artview.components.Display`
         * :py:class:`~artview.components.ComponentsControl`
@@ -24,7 +25,8 @@ def run(DirIn='./', filename=None, field=None):
     import sys
 
     from ..core import Variable
-    from ..components import Display, Display_grid, Menu, TiltButtonWindow, ComponentsControl
+    from ..components import Display, Display_grid, Menu, TiltButtonWindow, \
+        ComponentsControl
 
     # handle input
     if field is None:
@@ -40,12 +42,15 @@ def run(DirIn='./', filename=None, field=None):
 
     # start Displays
     Vfield = Variable(field)
-    plot = Display(Vradar, Vfield, Variable(0), name="DisplayRadar", parent=MainMenu)
-    plot1 = Display_grid(Variable(None), Vfield, Variable(0), name="DisplayGrid", parent=MainMenu)
+    plot = Display(Vradar, Vfield, Variable(0), name="DisplayRadar",
+                   parent=MainMenu)
+    plot1 = Display_grid(Variable(None), Vfield, Variable(0),
+                         name="DisplayGrid", parent=MainMenu)
 
     # start Mapper
     from .. import plugins
-    mapper = plugins.Mapper(plot.Vradar, plot1.Vgrid, name="Mapper", parent=MainMenu)
+    mapper = plugins.Mapper(plot.Vradar, plot1.Vgrid, name="Mapper",
+                            parent=MainMenu)
 
     # start ComponentsControl
     control = ComponentsControl()
@@ -68,9 +73,3 @@ def run(DirIn='./', filename=None, field=None):
 
     # start program
     app.exec_()
-
-
-
-
-
-

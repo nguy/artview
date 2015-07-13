@@ -9,7 +9,9 @@ from functools import partial
 from .. import core
 common = core.common
 
+
 class Exemple1(core.Component):
+
     @classmethod
     def guiStart(self, parent=None):
         val, entry = common.string_dialog("Exemple1", "Exemple1", "Name:")
@@ -21,8 +23,9 @@ class Exemple1(core.Component):
         self.central_widget = QtGui.QWidget()
         self.setCentralWidget(self.central_widget)
         self.layout = QtGui.QGridLayout(self.central_widget)
-        
-        self.layout.addWidget(QtGui.QLabel("Vertical Plugin named: %s"%self.name), 0, 0)
+
+        self.layout.addWidget(
+            QtGui.QLabel("Vertical Plugin named: %s" % self.name), 0, 0)
         self.button = QtGui.QPushButton("Close")
         self.button.clicked.connect(self.close)
         self.layout.addWidget(self.button, 1, 0)
@@ -31,5 +34,5 @@ class Exemple1(core.Component):
     def close(self):
         super(Exemple1, self).close()
 
-_plugins=[]
-#_plugins=[Exemple1]
+_plugins = []
+# _plugins=[Exemple1]

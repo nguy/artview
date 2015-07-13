@@ -6,11 +6,12 @@
 from PyQt4 import QtGui, QtCore
 from functools import partial
 
+import pyart
+import time
+
 from .. import core
 common = core.common
 
-import pyart
-import time
 
 class PhaseProcLp(core.Component):
     '''
@@ -21,12 +22,14 @@ class PhaseProcLp(core.Component):
 
     @classmethod
     def guiStart(self, parent=None):
-        '''Grafical Interface for Starting this Class'''
-        kwargs, independent = common._SimplePluginStart("PhaseProcLp").startDisplay()
+        '''Graphical Interface for Starting this Class'''
+        kwargs, independent = \
+            common._SimplePluginStart("PhaseProcLp").startDisplay()
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
-    def __init__(self, Vradar=None, name="PhaseProcLp", parent=None):
+    def __init__(self, Vradar=None, Vgatefilter=None,
+                 name="PhaseProcLp", parent=None):
         '''Initialize the class to create the interface
 
         Parameters
@@ -53,7 +56,7 @@ class PhaseProcLp(core.Component):
 
         self.sharedVariables = {"Vradar": None}
         self.connectAllVariables()
-        
+
         self.generalLayout = QtGui.QGridLayout()
         self.layout.addLayout(self.generalLayout, 0, 0, 1, 2)
 
@@ -79,7 +82,7 @@ class PhaseProcLp(core.Component):
         self.generalLayout.addWidget(self.radarButton, 0, 1)
 
         self.offset = QtGui.QDoubleSpinBox()
-        self.offset.setRange(-1000,1000)
+        self.offset.setRange(-1000, 1000)
         self.generalLayout.addWidget(QtGui.QLabel("offset"), 1, 0)
         self.generalLayout.addWidget(self.offset, 1, 1)
 
@@ -88,49 +91,49 @@ class PhaseProcLp(core.Component):
         self.generalLayout.addWidget(self.debug, 2, 1)
 
         self.selfConst = QtGui.QDoubleSpinBox()
-        self.selfConst.setRange(-1000000,10000000)
+        self.selfConst.setRange(-1000000, 10000000)
         self.selfConst.setValue(60000)
         self.generalLayout.addWidget(QtGui.QLabel("self_const"), 3, 0)
         self.generalLayout.addWidget(self.selfConst, 3, 1)
 
         self.lowZ = QtGui.QDoubleSpinBox()
-        self.lowZ.setRange(-1000000,10000000)
+        self.lowZ.setRange(-1000000, 10000000)
         self.lowZ.setValue(10)
         self.generalLayout.addWidget(QtGui.QLabel("low_z"), 4, 0)
         self.generalLayout.addWidget(self.lowZ, 4, 1)
 
         self.highZ = QtGui.QDoubleSpinBox()
-        self.highZ.setRange(-1000000,10000000)
+        self.highZ.setRange(-1000000, 10000000)
         self.highZ.setValue(53)
         self.generalLayout.addWidget(QtGui.QLabel("high_z"), 5, 0)
         self.generalLayout.addWidget(self.highZ, 5, 1)
 
         self.minPhidp = QtGui.QDoubleSpinBox()
-        self.minPhidp.setRange(-1000000,10000000)
+        self.minPhidp.setRange(-1000000, 10000000)
         self.minPhidp.setValue(0.01)
         self.generalLayout.addWidget(QtGui.QLabel("min_phidp"), 6, 0)
         self.generalLayout.addWidget(self.minPhidp, 6, 1)
 
         self.minNcp = QtGui.QDoubleSpinBox()
-        self.minNcp.setRange(-1000000,10000000)
+        self.minNcp.setRange(-1000000, 10000000)
         self.minNcp.setValue(0.5)
         self.generalLayout.addWidget(QtGui.QLabel("min_ncp"), 7, 0)
         self.generalLayout.addWidget(self.minNcp, 7, 1)
 
         self.minRhv = QtGui.QDoubleSpinBox()
-        self.minRhv.setRange(-1000000,10000000)
+        self.minRhv.setRange(-1000000, 10000000)
         self.minRhv.setValue(0.8)
         self.generalLayout.addWidget(QtGui.QLabel("min_rhv"), 8, 0)
         self.generalLayout.addWidget(self.minRhv, 8, 1)
 
         self.fzl = QtGui.QDoubleSpinBox()
-        self.fzl.setRange(-100000,1000000)
+        self.fzl.setRange(-100000, 1000000)
         self.fzl.setValue(4000)
         self.generalLayout.addWidget(QtGui.QLabel("fzl"), 9, 0)
         self.generalLayout.addWidget(self.fzl, 9, 1)
 
         self.sysPhase = QtGui.QDoubleSpinBox()
-        self.sysPhase.setRange(-100000,1000000)
+        self.sysPhase.setRange(-100000, 1000000)
         self.generalLayout.addWidget(QtGui.QLabel("sys_phase"), 10, 0)
         self.generalLayout.addWidget(self.sysPhase, 10, 1)
 
@@ -138,8 +141,8 @@ class PhaseProcLp(core.Component):
         self.overideSysPhase.setChecked(False)
         self.generalLayout.addWidget(self.overideSysPhase, 11, 1)
 
-        self.nowrap = QtGui.QSpinBox() #XXX must implement desactvation
-        self.nowrap.setRange(-1,1000000)
+        self.nowrap = QtGui.QSpinBox()  # XXX must implement deactivation
+        self.nowrap.setRange(-1, 1000000)
         self.nowrap.setValue(-1)
         self.generalLayout.addWidget(QtGui.QLabel("nowrap"), 12, 0)
         self.generalLayout.addWidget(self.nowrap, 12, 1)
@@ -182,13 +185,13 @@ class PhaseProcLp(core.Component):
         self.generalLayout.addWidget(self.unfField, 20, 1)
 
         self.windowLen = QtGui.QSpinBox()
-        self.windowLen.setRange(0,1000000)
+        self.windowLen.setRange(0, 1000000)
         self.windowLen.setValue(35)
         self.generalLayout.addWidget(QtGui.QLabel("window_len"), 21, 0)
         self.generalLayout.addWidget(self.windowLen, 21, 1)
 
         self.proc = QtGui.QSpinBox()
-        self.proc.setRange(0,1000000)
+        self.proc.setRange(0, 1000000)
         self.proc.setValue(1)
         self.generalLayout.addWidget(QtGui.QLabel("proc"), 22, 0)
         self.generalLayout.addWidget(self.proc, 22, 1)
@@ -207,7 +210,7 @@ class PhaseProcLp(core.Component):
         if item is None:
             return
         else:
-            self.Vradar = getattr(item[1],item[2])
+            self.Vradar = getattr(item[1], item[2])
 
     def displayHelp(self):
         '''Display pyart's docstring for help'''
@@ -236,15 +239,22 @@ class PhaseProcLp(core.Component):
             'fzl': self.fzl.value(),
             'sys_phase': self.sysPhase.value(),
             'overide_sys_phase': self.overideSysPhase.isChecked(),
-            'nowrap': [i if i>=0 else None for i in (self.nowrap.value(),)][0],
+            'nowrap': [i if i >= 0 else None for i in (
+                self.nowrap.value(),)][0],
             'really_verbose': self.reallyVerbose.isChecked(),
             'LP_solver': str(self.lpSolver.currentText()),
-            'refl_field': [None if a=="" else a for a in (str(self.reflField.text()),)][0],
-            'ncp_field': [None if a=="" else a for a in (str(self.ncpField.text()),)][0],
-            'rhv_field': [None if a=="" else a for a in (str(self.rhvField.text()),)][0],
-            'phidp_field': [None if a=="" else a for a in (str(self.phidpField.text()),)][0],
-            'kdp_field': [None if a=="" else a for a in (str(self.kdpField.text()),)][0],
-            'unf_field': [None if a=="" else a for a in (str(self.unfField.text()),)][0],
+            'refl_field': [None if a == "" else a for a in (
+                str(self.reflField.text()),)][0],
+            'ncp_field': [None if a == "" else a for a in (
+                str(self.ncpField.text()),)][0],
+            'rhv_field': [None if a == "" else a for a in (
+                str(self.rhvField.text()),)][0],
+            'phidp_field': [None if a == "" else a for a in (
+                str(self.phidpField.text()),)][0],
+            'kdp_field': [None if a == "" else a for a in (
+                str(self.kdpField.text()),)][0],
+            'unf_field': [None if a == "" else a for a in (
+                str(self.unfField.text()),)][0],
             'window_len': self.windowLen.value(),
             'proc': self.proc.value(),
         }
@@ -255,22 +265,26 @@ class PhaseProcLp(core.Component):
         t0 = time.time()
         reproc_phase, sob_kdp = pyart.correct.phase_proc_lp(**args)
         t1 = time.time()
-        common.ShowWarning("Correction took %fs"%(t1-t0))
+        common.ShowWarning("Correction took %fs" % (t1-t0))
 
         # verify field overwriting
         reproc_phase_name = str(self.reprocPhase.text())
         sob_kdp_name = str(self.sobKdp.text())
 
-        strong_update = False #insertion is weak, overwrite strong
+        strong_update = False  # insertion is weak, overwrite strong
         if reproc_phase_name in self.Vradar.value.fields.keys():
-            resp=common.ShowQuestion("Field %s already exists! Do you want to overwrite it?"%reproc_phase_name)
+            resp = common.ShowQuestion(
+                "Field %s already exists! Do you want to over write it?" %
+                reproc_phase_name)
             if resp != QtGui.QMessageBox.Ok:
                 return
             else:
                 strong_update = True
 
         if sob_kdp_name in self.Vradar.value.fields.keys():
-            resp=common.ShowQuestion("Field %s already exists! Do you want to overwrite it?"%sob_kdp_name)
+            resp = common.ShowQuestion(
+                "Field %s already exists! Do you want to over write it?" %
+                sob_kdp_name)
             if resp != QtGui.QMessageBox.Ok:
                 return
             else:
@@ -280,7 +294,7 @@ class PhaseProcLp(core.Component):
         self.Vradar.value.add_field(reproc_phase_name, reproc_phase, True)
         self.Vradar.value.add_field(sob_kdp_name, sob_kdp, True)
         self.Vradar.change(self.Vradar.value, strong_update)
-        print "Correction took %fs"%(t1-t0)
+        print "Correction took %fs" % (t1-t0)
 
     def _clearLayout(self, layout):
         '''recursively remove items from layout'''
@@ -292,4 +306,4 @@ class PhaseProcLp(core.Component):
             else:
                 self._clearLayout(item.layout())
 
-_plugins=[PhaseProcLp]
+_plugins = [PhaseProcLp]

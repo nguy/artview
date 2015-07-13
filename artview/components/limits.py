@@ -3,9 +3,10 @@ limits.py
 
 Routines used for modifying limits via Display window.
 """
-        
+
 # Load the needed packages
 from PyQt4 import QtGui, QtCore
+
 
 def _default_limits(field, scan_type):
     '''
@@ -30,7 +31,7 @@ def _default_limits(field, scan_type):
     ZDR_LIMS = (-5., 5.)
     RHO_HV_LIMS = (.8, 1.)
     KDP_LIMS = (0., 5.)
-    PHIDP_LIMS =(0., 1.)
+    PHIDP_LIMS = (0., 1.)
     NCP_LIMS = (0., 1.)
     SW_LIMS = (-1., 10.)
     TP_LIMS = (-200., 100.)
@@ -88,7 +89,7 @@ def _default_limits(field, scan_type):
         vminmax = (SW_LIMS[0], SW_LIMS[1])
         CMAP = 'gist_ncar'
     elif field == 'specific_differential_phase':
-        vminmax = (PHIDP_LIMS[0], PHIDP_LIMS[1]) 
+        vminmax = (PHIDP_LIMS[0], PHIDP_LIMS[1])
         CMAP = 'RdBu_r'
     elif field == 'total_power':
         vminmax = (TP_LIMS[0], TP_LIMS[1])
@@ -113,6 +114,7 @@ def _default_limits(field, scan_type):
 ###############################
 # Limits Dialog Class Methods #
 ###############################
+
 
 def limits_dialog(limits, name):
     '''Function to instantiate a Display Limits Window.
@@ -180,7 +182,8 @@ def limits_dialog(limits, name):
     gridLayout_2.addLayout(gridLayout, 0, 0, 1, 1)
     buttonBox = QtGui.QDialogButtonBox(LimsDialog)
     buttonBox.setOrientation(QtCore.Qt.Horizontal)
-    buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+    buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
+                                 QtGui.QDialogButtonBox.Ok)
     buttonBox.setObjectName("buttonBox")
     gridLayout_2.addWidget(buttonBox, 1, 0, 1, 1)
 
