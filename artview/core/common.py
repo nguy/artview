@@ -167,7 +167,7 @@ class CreateTable(QtGui.QTableWidget):
         """ Reads in data from a 2D array and formats and displays it in
             the table """
 
-        if len(data)==0:
+        if len(data) == 0:
             data = ["No data for selected ROI."]
             nrows = 0
             ncols = 0

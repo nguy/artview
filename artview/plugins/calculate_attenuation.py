@@ -18,7 +18,7 @@ class CalculateAttenuation(core.Component):
     Interfase for executing :py:func:`pyart.correct.calculate_attenuation`
     '''
 
-    Vradar = None #: see :ref:`shared_variable`
+    Vradar = None  # : see :ref:`shared_variable`
 
     @classmethod
     def guiStart(self, parent=None):
@@ -28,7 +28,6 @@ class CalculateAttenuation(core.Component):
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
-
     def __init__(self, Vradar=None, Vgatefilter=None,
                  name="CalculateAttenuation", parent=None):
         '''Initialize the class to create the interface
@@ -37,13 +36,13 @@ class CalculateAttenuation(core.Component):
         ----------
         [Optional]
         Vradar : :py:class:`~artview.core.core.Variable` instance
-            Radar signal variable. 
+            Radar signal variable.
             A value of None initializes an empty Variable.
         name : string
             Field Radiobutton window name.
         parent : PyQt instance
             Parent instance to associate to this class.
-            If None, then Qt owns, otherwise associated with parent PyQt instance.
+            If None, then Qt owns, otherwise associated w/ parent PyQt instance
         '''
         super(CalculateAttenuation, self).__init__(name=name, parent=parent)
         self.central_widget = QtGui.QWidget()
@@ -165,7 +164,8 @@ class CalculateAttenuation(core.Component):
         common.ShowLongText(pyart.correct.calculate_attenuation.__doc__)
 
     def calculate_attenuation(self):
-        '''Mount Options and execute :py:func:`~pyart.correct.calculate_attenuation`.
+        '''Mount Options and execute
+        :py:func:`~pyart.correct.calculate_attenuation`.
         The resulting fields are added to Vradar.
         Vradar is updated, strong or weak depending on overwriting old fields.
         '''
@@ -240,7 +240,7 @@ class CalculateAttenuation(core.Component):
         self.Vradar.value.add_field(spec_at_field_name, spec_at, True)
         self.Vradar.value.add_field(corr_refl_field_name, cor_z, True)
         self.Vradar.change(self.Vradar.value, strong_update)
-        print "Correction took %fs"%(t1-t0)
+        print "Correction took %fs" % (t1-t0)
 
     def _clearLayout(self, layout):
         '''recursively remove items from layout'''

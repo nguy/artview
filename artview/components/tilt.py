@@ -14,9 +14,9 @@ from ..core import Variable, Component
 class TiltButtonWindow(Component):
     '''Class to display the Window with Tilt Buttons.'''
 
-    Vradar = None #: see :ref:`shared_variable`
-    Vgrid = None #: see :ref:`shared_variable`
-    Vtilt = None #: see :ref:`shared_variable`
+    Vradar = None  # : see :ref:`shared_variable`
+    Vgrid = None  # : see :ref:`shared_variable`
+    Vtilt = None  # : see :ref:`shared_variable`
 
     def __init__(self, Vtilt, Vradar=None, Vgrid=None, name="TiltButtons",
                  parent=None):
@@ -127,7 +127,8 @@ class TiltButtonWindow(Component):
         self.NewTilt(self.Vtilt, self.Vtilt.value, True)
 
     def NewTilt(self, variable, value, strong):
-        '''Slot for 'ValueChanged' signal of :py:class:`Vtilt <artview.core.core.Variable>`.
+        '''Slot for 'ValueChanged' signal of
+        :py:class:`Vtilt <artview.core.core.Variable>`.
 
         This will:
 
@@ -138,7 +139,8 @@ class TiltButtonWindow(Component):
             self.tiltbutton[tilt].setChecked(True)
 
     def NewRadar(self, variable, value, strong):
-        '''Slot for 'ValueChanged' signal of :py:class:`Vradar <artview.core.core.Variable>`.
+        '''Slot for 'ValueChanged' signal of
+        :py:class:`Vradar <artview.core.core.Variable>`.
 
         This will:
 
@@ -149,7 +151,8 @@ class TiltButtonWindow(Component):
         self.SetTiltRadioButtonsRadar()
 
     def NewGrid(self, variable, value, strong):
-        '''Slot for 'ValueChanged' signal of :py:class:`Vgrid <artview.core.core.Variable>`.
+        '''Slot for 'ValueChanged' signal of
+        :py:class:`Vgrid <artview.core.core.Variable>`.
 
         This will:
 

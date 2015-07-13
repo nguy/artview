@@ -41,7 +41,7 @@ class ComponentsControl(core.Component):
             Field Radiobutton window name.
         parent : PyQt instance
             Parent instance to associate to this class.
-            If None, then Qt owns, otherwise associated with parent PyQt instance.
+            If None, then Qt owns, otherwise associated w/ parent PyQt instance
 
         '''
         super(ComponentsControl, self).__init__(name=name, parent=parent)

@@ -14,8 +14,8 @@ from ..core import Variable, Component
 class FieldButtonWindow(Component):
     '''Class to display the Window with Field Buttons'''
 
-    Vradar = None #: see :ref:`shared_variable`
-    Vfield = None #: see :ref:`shared_variable`
+    Vradar = None  # : see :ref:`shared_variable`
+    Vfield = None  # : see :ref:`shared_variable`
 
     def __init__(self, Vradar, Vfield, name="FieldButtons", parent=None):
         '''
@@ -88,7 +88,8 @@ class FieldButtonWindow(Component):
         self.NewField(self.Vfield, self.Vfield.value, True)
 
     def NewField(self, variable, value, strong):
-        '''Slot for 'ValueChanged' signal of :py:class:`Vfield <artview.core.core.Variable>`.
+        '''Slot for 'ValueChanged' signal of
+        :py:class:`Vfield <artview.core.core.Variable>`.
 
         This will:
 
@@ -98,11 +99,12 @@ class FieldButtonWindow(Component):
             self.fieldbutton[value].setChecked(True)
 
     def NewRadar(self, variable, value, strong):
-        '''Slot for 'ValueChanged' signal of :py:class:`Vradar <artview.core.core.Variable>`.
+        '''Slot for 'ValueChanged' signal of
+        :py:class:`Vradar <artview.core.core.Variable>`.
 
         This will:
 
-        * Recreate radio itens
+        * Recreate radio items
         '''
         self.CreateFieldWidget()
         self.SetFieldRadioButtons()

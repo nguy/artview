@@ -18,13 +18,14 @@ class Mapper(core.Component):
     Interfase for executing :py:func:`pyart.map.grid_from_radars`
     '''
 
-    Vradar = None #: see :ref:`shared_variable`
-    Vgrid = None #: see :ref:`shared_variable`
+    Vradar = None  # : see :ref:`shared_variable`
+    Vgrid = None  # : see :ref:`shared_variable`
 
     @classmethod
     def guiStart(self, parent=None):
         '''Graphical Interface for Starting this Class'''
-        kwargs, independent = common._SimplePluginStart("Mapper").startDisplay()
+        kwargs, independent = \
+            common._SimplePluginStart("Mapper").startDisplay()
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
@@ -35,16 +36,16 @@ class Mapper(core.Component):
         ----------
         [Optional]
         Vradar : :py:class:`~artview.core.core.Variable` instance
-            Radar signal variable. 
+            Radar signal variable.
             A value of None initializes an empty Variable.
         Vgrid : :py:class:`~artview.core.core.Variable` instance
-            Grid signal variable. 
+            Grid signal variable.
             A value of None initializes an empty Variable.
         name : string
             Field Radiobutton window name.
         parent : PyQt instance
             Parent instance to associate to this class.
-            If None, then Qt owns, otherwise associated with parent PyQt instance.
+            If None, then Qt owns, otherwise associated w/ parent PyQt instance
         '''
         super(Mapper, self).__init__(name=name, parent=parent)
         self.central_widget = QtGui.QWidget()

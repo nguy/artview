@@ -8,8 +8,10 @@ Driver function that creates ARTView display.
 def run(DirIn='./', filename=None, field=None):
     """
     artview execution to pyart mapping
-    
-    It has :py:class:`~artview.components.Menu` with :py:class:`~artview.components.ComponentsControl`, menu is opening radar files
+
+    It has :py:class:`~artview.components.Menu`
+    with :py:class:`~artview.components.ComponentsControl`,
+    menu is opening radar files
 
     1 radar and 1 grid sharing Vfield
 
@@ -19,7 +21,7 @@ def run(DirIn='./', filename=None, field=None):
         * All :py:class:`~artview.plugins`
         * :py:class:`~artview.components.Display`
         * :py:class:`~artview.components.ComponentsControl`
-    
+
     """
     from PyQt4 import QtGui, QtCore
     import sys
@@ -37,7 +39,8 @@ def run(DirIn='./', filename=None, field=None):
     app = QtGui.QApplication(sys.argv)
 
     # start Menu
-    MainMenu = Menu(DirIn, filename, mode="Radar", name="Menu") #initiate Vradar
+    MainMenu = Menu(DirIn, filename, mode="Radar", name="Menu")
+    # initiate Vradar
     Vradar = MainMenu.Vradar
 
     # start Displays

@@ -18,8 +18,8 @@ class DealiasRegionBased(core.Component):
     Interfase for executing :py:func:`pyart.correct.dealias_region_based`
     '''
 
-    Vradar = None #: see :ref:`shared_variable`
-    Vgatefilter = None #: see :ref:`shared_variable`
+    Vradar = None  # : see :ref:`shared_variable`
+    Vgatefilter = None  # : see :ref:`shared_variable`
 
     @classmethod
     def guiStart(self, parent=None):
@@ -37,17 +37,17 @@ class DealiasRegionBased(core.Component):
         ----------
         [Optional]
         Vradar : :py:class:`~artview.core.core.Variable` instance
-            Radar signal variable. 
+            Radar signal variable.
             A value of None initializes an empty Variable.
         Vgatefilter : :py:class:`~artview.core.core.Variable` instance
-            Gatefilter signal variable. 
+            Gatefilter signal variable.
             A value of None initializes an empty Variable.
             [Not Implemented]
         name : string
             Field Radiobutton window name.
         parent : PyQt instance
             Parent instance to associate to this class.
-            If None, then Qt owns, otherwise associated with parent PyQt instance.
+            If None, then Qt owns, otherwise associated w/ parent PyQt instance
         '''
         super(DealiasRegionBased, self).__init__(name=name, parent=parent)
         self.central_widget = QtGui.QWidget()
@@ -116,7 +116,7 @@ class DealiasRegionBased(core.Component):
         self.centered.setChecked(True)
         self.generalLayout.addWidget(self.centered, 5, 1)
 
-        # XXX must implement desactvation
+        # XXX must implement deactivation
         self.nyquistVelocity = QtGui.QDoubleSpinBox()
         self.nyquistVelocity.setRange(-1, 1000)
         self.nyquistVelocity.setValue(-1)
@@ -127,7 +127,8 @@ class DealiasRegionBased(core.Component):
         self.checkNyquistUniform.setChecked(False)
         self.generalLayout.addWidget(self.checkNyquistUniform, 7, 1)
 
-        self.generalLayout.addWidget(QtGui.QLabel("gatefilter"), 8, 0) #XXX NotImplemented
+        self.generalLayout.addWidget(QtGui.QLabel("gatefilter"), 8, 0)
+        # XXX NotImplemented
         self.generalLayout.addWidget(QtGui.QLabel("NotImplemented"), 8, 1)
 
         self.raysWrapAround = QtGui.QCheckBox("rays_wrap_around")
@@ -152,9 +153,9 @@ class DealiasRegionBased(core.Component):
         if item is None:
             return
         else:
-            self.disconnectSharedVariable('Vradar') # disconect old
+            self.disconnectSharedVariable('Vradar')  # disconnect old
             self.Vradar = getattr(item[1], item[2])
-            self.connectSharedVariable('Vradar') # conect new
+            self.connectSharedVariable('Vradar')  # connect new
 
     def newRadar(self, variable, value, strong):
         ''' respond to change in radar '''
@@ -171,7 +172,8 @@ class DealiasRegionBased(core.Component):
         common.ShowLongText(pyart.correct.dealias_region_based.__doc__)
 
     def dealias_region_based(self):
-        '''Mount Options and execute :py:func:`~pyart.correct.dealias_region_based`.
+        '''Mount Options and execute
+        :py:func:`~pyart.correct.dealias_region_based`.
         The resulting fields are added to Vradar.
         Vradar is updated, strong or weak depending on overwriting old fields.
         '''

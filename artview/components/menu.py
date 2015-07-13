@@ -15,8 +15,8 @@ from ..core import Variable, Component, common
 class Menu(Component):
     '''Class to display the MainMenu'''
 
-    Vradar = None #: see :ref:`shared_variable`
-    Vgrid = None #: see :ref:`shared_variable`
+    Vradar = None  # : see :ref:`shared_variable`
+    Vgrid = None  # : see :ref:`shared_variable`
 
     def __init__(self, pathDir, filename=None, Vradar=None, Vgrid=None,
                  mode="Radar", name="Menu", parent=None):
@@ -31,10 +31,10 @@ class Menu(Component):
         filename : string
             File to open as first, this will skip the open file dialog.
         Vradar : :py:class:`~artview.core.core.Variable` instance
-            Radar signal variable. 
+            Radar signal variable.
             A value of None initializes an empty Variable.
         Vgrid : :py:class:`~artview.core.core.Variable` instance
-            Grid signal variable. 
+            Grid signal variable.
             A value of None initializes an empty Variable.
         mode : "Radar", "Grid" or "All"
             Determine which type of files will be open
@@ -109,8 +109,8 @@ class Menu(Component):
     def showFileDialog(self):
         '''Open a dialog box to choose file.'''
 
-        filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file', 
-                self.dirIn)
+        filename = QtGui.QFileDialog.getOpenFileName(
+            self, 'Open file', self.dirIn)
         filename = str(filename)
         if filename == '':
             return
@@ -236,7 +236,8 @@ class Menu(Component):
             lambda Comp=Comp: self.startComponent(Comp))
 
     def startComponent(self, Comp):
-        '''Execute the GUI start of Component and add to layout if not independent.'''
+        '''Execute the GUI start of Component and
+        add to layout if not independent.'''
         comp, independent = Comp.guiStart(self)
         if not independent:
             self.addLayoutWidget(comp)
@@ -402,7 +403,8 @@ class Menu(Component):
         self.filelist = os.listdir(self.dirIn)
 
         if os.path.basename(self.filename) in self.filelist:
-            self.fileindex = self.filelist.index(os.path.basename(self.filename))
+            self.fileindex = self.filelist.index(
+                os.path.basename(self.filename))
         else:
             self.fileindex = 0
 
@@ -423,7 +425,7 @@ class Menu(Component):
                     import traceback
                     print traceback.format_exc()
                     radar_warning = True
-        elif self.mode in ("grid","all"):
+        elif self.mode in ("grid", "all"):
             try:
                 grid = pyart.io.read_grid(
                     self.filename, delay_field_loading=True)
