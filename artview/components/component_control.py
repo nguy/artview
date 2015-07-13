@@ -11,6 +11,7 @@ from functools import partial
 from .. import core
 common = core.common
 
+
 class ComponentsControl(core.Component):
     '''Class instance for control variables shared between components.
     The user select 2 components from a list and a radio menu is added for
@@ -22,8 +23,8 @@ class ComponentsControl(core.Component):
 
     @classmethod
     def guiStart(self, parent=None):
-        '''Grafical Interface for Starting this Class'''
-        kwargs, independent = common._SimplePluginStart("ComponentsControl").startDisplay()
+        kwargs, independent = \
+            common._SimplePluginStart("ComponentsControl").startDisplay()
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
@@ -47,8 +48,8 @@ class ComponentsControl(core.Component):
         self.central_widget = QtGui.QWidget()
         self.setCentralWidget(self.central_widget)
         self.layout = QtGui.QGridLayout(self.central_widget)
-        
-        if components == None:
+
+        if components is None:
             self.components = core.componentsList
             QtCore.QObject.connect(
                 self.components, QtCore.SIGNAL("ComponentAppended"),
@@ -85,7 +86,6 @@ class ComponentsControl(core.Component):
         if self.comp1 not in self.components:
             self.comp1 = self.components[0]
 
-
         # Select Components buttons
         self.combo0 = QtGui.QComboBox()
         self.combo0.activated[int].connect(self._comp0Action)
@@ -100,7 +100,7 @@ class ComponentsControl(core.Component):
             self.combo1.addItem(component.name)
         self.combo0.setCurrentIndex(self.components.index(self.comp0))
         self.combo1.setCurrentIndex(self.components.index(self.comp1))
-        
+
         self._setVariables()
         self._setRadioButtons()
 
@@ -111,9 +111,9 @@ class ComponentsControl(core.Component):
         self.layout.addLayout(self.radioLayout, 2, 0)
         self.radioLayout.addWidget(QtGui.QLabel("Conect"), 0, 1)
         self.radioLayout.addWidget(QtGui.QLabel("Disconect"), 0, 2)
-        
+
         self.radioBoxes = []
-        for idx,var in enumerate(self.variables):
+        for idx, var in enumerate(self.variables):
             self._addRadioButton(var, idx)
 
     def _addRadioButton(self, var, idx):
@@ -123,9 +123,9 @@ class ComponentsControl(core.Component):
 
         conect = QtGui.QRadioButton()
         disconect = QtGui.QRadioButton()
-        QtCore.QObject.connect(conect, QtCore.SIGNAL("clicked()"), \
+        QtCore.QObject.connect(conect, QtCore.SIGNAL("clicked()"),
                                partial(self.conectVar, var))
-        QtCore.QObject.connect(disconect, QtCore.SIGNAL("clicked()"), \
+        QtCore.QObject.connect(disconect, QtCore.SIGNAL("clicked()"),
                                partial(self.disconectVar, var))
         radioBox.addButton(conect)
         radioBox.addButton(disconect)
@@ -168,7 +168,8 @@ class ComponentsControl(core.Component):
         self.comp1.connectSharedVariable(var)
         # comp1.var.change(comp0.var.value), just to emit signal
         getattr(self.comp1, var).change(getattr(self.comp0, var).value)
-        print "connect var %s of %s from %s"%(var, self.comp1.name, self.comp0.name)
+        print "connect var %s of %s from %s" % (
+            var, self.comp1.name, self.comp0.name)
 
     def disconectVar(self, var):
         '''Turn variable in component 1 independente of component 0'''
@@ -180,7 +181,8 @@ class ComponentsControl(core.Component):
         self.comp1.connectSharedVariable(var)
         # comp1.var.change(comp0.var.value)
         getattr(self.comp1, var).change(getattr(self.comp0, var).value)
-        print "disconnect var %s of %s from %s"%(var, self.comp1.name, self.comp0.name)
+        print "disconnect var %s of %s from %s" % (
+            var, self.comp1.name, self.comp0.name)
 
     def _clearLayout(self, layout):
         '''Recursively remove items from layout'''
@@ -196,4 +198,3 @@ class ComponentsControl(core.Component):
         '''Rebuild main layout'''
         self._clearLayout(self.layout)
         self.setupUi()
-

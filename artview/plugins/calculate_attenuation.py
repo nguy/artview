@@ -1,16 +1,17 @@
 """
-
+calculate_attenuation.py
 """
 
 # Load the needed packages
 from PyQt4 import QtGui, QtCore
 from functools import partial
 
+import pyart
+import time
+
 from .. import core
 common = core.common
 
-import pyart
-import time
 
 class CalculateAttenuation(core.Component):
     '''
@@ -22,12 +23,14 @@ class CalculateAttenuation(core.Component):
     @classmethod
     def guiStart(self, parent=None):
         '''Grafical Interface for Starting this Class'''
-        kwargs, independent = common._SimplePluginStart("CalculateAttenuation").startDisplay()
+        kwargs, independent = \
+            common._SimplePluginStart("CalculateAttenuation").startDisplay()
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
 
-    def __init__(self, Vradar=None, name="CalculateAttenuation", parent=None):
+    def __init__(self, Vradar=None, Vgatefilter=None,
+                 name="CalculateAttenuation", parent=None):
         '''Initialize the class to create the interface
 
         Parameters
@@ -54,7 +57,7 @@ class CalculateAttenuation(core.Component):
 
         self.sharedVariables = {"Vradar": None}
         self.connectAllVariables()
-        
+
         self.generalLayout = QtGui.QGridLayout()
         self.layout.addLayout(self.generalLayout, 0, 0, 1, 2)
 
@@ -81,7 +84,7 @@ class CalculateAttenuation(core.Component):
         self.generalLayout.addWidget(self.radarButton, 0, 1)
 
         self.zOffset = QtGui.QDoubleSpinBox()
-        self.zOffset.setRange(-1000,1000)
+        self.zOffset.setRange(-1000, 1000)
         self.generalLayout.addWidget(QtGui.QLabel("z_offset"), 1, 0)
         self.generalLayout.addWidget(self.zOffset, 1, 1)
 
@@ -90,37 +93,37 @@ class CalculateAttenuation(core.Component):
         self.generalLayout.addWidget(self.debug, 2, 1)
 
         self.doc = QtGui.QDoubleSpinBox()
-        self.doc.setRange(-1000,1000)
+        self.doc.setRange(-1000, 1000)
         self.doc.setValue(15)
         self.generalLayout.addWidget(QtGui.QLabel("doc"), 3, 0)
         self.generalLayout.addWidget(self.doc, 3, 1)
 
         self.fzl = QtGui.QDoubleSpinBox()
-        self.fzl.setRange(-100000,1000000)
+        self.fzl.setRange(-100000, 1000000)
         self.fzl.setValue(4000)
         self.generalLayout.addWidget(QtGui.QLabel("fzl"), 4, 0)
         self.generalLayout.addWidget(self.fzl, 4, 1)
 
         self.rhvMin = QtGui.QDoubleSpinBox()
-        self.rhvMin.setRange(-100000,1000000)
+        self.rhvMin.setRange(-100000, 1000000)
         self.rhvMin.setValue(0.8)
         self.generalLayout.addWidget(QtGui.QLabel("rhv_min"), 5, 0)
         self.generalLayout.addWidget(self.rhvMin, 5, 1)
 
         self.ncpMin = QtGui.QDoubleSpinBox()
-        self.ncpMin.setRange(-100000,1000000)
+        self.ncpMin.setRange(-100000, 1000000)
         self.ncpMin.setValue(0.5)
         self.generalLayout.addWidget(QtGui.QLabel("ncp_min"), 6, 0)
         self.generalLayout.addWidget(self.ncpMin, 6, 1)
 
         self.aCoef = QtGui.QDoubleSpinBox()
-        self.aCoef.setRange(-100000,1000000)
+        self.aCoef.setRange(-100000, 1000000)
         self.aCoef.setValue(0.06)
         self.generalLayout.addWidget(QtGui.QLabel("a_coef"), 7, 0)
         self.generalLayout.addWidget(self.aCoef, 7, 1)
 
         self.beta = QtGui.QDoubleSpinBox()
-        self.beta.setRange(-100000,1000000)
+        self.beta.setRange(-100000, 1000000)
         self.beta.setValue(0.8)
         self.generalLayout.addWidget(QtGui.QLabel("beta"), 8, 0)
         self.generalLayout.addWidget(self.beta, 8, 1)
@@ -155,7 +158,7 @@ class CalculateAttenuation(core.Component):
         if item is None:
             return
         else:
-            self.Vradar = getattr(item[1],item[2])
+            self.Vradar = getattr(item[1], item[2])
 
     def displayHelp(self):
         '''Display pyart's docstring for help'''
@@ -181,12 +184,18 @@ class CalculateAttenuation(core.Component):
             'ncp_min': self.ncpMin.value(),
             'a_coef': self.aCoef.value(),
             'beta': self.beta.value(),
-            'refl_field': [None if a=="" else a for a in (str(self.reflField.text()),)][0],
-            'ncp_field': [None if a=="" else a for a in (str(self.ncpField.text()),)][0],
-            'rhv_field': [None if a=="" else a for a in (str(self.rhvField.text()),)][0],
-            'phidp_field': [None if a=="" else a for a in (str(self.phidpField.text()),)][0],
-            'spec_at_field': [None if a=="" else a for a in (str(self.specAtField.text()),)][0],
-            'corr_refl_field': [None if a=="" else a for a in (str(self.corrReflField.text()),)][0],
+            'refl_field': [None if a == "" else a for a in (
+                str(self.reflField.text()),)][0],
+            'ncp_field': [None if a == "" else a for a in (
+                str(self.ncpField.text()),)][0],
+            'rhv_field': [None if a == "" else a for a in (
+                str(self.rhvField.text()),)][0],
+            'phidp_field': [None if a == "" else a for a in (
+                str(self.phidpField.text()),)][0],
+            'spec_at_field': [None if a == "" else a for a in (
+                str(self.specAtField.text()),)][0],
+            'corr_refl_field': [None if a == "" else a for a in (
+                str(self.corrReflField.text()),)][0],
         }
         print args
 
@@ -195,7 +204,7 @@ class CalculateAttenuation(core.Component):
         t0 = time.time()
         spec_at, cor_z = pyart.correct.calculate_attenuation(**args)
         t1 = time.time()
-        common.ShowWarning("Correction took %fs"%(t1-t0))
+        common.ShowWarning("Correction took %fs" % (t1-t0))
 
         # verify field overwriting
         if args['spec_at_field'] is None:
@@ -208,16 +217,20 @@ class CalculateAttenuation(core.Component):
         else:
             corr_refl_field_name = args['corr_refl_field']
 
-        strong_update = False #insertion is weak, overwrite strong
+        strong_update = False  # insertion is weak, overwrite strong
         if spec_at_field_name in self.Vradar.value.fields.keys():
-            resp=common.ShowQuestion("Field %s already exists! Do you want to overwrite it?"%spec_at_field_name)
+            resp = common.ShowQuestion(
+                "Field %s already exists! Do you want to over write it?" %
+                spec_at_field_name)
             if resp != QtGui.QMessageBox.Ok:
                 return
             else:
                 strong_update = True
 
         if corr_refl_field_name in self.Vradar.value.fields.keys():
-            resp=common.ShowQuestion("Field %s already exists! Do you want to overwrite it?"%corr_refl_field_name)
+            resp = common.ShowQuestion(
+                "Field %s already exists! Do you want to over write it?" %
+                corr_refl_field_name)
             if resp != QtGui.QMessageBox.Ok:
                 return
             else:
@@ -239,4 +252,4 @@ class CalculateAttenuation(core.Component):
             else:
                 self._clearLayout(item.layout())
 
-_plugins=[CalculateAttenuation]
+_plugins = [CalculateAttenuation]

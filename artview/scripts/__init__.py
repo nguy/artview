@@ -25,7 +25,7 @@ for module in os.listdir(os.path.dirname(__file__)):
     try:
         scripts[module[:-3]] = tmp.run
         setattr(thismodule, module[:-3], tmp.run)
-        #update docstring to add plugin
+        # update docstring to add plugin
         __doc__ = __doc__ + """    %s\n""" % module[:-3]
     except:
         pass
@@ -36,4 +36,3 @@ del os
 del sys
 del thismodule
 del tmp
-
