@@ -18,7 +18,7 @@ class PhaseProcLp(core.Component):
     Interfase for executing :py:func:`pyart.correct.phase_proc_lp`
     '''
 
-    Vradar = None #: see :ref:`shared_variable`
+    Vradar = None  # : see :ref:`shared_variable`
 
     @classmethod
     def guiStart(self, parent=None):
@@ -36,13 +36,13 @@ class PhaseProcLp(core.Component):
         ----------
         [Optional]
         Vradar : :py:class:`~artview.core.core.Variable` instance
-            Radar signal variable. 
+            Radar signal variable.
             A value of None initializes an empty Variable.
         name : string
             Field Radiobutton window name.
         parent : PyQt instance
             Parent instance to associate to this class.
-            If None, then Qt owns, otherwise associated with parent PyQt instance.
+            If None, then Qt owns, otherwise associated w/ parent PyQt instance
         '''
         super(PhaseProcLp, self).__init__(name=name, parent=parent)
         self.central_widget = QtGui.QWidget()

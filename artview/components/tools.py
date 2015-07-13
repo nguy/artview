@@ -122,8 +122,10 @@ class ValueClick(QtGui.QMainWindow):
             if az < 0:
                 az = az + 360.
             rng = np.sqrt(xdata*xdata + ydata*ydata)
-            self.msg = 'x = %4.2f, y = %4.2f, Azimuth = %4.2f deg., Range = %4.3f km'\
-                        %(xdata, ydata, az, rng)
+            # TJL - Attempt to pep8 this overlong string
+            msg1 = 'x = %4.2f, y = %4.2f, ' % (xdata, ydata)
+            msg2 = 'Azimuth = %4.2f deg., Range = %4.3f km' % (az, rng)
+            self.msg = msg1 + msg2
         else:
             az = np.arctan2(xdata, ydata) * 180. / np.pi
             radar = self.Vradar.value  # keep equations clean
@@ -152,14 +154,16 @@ class ValueClick(QtGui.QMainWindow):
                         radar.sweep_end_ray_index['data'][self.Vtilt.value]
 
             rngindex = np.argmin(np.abs(radar.range['data']-rng*1000.))
-            # TJL - This is not pep8 compliant & is ugly and confusing
-            # TJL - Not sure I can fix without breaking tho
-            self.msg = \
-                'x = %4.2f, y = %4.2f, Azimuth = %4.2f deg., Range = %4.3f km, %s = %4.2f %s' \
-                % (xdata, ydata, radar.azimuth['data'][azindex],
-                   radar.range['data'][rngindex]/1000., self.Vfield.value,
-                   radar.fields[self.Vfield.value]['data'][azindex][rngindex],
-                   self.units)
+            # TJL - Attempt to pep8 this overlong string
+            msg1 = 'x = %4.2f, y = %4.2f, ' % (xdata, ydata)
+            msg2 = 'Azimuth = %4.2f deg., Range = %4.3f km, ' % \
+                (radar.azimuth['data'][azindex],
+                 radar.range['data'][rngindex]/1000.)
+            msg3 = '%s = %4.2f %s' % (
+                self.Vfield.value,
+                radar.fields[self.Vfield.value]['data'][azindex][rngindex],
+                self.units)
+            self.msg = msg1 + msg2 + msg3
         self.statusbar.showMessage(self.msg)
 
     def disconnect(self):

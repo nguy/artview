@@ -8,8 +8,9 @@ Driver function that creates ARTView display.
 def run(DirIn='./', filename=None, field=None):
     """
     standard artview execution
-    
-    It has :py:class:`~artview.components.Menu` with :py:class:`~artview.components.ComponentsControl`,
+
+    It has :py:class:`~artview.components.Menu`
+    with :py:class:`~artview.components.ComponentsControl`,
 
     2 :py:class:`~artview.components.Display`,
 
