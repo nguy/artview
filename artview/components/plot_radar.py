@@ -758,6 +758,10 @@ class Display(Component):
         ''' get :py:class:`PyQt4.QtGui.QStatusBar` instance'''
         return self.statusbar
 
+    def getField(self):
+        ''' get current field '''
+        return self.Vfield.value
+
 
 class _DisplayStart(QtGui.QDialog):
     '''

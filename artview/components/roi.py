@@ -9,6 +9,7 @@ import numpy as np
 from PyQt4 import QtGui, QtCore
 from matplotlib.path import Path
 from matplotlib.lines import Line2D
+import csv
 
 from ..core import Variable, Component, common, VariableChoose
 
@@ -18,6 +19,8 @@ class ROI(Component):
     Select a Region of Interest: The code modified from
 https://www.mail-archive.com/matplotlib-users@lists.sourceforge.net/msg00661.html
     '''
+
+    VroiData = None #: see :ref:`shared_variable`
 
     @classmethod
     def guiStart(self, parent=None):
@@ -32,9 +35,11 @@ https://www.mail-archive.com/matplotlib-users@lists.sourceforge.net/msg00661.htm
         ----------
         display - ARTView Display
             Display instance to associate ROI. Must have following elements:
-                getPlotAxis() - Matplotlib axis instance
-                getStatusBar() - QtGui.QStatusBar
-                getPathInteriorValues(Path) - Function
+                * getPlotAxis() - Matplotlib axis instance
+                * getStatusBar() - QtGui.QStatusBar
+                * getField() - string
+                * getPathInteriorValues(Path) - see
+                  :py:func:`~artview.components.Display.getPathInteriorValues`
 
         [Optional]
         name - string
@@ -57,7 +62,8 @@ https://www.mail-archive.com/matplotlib-users@lists.sourceforge.net/msg00661.htm
         self.ax = display.getPlotAxis()
         self.statusbar = display.getStatusBar()
         self.fig = self.ax.get_figure()
-        self.pathInteriorValues = display.getPathInteriorValues
+        self.getPathInteriorValues = display.getPathInteriorValues
+        self.getField = display.getField
 #        self.display = display
         self.columns = ("X", "Y", "Azimuth", "Range", "Value",
                         "Az Index", "R Index")
@@ -76,7 +82,6 @@ https://www.mail-archive.com/matplotlib-users@lists.sourceforge.net/msg00661.htm
         self.end_point = []
         self.line = None
         self.verts = []
-        self.ind = []
         self.poly = []
 
     def _setup_ROI_vars(self):
@@ -154,13 +159,10 @@ https://www.mail-archive.com/matplotlib-users@lists.sourceforge.net/msg00661.htm
                 self.statusbar.showMessage("Closed Region")
 
                 # Create arrays for indices/data
-                data = self.pathInteriorValues(path)
+                data = self.getPathInteriorValues(path)
                 if data is not None:
                     data = np.concatenate(data).reshape(7, -1).transpose()
                     self.VroiData.change(data)
-
-                    # Instantiate Table
-                    self.table = common.CreateTable(self.columns)
 
     def connect(self):
         '''Connect the ROI instance'''
@@ -203,6 +205,8 @@ http://stackoverflow.com/questions/12608835/writing-a-qtablewidget-to-a-csv-or-x
 
     def viewTable(self):
         '''View a Table of ROI points'''
+        # Instantiate Table
+        self.table = common.CreateTable(self.columns)
         self.table.display_data(self.VroiData.value)
 
         # Show the table
@@ -210,21 +214,22 @@ http://stackoverflow.com/questions/12608835/writing-a-qtablewidget-to-a-csv-or-x
 
     def saveTable(self):
         '''Save a Table of ROI points to a CSV file'''
-        fsuggest = 'ROI_' + self.Vfield.value + '_' + \
-            str(self.xys[self.ind, 0].mean()) + '_' + \
-            str(self.xys[self.ind, 1].mean())+'.csv'
+        data = self.VroiData.value
+        fsuggest = 'ROI_' + self.getField() + '_' + \
+            str(data[:, 0].mean()) + '_' + \
+            str(data[:, 1].mean())+'.csv'
         path = QtGui.QFileDialog.getSaveFileName(
                 self, 'Save CSV Table File', fsuggest, 'CSV(*.csv)')
         if not path.isEmpty():
             with open(unicode(path), 'wb') as stream:
                 writer = csv.writer(stream)
-                for row in range(self.table.rowCount()):
+                for row in range(data.shape[0]):
                     rowdata = []
-                    for column in range(self.table.columnCount()):
-                        item = self.table.item(row, column)
+                    for column in range(data.shape[1]):
+                        item = data[row][column]
                         if item is not None:
                             rowdata.append(
-                                unicode(item.text()).encode('utf8'))
+                                unicode(item).encode('utf8'))
                         else:
                             rowdata.append('')
                     writer.writerow(rowdata)
@@ -250,17 +255,16 @@ http://stackoverflow.com/questions/12608835/writing-a-qtablewidget-to-a-csv-or-x
     def openTable(self):
         path = QtGui.QFileDialog.getOpenFileName(
                 self, 'Open File', '', 'CSV(*.csv)')
+        data = []
         if not path.isEmpty():
             with open(unicode(path), 'rb') as stream:
-                self.table.setRowCount(0)
-                self.table.setColumnCount(0)
                 for rowdata in csv.reader(stream):
-                    row = self.table.rowCount()
-                    self.table.insertRow(row)
-                    self.table.setColumnCount(len(rowdata))
-                    for column, data in enumerate(rowdata):
-                        item = QtGui.QTableWidgetItem(data.decode('utf8'))
-                        self.table.setItem(row, column, item)
+                    row = [None]*7
+                    for column, item in enumerate(rowdata):
+                        row[column] = float(item.decode('utf8'))
+                    data.append(row)
+        data = np.array(data)
+        self.VroiData.change(data)
 
     def resetROI(self):
         '''Clear the ROI lines from plot and reset things'''
