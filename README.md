@@ -35,10 +35,10 @@ With ARTview you can:
     The default two windows can be configured to share parameters or operate independently.
     
 ## Links
-    [Code repository](https://github.com/nguy/artview)
-    [Documentation](https://rawgit.com/nguy/artview/master/docs/build/html/index.html)
-    [Issues](https://github.com/nguy/artview/issues)
-    [Py-ART](https://github.com/ARM-DOE/pyart)
+[Code repository](https://github.com/nguy/artview)
+[Documentation](https://rawgit.com/nguy/artview/master/docs/build/html/index.html)
+[Issues](https://github.com/nguy/artview/issues)
+[Py-ART](https://github.com/ARM-DOE/pyart)
   
 ## News
 ARTView has become and installable package!
