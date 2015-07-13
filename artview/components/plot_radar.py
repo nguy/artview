@@ -404,7 +404,12 @@ class Display(Component):
             self._update_plot()
 
     def NewLims(self, variable, value, strong):
-        '''Display changes after limits in Variable class is altered.'''
+        '''Slot for 'ValueChanged' signal of :py:class:`Vlims <artview.core.core.Variable>`.
+
+        This will:
+
+        * If strong update: update plot
+        '''
         if strong and self.Vradar.value is not None:
             self._update_plot()
 
