@@ -30,10 +30,10 @@ class Display(Component):
     from the PyArt pyart.graph package.
     '''
 
-    Vradar = None  # : see :ref:`shared_variable`
-    Vfield = None  # : see :ref:`shared_variable`
-    Vtilt = None  # : see :ref:`shared_variable`
-    Vlims = None  # : see :ref:`shared_variable`
+    Vradar = None #: see :ref:`shared_variable`
+    Vfield = None #: see :ref:`shared_variable`
+    Vtilt = None #: see :ref:`shared_variable`
+    Vlims = None #: see :ref:`shared_variable`
 
     @classmethod
     def guiStart(self, parent=None):
@@ -103,7 +103,8 @@ class Display(Component):
         self.RngRing = False
 
         # Find the PyArt colormap names
-        self.cm_names = [m for m in cm.datad if not m.endswith("_r")]
+#        self.cm_names = [m for m in cm.datad if not m.endswith("_r")]
+        self.cm_names = ["pyart_" + m for m in pyart.graph.cm.datad if not m.endswith("_r")]
         self.cm_names.sort()
 
         # Create tool dictionary
@@ -128,8 +129,7 @@ class Display(Component):
         self.show()
 
     def keyPressEvent(self, event):
-        '''Reimplementation, allow tilt adjustment
-        via the Up-Down arrow keys.'''
+        '''Reimplementation, allow tilt adjustment via the Up-Down arrow keys.'''
         if event.key() == QtCore.Qt.Key_Up:
             self.TiltSelectCmd(self.Vtilt.value + 1)
         elif event.key() == QtCore.Qt.Key_Down:
@@ -361,8 +361,7 @@ class Display(Component):
     ########################
 
     def NewRadar(self, variable, value, strong):
-        '''Slot for 'ValueChanged' signal of
-        :py:class:`Vradar <artview.core.core.Variable>`.
+        '''Slot for 'ValueChanged' signal of :py:class:`Vradar <artview.core.core.Variable>`.
 
         This will:
 
@@ -389,8 +388,7 @@ class Display(Component):
             self._update_plot()
 
     def NewField(self, variable, value, strong):
-        '''Slot for 'ValueChanged' signal of
-        :py:class:`Vfield <artview.core.core.Variable>`.
+        '''Slot for 'ValueChanged' signal of :py:class:`Vfield <artview.core.core.Variable>`.
 
         This will:
 
@@ -407,8 +405,7 @@ class Display(Component):
             self._update_plot()
 
     def NewLims(self, variable, value, strong):
-        '''Slot for 'ValueChanged' signal of
-        :py:class:`Vlims <artview.core.core.Variable>`.
+        '''Slot for 'ValueChanged' signal of :py:class:`Vlims <artview.core.core.Variable>`.
 
         This will:
 
@@ -418,8 +415,7 @@ class Display(Component):
             self._update_plot()
 
     def NewTilt(self, variable, value, strong):
-        '''Slot for 'ValueChanged' signal of
-        :py:class:`Vtilt <artview.core.core.Variable>`.
+        '''Slot for 'ValueChanged' signal of :py:class:`Vtilt <artview.core.core.Variable>`.
 
         This will:
 
@@ -432,8 +428,7 @@ class Display(Component):
             self._update_plot()
 
     def TiltSelectCmd(self, ntilt):
-        '''Captures tilt selection and update tilt
-        :py:class:`~artview.core.core.Variable`.'''
+        '''Captures tilt selection and update tilt :py:class:`~artview.core.core.Variable`.'''
         if ntilt < 0:
             ntilt = len(self.rTilts)-1
         elif ntilt >= len(self.rTilts):
@@ -441,8 +436,7 @@ class Display(Component):
         self.Vtilt.change(ntilt)
 
     def FieldSelectCmd(self, name):
-        '''Captures field selection and update field
-        :py:class:`~artview.core.core.Variable`.'''
+        '''Captures field selection and update field :py:class:`~artview.core.core.Variable`.'''
         self.Vfield.change(name)
 
     def RngRingSelectCmd(self, ringSel):
@@ -484,6 +478,7 @@ class Display(Component):
         self.CMAP = cm_name
         if self.Vradar.value is not None:
             self._update_plot()
+
 
     def toolZoomPanCmd(self):
         '''Creates and connects to a Zoom/Pan instance.'''
