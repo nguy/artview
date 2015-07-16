@@ -51,7 +51,6 @@ https://www.mail-archive.com/matplotlib-users@lists.sourceforge.net/msg00661.htm
         Notes::
         -----
         '''
-        print display, name
         super(ROI, self).__init__(name=name, parent=parent)
         self.VroiData = Variable(None)
         self.sharedVariables = {"VroiData": None}
@@ -255,6 +254,8 @@ http://stackoverflow.com/questions/12608835/writing-a-qtablewidget-to-a-csv-or-x
     def openTable(self):
         path = QtGui.QFileDialog.getOpenFileName(
                 self, 'Open File', '', 'CSV(*.csv)')
+        if path == '':
+            return
         data = []
         if not path.isEmpty():
             with open(unicode(path), 'rb') as stream:
