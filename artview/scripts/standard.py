@@ -4,15 +4,17 @@ standard.py
 Driver function that creates ARTView display.
 """
 
+
 def run(DirIn='./', filename=None, field=None):
     """
     standard artview execution
-    
-    It has :py:class:`~artview.components.Menu` with :py:class:`~artview.components.ComponentsControl`,
+
+    It has :py:class:`~artview.components.Menu`
+    with :py:class:`~artview.components.ComponentsControl`,
 
     2 :py:class:`~artview.components.Display`,
 
-    grafical start for:
+    graphical start for:
         * All :py:class:`~artview.plugins`
         * :py:class:`~artview.components.Display`
         * :py:class:`~artview.components.ComponentsControl`
@@ -21,27 +23,27 @@ def run(DirIn='./', filename=None, field=None):
     import sys
 
     from ..core import Variable
-    from ..components import Display, Menu, TiltButtonWindow, ComponentsControl, ROI
+    from ..components import Display, Menu, TiltButtonWindow, \
+        ComponentsControl, ROI
 
     # handle input
     if field is None:
         import pyart
         field = pyart.config.get_field_name('reflectivity')
 
-    from ..core import Variable
-    from ..components import Display, Menu, TiltButtonWindow, ComponentsControl
-
     app = QtGui.QApplication(sys.argv)
 
-    # start Menu
-    MainMenu = Menu(DirIn, filename, name="Menu") #initiate Vradar
+    # start Menu and initiate Vradar
+    MainMenu = Menu(DirIn, filename, name="Menu")
     Vradar = MainMenu.Vradar
 
     # start Displays
     Vtilt = Variable(0)
     Vtilt2 = Variable(0)
-    plot1 = Display(Vradar, Variable(field), Vtilt, name="Display1", parent=MainMenu)
-    plot2 = Display(Vradar, Variable(field), Vtilt2, name="Display2", parent=MainMenu)
+    plot1 = Display(Vradar, Variable(field), Vtilt, name="Display1",
+                    parent=MainMenu)
+    plot2 = Display(Vradar, Variable(field), Vtilt2, name="Display2",
+                    parent=MainMenu)
 
     # start ComponentsControl
     control = ComponentsControl()
@@ -69,15 +71,15 @@ def run(DirIn='./', filename=None, field=None):
     height = desktop_rect.height()
     width = desktop_rect.width()
 
-    menu_width = max(MainMenu.menubar.sizeHint().width(), MainMenu.sizeHint().width())
+    menu_width = max(
+        MainMenu.menubar.sizeHint().width(), MainMenu.sizeHint().width())
     menu_height = MainMenu.sizeHint().height()
 
-    MainMenu.setGeometry(0,0,menu_width,menu_height)
+    MainMenu.setGeometry(0, 0, menu_width, menu_height)
 
-    plot_size = min(height-60-menu_height, width/2)-50
-    plot1.setGeometry(0,height-plot_size,plot_size,plot_size)
-    plot2.setGeometry(width/2,height-plot_size,plot_size,plot_size)
+    plot_size = min(height-60-menu_height, width/2) - 50
+    plot1.setGeometry(0, height-plot_size, plot_size, plot_size)
+    plot2.setGeometry(width/2, height-plot_size, plot_size, plot_size)
 
     # start program
     app.exec_()
-

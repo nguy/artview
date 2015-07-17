@@ -26,4 +26,13 @@ artview.plugins.Mapper
    
    
 
+   
+   
+   .. rubric:: Attributes
+   
+   
+   .. autoattribute:: Vgrid
+   .. autoattribute:: Vradar
+   
+   
 

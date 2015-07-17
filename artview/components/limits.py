@@ -3,9 +3,10 @@ limits.py
 
 Routines used for modifying limits via Display window.
 """
-        
+
 # Load the needed packages
 from PyQt4 import QtGui, QtCore
+
 
 def _default_limits(field, scan_type):
     '''
@@ -30,7 +31,7 @@ def _default_limits(field, scan_type):
     ZDR_LIMS = (-5., 5.)
     RHO_HV_LIMS = (.8, 1.)
     KDP_LIMS = (0., 5.)
-    PHIDP_LIMS =(0., 1.)
+    PHIDP_LIMS = (0., 1.)
     NCP_LIMS = (0., 1.)
     SW_LIMS = (-1., 10.)
     TP_LIMS = (-200., 100.)
@@ -62,40 +63,52 @@ def _default_limits(field, scan_type):
     # Check the field and apply the proper limits
     if field == 'reflectivity':
         vminmax = (Z_LIMS[0], Z_LIMS[1])
-        CMAP = 'gist_ncar'
+#        CMAP = 'gist_ncar'
+        CMAP = 'pyart_NWSRef'
     elif field == 'DBZ':
         vminmax = (Z_LIMS[0], Z_LIMS[1])
-        CMAP = 'gist_ncar'
+#        CMAP = 'gist_ncar'
+        CMAP = 'pyart_NWSRef'
     elif field == 'velocity':
         vminmax = (VR_LIMS[0], VR_LIMS[1])
-        CMAP = 'RdBu_r'
+#        CMAP = 'RdBu_r'
+        CMAP = 'pyart_NWSVel'
     elif field == 'VEL':
         vminmax = (VR_LIMS[0], VR_LIMS[1])
-        CMAP = 'RdBu_r'
+#        CMAP = 'RdBu_r'
+        CMAP = 'pyart_NWSVel'
     elif field == 'differential_reflectivity':
         vminmax = (ZDR_LIMS[0], ZDR_LIMS[1])
-        CMAP = 'RdYlBu_r'
+#        CMAP = 'RdYlBu_r'
+        CMAP = 'pyart_BuDRd12'
     elif field == 'cross_correlation_ratio':
         vminmax = (RHO_HV_LIMS[0], RHO_HV_LIMS[1])
-        CMAP = 'cool'
+#        CMAP = 'cool'
+        CMAP = 'pyart_BrBu12'
     elif field == 'differential_phase':
         vminmax = (KDP_LIMS[0], KDP_LIMS[1])
-        CMAP = 'YlOrBr'
+#        CMAP = 'YlOrBr'
+        CMAP = 'pyart_BrBu12'
     elif field == 'normalized_coherent_power':
         vminmax = (NCP_LIMS[0], NCP_LIMS[1])
-        CMAP = 'jet'
+#        CMAP = 'jet'
+        CMAP = 'pyart_Carbone17'
     elif field == 'spectrum_width':
         vminmax = (SW_LIMS[0], SW_LIMS[1])
-        CMAP = 'gist_ncar'
+#        CMAP = 'gist_ncar'
+        CMAP = 'pyart_Carbone17'
     elif field == 'specific_differential_phase':
-        vminmax = (PHIDP_LIMS[0], PHIDP_LIMS[1]) 
-        CMAP = 'RdBu_r'
+        vminmax = (PHIDP_LIMS[0], PHIDP_LIMS[1])
+#        CMAP = 'RdBu_r'
+        CMAP = 'pyart_BlueBrown11'
     elif field == 'total_power':
         vminmax = (TP_LIMS[0], TP_LIMS[1])
-        CMAP = 'jet'
+#        CMAP = 'jet'
+        CMAP = 'pyart_StepSeq25'
     else:
         vminmax = (Z_LIMS[0], Z_LIMS[1])
-        CMAP = 'gist_ncar'
+#        CMAP = 'gist_ncar'
+        CMAP = 'pyart_Carbone17'
 
     limit_strs = ('vmin', 'vmax', 'xmin', 'xmax', 'ymin', 'ymax')
     limits = {}
@@ -113,6 +126,7 @@ def _default_limits(field, scan_type):
 ###############################
 # Limits Dialog Class Methods #
 ###############################
+
 
 def limits_dialog(limits, name):
     '''Function to instantiate a Display Limits Window.
@@ -180,7 +194,8 @@ def limits_dialog(limits, name):
     gridLayout_2.addLayout(gridLayout, 0, 0, 1, 1)
     buttonBox = QtGui.QDialogButtonBox(LimsDialog)
     buttonBox.setOrientation(QtCore.Qt.Horizontal)
-    buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+    buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
+                                 QtGui.QDialogButtonBox.Ok)
     buttonBox.setObjectName("buttonBox")
     gridLayout_2.addWidget(buttonBox, 1, 0, 1, 1)
 

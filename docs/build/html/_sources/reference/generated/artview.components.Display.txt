@@ -24,6 +24,9 @@ artview.components.Display
          Display.TiltSelectCmd
          Display.addButtons
          Display.cmapSelectCmd
+         Display.getPathInteriorValues
+         Display.getPlotAxis
+         Display.getStatusBar
          Display.guiStart
          Display.keyPressEvent
          Display.setUILayout
@@ -35,4 +38,15 @@ artview.components.Display
    
    
 
+   
+   
+   .. rubric:: Attributes
+   
+   
+   .. autoattribute:: Vfield
+   .. autoattribute:: Vlims
+   .. autoattribute:: Vradar
+   .. autoattribute:: Vtilt
+   
+   
 

@@ -12,7 +12,8 @@ Contents:
    :maxdepth: 1
 
    reference/index
-
+   script_tutorial
+   plugin_tutorial
 
 
 Indices and tables

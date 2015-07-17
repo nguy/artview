@@ -14,13 +14,49 @@ from PyQt4 import QtGui, QtCore
 # for some control utilities
 
 
-
 class Variable(QtCore.QObject):
     '''
     Class that holds a value, changing that with change() emits a signal
+
+    There is no mandatory naming for instances of this Class, however ARTview
+    components name variable according to the following table, using it is
+    recommended:
+
+    .. _shared_variable:
+    .. table:: Shared Variables Table
+
++-----------+----------------------------+------------------------------------+
+| Name      | Function                   | Valid values                       |
++===========+============================+====================================+
+| Vradar    | Hold radar open with pyart | :py:class:`pyart.core.Radar`       |
+|           |                            | instance                           |
++-----------+----------------------------+------------------------------------+
+| Vgrid     | Hold grid open or          | :py:class:`pyart.core.Grid`        |
+|           | generated with pyart       | instance                           |
++-----------+----------------------------+------------------------------------+
+| Vfield    | Name of a Field            |string in radar.fields.keys()       |
+|           | in radar file              |                                    |
++-----------+----------------------------+------------------------------------+
+| Vtitl     | Tilt (sweep) of            | int between 0 and                  |
+|           | a radar file               | (number of sweeps)-1               |
++-----------+----------------------------+------------------------------------+
+| Vlims     | Limits of display          | dict containing keys:'vmin',       |
+|           |                            | 'vmax', 'xmin', 'xmax', 'ymin',    |
+|           |                            | 'ymax' and holding float values    |
++-----------+----------------------------+------------------------------------+
+|Vgatefilter| Hold pyart GateFilter      |:py:class:`pyart.correct.GateFilter`|
+|           |                            |instance                            |
++-----------+----------------------------+------------------------------------+
+
+    .. note::
+        *  we want to make None a valid value for Vradar, but this need some
+           changes in :file:`artview/components/plot_radar.py`
+        *  Vlims is deprecated in favor of a not shared variable
     '''
 
-    def __init__(self,value=None):
+    value = None  # : Value of the Variable
+
+    def __init__(self, value=None):
         ''' initialize '''
         QtCore.QObject.__init__(self)
         self.value = value
@@ -35,15 +71,15 @@ class Variable(QtCore.QObject):
             New Value to be assigned to the variable.
         [Optional]
         strong : bool, optional
-            Define if this is a strong, or a soft change. This is a some what
-            subjective decision: strong is default, a soft change should be
+            Define if this is a strong, or a weak change. This is a some what
+            subjective decision: strong is default, a weak change should be
             used to indicate to the slot that this change should not trigger
             any costly computation. Reasons for this are: When initialising
             variables, variable is likely to change again shortly, another
             more important variable is being changed as well etc.
 
             .. note::
-                Defining how to respond to strong/soft changes is
+                Defining how to respond to strong/weak changes is
                 responsibility of the slot, most can just ignore the
                 difference, but the costly ones should be aware.
 
@@ -75,16 +111,21 @@ class ComponentsList(QtCore.QObject):
 
     def index(self, item):
         return self.list.index(item)
+
     def __delitem__(self, key):
         self.list.__delitem__(key)
+
     def __getitem__(self, key):
         return self.list.__getitem__(key)
+
     def __setitem__(self, key, value):
         self.list.__setitem__(key, value)
+
     def __len__(self):
         return len(self.list)
 
 componentsList = ComponentsList()
+
 
 class Component(QtGui.QMainWindow):
     '''
@@ -132,7 +173,7 @@ class Component(QtGui.QMainWindow):
                     self.sharedVariables[var])
         else:
             raise ValueError("Variable %s is not a shared variable of %s"
-                            %(var,self.name))
+                             % (var, self.name))
 
     def disconnectSharedVariable(self, var):
         '''Connect variable 'var' to its slot as defined in
@@ -144,15 +185,15 @@ class Component(QtGui.QMainWindow):
                     self.sharedVariables[var])
         else:
             raise ValueError("Variable %s is not a shared variable of %s"
-                            %(var,self.name))
+                             % (var, self.name))
 
     def keyPressEvent(self, event):
         '''Reimplementation, pass keyEvent to parent,
         even if a diferent window'''
-        if self.parent == None:
+        if self.parent is None:
             super(Component, self).keyPressEvent(event)
         else:
-            # Send event to parent to handle (Limitation of pyqt not having a 
+            # Send event to parent to handle (Limitation of pyqt not having a
             # form that does this - AG)
             self.parent.keyPressEvent(event)
 

@@ -6,20 +6,26 @@
 from PyQt4 import QtGui, QtCore
 from functools import partial
 
-from .. import core
-common = core.common
-
 import pyart
 import time
 
+from .. import core
+common = core.common
+
+
 class Mapper(core.Component):
     '''
-    Interfase for executing :py:class:`pyart.map.grid_from_radars`
+    Interfase for executing :py:func:`pyart.map.grid_from_radars`
     '''
+
+    Vradar = None  # : see :ref:`shared_variable`
+    Vgrid = None  # : see :ref:`shared_variable`
+
     @classmethod
     def guiStart(self, parent=None):
-        '''Grafical Interface for Starting this Class'''
-        kwargs, independent = common._SimplePluginStart("Mapper").startDisplay()
+        '''Graphical Interface for Starting this Class'''
+        kwargs, independent = \
+            common._SimplePluginStart("Mapper").startDisplay()
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
@@ -30,16 +36,16 @@ class Mapper(core.Component):
         ----------
         [Optional]
         Vradar : :py:class:`~artview.core.core.Variable` instance
-            Radar signal variable. 
+            Radar signal variable.
             A value of None initializes an empty Variable.
         Vgrid : :py:class:`~artview.core.core.Variable` instance
-            Grid signal variable. 
+            Grid signal variable.
             A value of None initializes an empty Variable.
         name : string
             Field Radiobutton window name.
         parent : PyQt instance
             Parent instance to associate to this class.
-            If None, then Qt owns, otherwise associated with parent PyQt instance.
+            If None, then Qt owns, otherwise associated w/ parent PyQt instance
         '''
         super(Mapper, self).__init__(name=name, parent=parent)
         self.central_widget = QtGui.QWidget()
@@ -58,7 +64,7 @@ class Mapper(core.Component):
         self.sharedVariables = {"Vradar": self.newRadar,
                                 "Vgrid": None}
         self.connectAllVariables()
-        
+
         self.generalLayout = QtGui.QGridLayout()
         self.especificLayout = QtGui.QGridLayout()
         self.layout.addLayout(self.generalLayout)
@@ -75,19 +81,19 @@ class Mapper(core.Component):
         self.show()
 
     def addGeneralOptions(self):
-        '''Mount Options Layout for :py:class:`~pyart.map.grid_from_radars`'''
+        '''Mount Options Layout for :py:func:`~pyart.map.grid_from_radars`'''
         self.generalLayout.addWidget(QtGui.QLabel("Z"), 0, 1, 1, 2)
         self.generalLayout.addWidget(QtGui.QLabel("Y"), 0, 3, 1, 2)
         self.generalLayout.addWidget(QtGui.QLabel("X"), 0, 5, 1, 2)
 
         self.gridShapeZ = QtGui.QSpinBox()
-        self.gridShapeZ.setRange(0,1000000)
+        self.gridShapeZ.setRange(0, 1000000)
         self.gridShapeZ.setValue(1)
         self.gridShapeY = QtGui.QSpinBox()
-        self.gridShapeY.setRange(0,1000000)
+        self.gridShapeY.setRange(0, 1000000)
         self.gridShapeY.setValue(500)
         self.gridShapeX = QtGui.QSpinBox()
-        self.gridShapeX.setRange(0,1000000)
+        self.gridShapeX.setRange(0, 1000000)
         self.gridShapeX.setValue(500)
         self.generalLayout.addWidget(QtGui.QLabel("grid_shape"), 1, 0)
         self.generalLayout.addWidget(self.gridShapeZ, 1, 1, 1, 2)
@@ -95,27 +101,27 @@ class Mapper(core.Component):
         self.generalLayout.addWidget(self.gridShapeX, 1, 5, 1, 2)
 
         self.gridLimitsZmin = QtGui.QDoubleSpinBox()
-        self.gridLimitsZmin.setRange(-41000000,41000000)
+        self.gridLimitsZmin.setRange(-41000000, 41000000)
         self.gridLimitsZmin.setSingleStep(1000)
         self.gridLimitsZmin.setValue(2000)
         self.gridLimitsZmax = QtGui.QDoubleSpinBox()
-        self.gridLimitsZmax.setRange(-41000000,41000000)
+        self.gridLimitsZmax.setRange(-41000000, 41000000)
         self.gridLimitsZmax.setSingleStep(1000)
         self.gridLimitsZmax.setValue(3000)
         self.gridLimitsYmin = QtGui.QDoubleSpinBox()
-        self.gridLimitsYmin.setRange(-41000000,41000000)
+        self.gridLimitsYmin.setRange(-41000000, 41000000)
         self.gridLimitsYmin.setSingleStep(1000)
         self.gridLimitsYmin.setValue(-250000)
         self.gridLimitsYmax = QtGui.QDoubleSpinBox()
-        self.gridLimitsYmax.setRange(-41000000,41000000)
+        self.gridLimitsYmax.setRange(-41000000, 41000000)
         self.gridLimitsYmax.setSingleStep(1000)
         self.gridLimitsYmax.setValue(250000)
         self.gridLimitsXmin = QtGui.QDoubleSpinBox()
-        self.gridLimitsXmin.setRange(-41000000,41000000)
+        self.gridLimitsXmin.setRange(-41000000, 41000000)
         self.gridLimitsXmin.setSingleStep(1000)
         self.gridLimitsXmin.setValue(-250000)
         self.gridLimitsXmax = QtGui.QDoubleSpinBox()
-        self.gridLimitsXmax.setRange(-41000000,41000000)
+        self.gridLimitsXmax.setRange(-41000000, 41000000)
         self.gridLimitsXmax.setSingleStep(1000)
         self.gridLimitsXmax.setValue(250000)
         self.generalLayout.addWidget(QtGui.QLabel("grid_limits"), 2, 0)
@@ -132,7 +138,8 @@ class Mapper(core.Component):
         self.generalLayout.addWidget(QtGui.QLabel("gridding_algo"), 3, 0)
         self.generalLayout.addWidget(self.griddingAlgo, 3, 1, 1, 6)
 
-        self.griddingAlgo.currentIndexChanged[str].connect(self.addEspecificOptions)
+        self.griddingAlgo.currentIndexChanged[str].connect(
+            self.addEspecificOptions)
         self.griddingAlgo.setCurrentIndex(1)
 
     def addEspecificOptions(self, item):
@@ -145,28 +152,28 @@ class Mapper(core.Component):
         self.newRadar(None, None, True)
 
     def mapGatesToGridOptions(self):
-        '''Mount Options Layout for :py:class:`~pyart.map.map_gates_to_grid`'''
+        '''Mount Options Layout for :py:func:`~pyart.map.map_gates_to_grid`'''
         self._fieldsOptions()
         self._interpolationOptions()
 
     def mapToGridOptions(self):
-        '''Mount Options Layout for :py:class:`~pyart.map.map_to_grid`'''
+        '''Mount Options Layout for :py:func:`~pyart.map.map_to_grid`'''
         self._fieldsOptions()
         self._interpolationOptions()
 
         self.copyFieldData = QtGui.QCheckBox("copy_field_data")
         self.copyFieldData.setChecked(True)
-        self.especificLayout.addWidget(self.copyFieldData, 11, 1, 1 ,2)
+        self.especificLayout.addWidget(self.copyFieldData, 11, 1, 1, 2)
 
         self.algorithm = QtGui.QComboBox()
         self.algorithm.addItem('kd_tree')
         self.algorithm.addItem('ball_tree')
         self.algorithm.setCurrentIndex(0)
         self.especificLayout.addWidget(QtGui.QLabel("algorithm"), 12, 0)
-        self.especificLayout.addWidget(self.algorithm, 12, 1, 1 ,2)
+        self.especificLayout.addWidget(self.algorithm, 12, 1, 1, 2)
 
         self.leafsize = QtGui.QSpinBox()
-        self.leafsize.setRange(0,1000000)
+        self.leafsize.setRange(0, 1000000)
         self.leafsize.setValue(10)
         self.especificLayout.addWidget(QtGui.QLabel("leafsize"), 13, 0)
         self.especificLayout.addWidget(self.leafsize, 13, 1, 1, 2)
@@ -174,67 +181,68 @@ class Mapper(core.Component):
     def _fieldsOptions(self):
         '''Mount Options Layout related to field'''
         self.gridOriginLat = QtGui.QDoubleSpinBox()
-        self.gridOriginLat.setRange(-90,90)
+        self.gridOriginLat.setRange(-90, 90)
         self.gridOriginLat.setDecimals(8)
         self.gridOriginLon = QtGui.QDoubleSpinBox()
-        self.gridOriginLon.setRange(-180,180)
+        self.gridOriginLon.setRange(-180, 180)
         self.gridOriginLon.setDecimals(8)
         self.especificLayout.addWidget(QtGui.QLabel("grid_origin"), 0, 0)
         self.especificLayout.addWidget(self.gridOriginLat, 0, 1)
         self.especificLayout.addWidget(self.gridOriginLon, 0, 2)
 
         self.gridOriginAlt = QtGui.QDoubleSpinBox()
-        self.gridOriginAlt.setRange(0,20000)
+        self.gridOriginAlt.setRange(0, 20000)
         self.especificLayout.addWidget(QtGui.QLabel("grid_origin_alt"), 1, 0)
-        self.especificLayout.addWidget(self.gridOriginAlt, 1, 1, 1 ,2)
+        self.especificLayout.addWidget(self.gridOriginAlt, 1, 1, 1, 2)
 
         self.fieldsbutton = QtGui.QToolButton(self)
         self.fieldsbutton.setText('Select Fields')
         self.fieldsmenu = QtGui.QMenu(self)
         self.fieldsbutton.setMenu(self.fieldsmenu)
         self.fieldsbutton.setPopupMode(QtGui.QToolButton.InstantPopup)
-        self.especificLayout.addWidget(self.fieldsbutton, 2, 1, 1 ,2)
+        self.especificLayout.addWidget(self.fieldsbutton, 2, 1, 1, 2)
 
         self.reflFilterFlag = QtGui.QCheckBox("refl_filter_flag")
         self.reflFilterFlag.setChecked(True)
-        self.especificLayout.addWidget(self.reflFilterFlag, 3, 1, 1 ,2)
+        self.especificLayout.addWidget(self.reflFilterFlag, 3, 1, 1, 2)
 
         self.reflField = QtGui.QLineEdit("reflectivity")
         self.especificLayout.addWidget(QtGui.QLabel("refl_field"), 4, 0)
-        self.especificLayout.addWidget(self.reflField, 4, 1, 1 ,2)
+        self.especificLayout.addWidget(self.reflField, 4, 1, 1, 2)
 
         self.maxRefl = QtGui.QDoubleSpinBox()
-        self.maxRefl.setRange(-1000,1000)
+        self.maxRefl.setRange(-1000, 1000)
         self.maxRefl.setValue(100)
         self.especificLayout.addWidget(QtGui.QLabel("max_refl"), 5, 0)
-        self.especificLayout.addWidget(self.maxRefl, 5, 1, 1 ,2)
+        self.especificLayout.addWidget(self.maxRefl, 5, 1, 1, 2)
 
     def _interpolationOptions(self):
         '''Mount Options Layout related to interpolation'''
         self.mapRoi = QtGui.QCheckBox("map_roi")
         self.mapRoi.setChecked(True)
-        self.especificLayout.addWidget(self.mapRoi, 6, 1, 1 ,2)
+        self.especificLayout.addWidget(self.mapRoi, 6, 1, 1, 2)
 
         self.weightingFunction = QtGui.QComboBox()
         self.weightingFunction.addItem('Barnes')
         self.weightingFunction.addItem('Cressman')
         self.weightingFunction.setCurrentIndex(0)
-        self.especificLayout.addWidget(QtGui.QLabel("weighting_function"), 7, 0)
-        self.especificLayout.addWidget(self.weightingFunction, 7, 1, 1 ,2)
+        self.especificLayout.addWidget(
+            QtGui.QLabel("weighting_function"), 7, 0)
+        self.especificLayout.addWidget(self.weightingFunction, 7, 1, 1, 2)
 
         self.toa = QtGui.QDoubleSpinBox()
-        self.toa.setRange(0,30000)
+        self.toa.setRange(0, 30000)
         self.toa.setValue(17000)
         self.toa.setSingleStep(1000)
         self.especificLayout.addWidget(QtGui.QLabel("toa"), 8, 0)
-        self.especificLayout.addWidget(self.toa, 8, 1, 1 ,2)
+        self.especificLayout.addWidget(self.toa, 8, 1, 1, 2)
 
         self.roiFunc = QtGui.QComboBox()
         self.roiFunc.addItem('constant')
         self.roiFunc.addItem('dist')
         self.roiFunc.addItem('dist_beam')
         self.especificLayout.addWidget(QtGui.QLabel("roi_func"), 9, 0)
-        self.especificLayout.addWidget(self.roiFunc, 9, 1, 1 ,2)
+        self.especificLayout.addWidget(self.roiFunc, 9, 1, 1, 2)
 
         self.roiFuncLayout = QtGui.QGridLayout()
         self.especificLayout.addLayout(self.roiFuncLayout, 10, 0, 1, 3)
@@ -255,66 +263,66 @@ class Mapper(core.Component):
     def _constantRoiOptions(self):
         '''Mount Options Layout for constant roi'''
         self.constantRoi = QtGui.QDoubleSpinBox()
-        self.constantRoi.setRange(0,30000)
+        self.constantRoi.setRange(0, 30000)
         self.constantRoi.setValue(500)
         self.constantRoi.setSingleStep(100)
         self.roiFuncLayout.addWidget(QtGui.QLabel("constant_roi"), 0, 0)
-        self.roiFuncLayout.addWidget(self.constantRoi, 0, 1, 1 ,2)
+        self.roiFuncLayout.addWidget(self.constantRoi, 0, 1, 1, 2)
 
     def distRoiOptions(self):
         '''Mount Options Layout for dist roi'''
         self.zFactor = QtGui.QDoubleSpinBox()
-        self.zFactor.setRange(0,30000)
+        self.zFactor.setRange(0, 30000)
         self.zFactor.setValue(0.05)
         self.zFactor.setSingleStep(0.01)
         self.zFactor.setDecimals(3)
         self.roiFuncLayout.addWidget(QtGui.QLabel("z_factor"), 0, 0)
-        self.roiFuncLayout.addWidget(self.zFactor, 0, 1, 1 ,2)
+        self.roiFuncLayout.addWidget(self.zFactor, 0, 1, 1, 2)
 
         self.xyFactor = QtGui.QDoubleSpinBox()
-        self.xyFactor.setRange(0,30000)
+        self.xyFactor.setRange(0, 30000)
         self.xyFactor.setValue(0.02)
         self.xyFactor.setSingleStep(0.01)
         self.xyFactor.setDecimals(3)
         self.roiFuncLayout.addWidget(QtGui.QLabel("xy_factor"), 1, 0)
-        self.roiFuncLayout.addWidget(self.xyFactor, 1, 1, 1 ,2)
+        self.roiFuncLayout.addWidget(self.xyFactor, 1, 1, 1, 2)
 
         self.minRadius = QtGui.QDoubleSpinBox()
-        self.minRadius.setRange(0,30000)
+        self.minRadius.setRange(0, 30000)
         self.minRadius.setValue(500)
         self.minRadius.setSingleStep(100)
         self.roiFuncLayout.addWidget(QtGui.QLabel("min_radius"), 2, 0)
-        self.roiFuncLayout.addWidget(self.minRadius, 2, 1, 1 ,2)
+        self.roiFuncLayout.addWidget(self.minRadius, 2, 1, 1, 2)
 
     def distBeamRoiOptions(self):
         '''Mount Options Layout for dist beam roi'''
         self.hFactor = QtGui.QDoubleSpinBox()
-        self.hFactor.setRange(0,30000)
+        self.hFactor.setRange(0, 30000)
         self.hFactor.setValue(1.0)
         self.hFactor.setSingleStep(0.1)
         self.roiFuncLayout.addWidget(QtGui.QLabel("h_factor"), 0, 0)
-        self.roiFuncLayout.addWidget(self.hFactor, 0, 1, 1 ,2)
+        self.roiFuncLayout.addWidget(self.hFactor, 0, 1, 1, 2)
 
         self.nb = QtGui.QDoubleSpinBox()
-        self.nb.setRange(0,30000)
+        self.nb.setRange(0, 30000)
         self.nb.setValue(1.5)
         self.nb.setSingleStep(0.1)
         self.roiFuncLayout.addWidget(QtGui.QLabel("nb"), 1, 0)
-        self.roiFuncLayout.addWidget(self.nb, 1, 1, 1 ,2)
+        self.roiFuncLayout.addWidget(self.nb, 1, 1, 1, 2)
 
         self.bsp = QtGui.QDoubleSpinBox()
-        self.bsp.setRange(0,30000)
+        self.bsp.setRange(0, 30000)
         self.bsp.setValue(1.0)
         self.bsp.setSingleStep(0.1)
         self.roiFuncLayout.addWidget(QtGui.QLabel("bsp"), 2, 0)
-        self.roiFuncLayout.addWidget(self.bsp, 2, 1, 1 ,2)
+        self.roiFuncLayout.addWidget(self.bsp, 2, 1, 1, 2)
 
         self.minRadius = QtGui.QDoubleSpinBox()
-        self.minRadius.setRange(0,30000)
+        self.minRadius.setRange(0, 30000)
         self.minRadius.setValue(500)
         self.minRadius.setSingleStep(100)
         self.roiFuncLayout.addWidget(QtGui.QLabel("min_radius"), 3, 0)
-        self.roiFuncLayout.addWidget(self.minRadius, 3, 1, 1 ,2)
+        self.roiFuncLayout.addWidget(self.minRadius, 3, 1, 1, 2)
 
     def newRadar(self, variable, value, strong):
         '''Display pyart's docstring for help'''
@@ -333,7 +341,7 @@ class Mapper(core.Component):
         self.gridOriginAlt.setValue(alt)
 
     def grid_from_radars(self):
-        '''Mount Options and execute :py:class:`~pyart.correct.grid_from_radars`.
+        '''Mount Options and execute :py:func:`~pyart.correct.grid_from_radars`.
         The resulting grid is update in Vgrid.
         '''
         # test radar
@@ -354,7 +362,8 @@ class Mapper(core.Component):
                             self.gridOriginLon.value()),
             'gridding_algo': str(self.griddingAlgo.currentText()),
             'grid_origin_alt': self.gridOriginAlt.value(),
-            'fields': [str(a.text()) for a in self.fieldsmenu.actions() if a.isChecked()],
+            'fields': [str(a.text()) for a in
+                       self.fieldsmenu.actions() if a.isChecked()],
             'refl_filter_flag': self.reflFilterFlag.isChecked(),
             'refl_field': str(self.reflField.text()),
             'max_refl': self.maxRefl.value(),
@@ -388,11 +397,11 @@ class Mapper(core.Component):
         t0 = time.time()
         grid = pyart.map.grid_from_radars(**args)
         t1 = time.time()
-        common.ShowWarning("Mapping took %fs"%(t1-t0))
+        common.ShowWarning("Mapping took %fs" % (t1-t0))
 
         # update
         self.Vgrid.change(grid)
-        print "Mapping took %fs"%(t1-t0)
+        print "Mapping took %fs" % (t1-t0)
 
     def _clearLayout(self, layout):
         '''recursively remove items from layout'''
@@ -404,4 +413,4 @@ class Mapper(core.Component):
             else:
                 self._clearLayout(item.layout())
 
-_plugins=[Mapper]
+_plugins = [Mapper]

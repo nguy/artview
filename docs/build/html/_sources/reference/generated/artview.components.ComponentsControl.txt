@@ -1,0 +1,27 @@
+artview.components.ComponentsControl
+====================================
+
+.. currentmodule:: artview.components
+
+.. autoclass:: ComponentsControl
+   :show-inheritance:
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+         ComponentsControl.conectVar
+         ComponentsControl.disconectVar
+         ComponentsControl.guiStart
+         ComponentsControl.setupUi
+   
+   
+
+   
+   
+   
+

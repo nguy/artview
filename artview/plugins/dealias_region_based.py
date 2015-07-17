@@ -6,41 +6,48 @@
 from PyQt4 import QtGui, QtCore
 from functools import partial
 
-from .. import core
-common = core.common
-
 import pyart
 import time
 
+from .. import core
+common = core.common
+
+
 class DealiasRegionBased(core.Component):
     '''
-    Interfase for executing :py:class:`pyart.correct.dealias_region_based`
+    Interfase for executing :py:func:`pyart.correct.dealias_region_based`
     '''
+
+    Vradar = None  # : see :ref:`shared_variable`
+    Vgatefilter = None  # : see :ref:`shared_variable`
+
     @classmethod
     def guiStart(self, parent=None):
-        '''Grafical Interface for Starting this Class'''
-        kwargs, independent = common._SimplePluginStart("DealiasRegionBased").startDisplay()
+        '''Graphical Interface for Starting this Class'''
+        kwargs, independent = \
+            common._SimplePluginStart("DealiasRegionBased").startDisplay()
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
-    def __init__(self, Vradar=None, Vgatefilter=None, name="DealiasRegionBased", parent=None):
+    def __init__(self, Vradar=None, Vgatefilter=None,
+                 name="DealiasRegionBased", parent=None):
         '''Initialize the class to create the interface
 
         Parameters
         ----------
         [Optional]
         Vradar : :py:class:`~artview.core.core.Variable` instance
-            Radar signal variable. 
+            Radar signal variable.
             A value of None initializes an empty Variable.
         Vgatefilter : :py:class:`~artview.core.core.Variable` instance
-            Gatefilter signal variable. 
+            Gatefilter signal variable.
             A value of None initializes an empty Variable.
             [Not Implemented]
         name : string
             Field Radiobutton window name.
         parent : PyQt instance
             Parent instance to associate to this class.
-            If None, then Qt owns, otherwise associated with parent PyQt instance.
+            If None, then Qt owns, otherwise associated w/ parent PyQt instance
         '''
         super(DealiasRegionBased, self).__init__(name=name, parent=parent)
         self.central_widget = QtGui.QWidget()
@@ -60,7 +67,7 @@ class DealiasRegionBased(core.Component):
         self.sharedVariables = {"Vradar": self.newRadar,
                                 "Vgatefilter": None}
         self.connectAllVariables()
-        
+
         self.generalLayout = QtGui.QGridLayout()
         self.layout.addLayout(self.generalLayout, 0, 0, 1, 2)
 
@@ -85,7 +92,7 @@ class DealiasRegionBased(core.Component):
         self.generalLayout.addWidget(self.radarButton, 0, 1)
 
         self.intervalSplits = QtGui.QSpinBox()
-        self.intervalSplits.setRange(0,1000000)
+        self.intervalSplits.setRange(0, 1000000)
         self.intervalSplits.setValue(3)
         self.generalLayout.addWidget(QtGui.QLabel("interval_splits"), 1, 0)
         self.generalLayout.addWidget(self.intervalSplits, 1, 1)
@@ -94,13 +101,13 @@ class DealiasRegionBased(core.Component):
         self.generalLayout.addWidget(QtGui.QLabel("NotImplemented"), 2, 1)
 
         self.skipBetweenRays = QtGui.QSpinBox()
-        self.skipBetweenRays.setRange(0,1000000)
+        self.skipBetweenRays.setRange(0, 1000000)
         self.skipBetweenRays.setValue(100)
         self.generalLayout.addWidget(QtGui.QLabel("skip_between_rays"), 3, 0)
         self.generalLayout.addWidget(self.skipBetweenRays, 3, 1)
 
         self.skipAlongRay = QtGui.QSpinBox()
-        self.skipAlongRay.setRange(0,1000000)
+        self.skipAlongRay.setRange(0, 1000000)
         self.skipAlongRay.setValue(100)
         self.generalLayout.addWidget(QtGui.QLabel("skip_along_ray"), 4, 0)
         self.generalLayout.addWidget(self.skipAlongRay, 4, 1)
@@ -109,8 +116,9 @@ class DealiasRegionBased(core.Component):
         self.centered.setChecked(True)
         self.generalLayout.addWidget(self.centered, 5, 1)
 
-        self.nyquistVelocity = QtGui.QDoubleSpinBox() #XXX must implement desactvation
-        self.nyquistVelocity.setRange(-1,1000)
+        # XXX must implement deactivation
+        self.nyquistVelocity = QtGui.QDoubleSpinBox()
+        self.nyquistVelocity.setRange(-1, 1000)
         self.nyquistVelocity.setValue(-1)
         self.generalLayout.addWidget(QtGui.QLabel("nyquist_velocity"), 6, 0)
         self.generalLayout.addWidget(self.nyquistVelocity, 6, 1)
@@ -119,7 +127,8 @@ class DealiasRegionBased(core.Component):
         self.checkNyquistUniform.setChecked(False)
         self.generalLayout.addWidget(self.checkNyquistUniform, 7, 1)
 
-        self.generalLayout.addWidget(QtGui.QLabel("gatefilter"), 8, 0) #XXX NotImplemented
+        self.generalLayout.addWidget(QtGui.QLabel("gatefilter"), 8, 0)
+        # XXX NotImplemented
         self.generalLayout.addWidget(QtGui.QLabel("NotImplemented"), 8, 1)
 
         self.raysWrapAround = QtGui.QCheckBox("rays_wrap_around")
@@ -144,9 +153,9 @@ class DealiasRegionBased(core.Component):
         if item is None:
             return
         else:
-            self.disconnectSharedVariable('Vradar') # disconect old
-            self.Vradar = getattr(item[1],item[2])
-            self.connectSharedVariable('Vradar') # conect new
+            self.disconnectSharedVariable('Vradar')  # disconnect old
+            self.Vradar = getattr(item[1], item[2])
+            self.connectSharedVariable('Vradar')  # connect new
 
     def newRadar(self, variable, value, strong):
         ''' respond to change in radar '''
@@ -163,7 +172,8 @@ class DealiasRegionBased(core.Component):
         common.ShowLongText(pyart.correct.dealias_region_based.__doc__)
 
     def dealias_region_based(self):
-        '''Mount Options and execute :py:class:`~pyart.correct.dealias_region_based`.
+        '''Mount Options and execute
+        :py:func:`~pyart.correct.dealias_region_based`.
         The resulting fields are added to Vradar.
         Vradar is updated, strong or weak depending on overwriting old fields.
         '''
@@ -178,13 +188,16 @@ class DealiasRegionBased(core.Component):
             'skip_between_rays': self.skipBetweenRays.value(),
             'skip_along_ray': self.skipAlongRay.value(),
             'centered': self.centered.isChecked(),
-            'nyquist_velocity': [i if i>=0 else None for i in (self.nyquistVelocity.value(),)][0],
+            'nyquist_velocity': [i if i >= 0 else None for i in (
+                self.nyquistVelocity.value(),)][0],
             'check_nyquist_uniform': self.checkNyquistUniform.isChecked(),
             'gatefilter': False,
             'rays_wrap_around': self.raysWrapAround.isChecked(),
             'keep_original': self.keepOriginal.isChecked(),
-            'vel_field': [None if a=="" else a for a in (str(self.velField.text()),)][0],
-            'corr_vel_field': [None if a=="" else a for a in (str(self.corrVelField.text()),)][0],
+            'vel_field': [None if a == "" else a for a in (
+                str(self.velField.text()),)][0],
+            'corr_vel_field': [None if a == "" else a for a in (
+                str(self.corrVelField.text()),)][0],
         }
         print args
 
@@ -193,7 +206,7 @@ class DealiasRegionBased(core.Component):
         t0 = time.time()
         field = pyart.correct.dealias_region_based(**args)
         t1 = time.time()
-        common.ShowWarning("Correction took %fs"%(t1-t0))
+        common.ShowWarning("Correction took %fs" % (t1-t0))
 
         # verify field overwriting
         if args['corr_vel_field'] is None:
@@ -201,9 +214,11 @@ class DealiasRegionBased(core.Component):
         else:
             name = args['corr_vel_field']
 
-        strong_update = False #insertion is weak, overwrite strong
+        strong_update = False  # insertion is weak, overwrite strong
         if name in self.Vradar.value.fields.keys():
-            resp=common.ShowQuestion("Field %s already exists! Do you want to overwrite it?"%name)
+            resp = common.ShowQuestion(
+                "Field %s already exists! Do you want to over write it?" %
+                name)
             if resp != QtGui.QMessageBox.Ok:
                 return
             else:
@@ -212,7 +227,7 @@ class DealiasRegionBased(core.Component):
         # add fields and update
         self.Vradar.value.add_field(name, field, True)
         self.Vradar.change(self.Vradar.value, strong_update)
-        print "Correction took %fs"%(t1-t0)
+        print "Correction took %fs" % (t1-t0)
 
     def _clearLayout(self, layout):
         '''recursively remove items from layout'''
@@ -224,4 +239,4 @@ class DealiasRegionBased(core.Component):
             else:
                 self._clearLayout(item.layout())
 
-_plugins=[DealiasRegionBased]
+_plugins = [DealiasRegionBased]

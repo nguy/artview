@@ -36,6 +36,7 @@ except:
     pass
 
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.mathjax',
+                'sphinx.ext.extlinks', 'sphinx.ext.intersphinx',
               'autosummary', 'numpydoc', 'gen_rst']
 # don't include examples in CI builds
 if 'CI' in os.environ and os.environ['CI'] == 'true':
@@ -233,6 +234,13 @@ if sphinx.__version__ >= "0.7":
 # Source code links
 #----------------------------------------------------------------------------
 
+extlinks = {'artview': ('https://github.com/nguy/artview/blob/master/%s',
+                      '')}
+
+intersphinx_mapping = {'pyart': ('https://arm-doe.github.io/pyart/dev/', None),
+                       'PyQt4': ('http://pyqt.sourceforge.net/Docs/PyQt4/', None),
+                       'matplotlib': ('http://matplotlib.org/', None)}
+
 # these functions borrowed from the scipy project
 import inspect
 from os.path import relpath, dirname
@@ -293,6 +301,6 @@ def linkcode_resolve(domain, info):
 
     fn = relpath(fn, start=dirname(artview.__file__))
 
-    return "http://%s%s" % (fn, linespec)
+    return "https://github.com/nguy/artview/blob/master/artview/%s%s" % (fn, linespec)
 
 

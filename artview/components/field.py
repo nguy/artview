@@ -13,7 +13,8 @@ from ..core import Variable, Component
 class FieldButtonWindow(Component):
     '''Class to display the Window with Field Buttons'''
 
-    FieldClicked = QtCore.pyqtSignal()
+    Vradar = None  # : see :ref:`shared_variable`
+    Vfield = None  # : see :ref:`shared_variable`
 
     def __init__(self, Vradar, Vfield, name="FieldButtons", parent=None):
         '''
@@ -30,16 +31,17 @@ class FieldButtonWindow(Component):
             Field Radiobutton window name.
         parent : PyQt instance
             Parent instance to associate to FieldButtonWindow.
-            If None, then Qt owns, otherwise associated with parent PyQt instance.
+            If None, then Qt owns, otherwise associated with parent PyQt 
+            instance.
 
         Notes
         -----
-        This class records the selected button and passes the 
+        This class records the selected button and passes the
         change value back to variable.
         '''
         super(FieldButtonWindow, self).__init__(name=name, parent=parent)
 
-        # Set up signal, so that DISPLAY can react to external 
+        # Set up signal, so that DISPLAY can react to external
         # (or internal) changes in field (Core.Variable instances expected)
         # The change is sent through Vfield
         self.Vradar = Vradar
@@ -75,19 +77,22 @@ class FieldButtonWindow(Component):
         if self.Vradar.value is None:
             return
 
-        # Loop through and create each field button and connect a value when selected
+        # Loop through and create each field button and
+        # connect a value when selected
         for field in self.Vradar.value.fields.keys():
             button = QtGui.QRadioButton(field, self.radioBox)
             self.fieldbutton[field] = button
-            QtCore.QObject.connect(button, QtCore.SIGNAL("clicked()"), \
-                         partial(self.FieldSelectCmd, field))
+            QtCore.QObject.connect(button, QtCore.SIGNAL("clicked()"),
+                                   partial(self.FieldSelectCmd, field))
 
             self.rBox_layout.addWidget(button)
 
-        self.NewField(self.Vfield, self.Vfield.value, True)  # setChecked the current field
+        # set Checked the current field
+        self.NewField(self.Vfield, self.Vfield.value, True)
 
     def NewField(self, variable, value, strong):
-        '''Slot for 'ValueChanged' signal of :py:class:`Vfield <artview.core.core.Variable>`.
+        '''Slot for 'ValueChanged' signal of
+        :py:class:`Vfield <artview.core.core.Variable>`.
 
         This will:
 
@@ -96,13 +101,14 @@ class FieldButtonWindow(Component):
         if (self.Vradar.value is not None and
             value in self.Vradar.value.fields):
             self.fieldbutton[value].setChecked(True)
-        
+
     def NewRadar(self, variable, value, strong):
-        '''Slot for 'ValueChanged' signal of :py:class:`Vradar <artview.core.core.Variable>`.
+        '''Slot for 'ValueChanged' signal of
+        :py:class:`Vradar <artview.core.core.Variable>`.
 
         This will:
 
-        * Recreate radio itens
+        * Recreate radio items
         '''
         self.CreateFieldWidget()
         self.SetFieldRadioButtons()

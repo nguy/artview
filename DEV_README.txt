@@ -1,7 +1,7 @@
 this is initially just a list of topic developer of Artview should be aware of, this shall be re-worked in a more complete manual in the future
 
 
-* All tool of pyart that are suppose to exist on it own (even if don't make practical reason) must be child class of core.Components and will be refereed in this manual as Component. Defining components for new functionalities is highly recommended. 
+* All components of ARTview that are suppose to exist on it own (even if don't make practical reason) must be child class of core.Components and will be refereed in this manual as Component. Defining components for new functionalities is highly recommended. 
 
 * In the __init__ function of every component, it must define a variable called sharedVariables, which is a dictionary. The variable name of every shared variable used (those are instances of core.Variable) must be a key in this dictionary, its value must be the function that will receive the "ValueChanged" signal emitted by the variable, the value may be None so no slot is connected. After defining this dictionary and assigning all shared variables call the Component method connectAllVariables, this just connect the variables signal to the slot.
 

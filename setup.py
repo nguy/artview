@@ -6,10 +6,6 @@ give acess to Py-ART funtion within a PyQt graphical interface
 
 """
 
-
-
-DOCLINES = __doc__.split("\n")
-
 import os
 import shutil
 import sys
@@ -22,6 +18,7 @@ if sys.version_info[0] < 3:
 else:
     import builtins
 
+DOCLINES = __doc__.split("\n")
 
 CLASSIFIERS = """\
 Development Status :: 3 - Alpha
@@ -42,7 +39,6 @@ Operating System :: MacOS :: MacOS X
 Operating System :: Microsoft :: Windows
 """
 
-
 NAME = 'ARTview'
 MAINTAINER = "ARTview Developers"
 MAINTAINER_EMAIL = "nick.guy@uwyo.edu"
@@ -54,8 +50,8 @@ LICENSE = 'BSD'
 CLASSIFIERS = filter(None, CLASSIFIERS.split('\n'))
 PLATFORMS = ["Linux", "Mac OS-X", "Unix"]
 MAJOR = 0
-MINOR = 2
-MICRO = 4
+MINOR = 3
+MICRO = 0
 ISRELEASED = False
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 SCRIPTS = glob.glob('scripts/*')
@@ -111,7 +107,7 @@ if not release:
     version = full_version
 """
     # Adding the git rev number needs to be done inside write_version_py(),
-    # otherwise the import of artview.version messes up the build under Python 3.
+    # otherwise import of artview.version messes up the build under Python 3.
     FULLVERSION = VERSION
     if os.path.exists('.git'):
         GIT_REVISION = git_version()

@@ -22,4 +22,12 @@ artview.plugins.CalculateAttenuation
    
    
 
+   
+   
+   .. rubric:: Attributes
+   
+   
+   .. autoattribute:: Vradar
+   
+   
 
