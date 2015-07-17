@@ -18,8 +18,8 @@ class DealiasUnwrapPhase(core.Component):
     Interfase for executing :py:func:`pyart.correct.dealias_unwrap_phase`
     '''
 
-    Vradar = None  # : see :ref:`shared_variable`
-    Vgatefilter = None  # : see :ref:`shared_variable`
+    Vradar = None  #: see :ref:`shared_variable`
+    Vgatefilter = None  #: see :ref:`shared_variable`
 
     @classmethod
     def guiStart(self, parent=None):

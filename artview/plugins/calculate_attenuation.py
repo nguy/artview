@@ -18,7 +18,7 @@ class CalculateAttenuation(core.Component):
     Interfase for executing :py:func:`pyart.correct.calculate_attenuation`
     '''
 
-    Vradar = None  # : see :ref:`shared_variable`
+    Vradar = None  #: see :ref:`shared_variable`
 
     @classmethod
     def guiStart(self, parent=None):

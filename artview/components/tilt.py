@@ -14,9 +14,9 @@ from ..core import Variable, Component
 class TiltButtonWindow(Component):
     '''Class to display the Window with Tilt Buttons.'''
 
-    Vradar = None  # : see :ref:`shared_variable`
-    Vgrid = None  # : see :ref:`shared_variable`
-    Vtilt = None  # : see :ref:`shared_variable`
+    Vradar = None  #: see :ref:`shared_variable`
+    Vgrid = None  #: see :ref:`shared_variable`
+    Vtilt = None  #: see :ref:`shared_variable`
 
     def __init__(self, Vtilt, Vradar=None, Vgrid=None, name="TiltButtons",
                  parent=None):

@@ -14,8 +14,8 @@ from ..core import Variable, Component
 class FieldButtonWindow(Component):
     '''Class to display the Window with Field Buttons'''
 
-    Vradar = None  # : see :ref:`shared_variable`
-    Vfield = None  # : see :ref:`shared_variable`
+    Vradar = None  #: see :ref:`shared_variable`
+    Vfield = None  #: see :ref:`shared_variable`
 
     def __init__(self, Vradar, Vfield, name="FieldButtons", parent=None):
         '''

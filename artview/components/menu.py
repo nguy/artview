@@ -15,8 +15,8 @@ from ..core import Variable, Component, common
 class Menu(Component):
     '''Class to display the MainMenu'''
 
-    Vradar = None  # : see :ref:`shared_variable`
-    Vgrid = None  # : see :ref:`shared_variable`
+    Vradar = None  #: see :ref:`shared_variable`
+    Vgrid = None  #: see :ref:`shared_variable`
 
     def __init__(self, pathDir, filename=None, Vradar=None, Vgrid=None,
                  mode="Radar", name="Menu", parent=None):
@@ -53,6 +53,8 @@ class Menu(Component):
 
         # Set some parameters
         self.dirIn = pathDir
+        self.fileindex = 0
+        self.filelist = []
         self.mode = mode.lower()
         self.Vradar = Vradar
         self.Vgrid = Vgrid
