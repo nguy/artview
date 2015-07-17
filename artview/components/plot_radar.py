@@ -61,7 +61,7 @@ class Display(Component):
             A value of None will instantiate a limits variable.
         Vcmap : :py:class:`~artview.core.core.Variable` instance
             Colormap signal variable.
-            A value of None will instantiate a limits variable.
+            A value of None will instantiate a colormap variable.
         name : string
             Display window name.
         parent : PyQt instance
@@ -114,7 +114,8 @@ class Display(Component):
 
         # Find the PyArt colormap names
 #        self.cm_names = [m for m in cm.datad if not m.endswith("_r")]
-        self.cm_names = ["pyart_" + m for m in pyart.graph.cm.datad if not m.endswith("_r")]
+        self.cm_names = ["pyart_" + m for m in pyart.graph.cm.datad
+                         if not m.endswith("_r")]
         self.cm_names.sort()
 
         # Create tool dictionary
@@ -134,9 +135,6 @@ class Display(Component):
 
         # Initialize radar variable
         self.NewRadar(None, None, True)
-
-        # Update axes
-        self._update_axes()
 
         self.show()
 
@@ -358,7 +356,9 @@ class Display(Component):
     ########################
 
     def NewRadar(self, variable, value, strong):
-        '''Slot for 'ValueChanged' signal of :py:class:`Vradar <artview.core.core.Variable>`.
+        '''
+        Slot for 'ValueChanged' signal of
+        :py:class:`Vradar <artview.core.core.Variable>`.
 
         This will:
 
@@ -385,7 +385,9 @@ class Display(Component):
             self._update_plot()
 
     def NewField(self, variable, value, strong):
-        '''Slot for 'ValueChanged' signal of :py:class:`Vfield <artview.core.core.Variable>`.
+        '''
+        Slot for 'ValueChanged' signal of
+        :py:class:`Vfield <artview.core.core.Variable>`.
 
         This will:
 
@@ -402,17 +404,21 @@ class Display(Component):
             self._update_plot()
 
     def NewLims(self, variable, value, strong):
-        '''Slot for 'ValueChanged' signal of :py:class:`Vlims <artview.core.core.Variable>`.
+        '''
+        Slot for 'ValueChanged' signal of
+        :py:class:`Vlims <artview.core.core.Variable>`.
 
         This will:
 
-        * If strong update: update plot
+        * If strong update: update axes
         '''
         if strong:
             self._update_axes()
 
     def NewCmap(self, variable, value, strong):
-        '''Slot for 'ValueChanged' signal of :py:class:`Vcmap <artview.core.core.Variable>`.
+        '''
+        Slot for 'ValueChanged' signal of
+        :py:class:`Vcmap <artview.core.core.Variable>`.
 
         This will:
 
@@ -423,7 +429,9 @@ class Display(Component):
 
 
     def NewTilt(self, variable, value, strong):
-        '''Slot for 'ValueChanged' signal of :py:class:`Vtilt <artview.core.core.Variable>`.
+        '''
+        Slot for 'ValueChanged' signal of
+        :py:class:`Vtilt <artview.core.core.Variable>`.
 
         This will:
 
@@ -436,7 +444,10 @@ class Display(Component):
             self._update_plot()
 
     def TiltSelectCmd(self, ntilt):
-        '''Captures tilt selection and update tilt :py:class:`~artview.core.core.Variable`.'''
+        '''
+        Captures tilt selection and update tilt
+        :py:class:`~artview.core.core.Variable`.
+        '''
         if ntilt < 0:
             ntilt = len(self.rTilts)-1
         elif ntilt >= len(self.rTilts):
@@ -444,7 +455,10 @@ class Display(Component):
         self.Vtilt.change(ntilt)
 
     def FieldSelectCmd(self, name):
-        '''Captures field selection and update field :py:class:`~artview.core.core.Variable`.'''
+        '''
+        Captures field selection and update field
+        :py:class:`~artview.core.core.Variable`.
+        '''
         self.Vfield.change(name)
 
     def RngRingSelectCmd(self, ringSel):
@@ -651,6 +665,7 @@ class Display(Component):
             if self.RngRing:
                 self.display.plot_range_rings(self.RNG_RINGS, ax=self.ax)
 
+        self._update_axes()
         norm = mlabNormalize(vmin=cmap['vmin'],
                              vmax=cmap['vmax'])
         self.cbar = mlabColorbarBase(self.cax, cmap=cmap['cmap'],
