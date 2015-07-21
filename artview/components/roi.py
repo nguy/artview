@@ -46,7 +46,8 @@ https://www.mail-archive.com/matplotlib-users@lists.sourceforge.net/msg00661.htm
             Window name.
         parent - PyQt instance
             Parent instance to associate to ROI instance.
-            If None, then Qt owns, otherwise associated w/ parent PyQt instance
+            If None, then Qt owns, otherwise associated with parent PyQt
+            instance.
 
         Notes::
         -----
