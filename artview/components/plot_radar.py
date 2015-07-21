@@ -499,11 +499,8 @@ class Display(Component):
 
     def toolROICmd(self):
         '''Creates and connects to Region of Interest instance'''
-        from .tools import ROI
-        self.tools['roi'] = ROI(self.Vradar, self.Vtilt, self.Vfield,
-                                self.statusbar, self.ax, self.display,
-                                parent=self.parent)
-        self.tools['roi'].connect()
+        from .roi import ROI
+        self.tools['roi'] = ROI(self, name=self.name + " ROI", parent=self)
 
     def toolCustomCmd(self):
         '''Allow user to activate self-defined tool.'''
@@ -757,6 +754,10 @@ class Display(Component):
     def getStatusBar(self):
         ''' get :py:class:`PyQt4.QtGui.QStatusBar` instance'''
         return self.statusbar
+
+    def getField(self):
+        ''' get current field '''
+        return self.Vfield.value
 
 
 class _DisplayStart(QtGui.QDialog):
