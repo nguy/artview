@@ -62,7 +62,8 @@ class Display(Component):
             Display window name.
         parent : PyQt instance
             Parent instance to associate to Display window.
-            If None, then Qt owns, otherwise associated w/ parent PyQt instance
+            If None, then Qt owns, otherwise associated with parent PyQt
+            instance.
 
         Notes
         -----
@@ -260,7 +261,7 @@ class Display(Component):
         '''Open a TiltButtonWindow instance.'''
         from .tilt import TiltButtonWindow
         self.tiltbuttonwindow = TiltButtonWindow(
-            self.Vradar, self.Vtilt,
+            self.Vtilt, self.Vradar,
             name=self.name+" Tilt Selection", parent=self.parent)
 
     def _open_fieldbuttonwindow(self):
@@ -370,6 +371,12 @@ class Display(Component):
         * Reset units and title
         * If strong update: update plot
         '''
+        # test for None
+        if self.Vradar.value is None:
+            self.fieldBox.clear()
+            self.tiltBox.clear()
+            return
+
         # Get the tilt angles
         self.rTilts = self.Vradar.value.sweep_number['data'][:]
         # Get field names
@@ -450,7 +457,7 @@ class Display(Component):
             self.RngRing = True
             # Find the unambigous range of the radar
             try:
-                unrng = int(self.radar.instrument_parameters[
+                unrng = int(self.Vradar.value.instrument_parameters[
                     'unambiguous_range']['data'][0]/1000)
             except:
                 unrng = int(self.limits['xmax'])

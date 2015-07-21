@@ -42,7 +42,8 @@ class Menu(Component):
             Menu name.
         parent : PyQt instance
             Parent instance to associate to menu.
-            If None, then Qt owns, otherwise associated w/ parent PyQt instance
+            If None, then Qt owns, otherwise associated with parent PyQt
+            instance.
 
         Notes
         -----
@@ -79,6 +80,7 @@ class Menu(Component):
     # Allow advancement via left and right arrow keys
     # and tilt adjustment via the Up-Down arrow keys
     def keyPressEvent(self, event):
+        '''Reimplementation, change files with right left button'''
         if event.key() == QtCore.Qt.Key_Right:
             # Menu control the file and open the radar
             self.AdvanceFileSelect(self.fileindex + 1)

@@ -84,7 +84,8 @@ class ValueClick(QtGui.QMainWindow):
             Field Radiobutton window name.
         parent - PyQt instance
             Parent instance to associate to ZoomPan instance.
-            If None, then Qt owns, otherwise associated w/ parent PyQt instance
+            If None, then Qt owns, otherwise associated with parent PyQt
+            instance.
 
         Notes::
         -----
@@ -118,10 +119,10 @@ class ValueClick(QtGui.QMainWindow):
         if (xdata is None) or (ydata is None):
             self.msg = "Please choose point inside plot area"
         elif self.Vradar.value is None:
-            az = np.arctan2(xdata, ydata)*180./np.pi
+            az = np.arctan2(xdata, ydata) * 180. / np.pi
             if az < 0:
                 az = az + 360.
-            rng = np.sqrt(xdata*xdata + ydata*ydata)
+            rng = np.sqrt(xdata * xdata + ydata * ydata)
             # TJL - Attempt to pep8 this overlong string
             msg1 = 'x = %4.2f, y = %4.2f, ' % (xdata, ydata)
             msg2 = 'Azimuth = %4.2f deg., Range = %4.3f km' % (az, rng)
@@ -132,6 +133,10 @@ class ValueClick(QtGui.QMainWindow):
             if az < 0:
                 az = az + 360.
             rng = np.sqrt(xdata*xdata + ydata*ydata)
+            # TJL - Attempt to pep8 this overlong string
+            msg1 = 'x = %4.2f, y = %4.2f, ' % (xdata, ydata)
+            msg2 = 'Azimuth = %4.2f deg., Range = %4.3f km' % (az, rng)
+            self.msg = msg1 + msg2
 
             azindex = np.argmin(np.abs(
                 radar.azimuth['data'][radar.sweep_start_ray_index['data'][
@@ -227,7 +232,8 @@ http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-
             Field Radiobutton window name.
         parent - PyQt instance
             Parent instance to associate to ZoomPan instance.
-            If None, then Qt owns, otherwise associated w/ parent PyQt instance
+            If None, then Qt owns, otherwise associated with parent PyQt
+            instance.
 
         Notes::
         -----
@@ -396,7 +402,8 @@ https://www.mail-archive.com/matplotlib-users@lists.sourceforge.net/msg00661.htm
             Field Radiobutton window name.
         parent - PyQt instance
             Parent instance to associate to ROI instance.
-            If None, then Qt owns, otherwise associated w/ parent PyQt instance
+            If None, then Qt owns, otherwise associated with parent PyQt
+            instance.
 
         Notes::
         -----
