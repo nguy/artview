@@ -6,7 +6,7 @@ Routines used for modifying limits via Display window.
 
 # Load the needed packages
 from PyQt4 import QtGui, QtCore
-
+import pyart
 
 def _default_limits(field, scan_type):
     '''
@@ -30,11 +30,13 @@ def _default_limits(field, scan_type):
     VR_LIMS = (-30., 30.)
     ZDR_LIMS = (-5., 5.)
     RHO_HV_LIMS = (.8, 1.)
-    KDP_LIMS = (0., 5.)
-    PHIDP_LIMS = (0., 1.)
+    KDP_LIMS = (-2., 5.)
+    PHIDP_LIMS = (-180, 180)
     NCP_LIMS = (0., 1.)
     SW_LIMS = (-1., 10.)
     TP_LIMS = (-200., 100.)
+    SNR_LIMS = (0., 65.)
+    RR_LIMS = (0., 150.)#Rrait12
 
     # X, Y range and size for airborne file typesAIR_XRNG = (-150., 150.)
     AIR_XRNG = (-50., 50.)
@@ -60,51 +62,48 @@ def _default_limits(field, scan_type):
         XRNG = RHI_XRNG
         YRNG = RHI_YRNG
 
+    name = pyart.config.get_field_name
+
     # Check the field and apply the proper limits
-    if field == 'reflectivity':
+    if field == name('reflectivity'):
         vminmax = (Z_LIMS[0], Z_LIMS[1])
 #        CMAP = 'gist_ncar'
         CMAP = 'pyart_NWSRef'
-    elif field == 'DBZ':
-        vminmax = (Z_LIMS[0], Z_LIMS[1])
-#        CMAP = 'gist_ncar'
-        CMAP = 'pyart_NWSRef'
-    elif field == 'velocity':
+    elif field == name('velocity'):
         vminmax = (VR_LIMS[0], VR_LIMS[1])
 #        CMAP = 'RdBu_r'
         CMAP = 'pyart_NWSVel'
-    elif field == 'VEL':
-        vminmax = (VR_LIMS[0], VR_LIMS[1])
-#        CMAP = 'RdBu_r'
-        CMAP = 'pyart_NWSVel'
-    elif field == 'differential_reflectivity':
+    elif field == name('differential_reflectivity'):
         vminmax = (ZDR_LIMS[0], ZDR_LIMS[1])
 #        CMAP = 'RdYlBu_r'
         CMAP = 'pyart_BuDRd12'
-    elif field == 'cross_correlation_ratio':
+    elif field == name('cross_correlation_ratio'):
         vminmax = (RHO_HV_LIMS[0], RHO_HV_LIMS[1])
 #        CMAP = 'cool'
         CMAP = 'pyart_BrBu12'
-    elif field == 'differential_phase':
+    elif field == name('specific_differential_phase'):
         vminmax = (KDP_LIMS[0], KDP_LIMS[1])
 #        CMAP = 'YlOrBr'
         CMAP = 'pyart_BrBu12'
-    elif field == 'normalized_coherent_power':
+    elif field == name('normalized_coherent_power'):
         vminmax = (NCP_LIMS[0], NCP_LIMS[1])
 #        CMAP = 'jet'
         CMAP = 'pyart_Carbone17'
-    elif field == 'spectrum_width':
+    elif field == name('spectrum_width'):
         vminmax = (SW_LIMS[0], SW_LIMS[1])
 #        CMAP = 'gist_ncar'
         CMAP = 'pyart_Carbone17'
-    elif field == 'specific_differential_phase':
+    elif field == name('differential_phase'):
         vminmax = (PHIDP_LIMS[0], PHIDP_LIMS[1])
 #        CMAP = 'RdBu_r'
         CMAP = 'pyart_BlueBrown11'
-    elif field == 'total_power':
+    elif field == name('total_power'):
         vminmax = (TP_LIMS[0], TP_LIMS[1])
 #        CMAP = 'jet'
         CMAP = 'pyart_StepSeq25'
+    elif field == name('radar_echo_classification'):
+        vminmax = (0, 12)
+        CMAP = 'pyart_EWilson17'
     else:
         vminmax = (Z_LIMS[0], Z_LIMS[1])
 #        CMAP = 'gist_ncar'
@@ -112,23 +111,25 @@ def _default_limits(field, scan_type):
 
     limit_strs = ('vmin', 'vmax', 'xmin', 'xmax', 'ymin', 'ymax')
     limits = {}
+    cmap = {}
 
     # Now pull the default values
-    limits['vmin'] = vminmax[0]
-    limits['vmax'] = vminmax[1]
     limits['xmin'] = XRNG[0]
     limits['xmax'] = XRNG[1]
     limits['ymin'] = YRNG[0]
     limits['ymax'] = YRNG[1]
+    cmap['vmin'] = vminmax[0]
+    cmap['vmax'] = vminmax[1]
+    cmap['cmap'] = CMAP
 
-    return limits, CMAP
+    return limits, cmap
 
 ###############################
 # Limits Dialog Class Methods #
 ###############################
 
 
-def limits_dialog(limits, name):
+def limits_dialog(limits, cmap, name):
     '''Function to instantiate a Display Limits Window.
 
     Parameters::
@@ -170,8 +171,8 @@ def limits_dialog(limits, name):
     ent_ymax = QtGui.QLineEdit(LimsDialog)
 
     # Input the current values
-    ent_dmin.setText(str(limits['vmin']))
-    ent_dmax.setText(str(limits['vmax']))
+    ent_dmin.setText(str(cmap['vmin']))
+    ent_dmax.setText(str(cmap['vmax']))
     ent_xmin.setText(str(limits['xmin']))
     ent_xmax.setText(str(limits['xmax']))
     ent_ymin.setText(str(limits['ymin']))
@@ -208,11 +209,11 @@ def limits_dialog(limits, name):
     retval = LimsDialog.exec_()
     print retval
     if retval == 1:
-        limits['vmin'] = float(ent_dmin.text())
-        limits['vmax'] = float(ent_dmax.text())
+        cmap['vmin'] = float(ent_dmin.text())
+        cmap['vmax'] = float(ent_dmax.text())
         limits['xmin'] = float(ent_xmin.text())
         limits['xmax'] = float(ent_xmax.text())
         limits['ymin'] = float(ent_ymin.text())
         limits['ymax'] = float(ent_ymax.text())
 
-    return limits, retval
+    return limits, cmap, retval

@@ -18,8 +18,8 @@ class DealiasRegionBased(core.Component):
     Interfase for executing :py:func:`pyart.correct.dealias_region_based`
     '''
 
-    Vradar = None  # : see :ref:`shared_variable`
-    Vgatefilter = None  # : see :ref:`shared_variable`
+    Vradar = None  #: see :ref:`shared_variable`
+    Vgatefilter = None  #: see :ref:`shared_variable`
 
     @classmethod
     def guiStart(self, parent=None):
