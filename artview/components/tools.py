@@ -46,9 +46,9 @@ def restore_default_display(tooldict, field, scan_type):
             tooldict[tool].disconnect()
             tooldict[tool] = None
 
-    display_limits = limits._default_limits(field, scan_type)
+    display_limits, cmap = limits._default_limits(field, scan_type)
 
-    return tooldict, display_limits
+    return tooldict, display_limits, cmap
 
 ##################################
 # Mouse Click Value Class Method #
