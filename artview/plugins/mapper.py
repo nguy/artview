@@ -18,8 +18,8 @@ class Mapper(core.Component):
     Interfase for executing :py:func:`pyart.map.grid_from_radars`
     '''
 
-    Vradar = None  # : see :ref:`shared_variable`
-    Vgrid = None  # : see :ref:`shared_variable`
+    Vradar = None  #: see :ref:`shared_variable`
+    Vgrid = None  #: see :ref:`shared_variable`
 
     @classmethod
     def guiStart(self, parent=None):

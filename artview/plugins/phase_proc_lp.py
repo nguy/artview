@@ -18,7 +18,7 @@ class PhaseProcLp(core.Component):
     Interfase for executing :py:func:`pyart.correct.phase_proc_lp`
     '''
 
-    Vradar = None  # : see :ref:`shared_variable`
+    Vradar = None  #: see :ref:`shared_variable`
 
     @classmethod
     def guiStart(self, parent=None):

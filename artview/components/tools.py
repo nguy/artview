@@ -46,9 +46,9 @@ def restore_default_display(tooldict, field, scan_type):
             tooldict[tool].disconnect()
             tooldict[tool] = None
 
-    display_limits, CMAP = limits._default_limits(field, scan_type)
+    display_limits = limits._default_limits(field, scan_type)
 
-    return tooldict, display_limits, CMAP
+    return tooldict, display_limits
 
 ##################################
 # Mouse Click Value Class Method #
@@ -211,7 +211,7 @@ class ZoomPan(QtGui.QMainWindow):
     Modified an original answer found here:
 http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-wheel
     '''
-    def __init__(self, Vlims, ax, display_limits, base_scale=2.,
+    def __init__(self, Vlims, ax, base_scale=2.,
                  name="ZoomPan", parent=None):
         '''
         Initialize the class to create the interface.
@@ -222,8 +222,6 @@ http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-
             Limits signal variable to be used.
         ax - Matplotlib axis instance
             Axis instance to use.
-        limits - dict
-            Display limits dictionary.
 
         [Optional]
         base_scale - float
@@ -248,8 +246,6 @@ http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-
         # (or internal) changes in limits (Core.Variable instances expected)
         # Send the new limits back to the main window
         self.Vlims = Vlims
-        QtCore.QObject.connect(
-            Vlims, QtCore.SIGNAL("ValueChanged"), self.NewLimits)
 
         self.press = None
         self.cur_xlim = None
@@ -265,7 +261,6 @@ http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-
         self.entry['dmax'] = None
         # self.connect()
         self.ax = ax
-        self.limits = display_limits
         self.base_scale = base_scale
         self.fig = ax.get_figure()  # get the figure of interest
 
@@ -305,17 +300,18 @@ http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-
         relx = (cur_xlim[1] - xdata)/(cur_xlim[1] - cur_xlim[0])
         rely = (cur_ylim[1] - ydata)/(cur_ylim[1] - cur_ylim[0])
 
-        self.ax.set_xlim(
-            [xdata - new_width * (1-relx), xdata + new_width * (relx)])
-        self.ax.set_ylim(
-            [ydata - new_height * (1-rely), ydata + new_height * (rely)])
-        self.ax.figure.canvas.draw()
+#        self.ax.set_xlim(
+#            [xdata - new_width * (1-relx), xdata + new_width * (relx)])
+#        self.ax.set_ylim(
+#            [ydata - new_height * (1-rely), ydata + new_height * (rely)])
+#        self.ax.figure.canvas.draw()
 
         # Record the new limits and pass them to main window
-        self.limits['xmin'] = xdata - new_width * (1-relx)
-        self.limits['xmax'] = xdata + new_width * (relx)
-        self.limits['ymin'] = ydata - new_height * (1-rely)
-        self.limits['ymax'] = ydata + new_height * (rely)
+        self.Vlims.value['xmin'] = xdata - new_width * (1-relx)
+        self.Vlims.value['xmax'] = xdata + new_width * (relx)
+        self.Vlims.value['ymin'] = ydata - new_height * (1-rely)
+        self.Vlims.value['ymax'] = ydata + new_height * (rely)
+        self.Vlims.change(self.Vlims.value)
 
     def onPress(self, event):
         '''Get the current event parameters'''
@@ -340,16 +336,14 @@ http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-
         dy = event.ydata - self.ypress
         self.cur_xlim -= dx
         self.cur_ylim -= dy
-        self.ax.set_xlim(self.cur_xlim)
-        self.ax.set_ylim(self.cur_ylim)
-
-        self.ax.figure.canvas.draw()
 
         # Record the new limits and pass them to main window
-        self.limits['xmin'], self.limits['xmax'] = \
+        limits = self.Vlims.value
+        limits['xmin'], limits['xmax'] = \
             self.cur_xlim[0], self.cur_xlim[1]
-        self.limits['ymin'], self.limits['ymax'] = \
+        limits['ymin'], limits['ymax'] = \
             self.cur_ylim[0], self.cur_ylim[1]
+        self.Vlims.change(limits)
 
     def disconnect(self):
         '''Disconnect the ZoomPan instance'''
@@ -357,14 +351,6 @@ http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-
         self.fig.canvas.mpl_disconnect(self.pressID)
         self.fig.canvas.mpl_disconnect(self.releaseID)
         self.fig.canvas.mpl_disconnect(self.motionID)
-
-        # self.LimsDialog.accept()
-        self.Vlims.change(self.limits)
-
-    def NewLimits(self, variable, value, strong):
-        '''Record the new display limits.'''
-        '''Retrieve new limits input'''
-        print "In NewLims"
 
 ##################################
 # Select Area (Polygon) Class Method #

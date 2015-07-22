@@ -34,6 +34,7 @@ class Display(Component):
     Vfield = None #: see :ref:`shared_variable`
     Vtilt = None #: see :ref:`shared_variable`
     Vlims = None #: see :ref:`shared_variable`
+    Vcmap = None #: see :ref:`shared_variable`
 
     @classmethod
     def guiStart(self, parent=None):
@@ -41,7 +42,7 @@ class Display(Component):
         args = _DisplayStart().startDisplay()
         return self(**args), True
 
-    def __init__(self, Vradar, Vfield, Vtilt, Vlims=None,
+    def __init__(self, Vradar, Vfield, Vtilt, Vlims=None, Vcmap=None,
                  name="Display", parent=None):
         '''
         Initialize the class to create display.
@@ -58,6 +59,9 @@ class Display(Component):
         Vlims : :py:class:`~artview.core.core.Variable` instance
             Limits signal variable.
             A value of None will instantiate a limits variable.
+        Vcmap : :py:class:`~artview.core.core.Variable` instance
+            Colormap signal variable.
+            A value of None will instantiate a colormap variable.
         name : string
             Display window name.
         parent : PyQt instance
@@ -84,10 +88,16 @@ class Display(Component):
         else:
             self.Vlims = Vlims
 
+        if Vcmap is None:
+            self.Vcmap = Variable(None)
+        else:
+            self.Vcmap = Vcmap
+
         self.sharedVariables = {"Vradar": self.NewRadar,
                                 "Vfield": self.NewField,
                                 "Vtilt": self.NewTilt,
-                                "Vlims": self.NewLims}
+                                "Vlims": self.NewLims,
+                                "Vcmap": self.NewCmap,}
 
         # Connect the components
         self.connectAllVariables()
@@ -105,14 +115,18 @@ class Display(Component):
 
         # Find the PyArt colormap names
 #        self.cm_names = [m for m in cm.datad if not m.endswith("_r")]
-        self.cm_names = ["pyart_" + m for m in pyart.graph.cm.datad if not m.endswith("_r")]
+        self.cm_names = ["pyart_" + m for m in pyart.graph.cm.datad
+                         if not m.endswith("_r")]
         self.cm_names.sort()
 
         # Create tool dictionary
         self.tools = {}
 
-        # Set up Default limits
-        self._set_default_limits()
+        # Set up Default limits and cmap
+        if Vlims is None:
+            self._set_default_limits(strong=False)
+        if Vcmap is None:
+            self._set_default_cmap(strong=False)
 
         # Create a figure for output
         self._set_fig_ax()
@@ -122,10 +136,6 @@ class Display(Component):
 
         # Initialize radar variable
         self.NewRadar(None, None, True)
-
-        # Update Vlims variable if empty
-        if self.Vlims.value is None:
-            self.Vlims.change(self.limits, strong=False)
 
         self.show()
 
@@ -190,9 +200,10 @@ class Display(Component):
     def _open_LimsDialog(self):
         '''Open a dialog box to change display limits.'''
         from .limits import limits_dialog
-        self.limits, change = limits_dialog(self.limits, self.name)
+        limits, cmap, change = limits_dialog(self.Vlims.value, self.Vcmap.value, self.name)
         if change == 1:
-            self._update_plot()
+            self.Vcmap.change(cmap)
+            self.Vlims.change(limits)
 
     def _fillTiltBox(self):
         '''Fill in the Tilt Window Box with current elevation angles.'''
@@ -211,22 +222,6 @@ class Display(Component):
         # Loop through and create each field button
         for field in self.fieldnames:
             self.fieldBox.addItem(field)
-
-    def _lims_input(self, entry):
-        '''Retrieve new limits input.'''
-        if entry['dmin'] is not None:
-            self.limits['vmin'] = entry['dmin']
-        if entry['dmax'] is not None:
-            self.limits['vmax'] = entry['dmax']
-        if entry['xmin'] is not None:
-            self.limits['xmin'] = entry['xmin']
-        if entry['xmax'] is not None:
-            self.limits['xmax'] = entry['xmax']
-        if entry['ymin'] is not None:
-            self.limits['ymin'] = entry['ymin']
-        if entry['ymax'] is not None:
-            self.limits['ymax'] = entry['ymax']
-        self._update_plot()
 
     def _tiltAction(self, text):
         '''Define action for Tilt Button selection.'''
@@ -362,7 +357,9 @@ class Display(Component):
     ########################
 
     def NewRadar(self, variable, value, strong):
-        '''Slot for 'ValueChanged' signal of :py:class:`Vradar <artview.core.core.Variable>`.
+        '''
+        Slot for 'ValueChanged' signal of
+        :py:class:`Vradar <artview.core.core.Variable>`.
 
         This will:
 
@@ -395,16 +392,18 @@ class Display(Component):
             self._update_plot()
 
     def NewField(self, variable, value, strong):
-        '''Slot for 'ValueChanged' signal of :py:class:`Vfield <artview.core.core.Variable>`.
+        '''
+        Slot for 'ValueChanged' signal of
+        :py:class:`Vfield <artview.core.core.Variable>`.
 
         This will:
 
-        * Reset limits
+        * Reset colormap
         * Reset units
         * Update fields MenuBox
         * If strong update: update plot
         '''
-        self._set_default_limits()
+        self._set_default_cmap(strong=False)
         self.units = None
         idx = self.fieldBox.findText(value)
         self.fieldBox.setCurrentIndex(idx)
@@ -412,7 +411,21 @@ class Display(Component):
             self._update_plot()
 
     def NewLims(self, variable, value, strong):
-        '''Slot for 'ValueChanged' signal of :py:class:`Vlims <artview.core.core.Variable>`.
+        '''
+        Slot for 'ValueChanged' signal of
+        :py:class:`Vlims <artview.core.core.Variable>`.
+
+        This will:
+
+        * If strong update: update axes
+        '''
+        if strong:
+            self._update_axes()
+
+    def NewCmap(self, variable, value, strong):
+        '''
+        Slot for 'ValueChanged' signal of
+        :py:class:`Vcmap <artview.core.core.Variable>`.
 
         This will:
 
@@ -421,8 +434,11 @@ class Display(Component):
         if strong and self.Vradar.value is not None:
             self._update_plot()
 
+
     def NewTilt(self, variable, value, strong):
-        '''Slot for 'ValueChanged' signal of :py:class:`Vtilt <artview.core.core.Variable>`.
+        '''
+        Slot for 'ValueChanged' signal of
+        :py:class:`Vtilt <artview.core.core.Variable>`.
 
         This will:
 
@@ -435,7 +451,10 @@ class Display(Component):
             self._update_plot()
 
     def TiltSelectCmd(self, ntilt):
-        '''Captures tilt selection and update tilt :py:class:`~artview.core.core.Variable`.'''
+        '''
+        Captures tilt selection and update tilt
+        :py:class:`~artview.core.core.Variable`.
+        '''
         if ntilt < 0:
             ntilt = len(self.rTilts)-1
         elif ntilt >= len(self.rTilts):
@@ -443,7 +462,10 @@ class Display(Component):
         self.Vtilt.change(ntilt)
 
     def FieldSelectCmd(self, name):
-        '''Captures field selection and update field :py:class:`~artview.core.core.Variable`.'''
+        '''
+        Captures field selection and update field
+        :py:class:`~artview.core.core.Variable`.
+        '''
         self.Vfield.change(name)
 
     def RngRingSelectCmd(self, ringSel):
@@ -460,7 +482,7 @@ class Display(Component):
                 unrng = int(self.Vradar.value.instrument_parameters[
                     'unambiguous_range']['data'][0]/1000)
             except:
-                unrng = int(self.limits['xmax'])
+                unrng = int(self.Vlims.value['xmax'])
 
             # Set the step
             if ringSel == '10 km':
@@ -482,17 +504,16 @@ class Display(Component):
 
     def cmapSelectCmd(self, cm_name):
         '''Captures colormap selection and redraws.'''
-        self.CMAP = cm_name
-        if self.Vradar.value is not None:
-            self._update_plot()
-
+        CMAP = cm_name
+        self.Vcmap.value['cmap'] = cm_name
+        self.Vcmap.change(self.Vcmap.value)
 
     def toolZoomPanCmd(self):
         '''Creates and connects to a Zoom/Pan instance.'''
         from .tools import ZoomPan
         scale = 1.1
         self.tools['zoompan'] = ZoomPan(
-            self.Vlims, self.ax, self.limits,
+            self.Vlims, self.ax,
             base_scale=scale, parent=self.parent)
         self.tools['zoompan'].connect()
 
@@ -517,10 +538,10 @@ class Display(Component):
     def toolDefaultCmd(self):
         '''Restore the Display defaults.'''
         from . import tools
-        self.tools, self.limits, self.CMAP = tools.restore_default_display(
+        self.tools, limits, cmap = tools.restore_default_display(
             self.tools, self.Vfield.value, self.scan_type)
-        if self.Vradar.value is not None:
-            self._update_plot()
+        self.Vcmap.change(cmap)
+        self.Vlims.change(limits)
 
     def getPathInteriorValues(self, path):
         '''
@@ -564,6 +585,7 @@ class Display(Component):
         self.fig = Figure(figsize=(self.XSIZE, self.YSIZE))
         self.ax = self.fig.add_axes([0.2, 0.2, 0.7, 0.7])
         self.cax = self.fig.add_axes([0.2, 0.10, 0.7, 0.02])
+        #self._update_axes()
 
     def _update_fig_ax(self):
         '''Set the figure and axis to plot.'''
@@ -575,6 +597,7 @@ class Display(Component):
         yheight = 0.7 * float(self.YSIZE) / float(self.XSIZE)
         self.ax.set_position([0.2, 0.55-0.5*yheight, xwidth, yheight])
         self.cax.set_position([0.2, 0.10, xwidth, 0.02])
+        self._update_axes()
 
     def _set_figure_canvas(self):
         '''Set the figure canvas to draw in window area.'''
@@ -599,16 +622,18 @@ class Display(Component):
         else:
             title = self.title
 
+        limits = self.Vlims.value
+        cmap = self.Vcmap.value
         if self.scan_type == "airborne":
             self.display = pyart.graph.RadarDisplay_Airborne(self.Vradar.value)
 
             self.plot = self.display.plot_sweep_grid(
-                self.Vfield.value, vmin=self.limits['vmin'],
-                vmax=self.limits['vmax'], colorbar_flag=False, cmap=self.CMAP,
+                self.Vfield.value, vmin=cmap['vmin'],
+                vmax=cmap['vmax'], colorbar_flag=False, cmap=cmap['cmap'],
                 ax=self.ax, fig=self.fig, title=title)
-            self.display.set_limits(
-                xlim=(self.limits['xmin'], self.limits['xmax']),
-                ylim=(self.limits['ymin'], self.limits['ymax']), ax=self.ax)
+            #self.display.set_limits(
+            #    xlim=(limits['xmin'], limits['xmax']),
+            #    ylim=(limits['ymin'], limits['ymax']), ax=self.ax)
             self.display.plot_grid_lines()
 
         elif self.scan_type == "ppi":
@@ -616,13 +641,13 @@ class Display(Component):
             # Create Plot
             self.plot = self.display.plot_ppi(
                 self.Vfield.value, self.Vtilt.value,
-                vmin=self.limits['vmin'], vmax=self.limits['vmax'],
-                colorbar_flag=False, cmap=self.CMAP,
+                vmin=cmap['vmin'], vmax=cmap['vmax'],
+                colorbar_flag=False, cmap=cmap['cmap'],
                 ax=self.ax, fig=self.fig, title=self.title)
             # Set limits
-            self.display.set_limits(
-                xlim=(self.limits['xmin'], self.limits['xmax']),
-                ylim=(self.limits['ymin'], self.limits['ymax']), ax=self.ax)
+            #self.display.set_limits(
+            #    xlim=(limits['xmin'], limits['xmax']),
+            #    ylim=(limits['ymin'], limits['ymax']), ax=self.ax)
             # Add range rings
             if self.RngRing:
                 self.display.plot_range_rings(self.RNG_RINGS, ax=self.ax)
@@ -634,19 +659,20 @@ class Display(Component):
             # Create Plot
             self.plot = self.display.plot_rhi(
                 self.Vfield.value, self.Vtilt.value,
-                vmin=self.limits['vmin'], vmax=self.limits['vmax'],
-                colorbar_flag=False, cmap=self.CMAP,
+                vmin=cmap['vmin'], vmax=cmap['vmax'],
+                colorbar_flag=False, cmap=cmap['cmap'],
                 ax=self.ax, fig=self.fig, title=self.title)
-            self.display.set_limits(
-                xlim=(self.limits['xmin'], self.limits['xmax']),
-                ylim=(self.limits['ymin'], self.limits['ymax']), ax=self.ax)
+            #self.display.set_limits(
+            #   xlim=(limits['xmin'], limits['xmax']),
+            #    ylim=(limits['ymin'], limits['ymax']), ax=self.ax)
             # Add range rings
             if self.RngRing:
                 self.display.plot_range_rings(self.RNG_RINGS, ax=self.ax)
 
-        norm = mlabNormalize(vmin=self.limits['vmin'],
-                             vmax=self.limits['vmax'])
-        self.cbar = mlabColorbarBase(self.cax, cmap=self.CMAP,
+        self._update_axes()
+        norm = mlabNormalize(vmin=cmap['vmin'],
+                             vmax=cmap['vmax'])
+        self.cbar = mlabColorbarBase(self.cax, cmap=cmap['cmap'],
                                      norm=norm, orientation='horizontal')
         # colorbar - use specified units or default depending on
         # what has or has not been entered
@@ -660,6 +686,13 @@ class Display(Component):
         print "Plotting %s field, Tilt %d in %s" % (
             self.Vfield.value, self.Vtilt.value+1, self.name)
         self.canvas.draw()
+
+    def _update_axes(self):
+        '''Change the Plot Axes.'''
+        limits = self.Vlims.value
+        self.ax.set_xlim(limits['xmin'], limits['xmax'])
+        self.ax.set_ylim(limits['ymin'], limits['ymax'])
+        self.ax.figure.canvas.draw()
 
     #########################
     # Check methods #
@@ -702,11 +735,19 @@ class Display(Component):
                       Thanks!"
                 common.ShowWarning(msg)
 
-    def _set_default_limits(self):
-        ''' Set limits and CMAP to pre-defined default.'''
+    def _set_default_limits(self, strong=True):
+        ''' Set limits to pre-defined default.'''
         from .limits import _default_limits
-        self.limits, self.CMAP = _default_limits(
+        limits, cmap = _default_limits(
             self.Vfield.value, self.scan_type)
+        self.Vlims.change(limits, strong)
+
+    def _set_default_cmap(self, strong=True):
+        ''' Set colormap to pre-defined default.'''
+        from .limits import _default_limits
+        limits, cmap = _default_limits(
+            self.Vfield.value, self.scan_type)
+        self.Vcmap.change(cmap, strong)
 
     def _check_file_type(self):
         '''Check file to see if the file is airborne or rhi.'''
@@ -728,7 +769,6 @@ class Display(Component):
             print "Changed Scan types, reinitializing"
             self._check_default_field()
             self._set_default_limits()
-            self._update_fig_ax()
 
     ########################
     # Image save methods #
