@@ -744,10 +744,24 @@ class Display(Component):
 
     def _set_default_cmap(self, strong=True):
         ''' Set colormap to pre-defined default.'''
-        from .limits import _default_limits
-        limits, cmap = _default_limits(
-            self.Vfield.value, self.scan_type)
-        self.Vcmap.change(cmap, strong)
+        cmap = pyart.config.get_field_colormap(self.Vfield.value)
+        d = {}
+        d['cmap'] = cmap
+        lims = pyart.config.get_field_limits(self.Vfield.value,
+                                             self.Vradar.value,
+                                             self.Vtilt.value)
+        if lims != (None, None):
+            d['vmin'] = lims[0]
+            d['vmax'] = lims[1]
+        else:
+            d['vmin'] = -10
+            d['vmax'] = 65
+        self.Vcmap.change(d, strong)
+        print d
+        #from .limits import _default_limits
+        #limits, cmap = _default_limits(
+            #self.Vfield.value, self.scan_type)
+        #self.Vcmap.change(cmap, strong)
 
     def _check_file_type(self):
         '''Check file to see if the file is airborne or rhi.'''
