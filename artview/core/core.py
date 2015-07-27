@@ -35,11 +35,27 @@ class Variable(QtCore.QObject):
         |           | generated with    | instance                           |
         |           | pyart             |                                    |
         +-----------+-------------------+------------------------------------+
+        | Vcontainer| Alias to Vradar or| Radar, Grid or None                |
+        |           | Vgrid             |                                    |
+        +-----------+-------------------+------------------------------------+
         | Vfield    | Name of a Field   |string in radar.fields.keys()       |
         |           | in radar file     |                                    |
         +-----------+-------------------+------------------------------------+
         | Vtilt     | Tilt (sweep) of   | int between 0 and                  |
-        |           | a radar file      | (number of sweeps)-1               |
+        |           | a radar file      | (number of sweeps) - 1             |
+        +-----------+-------------------+------------------------------------+
+        | VlevelZ   | Vertical level of | int between 0 and                  |
+        |           | a grid file       | nz - 1                             |
+        +-----------+-------------------+------------------------------------+
+        | VlevelY   | Latitudinal level | int between 0 and                  |
+        |           | of a grid file    | ny - 1                             |
+        +-----------+-------------------+------------------------------------+
+        | VlevelX   | Longitudinal level| int between 0 and                  |
+        |           | of a grid file    | nx - 1                             |
+        +-----------+-------------------+------------------------------------+
+        | Vlevel    | Alias to Vtilt,   | positive integer                   |
+        |           | VlevelZ, VlevelY  |                                    |
+        |           | or VlevelX        |                                    |
         +-----------+-------------------+------------------------------------+
         | Vlims     | Limits of display | dict containing keys: 'xmin',      |
         |           |                   | 'xmax', 'ymin', 'ymax' and holding |

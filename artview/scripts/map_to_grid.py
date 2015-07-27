@@ -27,7 +27,7 @@ def run(DirIn='./', filename=None, field=None):
     import sys
 
     from ..core import Variable
-    from ..components import Display, Display_grid, Menu, TiltButtonWindow, \
+    from ..components import RadarDisplay, GridDisplay, Menu, LevelButtonWindow, \
         ComponentsControl
 
     # handle input
@@ -45,9 +45,9 @@ def run(DirIn='./', filename=None, field=None):
 
     # start Displays
     Vfield = Variable(field)
-    plot = Display(Vradar, Vfield, Variable(0), name="DisplayRadar",
+    plot = RadarDisplay(Vradar, Vfield, Variable(0), name="DisplayRadar",
                    parent=MainMenu)
-    plot1 = Display_grid(Variable(None), Vfield, Variable(0),
+    plot1 = GridDisplay(Variable(None), Vfield, Variable(0),
                          name="DisplayGrid", parent=MainMenu)
 
     # start Mapper
