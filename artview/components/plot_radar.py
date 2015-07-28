@@ -74,7 +74,7 @@ class RadarDisplay(Component):
         This class records the selected button and passes the
         change value back to variable.
         '''
-        super(Display, self).__init__(name=name, parent=parent)
+        super(RadarDisplay, self).__init__(name=name, parent=parent)
         self.setFocusPolicy(QtCore.Qt.ClickFocus)
         # Set up signal, so that DISPLAY can react to
         # external (or internal) changes in radar, field,
@@ -562,12 +562,12 @@ class RadarDisplay(Component):
         -----
             If Vradar.value is None, returns None
         '''
-        from .tools import interior
+        from .tools import interior_radar
         radar = self.Vradar.value
         if radar is None:
             return (np.array([]),)*7
 
-        xy, idx = interior(path, radar, self.Vtilt.value)
+        xy, idx = interior_radar(path, radar, self.Vtilt.value)
         aux = (xy[:, 0], xy[:, 1], radar.azimuth['data'][idx[:, 0]],
                radar.range['data'][idx[:, 1]] / 1000.,
                radar.fields[self.Vfield.value]['data'][idx[:, 0], idx[:, 1]],
@@ -807,6 +807,9 @@ class RadarDisplay(Component):
         ''' get current field '''
         return self.Vfield.value
 
+    def getUnits(self):
+        ''' get current units '''
+        return self.units
 
 class _DisplayStart(QtGui.QDialog):
     '''
