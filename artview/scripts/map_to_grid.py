@@ -63,7 +63,7 @@ def run(DirIn='./', filename=None, field=None):
 
     # add grafical starts
     MainMenu.addComponent(ComponentsControl)
-    MainMenu.addComponent(Display)
+    MainMenu.addComponent(RadarDisplay)
 
     # add all plugins to grafical start
     try:
