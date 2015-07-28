@@ -562,12 +562,12 @@ class RadarDisplay(Component):
         -----
             If Vradar.value is None, returns None
         '''
-        from .tools import interior_radar
+        from .tools import interior
         radar = self.Vradar.value
         if radar is None:
             return (np.array([]),)*7
 
-        xy, idx = interior_radar(path, radar, self.Vtilt.value)
+        xy, idx = interior(path, radar, self.Vtilt.value)
         aux = (xy[:, 0], xy[:, 1], radar.azimuth['data'][idx[:, 0]],
                radar.range['data'][idx[:, 1]] / 1000.,
                radar.fields[self.Vfield.value]['data'][idx[:, 0], idx[:, 1]],
