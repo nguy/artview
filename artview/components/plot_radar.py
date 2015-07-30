@@ -562,12 +562,12 @@ class RadarDisplay(Component):
         -----
             If Vradar.value is None, returns None
         '''
-        from .tools import interior
+        from .tools import interior_radar
         radar = self.Vradar.value
         if radar is None:
             return (np.array([]),)*7
 
-        xy, idx = interior(path, radar, self.Vtilt.value)
+        xy, idx = interior_radar(path, radar, self.Vtilt.value)
         aux = (xy[:, 0], xy[:, 1], radar.azimuth['data'][idx[:, 0]],
                radar.range['data'][idx[:, 1]] / 1000.,
                radar.fields[self.Vfield.value]['data'][idx[:, 0], idx[:, 1]],
@@ -625,6 +625,7 @@ class RadarDisplay(Component):
 
         limits = self.Vlims.value
         cmap = self.Vcmap.value
+
         if self.plot_type == "radarAirborne":
             self.display = pyart.graph.RadarDisplay_Airborne(self.Vradar.value)
 
@@ -770,6 +771,7 @@ class RadarDisplay(Component):
             print "Changed Scan types, reinitializing"
             self._check_default_field()
             self._set_default_limits()
+            self._update_fig_ax()
 
     ########################
     # Image save methods #

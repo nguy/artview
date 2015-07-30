@@ -88,7 +88,7 @@ class GridDisplay(Component):
         This class records the selected button and passes the
         change value back to variable.
         '''
-        super(Display, self).__init__(name=name, parent=parent)
+        super(GridDisplay, self).__init__(name=name, parent=parent)
         self.setFocusPolicy(QtCore.Qt.ClickFocus)
         # Set up signal, so that DISPLAY can react to
         # external (or internal) changes in grid, field,
@@ -361,13 +361,13 @@ class GridDisplay(Component):
         self.toolsButton.setToolTip("Choose a tool to apply")
         toolmenu = QtGui.QMenu(self)
         toolZoomPan = toolmenu.addAction("Zoom/Pan")
-        #toolValueClick = toolmenu.addAction("Click for Value")
-        #toolROI = toolmenu.addAction("Select a Region of Interest")
+        toolValueClick = toolmenu.addAction("Click for Value")
+        toolROI = toolmenu.addAction("Select a Region of Interest")
         toolCustom = toolmenu.addAction("Use Custom Tool")
         toolDefault = toolmenu.addAction("Reset File Defaults")
         toolZoomPan.triggered[()].connect(self.toolZoomPanCmd)
-        #toolValueClick.triggered[()].connect(self.toolValueClickCmd)
-        #toolROI.triggered[()].connect(self.toolROICmd)
+        toolValueClick.triggered[()].connect(self.toolValueClickCmd)
+        toolROI.triggered[()].connect(self.toolROICmd)
         toolCustom.triggered[()].connect(self.toolCustomCmd)
         toolDefault.triggered[()].connect(self.toolDefaultCmd)
         self.toolsButton.setMenu(toolmenu)
@@ -503,12 +503,9 @@ class GridDisplay(Component):
 
     def toolValueClickCmd(self):
         '''Creates and connects to Point-and-click value retrieval'''
-        # TODO convert me to grid
-        from .tools import ValueClick
+        from .pick_value import ValueClick
         self.tools['valueclick'] = ValueClick(
-            self.Vgrid, self.Vtilt, self.Vfield,
-            self.units, self.ax, self.statusbar, parent=self.parent)
-        self.tools['valueclick'].connect()
+            self, name=self.name + "ValueClick", parent=self)
 
     def toolROICmd(self):
         '''Creates and connects to Region of Interest instance'''
@@ -547,17 +544,57 @@ class GridDisplay(Component):
         -----
             If Vgrid.value is None, returns None
         '''
-        # TODO convert me to grid
-        from .tools import interior
+        # TODO convert to grid
+        from .tools import interior_grid
         grid = self.Vgrid.value
         if grid is None:
             return (np.array([]),)*7
 
-        xy, idx = interior(path, grid, self.Vtilt.value)
+        xy, idx = interior_grid(path, grid, self.Vlevel.value, self.plot_type)
         aux = (xy[:, 0], xy[:, 1], grid.azimuth['data'][idx[:, 0]],
                grid.range['data'][idx[:, 1]] / 1000.,
                grid.fields[self.Vfield.value]['data'][idx[:, 0], idx[:, 1]],
                idx[:, 0], idx[:, 1])
+        return aux
+
+    def getNearestPoints(self, xdata, ydata):
+        '''
+        Return the bins values nearest to point.
+
+        Parameters
+        ----------
+        xdata, ydata : float
+
+        Returns
+        -------
+        x, y, z, value, x_idx, y_idx, z_idx: ndarray
+            Truplet of 1arrays containing x,y,z coordinate, current field
+            value, x, y and z index.
+
+        Notes
+        -----
+            If Vgrid.value is None, returns None
+        '''
+        from .tools import nearest_point_grid
+        grid = self.Vgrid.value
+        if grid is None:
+            return (np.array([]),)*7
+
+        if self.plot_type == "gridZ":
+            idx = nearest_point_grid(grid, self.levels[self.VlevelZ.value],
+                                     ydata, xdata)
+        elif self.plot_type == "gridY":
+            idx = nearest_point_grid(grid, ydata,
+                                     self.levels[self.VlevelY.value], x_data)
+        elif self.plot_type == "gridX":
+            idx = nearest_point_grid(grid, ydata, x_data,
+                                     self.levels[self.VlevelX.value])
+        aux = (grid.axes['x_disp']['data'][idx[:,2]],
+               grid.axes['y_disp']['data'][idx[:,1]],
+               grid.axes['z_disp']['data'][idx[:,0]],
+               grid.fields[self.Vfield.value]['data'][idx[:, 0], idx[:, 1],
+                                                      idx[:, 2]],
+               idx[:, 2], idx[:, 1], idx[:, 0])
         return aux
 
     ####################
@@ -575,8 +612,7 @@ class GridDisplay(Component):
 
     def _update_fig_ax(self):
         '''Set the figure and axis to plot.'''
-        # TODO convert me to grid
-        if self.scan_type in ("airborne", "rhi"):
+        if self.plot_type in ("gridX", "gridY"):
             self.YSIZE = 5
         else:
             self.YSIZE = 8
@@ -732,6 +768,7 @@ class GridDisplay(Component):
 
     def _check_file_type(self):
         '''Check file to see if the file type'''
+        #self._update_fig_ax()
         return
 
     def change_plot_type(self, plot_type):
@@ -790,6 +827,10 @@ class GridDisplay(Component):
     def getField(self):
         ''' get current field '''
         return self.Vfield.value
+
+    def getUnits(self):
+        ''' get current units '''
+        return self.units
 
     ########################
     #      Properties      #
