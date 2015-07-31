@@ -43,7 +43,7 @@ class RadarDisplay(Component):
         return self(**args), True
 
     def __init__(self, Vradar, Vfield, Vtilt, Vlims=None, Vcmap=None,
-                 name="Display", parent=None):
+                 name="RadarDisplay", parent=None):
         '''
         Initialize the class to create display.
 
@@ -146,7 +146,7 @@ class RadarDisplay(Component):
         elif event.key() == QtCore.Qt.Key_Down:
             self.TiltSelectCmd(self.Vtilt.value - 1)
         else:
-            super(Display, self).keyPressEvent(event)
+            super(RadarDisplay, self).keyPressEvent(event)
 
     ####################
     # GUI methods #

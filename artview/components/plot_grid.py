@@ -170,7 +170,7 @@ class GridDisplay(Component):
         elif event.key() == QtCore.Qt.Key_Down:
             self.LevelSelectCmd(self.Vlevel.value - 1)
         else:
-            super(Display, self).keyPressEvent(event)
+            super(GridDisplay, self).keyPressEvent(event)
 
     ####################
     # GUI methods #
@@ -716,7 +716,7 @@ class GridDisplay(Component):
     def _check_default_field(self):
         '''
         Hack to perform a check on reflectivity to make it work with
-        a larger number of files as there are many nomenclature is the
+        #a larger number of files as there are many nomenclature is the
         weather radar world.
 
         This should only occur upon start up with a new file.
