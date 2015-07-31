@@ -219,7 +219,7 @@ class Display(Component):
 
     def _open_LimsDialog(self):
         '''Open a dialog box to change display limits.'''
-        from .limits import limits_dialog
+        from .limits_grid import limits_dialog
         self.limits, change = limits_dialog(self.limits, self.name)
         if change == 1:
             self._update_plot()
@@ -680,7 +680,7 @@ class Display(Component):
 
     def _set_default_limits(self):
         ''' Set limits and CMAP to pre-defined default.'''
-        from .limits import _default_limits
+        from .limits_grid import _default_limits
         self.limits, self.CMAP = _default_limits(self.Vfield.value,
                                                  "ppi")
 
