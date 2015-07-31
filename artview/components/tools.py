@@ -641,7 +641,7 @@ http://stackoverflow.com/questions/12608835/writing-a-qtablewidget-to-a-csv-or-x
 ##########################################################
 
 
-def interior(path, radar, tilt):
+def interior_radar(path, radar, tilt):
     '''
     Return the bins of the Radar in the interior of the path.
 
@@ -683,3 +683,91 @@ def interior(path, radar, tilt):
     index = np.concatenate((rayIndex[np.newaxis],
                             gateIndex[np.newaxis]), axis=0)
     return (xys[ind], index.transpose())
+
+
+def interior_grid(path, grid, level, plot_type):
+    '''
+    Return the bins of the Radar in the interior of the path.
+
+    Parameters
+    ----------
+    path : Matplotlib Path instance
+    grid : :py:class:`pyart.core.Grid` Instance
+    level : int
+        Section from the grid to be considered.
+    plot_type : "gridZ", "gridY" or "gridX"
+        Plot type used
+
+    Returns
+    -------
+    xy : Numpy Array
+        Array of the shape (bins,2) containing the x,y
+        coordinate for every bin inside path
+    index : Numpy Array
+        Array of the shape (bins,2) containing the ray and range
+        coordinate for every bin inside path
+    '''
+    # TODO consider projection changes
+    if plot_type == "gridZ":
+        x, y = np.meshgrid(grid.axes['x_disp']['data'],
+                           grid.axes['y_disp']['data'])
+    elif plot_type == "gridY":
+        raise NotImplementedError("gridY interior nor implemented")
+    elif plot_type == "gridX":
+        raise NotImplementedError("gridX interior nor implemented")
+
+    xys = np.empty(shape=(x.size, 2))
+    xys[:, 0] = x.flatten()
+    xys[:, 1] = y.flatten()
+    # XXX in new versions (1.3) of mpl there is contains_pointS function
+    ind = np.nonzero([path.contains_point(xy) for xy in xys])[0]
+
+    ny = len(grid.axes['y_disp']['data'])
+
+    x_index = ind / ny
+    y_index = ind % ny
+    index = np.concatenate((x_index[np.newaxis],
+                            y_index[np.newaxis]), axis=0)
+    return (xys[ind], index.transpose())
+
+def nearest_point_grid(grid, zvalue, yvalue, xvalue):
+    '''
+    Return the nearest bins to a given position.
+
+    Parameters
+    ----------
+    grid : :py:class:`pyart.core.Grid` Instance
+    xvalue, yvalue, zvalue : float, list of float or array of shape (npoints,)
+        position in the plot coordinate system
+
+    Returns
+    -------
+    index : Numpy Array
+        Array of the shape (npoints, 3) containing the index in the Z, Y ,X
+        axis of grid.
+    '''
+    if isinstance(xvalue, (list, tuple, np.ndarray)):
+        xvalue = np.array((xvalue))
+    else:
+        xvalue = np.array((xvalue,))
+    if isinstance(yvalue, (list, tuple, np.ndarray)):
+        yvalue = np.array((yvalue))
+    else:
+        yvalue = np.array((yvalue,))
+    if isinstance(zvalue, (list, tuple, np.ndarray)):
+        zvalue = np.array((zvalue))
+    else:
+        zvalue = np.array((zvalue,))
+
+    # TODO consider projection change
+    zdata, zvalue = np.meshgrid(grid.axes["z_disp"]["data"], zvalue)
+    z_index = np.argmin(np.abs(zdata-zvalue),axis=1)
+    ydata, yvalue = np.meshgrid(grid.axes["y_disp"]["data"], yvalue)
+    y_index = np.argmin(np.abs(ydata-yvalue),axis=1)
+    xdata, xvalue = np.meshgrid(grid.axes["x_disp"]["data"], xvalue)
+    x_index = np.argmin(np.abs(xdata-xvalue),axis=1)
+
+    index = np.concatenate((z_index[np.newaxis],
+                            y_index[np.newaxis],
+                            x_index[np.newaxis],), axis=0)
+    return index.transpose()

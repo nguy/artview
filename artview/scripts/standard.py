@@ -3,9 +3,9 @@ standard.py
 
 Driver function that creates ARTView display.
 """
+import os
 
-
-def run(DirIn='./', filename=None, field=None):
+def run(DirIn=os.getcwd(), filename=None, field=None):
     """
     standard artview execution
 
@@ -23,7 +23,7 @@ def run(DirIn='./', filename=None, field=None):
     import sys
 
     from ..core import Variable
-    from ..components import Display, Menu, TiltButtonWindow, \
+    from ..components import RadarDisplay, Menu, LevelButtonWindow, \
         ComponentsControl, ROI
 
     # handle input
@@ -40,9 +40,9 @@ def run(DirIn='./', filename=None, field=None):
     # start Displays
     Vtilt = Variable(0)
     Vtilt2 = Variable(0)
-    plot1 = Display(Vradar, Variable(field), Vtilt, name="Display1",
+    plot1 = RadarDisplay(Vradar, Variable(field), Vtilt, name="Display1",
                     parent=MainMenu)
-    plot2 = Display(Vradar, Variable(field), Vtilt2, name="Display2",
+    plot2 = RadarDisplay(Vradar, Variable(field), Vtilt2, name="Display2",
                     parent=MainMenu)
 
     # start ComponentsControl
@@ -53,7 +53,7 @@ def run(DirIn='./', filename=None, field=None):
 
     # add grafical starts
     MainMenu.addComponent(ComponentsControl)
-    MainMenu.addComponent(Display)
+    MainMenu.addComponent(RadarDisplay)
     MainMenu.addComponent(ROI)
 
     # add all plugins to grafical start

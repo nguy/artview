@@ -24,7 +24,7 @@ DPI = 100
 # ========================================================================
 
 
-class Display(Component):
+class RadarDisplay(Component):
     '''
     Class that creates a display plot, using a returned Radar structure
     from the PyArt pyart.graph package.
@@ -43,7 +43,7 @@ class Display(Component):
         return self(**args), True
 
     def __init__(self, Vradar, Vfield, Vtilt, Vlims=None, Vcmap=None,
-                 name="Display", parent=None):
+                 name="RadarDisplay", parent=None):
         '''
         Initialize the class to create display.
 
@@ -74,7 +74,7 @@ class Display(Component):
         This class records the selected button and passes the
         change value back to variable.
         '''
-        super(Display, self).__init__(name=name, parent=parent)
+        super(RadarDisplay, self).__init__(name=name, parent=parent)
         self.setFocusPolicy(QtCore.Qt.ClickFocus)
         # Set up signal, so that DISPLAY can react to
         # external (or internal) changes in radar, field,
@@ -102,7 +102,7 @@ class Display(Component):
         # Connect the components
         self.connectAllVariables()
 
-        self.scan_type = None
+        self.plot_type = None
 
         # Set plot title and colorbar units to defaults
         self.title = None
@@ -146,7 +146,7 @@ class Display(Component):
         elif event.key() == QtCore.Qt.Key_Down:
             self.TiltSelectCmd(self.Vtilt.value - 1)
         else:
-            super(Display, self).keyPressEvent(event)
+            super(RadarDisplay, self).keyPressEvent(event)
 
     ####################
     # GUI methods #
@@ -254,9 +254,9 @@ class Display(Component):
 
     def _open_tiltbuttonwindow(self):
         '''Open a TiltButtonWindow instance.'''
-        from .tilt import TiltButtonWindow
-        self.tiltbuttonwindow = TiltButtonWindow(
-            self.Vtilt, self.Vradar,
+        from .level import LevelButtonWindow
+        self.tiltbuttonwindow = LevelButtonWindow(
+            self.Vtilt, plot_type=self.plot_type, Vcontainer=self.Vradar,
             name=self.name+" Tilt Selection", parent=self.parent)
 
     def _open_fieldbuttonwindow(self):
@@ -539,7 +539,7 @@ class Display(Component):
         '''Restore the Display defaults.'''
         from . import tools
         self.tools, limits, cmap = tools.restore_default_display(
-            self.tools, self.Vfield.value, self.scan_type)
+            self.tools, self.Vfield.value, self.plot_type)
         self.Vcmap.change(cmap)
         self.Vlims.change(limits)
 
@@ -562,12 +562,12 @@ class Display(Component):
         -----
             If Vradar.value is None, returns None
         '''
-        from .tools import interior
+        from .tools import interior_radar
         radar = self.Vradar.value
         if radar is None:
             return (np.array([]),)*7
 
-        xy, idx = interior(path, radar, self.Vtilt.value)
+        xy, idx = interior_radar(path, radar, self.Vtilt.value)
         aux = (xy[:, 0], xy[:, 1], radar.azimuth['data'][idx[:, 0]],
                radar.range['data'][idx[:, 1]] / 1000.,
                radar.fields[self.Vfield.value]['data'][idx[:, 0], idx[:, 1]],
@@ -589,7 +589,7 @@ class Display(Component):
 
     def _update_fig_ax(self):
         '''Set the figure and axis to plot.'''
-        if self.scan_type in ("airborne", "rhi"):
+        if self.plot_type in ("radarAirborne", "radarRhi"):
             self.YSIZE = 5
         else:
             self.YSIZE = 8
@@ -609,12 +609,13 @@ class Display(Component):
         '''Draw/Redraw the plot.'''
         self._check_default_field()
 
-        if self.Vfield.value not in self.Vradar.value.fields.keys():
-            return
-
         # Create the plot with PyArt RadarDisplay
         self.ax.cla()  # Clear the plot axes
         self.cax.cla()  # Clear the colorbar axes
+
+        if self.Vfield.value not in self.Vradar.value.fields.keys():
+            self.canvas.draw()
+            return
 
         # Reset to default title if user entered nothing w/ Title button
         if self.title == '':
@@ -624,7 +625,8 @@ class Display(Component):
 
         limits = self.Vlims.value
         cmap = self.Vcmap.value
-        if self.scan_type == "airborne":
+
+        if self.plot_type == "radarAirborne":
             self.display = pyart.graph.RadarDisplay_Airborne(self.Vradar.value)
 
             self.plot = self.display.plot_sweep_grid(
@@ -636,7 +638,7 @@ class Display(Component):
             #    ylim=(limits['ymin'], limits['ymax']), ax=self.ax)
             self.display.plot_grid_lines()
 
-        elif self.scan_type == "ppi":
+        elif self.plot_type == "radarPpi":
             self.display = pyart.graph.RadarDisplay(self.Vradar.value)
             # Create Plot
             self.plot = self.display.plot_ppi(
@@ -654,7 +656,7 @@ class Display(Component):
             # Add radar location
             self.display.plot_cross_hair(5., ax=self.ax)
 
-        elif self.scan_type == "rhi":
+        elif self.plot_type == "radarRhi":
             self.display = pyart.graph.RadarDisplay(self.Vradar.value)
             # Create Plot
             self.plot = self.display.plot_rhi(
@@ -739,36 +741,37 @@ class Display(Component):
         ''' Set limits to pre-defined default.'''
         from .limits import _default_limits
         limits, cmap = _default_limits(
-            self.Vfield.value, self.scan_type)
+            self.Vfield.value, self.plot_type)
         self.Vlims.change(limits, strong)
 
     def _set_default_cmap(self, strong=True):
         ''' Set colormap to pre-defined default.'''
         from .limits import _default_limits
         limits, cmap = _default_limits(
-            self.Vfield.value, self.scan_type)
+            self.Vfield.value, self.plot_type)
         self.Vcmap.change(cmap, strong)
 
     def _check_file_type(self):
         '''Check file to see if the file is airborne or rhi.'''
         radar = self.Vradar.value
-        old_scan_type = self.scan_type
+        old_plot_type = self.plot_type
         if radar.scan_type != 'rhi':
-            self.scan_type = "ppi"
+            self.plot_type = "radarPpi"
         else:
             if 'platform_type' in radar.metadata:
                 if (radar.metadata['platform_type'] == 'aircraft_tail' or
                         radar.metadata['platform_type'] == 'aircraft'):
-                    self.scan_type = "airborne"
+                    self.plot_type = "radarAirborne"
                 else:
-                    self.scan_type = "rhi"
+                    self.plot_type = "radarRhi"
             else:
-                self.scan_type = "rhi"
+                self.plot_type = "radarRhi"
 
-        if self.scan_type != old_scan_type:
+        if self.plot_type != old_plot_type:
             print "Changed Scan types, reinitializing"
             self._check_default_field()
             self._set_default_limits()
+            self._update_fig_ax()
 
     ########################
     # Image save methods #
@@ -806,6 +809,9 @@ class Display(Component):
         ''' get current field '''
         return self.Vfield.value
 
+    def getUnits(self):
+        ''' get current units '''
+        return self.units
 
 class _DisplayStart(QtGui.QDialog):
     '''

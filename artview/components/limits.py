@@ -8,7 +8,7 @@ Routines used for modifying limits via Display window.
 from PyQt4 import QtGui, QtCore
 import pyart
 
-def _default_limits(field, scan_type):
+def _default_limits(field, plot_type):
     '''
     Initialize limits to default program values.
 
@@ -18,8 +18,8 @@ def _default_limits(field, scan_type):
         Field name to use for initialization (e.g. 'reflectivity').
 
     [Optional]
-    scan_type - "ppi", "rhi", "airborne" or None
-        Scan_type of the plot
+    plot_type - "radarPpi", "radarRhi", "radarAirborne" or None
+        plto_type of the plot
 
     Notes::
     -----
@@ -55,10 +55,10 @@ def _default_limits(field, scan_type):
     # Set size of plot
     XRNG = PPI_XRNG
     YRNG = PPI_YRNG
-    if scan_type == "airborne":
+    if plot_type == "radarAirborne":
         XRNG = AIR_XRNG
         YRNG = AIR_YRNG
-    if scan_type == "rhi":
+    if plot_type == "radarRhi":
         XRNG = RHI_XRNG
         YRNG = RHI_YRNG
 
