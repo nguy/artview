@@ -3,9 +3,9 @@ map_to_grid.py
 
 Driver function that creates ARTView display.
 """
+import os
 
-
-def run(DirIn='./', filename=None, field=None):
+def run(DirIn=os.getcwd(), filename=None, field=None):
     """
     artview execution to pyart mapping
 
