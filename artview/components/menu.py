@@ -6,7 +6,7 @@ Class instance used to create menu for ARTView app.
 import numpy as np
 import pyart
 
-import os
+import os, sys
 from PyQt4 import QtGui, QtCore
 
 from ..core import Variable, Component, common
@@ -100,15 +100,22 @@ class Menu(Component):
         '''Launches a GUI interface.'''
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
 
-        # Create layout
-        self.central_widget = QtGui.QWidget()
-        self.setCentralWidget(self.central_widget)
-        self.centralLayout = QtGui.QVBoxLayout(self.central_widget)
-        self.centralLayout.setSpacing(8)
-        self.frames = {}
-
         # Create the menus
         self.CreateMenu()
+
+        # Create layout
+        if sys.version_info<(2,7,0):
+            self.central_widget = QtGui.QWidget()
+            self.setCentralWidget(self.central_widget)
+            self.centralLayout = QtGui.QVBoxLayout(self.central_widget)
+            self.centralLayout.setSpacing(8)
+            self.frames = {}
+            self.addLayoutMenu()
+        else:
+            self.mdiArea = QtGui.QMdiArea()
+            self.setCentralWidget(self.mdiArea)
+            self.mdiArea.setViewMode(1)
+            self.mdiArea.setTabsClosable(True)
 
     def showFileDialog(self):
         '''Open a dialog box to choose file.'''
@@ -127,13 +134,16 @@ class Menu(Component):
         Add a widget to central layout.
         This function is to be called both internal and external
         '''
-        frame = QtGui.QFrame()
-        frame.setFrameShape(QtGui.QFrame.Box)
-        layout = QtGui.QVBoxLayout(frame)
-        layout.addWidget(widget)
-        self.frames[widget.__repr__()] = frame
-        self.centralLayout.addWidget(frame)
-        self.addLayoutMenuItem(widget)
+        if sys.version_info<(2,7,0):
+            frame = QtGui.QFrame()
+            frame.setFrameShape(QtGui.QFrame.Box)
+            layout = QtGui.QVBoxLayout(frame)
+            layout.addWidget(widget)
+            self.frames[widget.__repr__()] = widget
+            self.centralLayout.addWidget(widget)
+            self.addLayoutMenuItem(widget)
+        else:
+            self.mdiArea.addSubWindow(widget)
 
     def removeLayoutWidget(self, widget):
         '''Remove widget from central layout.'''
@@ -163,7 +173,6 @@ class Menu(Component):
         self.addFileMenu()
         self.addAboutMenu()
         self.addFileAdvanceMenu()
-        self.addLayoutMenu()
         self.addComponentMenu()
 
     def addFileMenu(self):

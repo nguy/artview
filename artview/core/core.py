@@ -9,6 +9,7 @@ Class instance to create Variables and establish change signals.
 
 # Load the needed packages
 from PyQt4 import QtGui, QtCore
+import sys
 
 # keet track of all components, this is not fundamental, but may be usefull
 # for some control utilities
@@ -166,7 +167,10 @@ class Component(QtGui.QMainWindow):
             Parent instance to associate to Component. If None, then Qt owns,
             otherwise associated with parent PyQt instance.
         '''
-        super(Component, self).__init__(parent=parent, flags=flags)
+        if sys.version_info<(2,7,0):
+            super(Component, self).__init__()
+        else:
+            super(Component, self).__init__(parent=parent, flags=flags)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose, True)
         self.name = name
         self.parent = parent

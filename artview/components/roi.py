@@ -11,7 +11,7 @@ from matplotlib.path import Path
 from matplotlib.lines import Line2D
 import csv
 
-from ..core import Variable, Component, common, VariableChoose
+from ..core import Variable, Component, common, VariableChoose, componentsList
 
 
 class ROI(Component):
@@ -192,16 +192,30 @@ http://stackoverflow.com/questions/12608835/writing-a-qtablewidget-to-a-csv-or-x
         self.buttonOpenTable = QtGui.QPushButton('Open Tabular Data', self)
         self.buttonSaveTable = QtGui.QPushButton('Save Tabular Data', self)
         self.buttonResetROI = QtGui.QPushButton('Reset ROI', self)
+        self.buttonHelp = QtGui.QPushButton('Help', self)
         self.buttonViewTable.clicked.connect(self.viewTable)
         self.buttonOpenTable.clicked.connect(self.openTable)
         self.buttonSaveTable.clicked.connect(self.saveTable)
         self.buttonResetROI.clicked.connect(self.resetROI)
+        self.buttonHelp.clicked.connect(self.displayHelp)
 
         # Create functionality buttons
+
         self.rBox_layout.addWidget(self.buttonViewTable)
         self.rBox_layout.addWidget(self.buttonOpenTable)
         self.rBox_layout.addWidget(self.buttonSaveTable)
         self.rBox_layout.addWidget(self.buttonResetROI)
+        self.rBox_layout.addWidget(self.buttonHelp)
+
+    def displayHelp(self):
+        # XXX I invite anyone to improve this help information
+        text = "Draw a Path in the Display Window using the Mouse\n\n"
+        text += "Functions:\n"
+        text += "    Primary Mouse Button - add vertex\n"
+        text += "    Hold - freely draw path\n"
+        text += "    Secundary Button - close path\n"
+
+        common.ShowLongText(text)
 
     def viewTable(self):
         '''View a Table of ROI points'''
@@ -315,10 +329,11 @@ class _RoiStart(QtGui.QDialog):
 
     def setupUi(self):
 
-        self.displayButton = QtGui.QPushButton("Find Component")
-        self.displayButton.clicked.connect(self.chooseDisplay)
-        self.layout.addWidget(QtGui.QLabel("display"), 0, 0)
-        self.layout.addWidget(self.displayButton, 0, 1, 1, 3)
+        self.displayCombo = QtGui.QComboBox()
+#        self.displayCombo.clicked.connect(self.chooseDisplay)
+        self.layout.addWidget(QtGui.QLabel("Select display"), 0, 0)
+        self.layout.addWidget(self.displayCombo, 0, 1, 1, 3)
+        self.fillCombo()
 
         self.name = QtGui.QLineEdit("Roi")
         self.layout.addWidget(QtGui.QLabel("name"), 1, 0)
@@ -332,16 +347,34 @@ class _RoiStart(QtGui.QDialog):
         self.closeButton.clicked.connect(self.closeDialog)
         self.layout.addWidget(self.closeButton, 3, 0, 1, 5)
 
-    def closeDialog(self):
-        if self.result["display"] is not None:
-            self.done(QtGui.QDialog.Accepted)
+    def fillCombo(self):
+        self.displays = []
+
+        for component in componentsList:
+            if self._isDisplay(component):
+                self.displayCombo.addItem(component.name)
+                self.displays.append(component)
+
+    def _isDisplay(self, comp):
+        ''' Test if a component is a valid display to be used. '''
+        if (hasattr(comp, 'getPlotAxis') and
+            hasattr(comp, 'getStatusBar') and
+            hasattr(comp, 'getField') and
+            hasattr(comp, 'getPathInteriorValues')
+            ):
+            return True
         else:
-            warn = common.ShowWarning("Must Select Display")
+            return False
+
+    def closeDialog(self):
+        self.done(QtGui.QDialog.Accepted)
 
     def startDisplay(self):
         self.exec_()
 
         self.result['name'] = str(self.name.text())
-        print self.result['name']
+        self.result["display"] = self.displays[
+                                         self.displayCombo.currentIndex()]
+        print (self.result['name'])
 
         return self.result, self.independent.isChecked()

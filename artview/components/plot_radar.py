@@ -778,9 +778,10 @@ class RadarDisplay(Component):
     ########################
     def _quick_savefile(self, PTYPE=IMAGE_EXT):
         '''Save the current display via PyArt interface.'''
-        PNAME = self.display.generate_filename(
+        path = self.display.generate_filename(
             self.Vfield.value, self.Vtilt.value, ext=IMAGE_EXT)
-        print "Creating " + PNAME
+        self.canvas.print_figure(path, dpi=DPI)
+        self.statusbar.showMessage('Saved to %s' % path)
 
     def _savefile(self, PTYPE=IMAGE_EXT):
         '''Save the current display using PyQt dialog interface.'''
@@ -788,7 +789,7 @@ class RadarDisplay(Component):
             self.Vfield.value, self.Vtilt.value, ext=IMAGE_EXT)
         file_choices = "PNG (*.png)|*.png"
         path = unicode(QtGui.QFileDialog.getSaveFileName(
-            self, 'Save file', '', file_choices))
+            self, 'Save file', PBNAME, file_choices))
         if path:
             self.canvas.print_figure(path, dpi=DPI)
             self.statusbar.showMessage('Saved to %s' % path)

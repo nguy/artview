@@ -71,9 +71,8 @@ def run(DirIn=os.getcwd(), filename=None, field=None):
     height = desktop_rect.height()
     width = desktop_rect.width()
 
-    menu_width = max(
-        MainMenu.menubar.sizeHint().width(), MainMenu.sizeHint().width())
-    menu_height = MainMenu.sizeHint().height()
+    menu_width = 300
+    menu_height = 180
 
     MainMenu.setGeometry(0, 0, menu_width, menu_height)
 

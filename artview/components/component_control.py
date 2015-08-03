@@ -109,8 +109,8 @@ class ComponentsControl(core.Component):
         # Radio Buttons
         self.radioLayout = QtGui.QGridLayout()
         self.layout.addLayout(self.radioLayout, 2, 0)
-        self.radioLayout.addWidget(QtGui.QLabel("Conect"), 0, 1)
-        self.radioLayout.addWidget(QtGui.QLabel("Disconect"), 0, 2)
+        self.radioLayout.addWidget(QtGui.QLabel("Link"), 0, 1)
+        self.radioLayout.addWidget(QtGui.QLabel("Unlink"), 0, 2)
 
         self.radioBoxes = []
         for idx, var in enumerate(self.variables):
@@ -121,26 +121,26 @@ class ComponentsControl(core.Component):
         radioBox = QtGui.QButtonGroup()
         self.radioBoxes.append(radioBox)  # avoid garbage collector
 
-        conect = QtGui.QRadioButton()
-        disconect = QtGui.QRadioButton()
-        QtCore.QObject.connect(conect, QtCore.SIGNAL("clicked()"),
-                               partial(self.conectVar, var))
-        QtCore.QObject.connect(disconect, QtCore.SIGNAL("clicked()"),
-                               partial(self.disconectVar, var))
-        radioBox.addButton(conect)
-        radioBox.addButton(disconect)
+        link = QtGui.QRadioButton()
+        unlink = QtGui.QRadioButton()
+        QtCore.QObject.connect(link, QtCore.SIGNAL("clicked()"),
+                               partial(self.connectVar, var))
+        QtCore.QObject.connect(unlink, QtCore.SIGNAL("clicked()"),
+                               partial(self.disconnectVar, var))
+        radioBox.addButton(link)
+        radioBox.addButton(unlink)
 
         if getattr(self.comp0, var) is getattr(self.comp1, var):
-            conect.setChecked(True)
+            link.setChecked(True)
         else:
-            disconect.setChecked(True)
+            unlink.setChecked(True)
 
         if self.comp0 is self.comp1:
-            disconect.setDisabled(True)
+            unlink.setDisabled(True)
 
-        self.radioLayout.addWidget(QtGui.QLabel(var), idx+1, 0)
-        self.radioLayout.addWidget(conect, idx+1, 1)
-        self.radioLayout.addWidget(disconect, idx+1, 2)
+        self.radioLayout.addWidget(QtGui.QLabel(var[1::]), idx+1, 0)
+        self.radioLayout.addWidget(link, idx+1, 1)
+        self.radioLayout.addWidget(unlink, idx+1, 2)
 
     def _comp0Action(self, idx):
         '''Update Component 0'''
@@ -158,7 +158,7 @@ class ComponentsControl(core.Component):
         self.layout.removeItem(self.radioLayout)
         self._setRadioButtons()
 
-    def conectVar(self, var):
+    def connectVar(self, var):
         '''Assign variable in component 0 to component 1'''
         # Disconect old Variable
         self.comp1.disconnectSharedVariable(var)
@@ -171,7 +171,7 @@ class ComponentsControl(core.Component):
         print "connect var %s of %s from %s" % (
             var, self.comp1.name, self.comp0.name)
 
-    def disconectVar(self, var):
+    def disconnectVar(self, var):
         '''Turn variable in component 1 independente of component 0'''
         # Disconect old Variable
         self.comp1.disconnectSharedVariable(var)

@@ -9,10 +9,13 @@ sys.path.insert(0, path)
 
 import artview
 
+def main(argv):
+    script, DirIn, filename, field = artview.parser.parse(argv)
 
-script, DirIn, filename, field = artview.parser.parse(sys.argv)
+    if script:
+        artview.scripts.scripts[script](DirIn, filename, field)
+    else:
+        artview.run(DirIn, filename, field)
 
-if script:
-    artview.scripts.scripts[script](DirIn, filename, field)
-else:
-    artview.run(DirIn, filename, field)
+if __name__ == "__main__":
+    main(sys.argv)

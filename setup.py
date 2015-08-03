@@ -54,7 +54,7 @@ MINOR = 3
 MICRO = 0
 ISRELEASED = False
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
-SCRIPTS = glob.glob('scripts/*')
+SCRIPTS = glob.glob('scripts/*') + ['scripts/artview']
 
 
 # Return the git revision as a string
