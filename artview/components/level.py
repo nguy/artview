@@ -27,8 +27,8 @@ class LevelButtonWindow(Component):
     Vcmap = None #: see :ref:`shared_variable`
 
 
-    def __init__(self, Vlevel, plot_type, Vcontainer=None, name="LevelButtons",
-                 parent=None):
+    def __init__(self, Vlevel, plot_type, Vcontainer=None, controlType="slider",
+                 name="LevelButtons", parent=None):
         '''Initialize the class to create the Level Selection interface.
 
         Parameters
@@ -40,11 +40,12 @@ class LevelButtonWindow(Component):
             or "gridX". If starting with "radar" Vlevel will be passed to Vtilt,
             otherwise to VlevelZ, VlevelY or VlevelX respectively. This can't
             be changed afterwards.
-        Vcontainer: :py:class:`~artview.core.core.Variable` instance
+        Vcontainer : :py:class:`~artview.core.core.Variable` instance
             Radar/Grid signal variable. None will create empty variable.
-            Will be passed to Vradar or Vgrid according with plot_type 
-            For correct behavior one and just one of those should be provided
+            Will be passed to Vradar or Vgrid according with plot_type.
         [Optional]
+        controlType : "radio" or "slider"
+            Type of control used, radio button or slider bar.
         name : string
             Level Radiobutton window name.
         parent : PyQt instance
@@ -65,6 +66,7 @@ class LevelButtonWindow(Component):
             Vcontainer = Variable(None)
 
         self.plot_type = plot_type
+        self.controlType = controlType
         self.sharedVariables = {}
 
         self.CreateLevelWidget()
@@ -105,6 +107,17 @@ class LevelButtonWindow(Component):
         '''Captures a selection and update level variable.'''
         self.Vlevel.change(nlevel)
 
+    def LevelSelectCmdSlider(self):
+        '''Captures a selection and update level variable.'''
+        self.LevelSelectCmd(self.slider.value())
+
+    def showValue(self, value):
+        if self.plot_type.startswith("radar"):
+            txt = "%.2f deg" % self.elevs[value]
+        else:
+            txt = "%.2f km" % self.elevs[value] / 1000.
+        QtGui.QToolTip.showText(QtGui.QCursor.pos(), txt)
+
     def CreateLevelWidget(self):
         '''Create a widget to store radio buttons to control level adjust.'''
         self.radioBox = QtGui.QGroupBox("Level Selection", parent=self)
@@ -119,17 +132,28 @@ class LevelButtonWindow(Component):
 
         # Pull out the level indices and elevations for display
         elevs = self.Vradar.value.fixed_angle['data'][:]
+        self.elevs = elevs
 
-        # Loop thru & create each level button & connect value when selected
-        for nlevel in self.Vradar.value.sweep_number['data'][:]:
-            btntxt = "%2.1f deg (Tilt %d)" % (elevs[nlevel], nlevel+1)
-            button = QtGui.QRadioButton(btntxt, self.radioBox)
-            self.levelbutton.append(button)
-            QtCore.QObject.connect(
-                self.levelbutton[nlevel], QtCore.SIGNAL("clicked()"),
-                partial(self.LevelSelectCmd, nlevel))
+        if self.controlType == "radio":
+            # Loop thru & create each level button & connect value when selected
+            for nlevel in self.Vradar.value.sweep_number['data'][:]:
+                btntxt = "%2.1f deg (Tilt %d)" % (elevs[nlevel], nlevel+1)
+                button = QtGui.QRadioButton(btntxt, self.radioBox)
+                self.levelbutton.append(button)
+                QtCore.QObject.connect(
+                    self.levelbutton[nlevel], QtCore.SIGNAL("clicked()"),
+                    partial(self.LevelSelectCmd, nlevel))
 
-            self.rBox_layout.addWidget(self.levelbutton[nlevel])
+                self.rBox_layout.addWidget(self.levelbutton[nlevel])
+        elif self.controlType == "slider":
+            self.slider = QtGui.QSlider(QtCore.Qt.Horizontal, self)
+            self.slider.sliderReleased.connect(self.LevelSelectCmdSlider)
+            self.slider.valueChanged.connect(self.showValue)
+            self.slider.setRange(0, len(elevs) - 1)
+            self.slider.setTickPosition(self.slider.TicksRight)
+            self.rBox_layout.addWidget(self.slider)
+            self.label = QtGui.QLabel("")
+            self.rBox_layout.addWidget(self.label)
 
         # setChecked the current level
         self.NewLevel(self.Vlevel, self.Vlevel.value, True)
@@ -146,17 +170,29 @@ class LevelButtonWindow(Component):
             elevs = self.Vgrid.value.axes["y_disp"]["data"][:]
         elif self.plot_type == "gridX":
             elevs = self.Vgrid.value.axes["x_disp"]["data"][:]
+        self.elevs = elevs
 
-        # Loop thru & create each level button & connect value when selected
-        for nlevel in range(len(elevs)):
-            btntxt = "%2.1f m (level %d)" % (elevs[nlevel], nlevel+1)
-            button = QtGui.QRadioButton(btntxt, self.radioBox)
-            self.levelbutton.append(button)
-            QtCore.QObject.connect(
-                self.levelbutton[nlevel], QtCore.SIGNAL("clicked()"),
-                partial(self.LevelSelectCmd, nlevel))
+        if self.controlType == "radio":
+            # Loop thru & create each level button & connect value when selected
+            for nlevel in range(len(elevs)):
+                btntxt = "%2.1f m (level %d)" % (elevs[nlevel], nlevel+1)
+                button = QtGui.QRadioButton(btntxt, self.radioBox)
+                self.levelbutton.append(button)
+                QtCore.QObject.connect(
+                    self.levelbutton[nlevel], QtCore.SIGNAL("clicked()"),
+                    partial(self.LevelSelectCmd, nlevel))
+                self.rBox_layout.addWidget(self.levelbutton[nlevel])
 
-            self.rBox_layout.addWidget(self.levelbutton[nlevel])
+        elif self.controlType == "slider":
+            self.slider = QtGui.QSlider(QtCore.Qt.Horizontal, self)
+            self.slider.sliderReleased.connect(self.LevelSelectCmdSlider)
+            self.slider.valueChanged.connect(self.showValue)
+            self.slider.setRange(0, len(elevs) - 1)
+            self.slider.setTickPosition(self.slider.TicksRight)
+            self.rBox_layout.addWidget(self.slider)
+            self.label = QtGui.QLabel("")
+            self.rBox_layout.addWidget(self.label)
+
 
         # setChecked the current level
         self.NewLevel(self.Vlevel, self.Vlevel.value, True)
@@ -169,9 +205,20 @@ class LevelButtonWindow(Component):
 
         * Update radio check
         '''
-        level = self.Vlevel.value
-        if level >= 0 and level < len(self.levelbutton):
-            self.levelbutton[level].setChecked(True)
+        if self.controlType == "radio":
+            level = self.Vlevel.value
+            if level >= 0 and level < len(self.levelbutton):
+                self.levelbutton[level].setChecked(True)
+        elif self.controlType == "slider":
+            level = self.Vlevel.value
+            if level >= 0 and level < len(self.elevs):
+                self.slider.setValue(level)
+                if self.plot_type.startswith("radar"):
+                    txt = "%.2f deg (Tilt %i)" % (self.elevs[level], level+1)
+                else:
+                    txt = "%.2f km (Level %i)" % (self.elevs[level] / 1000.,
+                                                  level+1)
+                self.label.setText(txt)
 
     def NewRadar(self, variable, value, strong):
         '''Slot for 'ValueChanged' signal of

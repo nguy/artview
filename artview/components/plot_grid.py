@@ -577,6 +577,12 @@ class GridDisplay(Component):
         '''
         from .tools import nearest_point_grid
         grid = self.Vgrid.value
+        print(xdata, ydata)
+        print(self.display.basemap(xdata, ydata,inverse=True))
+                # map center
+        lat0 = self.Vgrid.value.axes['lat']['data'][0]
+        lon0 = self.Vgrid.value.axes['lon']['data'][0]
+        print(lat0,lon0)
         if grid is None:
             return (np.array([]),)*7
 
