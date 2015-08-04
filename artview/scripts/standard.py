@@ -12,11 +12,11 @@ def run(DirIn=os.getcwd(), filename=None, field=None):
     It has :py:class:`~artview.components.Menu`
     with :py:class:`~artview.components.ComponentsControl`,
 
-    2 :py:class:`~artview.components.Display`,
+    2 :py:class:`~artview.components.RadarDisplay`,
 
     graphical start for:
         * All :py:class:`~artview.plugins`
-        * :py:class:`~artview.components.Display`
+        * :py:class:`~artview.components.RadarDisplay`
         * :py:class:`~artview.components.ComponentsControl`
     """
     from PyQt4 import QtGui, QtCore

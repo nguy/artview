@@ -65,8 +65,7 @@
 <dt id="artview.components.ROI">
 <em class="property">class </em><tt class="descclassname">artview.components.</tt><tt class="descname">ROI</tt><big>(</big><em>display</em>, <em>name='ROI'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/roi.py#L17"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.ROI" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><tt class="xref py py-class docutils literal"><span class="pre">artview.core.core.Component</span></tt></a></p>
-<blockquote>
-<div><p>Select a Region of Interest.</p>
+<p>Select a Region of Interest.</p>
 <p>This tool allows the user to draw a path in the display window using
 the mouse. The primary mouse button (often the left button) is used 
 to select a point. The secondary mouse button (often the right button)
@@ -78,16 +77,19 @@ the primary mouse button.</p>
 <p>One caveat found is that other tools may interfere with the curved 
 shape drawing. If this is the case select the reset file defaults in 
 toolbox menu.</p>
-<p>The code modified from</p>
-</div></blockquote>
+<p>The code modified from:</p>
 <p><a class="reference external" href="https://www.mail-archive.com/matplotlib-users&#64;lists.sourceforge.net/msg00661.html">https://www.mail-archive.com/matplotlib-users&#64;lists.sourceforge.net/msg00661.html</a></p>
 <dl class="method">
 <dt id="artview.components.ROI.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>display</em>, <em>name='ROI'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/roi.py#L46"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.ROI.__init__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__init__</tt><big>(</big><em>display</em>, <em>name='ROI'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/roi.py#L47"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.ROI.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize the class to select an ROI on display.</p>
-<dl class="docutils">
-<dt>display - ARTView Display</dt>
-<dd><dl class="first last docutils">
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>display - ARTView Display</strong> :</p>
+<blockquote>
+<div><dl class="docutils">
 <dt>Display instance to associate ROI. Must have following elements:</dt>
 <dd><ul class="first last simple">
 <li>getPlotAxis() - Matplotlib axis instance</li>
@@ -98,18 +100,22 @@ toolbox menu.</p>
 </ul>
 </dd>
 </dl>
-</dd>
-</dl>
-<p>[Optional]
-name - string</p>
+</div></blockquote>
+<p><strong>[Optional]</strong> :</p>
+<p><strong>name - string</strong> :</p>
 <blockquote>
-<div>Window name.</div></blockquote>
-<dl class="docutils">
-<dt>parent - PyQt instance</dt>
-<dd>Parent instance to associate to ROI instance.
+<div><p>Window name.</p>
+</div></blockquote>
+<p><strong>parent - PyQt instance</strong> :</p>
+<blockquote class="last">
+<div><p>Parent instance to associate to ROI instance.
 If None, then Qt owns, otherwise associated with parent PyQt
-instance.</dd>
-</dl>
+instance.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <p class="rubric">Methods</p>

@@ -32,8 +32,9 @@ class ROI(Component):
     shape drawing. If this is the case select the reset file defaults in 
     toolbox menu.
 
-    The code modified from
-https://www.mail-archive.com/matplotlib-users@lists.sourceforge.net/msg00661.html
+    The code modified from:
+    
+    https://www.mail-archive.com/matplotlib-users@lists.sourceforge.net/msg00661.html
     '''
 
     VroiData = None #: see :ref:`shared_variable`
@@ -47,7 +48,7 @@ https://www.mail-archive.com/matplotlib-users@lists.sourceforge.net/msg00661.htm
         '''
         Initialize the class to select an ROI on display.
 
-        Parameters::
+        Parameters
         ----------
         display - ARTView Display
             Display instance to associate ROI. Must have following elements:
@@ -55,7 +56,7 @@ https://www.mail-archive.com/matplotlib-users@lists.sourceforge.net/msg00661.htm
                 * getStatusBar() - QtGui.QStatusBar
                 * getField() - string
                 * getPathInteriorValues(Path) - see
-                  :py:func:`~artview.components.Display.getPathInteriorValues`
+                  :py:func:`~artview.components.RadarDisplay.getPathInteriorValues`
 
         [Optional]
         name - string
@@ -65,7 +66,7 @@ https://www.mail-archive.com/matplotlib-users@lists.sourceforge.net/msg00661.htm
             If None, then Qt owns, otherwise associated with parent PyQt
             instance.
 
-        Notes::
+        Notes
         -----
         '''
         super(ROI, self).__init__(name=name, parent=parent)
@@ -195,7 +196,7 @@ https://www.mail-archive.com/matplotlib-users@lists.sourceforge.net/msg00661.htm
     def CreateROIWidget(self):
         '''Create a widget to access ROI tools.
         Open and Save Table methods borrowed from:
-http://stackoverflow.com/questions/12608835/writing-a-qtablewidget-to-a-csv-or-xls
+        http://stackoverflow.com/questions/12608835/writing-a-qtablewidget-to-a-csv-or-xls
         '''
         self.ROIbox = QtGui.QGroupBox("Region of Interest Selection",
                                       parent=self)
