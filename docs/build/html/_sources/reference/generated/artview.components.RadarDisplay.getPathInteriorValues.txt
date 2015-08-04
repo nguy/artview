@@ -1,0 +1,6 @@
+artview.components.RadarDisplay.getPathInteriorValues
+=====================================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: RadarDisplay.getPathInteriorValues

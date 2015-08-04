@@ -36,8 +36,11 @@ With ARTview you can:
     
 ## Links
 [Code repository](https://github.com/nguy/artview)
+
 [Documentation](https://rawgit.com/nguy/artview/master/docs/build/html/index.html)
+
 [Issues](https://github.com/nguy/artview/issues)
+
 [Py-ART](https://github.com/ARM-DOE/pyart)
   
 ## News

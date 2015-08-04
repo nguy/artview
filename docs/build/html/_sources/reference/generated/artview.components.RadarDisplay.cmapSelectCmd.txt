@@ -1,0 +1,6 @@
+artview.components.RadarDisplay.cmapSelectCmd
+=============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: RadarDisplay.cmapSelectCmd

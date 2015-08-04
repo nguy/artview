@@ -1,0 +1,56 @@
+artview.components.RadarDisplay
+===============================
+
+.. currentmodule:: artview.components
+
+.. autoclass:: RadarDisplay
+   :show-inheritance:
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+         RadarDisplay.FieldSelectCmd
+         RadarDisplay.LaunchGUI
+         RadarDisplay.NewCmap
+         RadarDisplay.NewField
+         RadarDisplay.NewLims
+         RadarDisplay.NewRadar
+         RadarDisplay.NewTilt
+         RadarDisplay.RngRingSelectCmd
+         RadarDisplay.TiltSelectCmd
+         RadarDisplay.addButtons
+         RadarDisplay.cmapSelectCmd
+         RadarDisplay.getField
+         RadarDisplay.getPathInteriorValues
+         RadarDisplay.getPlotAxis
+         RadarDisplay.getStatusBar
+         RadarDisplay.getUnits
+         RadarDisplay.guiStart
+         RadarDisplay.keyPressEvent
+         RadarDisplay.setUILayout
+         RadarDisplay.toolCustomCmd
+         RadarDisplay.toolDefaultCmd
+         RadarDisplay.toolROICmd
+         RadarDisplay.toolValueClickCmd
+         RadarDisplay.toolZoomPanCmd
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+   
+   
+   .. autoattribute:: Vcmap
+   .. autoattribute:: Vfield
+   .. autoattribute:: Vlims
+   .. autoattribute:: Vradar
+   .. autoattribute:: Vtilt
+   
+   
+

@@ -1,0 +1,6 @@
+artview.components.LevelButtonWindow.SetLevelRadioButtonsGrid
+=============================================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: LevelButtonWindow.SetLevelRadioButtonsGrid

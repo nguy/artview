@@ -1,0 +1,6 @@
+artview.components.RadarDisplay.keyPressEvent
+=============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: RadarDisplay.keyPressEvent

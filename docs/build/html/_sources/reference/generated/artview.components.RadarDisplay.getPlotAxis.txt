@@ -1,0 +1,6 @@
+artview.components.RadarDisplay.getPlotAxis
+===========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: RadarDisplay.getPlotAxis

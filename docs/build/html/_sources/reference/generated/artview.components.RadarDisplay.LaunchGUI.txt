@@ -1,0 +1,6 @@
+artview.components.RadarDisplay.LaunchGUI
+=========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: RadarDisplay.LaunchGUI

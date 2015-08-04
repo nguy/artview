@@ -12,9 +12,9 @@ ARTview functions.
 .. autosummary::
     :toctree: generated/
 
-    Display
+    RadarDisplay
     Menu
-    TiltButtonWindow
+    LevelButtonWindow
     FieldButtonWindow
     ComponentsControl
     ROI
