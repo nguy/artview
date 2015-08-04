@@ -1,0 +1,6 @@
+artview.components.ComponentsControl.connectVar
+===============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: ComponentsControl.connectVar

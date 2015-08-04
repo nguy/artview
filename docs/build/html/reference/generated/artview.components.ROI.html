@@ -1,0 +1,234 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>artview.components.ROI &mdash; ARTview 0.2.2 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/scipy.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.2.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="ARTview 0.2.2 documentation" href="../../index.html" />
+    <link rel="up" title="Main Components (artview.components)" href="../components.html" />
+    <link rel="next" title="artview.components.ROI.CreateROIWidget" href="artview.components.ROI.CreateROIWidget.html" />
+    <link rel="prev" title="artview.components.ComponentsControl.setupUi" href="artview.components.ComponentsControl.setupUi.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="artview.components.ROI.CreateROIWidget.html" title="artview.components.ROI.CreateROIWidget"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="artview.components.ComponentsControl.setupUi.html" title="artview.components.ComponentsControl.setupUi"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ARTview 0.2.2 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Reference Manual</a> &raquo;</li>
+          <li><a href="../components.html" accesskey="U">Main Components (<tt class="docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="artview-components-roi">
+<h1>artview.components.ROI<a class="headerlink" href="#artview-components-roi" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="artview.components.ROI">
+<em class="property">class </em><tt class="descclassname">artview.components.</tt><tt class="descname">ROI</tt><big>(</big><em>display</em>, <em>name='ROI'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/roi.py#L17"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.ROI" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><tt class="xref py py-class docutils literal"><span class="pre">artview.core.core.Component</span></tt></a></p>
+<blockquote>
+<div><p>Select a Region of Interest.</p>
+<p>This tool allows the user to draw a path in the display window using
+the mouse. The primary mouse button (often the left button) is used 
+to select a point. The secondary mouse button (often the right button)
+is used to close the path of interest.</p>
+<p>A straight-sided polygon may be selected by clicking and releasing
+the primary mouse button.
+A curved shape (free-hand drawing) may be drawn by holding down 
+the primary mouse button.</p>
+<p>One caveat found is that other tools may interfere with the curved 
+shape drawing. If this is the case select the reset file defaults in 
+toolbox menu.</p>
+<p>The code modified from</p>
+</div></blockquote>
+<p><a class="reference external" href="https://www.mail-archive.com/matplotlib-users&#64;lists.sourceforge.net/msg00661.html">https://www.mail-archive.com/matplotlib-users&#64;lists.sourceforge.net/msg00661.html</a></p>
+<dl class="method">
+<dt id="artview.components.ROI.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>display</em>, <em>name='ROI'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/roi.py#L46"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.ROI.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the class to select an ROI on display.</p>
+<dl class="docutils">
+<dt>display - ARTView Display</dt>
+<dd><dl class="first last docutils">
+<dt>Display instance to associate ROI. Must have following elements:</dt>
+<dd><ul class="first last simple">
+<li>getPlotAxis() - Matplotlib axis instance</li>
+<li>getStatusBar() - QtGui.QStatusBar</li>
+<li>getField() - string</li>
+<li>getPathInteriorValues(Path) - see
+<tt class="xref py py-func docutils literal"><span class="pre">getPathInteriorValues</span></tt></li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>[Optional]
+name - string</p>
+<blockquote>
+<div>Window name.</div></blockquote>
+<dl class="docutils">
+<dt>parent - PyQt instance</dt>
+<dd>Parent instance to associate to ROI instance.
+If None, then Qt owns, otherwise associated with parent PyQt
+instance.</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.ROI.CreateROIWidget.html#artview.components.ROI.CreateROIWidget" title="artview.components.ROI.CreateROIWidget"><tt class="xref py py-obj docutils literal"><span class="pre">ROI.CreateROIWidget</span></tt></a>()</td>
+<td>Create a widget to access ROI tools.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.ROI.button_press_callback.html#artview.components.ROI.button_press_callback" title="artview.components.ROI.button_press_callback"><tt class="xref py py-obj docutils literal"><span class="pre">ROI.button_press_callback</span></tt></a>(event)</td>
+<td>Grab the data when line is drawn.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.ROI.closeEvent.html#artview.components.ROI.closeEvent" title="artview.components.ROI.closeEvent"><tt class="xref py py-obj docutils literal"><span class="pre">ROI.closeEvent</span></tt></a>(QCloseEvent)</td>
+<td>Reimplementations to remove from components list.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.ROI.connect.html#artview.components.ROI.connect" title="artview.components.ROI.connect"><tt class="xref py py-obj docutils literal"><span class="pre">ROI.connect</span></tt></a>()</td>
+<td>Connect the ROI instance.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.ROI.disconnect.html#artview.components.ROI.disconnect" title="artview.components.ROI.disconnect"><tt class="xref py py-obj docutils literal"><span class="pre">ROI.disconnect</span></tt></a>()</td>
+<td>Disconnect the ROI instance.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.ROI.displayHelp.html#artview.components.ROI.displayHelp" title="artview.components.ROI.displayHelp"><tt class="xref py py-obj docutils literal"><span class="pre">ROI.displayHelp</span></tt></a>()</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.ROI.guiStart.html#artview.components.ROI.guiStart" title="artview.components.ROI.guiStart"><tt class="xref py py-obj docutils literal"><span class="pre">ROI.guiStart</span></tt></a>([parent])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.ROI.motion_notify_callback.html#artview.components.ROI.motion_notify_callback" title="artview.components.ROI.motion_notify_callback"><tt class="xref py py-obj docutils literal"><span class="pre">ROI.motion_notify_callback</span></tt></a>(event)</td>
+<td>Create the shape in plot area.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.ROI.openTable.html#artview.components.ROI.openTable" title="artview.components.ROI.openTable"><tt class="xref py py-obj docutils literal"><span class="pre">ROI.openTable</span></tt></a>()</td>
+<td>Open a saved table of ROI points from a CSV file.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.ROI.resetROI.html#artview.components.ROI.resetROI" title="artview.components.ROI.resetROI"><tt class="xref py py-obj docutils literal"><span class="pre">ROI.resetROI</span></tt></a>()</td>
+<td>Clear the ROI lines from plot and reset things.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.ROI.saveTable.html#artview.components.ROI.saveTable" title="artview.components.ROI.saveTable"><tt class="xref py py-obj docutils literal"><span class="pre">ROI.saveTable</span></tt></a>()</td>
+<td>Save a Table of ROI points to a CSV file.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.ROI.viewTable.html#artview.components.ROI.viewTable" title="artview.components.ROI.viewTable"><tt class="xref py py-obj docutils literal"><span class="pre">ROI.viewTable</span></tt></a>()</td>
+<td>View a Table of ROI points.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<dl class="attribute">
+<dt id="artview.components.ROI.VroiData">
+<tt class="descname">VroiData</tt><em class="property"> = None</em><a class="headerlink" href="#artview.components.ROI.VroiData" title="Permalink to this definition">¶</a></dt>
+<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="artview.components.ComponentsControl.setupUi.html"
+                        title="previous chapter">artview.components.ComponentsControl.setupUi</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="artview.components.ROI.CreateROIWidget.html"
+                        title="next chapter">artview.components.ROI.CreateROIWidget</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/reference/generated/artview.components.ROI.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="artview.components.ROI.CreateROIWidget.html" title="artview.components.ROI.CreateROIWidget"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="artview.components.ComponentsControl.setupUi.html" title="artview.components.ComponentsControl.setupUi"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ARTview 0.2.2 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Reference Manual</a> &raquo;</li>
+          <li><a href="../components.html" >Main Components (<tt class="docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Nick Guy.
+      Last updated on Aug 04, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,6 @@
+artview.components.ROI.button_press_callback
+============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: ROI.button_press_callback

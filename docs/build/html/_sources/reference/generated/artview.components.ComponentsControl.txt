@@ -14,8 +14,8 @@ artview.components.ComponentsControl
    .. autosummary::
       :toctree:
    
-         ComponentsControl.conectVar
-         ComponentsControl.disconectVar
+         ComponentsControl.connectVar
+         ComponentsControl.disconnectVar
          ComponentsControl.guiStart
          ComponentsControl.setupUi
    

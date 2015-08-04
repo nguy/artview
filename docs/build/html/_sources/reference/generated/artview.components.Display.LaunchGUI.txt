@@ -1,6 +1,0 @@
-artview.components.Display.LaunchGUI
-====================================
-
-.. currentmodule:: artview.components
-
-.. automethod:: Display.LaunchGUI

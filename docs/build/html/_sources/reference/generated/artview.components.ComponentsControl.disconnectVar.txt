@@ -1,0 +1,6 @@
+artview.components.ComponentsControl.disconnectVar
+==================================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: ComponentsControl.disconnectVar

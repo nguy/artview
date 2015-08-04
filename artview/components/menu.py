@@ -184,7 +184,7 @@ class Menu(Component):
 
         exitApp = QtGui.QAction('Close', self)
         exitApp.setShortcut('Ctrl+Q')
-        exitApp.setStatusTip('Exit ARTView')
+        exitApp.setStatusTip('Exit ARTview')
         exitApp.triggered.connect(self.close)
 
         self.filemenu.addAction(openFile)
@@ -194,8 +194,8 @@ class Menu(Component):
         '''Add Help menu to menubar.'''
         self.aboutmenu = self.menubar.addMenu('About')
 
-        self._aboutArtview = QtGui.QAction('ARTView', self)
-        self._aboutArtview.setStatusTip('About ARTView')
+        self._aboutArtview = QtGui.QAction('ARTview', self)
+        self._aboutArtview.setStatusTip('About ARTview')
         self._aboutArtview.triggered.connect(self._about)
 
         self.RadarShort = QtGui.QAction('Radar Short', self)
@@ -281,8 +281,15 @@ class Menu(Component):
 
     def _about(self):
         # Add a more extensive about eventually
-        txOut = "This is a simple radar file browser to allow \
-                 quicklooks using the DoE PyArt software."
+        txOut = """ARTview is a visualization package that leverages the
+DoE PyArt python software to view individual weather
+radar data files or to browse a directory of data.
+                 
+If you hover over butttons and menus with the mouse,
+more instructions and information are available.
+                 
+More complete documentation can be found at:
+https://rawgit.com/nguy/artview/master/docs/build/html/index.html"""
         QtGui.QMessageBox.about(self, "About ARTview", txOut)
 
     def _get_RadarLongInfo(self):
@@ -401,7 +408,7 @@ class Menu(Component):
             findex = 0
             return
         self.fileindex = findex
-        self.filename = self.dirIn + "/" + self.filelist[findex]
+        self.filename = os.path.join(self.dirIn, self.filelist[findex])
         self._openfile()
 
     ########################

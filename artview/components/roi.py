@@ -236,7 +236,9 @@ http://stackoverflow.com/questions/12608835/writing-a-qtablewidget-to-a-csv-or-x
         text += "<i>Functions</i>:<br>"
         text += " Primary Mouse Button (e.g. left button)- add vertex<br>"
         text += " Hold button to draw free-hand path<br>"
-        text += " Secondary Button (e.g. right button)- close path<br>"
+        text += " Secondary Button (e.g. right button)- close path<br><br>"
+        text += "A message 'Closed Region' appears in status bar when "
+        text += "boundary is properly closed."
 
         common.ShowLongText(text)
 

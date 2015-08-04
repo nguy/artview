@@ -1,0 +1,6 @@
+artview.components.ROI.connect
+==============================
+
+.. currentmodule:: artview.components
+
+.. automethod:: ROI.connect

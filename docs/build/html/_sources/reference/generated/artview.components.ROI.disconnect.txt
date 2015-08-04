@@ -1,0 +1,6 @@
+artview.components.ROI.disconnect
+=================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: ROI.disconnect

@@ -1,0 +1,6 @@
+artview.components.ROI.viewTable
+================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: ROI.viewTable

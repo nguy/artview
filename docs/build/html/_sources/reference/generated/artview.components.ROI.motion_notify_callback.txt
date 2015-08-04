@@ -1,0 +1,6 @@
+artview.components.ROI.motion_notify_callback
+=============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: ROI.motion_notify_callback

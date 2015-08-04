@@ -1,0 +1,6 @@
+artview.components.ROI.saveTable
+================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: ROI.saveTable

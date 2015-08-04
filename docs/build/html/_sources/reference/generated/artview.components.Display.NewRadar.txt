@@ -1,6 +1,0 @@
-artview.components.Display.NewRadar
-===================================
-
-.. currentmodule:: artview.components
-
-.. automethod:: Display.NewRadar

@@ -793,7 +793,7 @@ class GridDisplay(Component):
     ########################
     # Image save methods #
     ########################
-    # TODO convert me to grid - What needs to be done here?
+    # TODO convert me to grid - Update when PyArt updates this interface
     def _quick_savefile(self, PTYPE=IMAGE_EXT):
         '''Save the current display via PyArt interface.'''
         imagename = self.display.generate_filename(

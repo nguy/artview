@@ -1,0 +1,6 @@
+artview.components.ROI.guiStart
+===============================
+
+.. currentmodule:: artview.components
+
+.. automethod:: ROI.guiStart

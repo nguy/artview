@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -52,7 +50,7 @@
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">ARTview 0.2.2 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Reference Manual</a> &raquo;</li>
-          <li><a href="../plugins.html" accesskey="U">Plugins (<tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">artview.plugins</span></tt>)</a> &raquo;</li> 
+          <li><a href="../plugins.html" accesskey="U">Plugins (<tt class="docutils literal"><span class="pre">artview.plugins</span></tt>)</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -65,26 +63,26 @@
 <h1>artview.plugins.Mapper<a class="headerlink" href="#artview-plugins-mapper" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="artview.plugins.Mapper">
-<em class="property">class </em><tt class="descclassname">artview.plugins.</tt><tt class="descname">Mapper</tt><big>(</big><em>Vradar=None</em>, <em>Vgrid=None</em>, <em>name='Mapper'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/plugins/mapper.py#L15"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.plugins.Mapper" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">artview.plugins.</tt><tt class="descname">Mapper</tt><big>(</big><em>Vradar=None</em>, <em>Vgrid=None</em>, <em>name='Mapper'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/plugins/mapper.py#L16"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.plugins.Mapper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><tt class="xref py py-class docutils literal"><span class="pre">artview.core.core.Component</span></tt></a></p>
-<p>Interfase for executing <a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.map.grid_from_radars.html#pyart.map.grid_from_radars" title="(in Py-ART v1.4)"><tt class="xref py py-func docutils literal"><span class="pre">pyart.map.grid_from_radars</span></tt></a></p>
+<p>Interface for executing <a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.map.grid_from_radars.html#pyart.map.grid_from_radars" title="(in Py-ART v1.4)"><tt class="xref py py-func docutils literal"><span class="pre">pyart.map.grid_from_radars</span></tt></a></p>
 <dl class="method">
 <dt id="artview.plugins.Mapper.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>Vradar=None</em>, <em>Vgrid=None</em>, <em>name='Mapper'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/plugins/mapper.py#L30"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.plugins.Mapper.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize the class to create the interface</p>
+<tt class="descname">__init__</tt><big>(</big><em>Vradar=None</em>, <em>Vgrid=None</em>, <em>name='Mapper'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/plugins/mapper.py#L32"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.plugins.Mapper.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the class to create the interface.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>[Optional]</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>[Optional]</strong> :</p>
 <p><strong>Vradar</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
 <blockquote>
-<div><p>Radar signal variable. 
+<div><p>Radar signal variable.
 A value of None initializes an empty Variable.</p>
 </div></blockquote>
 <p><strong>Vgrid</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
 <blockquote>
-<div><p>Grid signal variable. 
+<div><p>Grid signal variable.
 A value of None initializes an empty Variable.</p>
 </div></blockquote>
 <p><strong>name</strong> : string</p>
@@ -94,7 +92,7 @@ A value of None initializes an empty Variable.</p>
 <p><strong>parent</strong> : PyQt instance</p>
 <blockquote class="last">
 <div><p>Parent instance to associate to this class.
-If None, then Qt owns, otherwise associated with parent PyQt instance.</p>
+If None, then Qt owns, otherwise associated w/ parent PyQt instance</p>
 </div></blockquote>
 </td>
 </tr>
@@ -110,22 +108,22 @@ If None, then Qt owns, otherwise associated with parent PyQt instance.</p>
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="artview.plugins.Mapper.addEspecificOptions.html#artview.plugins.Mapper.addEspecificOptions" title="artview.plugins.Mapper.addEspecificOptions"><tt class="xref py py-obj docutils literal"><span class="pre">Mapper.addEspecificOptions</span></tt></a>(item)</td>
-<td>Mount Options Layout depending on gridding algorithm</td>
+<td>Mount Options Layout depending on gridding algorithm.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="artview.plugins.Mapper.addGeneralOptions.html#artview.plugins.Mapper.addGeneralOptions" title="artview.plugins.Mapper.addGeneralOptions"><tt class="xref py py-obj docutils literal"><span class="pre">Mapper.addGeneralOptions</span></tt></a>()</td>
 <td>Mount Options Layout for <a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.map.grid_from_radars.html#pyart.map.grid_from_radars" title="(in Py-ART v1.4)"><tt class="xref py py-func docutils literal"><span class="pre">grid_from_radars</span></tt></a></td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="artview.plugins.Mapper.distBeamRoiOptions.html#artview.plugins.Mapper.distBeamRoiOptions" title="artview.plugins.Mapper.distBeamRoiOptions"><tt class="xref py py-obj docutils literal"><span class="pre">Mapper.distBeamRoiOptions</span></tt></a>()</td>
-<td>Mount Options Layout for dist beam roi</td>
+<td>Mount Options Layout for dist beam radius of influence.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="artview.plugins.Mapper.distRoiOptions.html#artview.plugins.Mapper.distRoiOptions" title="artview.plugins.Mapper.distRoiOptions"><tt class="xref py py-obj docutils literal"><span class="pre">Mapper.distRoiOptions</span></tt></a>()</td>
-<td>Mount Options Layout for dist roi</td>
+<td>Mount Options Layout for dist radius of influence.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="artview.plugins.Mapper.grid_from_radars.html#artview.plugins.Mapper.grid_from_radars" title="artview.plugins.Mapper.grid_from_radars"><tt class="xref py py-obj docutils literal"><span class="pre">Mapper.grid_from_radars</span></tt></a>()</td>
 <td>Mount Options and execute <tt class="xref py py-func docutils literal"><span class="pre">grid_from_radars</span></tt>.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="artview.plugins.Mapper.guiStart.html#artview.plugins.Mapper.guiStart" title="artview.plugins.Mapper.guiStart"><tt class="xref py py-obj docutils literal"><span class="pre">Mapper.guiStart</span></tt></a>([parent])</td>
-<td>Grafical Interface for Starting this Class</td>
+<td>Graphical interface for starting this class</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="artview.plugins.Mapper.mapGatesToGridOptions.html#artview.plugins.Mapper.mapGatesToGridOptions" title="artview.plugins.Mapper.mapGatesToGridOptions"><tt class="xref py py-obj docutils literal"><span class="pre">Mapper.mapGatesToGridOptions</span></tt></a>()</td>
 <td>Mount Options Layout for <a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.map.map_gates_to_grid.html#pyart.map.map_gates_to_grid" title="(in Py-ART v1.4)"><tt class="xref py py-func docutils literal"><span class="pre">map_gates_to_grid</span></tt></a></td>
@@ -134,7 +132,7 @@ If None, then Qt owns, otherwise associated with parent PyQt instance.</p>
 <td>Mount Options Layout for <a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.map.map_to_grid.html#pyart.map.map_to_grid" title="(in Py-ART v1.4)"><tt class="xref py py-func docutils literal"><span class="pre">map_to_grid</span></tt></a></td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="artview.plugins.Mapper.newRadar.html#artview.plugins.Mapper.newRadar" title="artview.plugins.Mapper.newRadar"><tt class="xref py py-obj docutils literal"><span class="pre">Mapper.newRadar</span></tt></a>(variable,&nbsp;value,&nbsp;strong)</td>
-<td>Display pyart&#8217;s docstring for help</td>
+<td>Display Py-Art&#8217;s docstring for help.</td>
 </tr>
 </tbody>
 </table>
@@ -209,13 +207,13 @@ If None, then Qt owns, otherwise associated with parent PyQt instance.</p>
              >previous</a> |</li>
         <li><a href="../../index.html">ARTview 0.2.2 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Reference Manual</a> &raquo;</li>
-          <li><a href="../plugins.html" >Plugins (<tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">artview.plugins</span></tt>)</a> &raquo;</li> 
+          <li><a href="../plugins.html" >Plugins (<tt class="docutils literal"><span class="pre">artview.plugins</span></tt>)</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Jul 09, 2015.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Last updated on Aug 04, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

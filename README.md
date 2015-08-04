@@ -64,28 +64,28 @@ python setup.py install --user
 Either cd into the installed folder and run:
 
 ```python
-artview -d /some/directory/you/want/to/point/to
+python artview -d /some/directory/you/want/to/point/to
 ```
 
 Or it can be run from anywhere with the following:
 
 ```python
-artview
+python artview
 ```
 
 A specific file can be loaded:
 ```python
-artview -F /some/directory/you/want/to/point/to/filename
+python artview -F /some/directory/you/want/to/point/to/filename
 ```
 
 A specific field (e.g. reflectivity) can be loaded:
 ```python
-artview -f 'reflectivity'
+python artview -f 'reflectivity'
 ```
 
 To see the command line options:
 ```python
-artview -h
+python artview -h
 ```
 
 ARTview should be able to recognize and correctly handle PPI, RHI and airborne files.

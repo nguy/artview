@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -28,8 +26,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="ARTview 0.2.2 documentation" href="../../index.html" />
     <link rel="up" title="Main Components (artview.components)" href="../components.html" />
-    <link rel="next" title="artview.components.Menu.AdvanceFileSelect" href="artview.components.Menu.AdvanceFileSelect.html" />
-    <link rel="prev" title="artview.components.Display.toolZoomPanCmd" href="artview.components.Display.toolZoomPanCmd.html" /> 
+    <link rel="next" title="artview.components.Menu.AdvanceFileSelect" href="artview.components.Menu.AdvanceFileSelect.html" /> 
   </head>
   <body>
     <div class="related">
@@ -47,12 +44,9 @@
         <li class="right" >
           <a href="artview.components.Menu.AdvanceFileSelect.html" title="artview.components.Menu.AdvanceFileSelect"
              accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="artview.components.Display.toolZoomPanCmd.html" title="artview.components.Display.toolZoomPanCmd"
-             accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">ARTview 0.2.2 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Reference Manual</a> &raquo;</li>
-          <li><a href="../components.html" accesskey="U">Main Components (<tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
+          <li><a href="../components.html" accesskey="U">Main Components (<tt class="docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -65,18 +59,18 @@
 <h1>artview.components.Menu<a class="headerlink" href="#artview-components-menu" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="artview.components.Menu">
-<em class="property">class </em><tt class="descclassname">artview.components.</tt><tt class="descname">Menu</tt><big>(</big><em>pathDir</em>, <em>filename=None</em>, <em>Vradar=None</em>, <em>Vgrid=None</em>, <em>mode='Radar'</em>, <em>name='Menu'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/menu.py#L14"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.Menu" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">artview.components.</tt><tt class="descname">Menu</tt><big>(</big><em>pathDir</em>, <em>filename=None</em>, <em>Vradar=None</em>, <em>Vgrid=None</em>, <em>mode='Radar'</em>, <em>name='Menu'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/menu.py#L15"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.Menu" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><tt class="xref py py-class docutils literal"><span class="pre">artview.core.core.Component</span></tt></a></p>
-<p>Class to display the MainMenu</p>
+<p>Class to display the MainMenu.</p>
 <dl class="method">
 <dt id="artview.components.Menu.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>pathDir</em>, <em>filename=None</em>, <em>Vradar=None</em>, <em>Vgrid=None</em>, <em>mode='Radar'</em>, <em>name='Menu'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/menu.py#L20"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.Menu.__init__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__init__</tt><big>(</big><em>pathDir</em>, <em>filename=None</em>, <em>Vradar=None</em>, <em>Vgrid=None</em>, <em>mode='Radar'</em>, <em>name='Menu'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/menu.py#L21"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.Menu.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize the class to create the interface.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>pathDir</strong> : string</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>pathDir</strong> : string</p>
 <blockquote>
 <div><p>Input directory path to open.</p>
 </div></blockquote>
@@ -87,12 +81,12 @@
 </div></blockquote>
 <p><strong>Vradar</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
 <blockquote>
-<div><p>Radar signal variable. 
+<div><p>Radar signal variable.
 A value of None initializes an empty Variable.</p>
 </div></blockquote>
 <p><strong>Vgrid</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
 <blockquote>
-<div><p>Grid signal variable. 
+<div><p>Grid signal variable.
 A value of None initializes an empty Variable.</p>
 </div></blockquote>
 <p><strong>mode</strong> : &#8220;Radar&#8221;, &#8220;Grid&#8221; or &#8220;All&#8221;</p>
@@ -106,7 +100,8 @@ A value of None initializes an empty Variable.</p>
 <p><strong>parent</strong> : PyQt instance</p>
 <blockquote class="last">
 <div><p>Parent instance to associate to menu.
-If None, then Qt owns, otherwise associated with parent PyQt instance.</p>
+If None, then Qt owns, otherwise associated with parent PyQt
+instance.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -146,7 +141,7 @@ a menubar for the program.</p>
 <td>Add Component item to Component Menu.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="artview.components.Menu.addFileAdvanceMenu.html#artview.components.Menu.addFileAdvanceMenu" title="artview.components.Menu.addFileAdvanceMenu"><tt class="xref py py-obj docutils literal"><span class="pre">Menu.addFileAdvanceMenu</span></tt></a>()</td>
-<td>Add an menu actions to advance to next or previous file.</td>
+<td>Add menu to advance to next or previous file.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="artview.components.Menu.addFileMenu.html#artview.components.Menu.addFileMenu" title="artview.components.Menu.addFileMenu"><tt class="xref py py-obj docutils literal"><span class="pre">Menu.addFileMenu</span></tt></a>()</td>
 <td>Add the File Menu to menubar.</td>
@@ -161,7 +156,7 @@ a menubar for the program.</p>
 <td>Add a widget to central layout.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="artview.components.Menu.keyPressEvent.html#artview.components.Menu.keyPressEvent" title="artview.components.Menu.keyPressEvent"><tt class="xref py py-obj docutils literal"><span class="pre">Menu.keyPressEvent</span></tt></a>(event)</td>
-<td>Reimplementation, change files with right left button</td>
+<td>Change data file with left and right arrow keys.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="artview.components.Menu.removeLayoutMenuItem.html#artview.components.Menu.removeLayoutMenuItem" title="artview.components.Menu.removeLayoutMenuItem"><tt class="xref py py-obj docutils literal"><span class="pre">Menu.removeLayoutMenuItem</span></tt></a>(widget)</td>
 <td>Remove widget item from Layout Menu.</td>
@@ -173,7 +168,7 @@ a menubar for the program.</p>
 <td>Open a dialog box to choose file.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="artview.components.Menu.startComponent.html#artview.components.Menu.startComponent" title="artview.components.Menu.startComponent"><tt class="xref py py-obj docutils literal"><span class="pre">Menu.startComponent</span></tt></a>(Comp)</td>
-<td>Execute the GUI start of Component and add to layout if not independent.</td>
+<td>Execute the GUI start of Component and</td>
 </tr>
 </tbody>
 </table>
@@ -200,9 +195,6 @@ a menubar for the program.</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="artview.components.Display.toolZoomPanCmd.html"
-                        title="previous chapter">artview.components.Display.toolZoomPanCmd</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="artview.components.Menu.AdvanceFileSelect.html"
                         title="next chapter">artview.components.Menu.AdvanceFileSelect</a></p>
@@ -243,18 +235,15 @@ a menubar for the program.</p>
         <li class="right" >
           <a href="artview.components.Menu.AdvanceFileSelect.html" title="artview.components.Menu.AdvanceFileSelect"
              >next</a> |</li>
-        <li class="right" >
-          <a href="artview.components.Display.toolZoomPanCmd.html" title="artview.components.Display.toolZoomPanCmd"
-             >previous</a> |</li>
         <li><a href="../../index.html">ARTview 0.2.2 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Reference Manual</a> &raquo;</li>
-          <li><a href="../components.html" >Main Components (<tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
+          <li><a href="../components.html" >Main Components (<tt class="docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Jul 09, 2015.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Last updated on Aug 04, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

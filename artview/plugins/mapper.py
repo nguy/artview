@@ -261,7 +261,7 @@ class Mapper(core.Component):
             self.distBeamRoiOptions()
 
     def _constantRoiOptions(self):
-        '''Mount Options Layout for constant ROI.'''
+        '''Mount Options Layout for constant radius of influence.'''
         self.constantRoi = QtGui.QDoubleSpinBox()
         self.constantRoi.setRange(0, 30000)
         self.constantRoi.setValue(500)
@@ -270,7 +270,7 @@ class Mapper(core.Component):
         self.roiFuncLayout.addWidget(self.constantRoi, 0, 1, 1, 2)
 
     def distRoiOptions(self):
-        '''Mount Options Layout for dist ROI.'''
+        '''Mount Options Layout for dist radius of influence.'''
         self.zFactor = QtGui.QDoubleSpinBox()
         self.zFactor.setRange(0, 30000)
         self.zFactor.setValue(0.05)
@@ -295,7 +295,7 @@ class Mapper(core.Component):
         self.roiFuncLayout.addWidget(self.minRadius, 2, 1, 1, 2)
 
     def distBeamRoiOptions(self):
-        '''Mount Options Layout for dist beam ROI.'''
+        '''Mount Options Layout for dist beam radius of influence.'''
         self.hFactor = QtGui.QDoubleSpinBox()
         self.hFactor.setRange(0, 30000)
         self.hFactor.setValue(1.0)

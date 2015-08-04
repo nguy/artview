@@ -327,15 +327,17 @@ class RadarDisplay(Component):
         '''Create the Tilt Selection ComboBox.'''
         self.tiltBox = QtGui.QComboBox()
         self.tiltBox.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.tiltBox.setToolTip("Choose tilt elevation angle\n"
-                                "Up/Down arrow keys Increase/Decrease tilt")
+        self.tiltBox.setToolTip("Select tilt elevation angle to display.\n"
+                                "'Tilt Window' will launch popup.\n"
+                                "Up/Down arrow keys Increase/Decrease tilt.")
         self.tiltBox.activated[str].connect(self._tiltAction)
 
     def _add_fieldBoxUI(self):
         '''Create the Field Selection ComboBox.'''
         self.fieldBox = QtGui.QComboBox()
         self.fieldBox.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.fieldBox.setToolTip("Choose variable/field")
+        self.fieldBox.setToolTip("Select variable/field in data file.\n"
+                                "'Field Window' will launch popup.\n")
         self.fieldBox.activated[str].connect(self._fieldAction)
 
     def _add_toolsBoxUI(self):
