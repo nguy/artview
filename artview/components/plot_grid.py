@@ -5,6 +5,7 @@ Class instance used to make Display.
 """
 # Load the needed packages
 import numpy as np
+import os
 import pyart
 
 from PyQt4 import QtGui, QtCore
@@ -26,7 +27,7 @@ DPI = 100
 
 class GridDisplay(Component):
     '''
-    Class that creates a display plot, using a Grid structure.
+    Class to create a display plot, using a Grid structure.
     '''
 
     Vgrid = None #: see :ref:`shared_variable`
@@ -41,7 +42,7 @@ class GridDisplay(Component):
 
     @classmethod
     def guiStart(self, parent=None):
-        '''Grafical Interface for Starting this Class'''
+        '''Graphical interface for starting this class'''
         args = _DisplayStart().startDisplay()
         return self(**args), True
 
@@ -138,7 +139,6 @@ class GridDisplay(Component):
         self.lon_lines = np.linspace(-180, 180, num=361)
 
         # Find the PyArt colormap names
-#        self.cm_names = [m for m in cm.datad if not m.endswith("_r")]
         self.cm_names = ["pyart_" + m for m in pyart.graph.cm.datad
                          if not m.endswith("_r")]
         self.cm_names.sort()
@@ -164,7 +164,7 @@ class GridDisplay(Component):
         self.show()
 
     def keyPressEvent(self, event):
-        '''Reimplementation, allow level adjustment via the Up-Down arrow keys.'''
+        '''Allow level adjustment via the Up-Down arrow keys.'''
         if event.key() == QtCore.Qt.Key_Up:
             self.LevelSelectCmd(self.Vlevel.value + 1)
         elif event.key() == QtCore.Qt.Key_Down:
@@ -232,7 +232,7 @@ class GridDisplay(Component):
             print self.Vlims.value
 
     def _fillLevelBox(self):
-        '''Fill in the Level Window Box with current elevation angles.'''
+        '''Fill in the Level Window Box with current levels.'''
         self.levelBox.clear()
         self.levelBox.addItem("Level Window")
         # Loop through and create each level button
@@ -508,7 +508,7 @@ class GridDisplay(Component):
             self, name=self.name + "ValueClick", parent=self)
 
     def toolROICmd(self):
-        '''Creates and connects to Region of Interest instance'''
+        '''Creates and connects to Region of Interest instance.'''
         from .roi import ROI
         self.tools['roi'] = ROI(self, name=self.name + " ROI", parent=self)
 
@@ -751,7 +751,7 @@ class GridDisplay(Component):
                 common.ShowWarning(msg)
 
     def _set_default_limits(self, strong=True):
-        ''' Set limits to pre-defined default.'''
+        '''Set limits to pre-defined default.'''
         # TODO convert me to grid
         from .limits import _default_limits
         limits, cmap = _default_limits(
@@ -759,7 +759,7 @@ class GridDisplay(Component):
         self.Vlims.change(limits, strong)
 
     def _set_default_cmap(self, strong=True):
-        ''' Set colormap to pre-defined default.'''
+        '''Set colormap to pre-defined default.'''
         # TODO convert me to grid
         from .limits import _default_limits
         limits, cmap = _default_limits(
@@ -767,12 +767,12 @@ class GridDisplay(Component):
         self.Vcmap.change(cmap, strong)
 
     def _check_file_type(self):
-        '''Check file to see if the file type'''
+        '''Check file to see if the file type.'''
         #self._update_fig_ax()
         return
 
     def change_plot_type(self, plot_type):
-        '''Change plot type'''
+        '''Change plot type.'''
         # remove shared variables
         for key in ("VlevelZ","VlevelY","VlevelX"):
             if key in self.sharedVariables.keys():
@@ -793,21 +793,21 @@ class GridDisplay(Component):
     ########################
     # Image save methods #
     ########################
+    # TODO convert me to grid - What needs to be done here?
     def _quick_savefile(self, PTYPE=IMAGE_EXT):
         '''Save the current display via PyArt interface.'''
-        # TODO convert me to grid
-        PNAME = self.display.generate_filename(
+        imagename = self.display.generate_filename(
             self.Vfield.value, self.Vtilt.value, ext=IMAGE_EXT)
-        print "Creating " + PNAME
+        self.canvas.print_figure(os.path.join(os.getcwd(), imagename), dpi=DPI)
+        self.statusbar.showMessage('Saved to %s' % os.path.join(os.getcwd(), imagename))
 
     def _savefile(self, PTYPE=IMAGE_EXT):
         '''Save the current display using PyQt dialog interface.'''
-        # TODO convert me to grid
         PBNAME = self.display.generate_filename(
             self.Vfield.value, self.Vtilt.value, ext=IMAGE_EXT)
         file_choices = "PNG (*.png)|*.png"
         path = unicode(QtGui.QFileDialog.getSaveFileName(
-            self, 'Save file', '', file_choices))
+            self, 'Save file', PBNAME, file_choices))
         if path:
             self.canvas.print_figure(path, dpi=DPI)
             self.statusbar.showMessage('Saved to %s' % path)
@@ -838,7 +838,7 @@ class GridDisplay(Component):
 
     @property
     def Vlevel(self):
-        ''' Alias to VlevelZ, VlevelY or VlevelX depending on plot_type '''
+        '''Alias to VlevelZ, VlevelY or VlevelX depending on plot_type.'''
         if self.plot_type == "gridZ":
             return self.VlevelZ
         elif self.plot_type == "gridY":
@@ -850,7 +850,7 @@ class GridDisplay(Component):
 
     @property
     def levels(self):
-        ''' Values from the axes of grid, depending on plot_type'''
+        '''Values from the axes of grid, depending on plot_type.'''
         if self.plot_type == "gridZ":
             return self.Vgrid.value.axes['z_disp']['data'][:]
         elif self.plot_type == "gridY":
@@ -863,11 +863,11 @@ class GridDisplay(Component):
 
 class _DisplayStart(QtGui.QDialog):
     '''
-    Dialog Class for graphical Start of Display, to be used in guiStart
+    Dialog Class for graphical start of display, to be used in guiStart.
     '''
 
     def __init__(self):
-        '''Initialize the class to create the interface'''
+        '''Initialize the class to create the interface.'''
         super(_DisplayStart, self).__init__()
         self.result = {}
         self.layout = QtGui.QGridLayout(self)
@@ -952,7 +952,7 @@ class _DisplayStart(QtGui.QDialog):
 
         # if no Vgrid abort
         if 'Vgrid' not in self.result:
-            common.ShowWarning("Must select a variable for Vgrid")
+            common.ShowWarning("Must select a variable for Vgrid.")
             # I'm allowing this to continue, but this will result in error
 
         # if Vfield, Vtilt, Vlims were not select create new

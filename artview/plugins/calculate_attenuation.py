@@ -15,14 +15,14 @@ common = core.common
 
 class CalculateAttenuation(core.Component):
     '''
-    Interfase for executing :py:func:`pyart.correct.calculate_attenuation`
+    Interface for executing :py:func:`pyart.correct.calculate_attenuation`
     '''
 
     Vradar = None  #: see :ref:`shared_variable`
 
     @classmethod
     def guiStart(self, parent=None):
-        '''Grafical Interface for Starting this Class'''
+        '''Graphical interface for starting this class'''
         kwargs, independent = \
             common._SimplePluginStart("CalculateAttenuation").startDisplay()
         kwargs['parent'] = parent
@@ -30,7 +30,7 @@ class CalculateAttenuation(core.Component):
 
     def __init__(self, Vradar=None, Vgatefilter=None,
                  name="CalculateAttenuation", parent=None):
-        '''Initialize the class to create the interface
+        '''Initialize the class to create the interface.
 
         Parameters
         ----------
@@ -75,7 +75,7 @@ class CalculateAttenuation(core.Component):
         self.show()
 
     def addGeneralOptions(self):
-        '''Mount Options Layout'''
+        '''Mount Options Layout.'''
 
         self.radarButton = QtGui.QPushButton("Find Variable")
         self.radarButton.clicked.connect(self.chooseRadar)
@@ -160,7 +160,7 @@ class CalculateAttenuation(core.Component):
             self.Vradar = getattr(item[1], item[2])
 
     def displayHelp(self):
-        '''Display pyart's docstring for help'''
+        '''Display Py-Art's docstring for help.'''
         common.ShowLongText(pyart.correct.calculate_attenuation.__doc__)
 
     def calculate_attenuation(self):
@@ -171,7 +171,7 @@ class CalculateAttenuation(core.Component):
         '''
         # test radar
         if self.Vradar.value is None:
-            common.ShowWarning("Radar is None, can not perform correction")
+            common.ShowWarning("Radar is None, can not perform correction.")
             return
         # mount options
         args = {
@@ -243,7 +243,7 @@ class CalculateAttenuation(core.Component):
         print "Correction took %fs" % (t1-t0)
 
     def _clearLayout(self, layout):
-        '''recursively remove items from layout'''
+        '''recursively remove items from layout.'''
         while layout.count():
             item = layout.takeAt(0)
             widget = item.widget()

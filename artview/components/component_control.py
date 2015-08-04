@@ -13,12 +13,14 @@ common = core.common
 
 
 class ComponentsControl(core.Component):
-    '''Class instance for control variables shared between components.
-    The user select 2 components from a list and a radio menu is added for
-    every common sharable variable. The variable in the second one can be
-    connect or disconnected from the first one.
+    '''
+    Class instance for control variables shared between components.
+    
+    The user may select two components from a list. A radio menu is 
+    added for every common sharable variable. Each variable may be unlinked
+    from similar instance in the other component.
 
-    This is a powerfull Component, multiple instances may conflict
+    This is a powerful Component, multiple instances may conflict.
     '''
 
     @classmethod
@@ -29,7 +31,7 @@ class ComponentsControl(core.Component):
         return self(**kwargs), independent
 
     def __init__(self, components=None, name="ComponentsControl", parent=None):
-        '''Initialize the class to create the interface
+        '''Initialize the class to create the interface.
 
         Parameters
         ----------
@@ -41,7 +43,7 @@ class ComponentsControl(core.Component):
             Field Radiobutton window name.
         parent : PyQt instance
             Parent instance to associate to this class.
-            If None, then Qt owns, otherwise associated w/ parent PyQt instance
+            If None, then Qt owns, otherwise associated w/ parent PyQt instance.
 
         '''
         super(ComponentsControl, self).__init__(name=name, parent=parent)
@@ -67,7 +69,7 @@ class ComponentsControl(core.Component):
         self.show()
 
     def _setVariables(self):
-        '''Determine which variable are common to both atual components'''
+        '''Determine common variables to both components.'''
         self.variables = []
         for var in self.comp0.sharedVariables.keys():
             if var in self.comp1.sharedVariables.keys():
@@ -78,7 +80,7 @@ class ComponentsControl(core.Component):
     ########################
 
     def setupUi(self):
-        '''Build main layout'''
+        '''Build main layout.'''
         if len(self.components) == 0:
             return
         if self.comp0 not in self.components:
@@ -105,7 +107,7 @@ class ComponentsControl(core.Component):
         self._setRadioButtons()
 
     def _setRadioButtons(self):
-        '''Add radio buttons for control over the variables'''
+        '''Add radio buttons for control over the variables.'''
         # Radio Buttons
         self.radioLayout = QtGui.QGridLayout()
         self.layout.addLayout(self.radioLayout, 2, 0)
@@ -117,7 +119,7 @@ class ComponentsControl(core.Component):
             self._addRadioButton(var, idx)
 
     def _addRadioButton(self, var, idx):
-        '''Add radio button for variable in the given index'''
+        '''Add radio button for variable in the given index.'''
         radioBox = QtGui.QButtonGroup()
         self.radioBoxes.append(radioBox)  # avoid garbage collector
 
@@ -143,7 +145,7 @@ class ComponentsControl(core.Component):
         self.radioLayout.addWidget(unlink, idx+1, 2)
 
     def _comp0Action(self, idx):
-        '''Update Component 0'''
+        '''Update Component 0.'''
         self.comp0 = self.components[idx]
         self._setVariables()
         self._clearLayout(self.radioLayout)
@@ -151,7 +153,7 @@ class ComponentsControl(core.Component):
         self._setRadioButtons()
 
     def _comp1Action(self, idx):
-        '''Update Component 1'''
+        '''Update Component 1.'''
         self.comp1 = self.components[idx]
         self._setVariables()
         self._clearLayout(self.radioLayout)
@@ -159,7 +161,7 @@ class ComponentsControl(core.Component):
         self._setRadioButtons()
 
     def connectVar(self, var):
-        '''Assign variable in component 0 to component 1'''
+        '''Assign variable in component 0 to component 1.'''
         # Disconect old Variable
         self.comp1.disconnectSharedVariable(var)
         # comp1.var = comp0.var
@@ -172,7 +174,7 @@ class ComponentsControl(core.Component):
             var, self.comp1.name, self.comp0.name)
 
     def disconnectVar(self, var):
-        '''Turn variable in component 1 independente of component 0'''
+        '''Turn variable in component 1 independente of component 0.'''
         # Disconect old Variable
         self.comp1.disconnectSharedVariable(var)
         # comp1.var = Variable()
@@ -185,7 +187,7 @@ class ComponentsControl(core.Component):
             var, self.comp1.name, self.comp0.name)
 
     def _clearLayout(self, layout):
-        '''Recursively remove items from layout'''
+        '''Recursively remove items from layout.'''
         while layout.count():
             item = layout.takeAt(0)
             widget = item.widget()
@@ -195,6 +197,6 @@ class ComponentsControl(core.Component):
                 self._clearLayout(item.layout())
 
     def _updateComponentList(self, item):
-        '''Rebuild main layout'''
+        '''Rebuild main layout.'''
         self._clearLayout(self.layout)
         self.setupUi()

@@ -16,7 +16,23 @@ from ..core import Variable, Component, common, VariableChoose, componentsList
 
 class ROI(Component):
     '''
-    Select a Region of Interest: The code modified from
+    Select a Region of Interest. 
+    
+    This tool allows the user to draw a path in the display window using
+    the mouse. The primary mouse button (often the left button) is used 
+    to select a point. The secondary mouse button (often the right button)
+    is used to close the path of interest.
+    
+    A straight-sided polygon may be selected by clicking and releasing
+    the primary mouse button.
+    A curved shape (free-hand drawing) may be drawn by holding down 
+    the primary mouse button.
+    
+    One caveat found is that other tools may interfere with the curved 
+    shape drawing. If this is the case select the reset file defaults in 
+    toolbox menu.
+
+    The code modified from
 https://www.mail-archive.com/matplotlib-users@lists.sourceforge.net/msg00661.html
     '''
 
@@ -76,7 +92,7 @@ https://www.mail-archive.com/matplotlib-users@lists.sourceforge.net/msg00661.htm
         self.show()
 
     def _initialize_ROI_vars(self):
-        '''Initialize variables to be used in ROI selection'''
+        '''Initialize variables to be used in ROI selection.'''
         self.previous_point = []
         self.start_point = []
         self.end_point = []
@@ -85,7 +101,7 @@ https://www.mail-archive.com/matplotlib-users@lists.sourceforge.net/msg00661.htm
         self.poly = []
 
     def _setup_ROI_vars(self):
-        '''Setup variables from radar instance for ROI selection'''
+        '''Setup variables from radar instance for ROI selection.'''
         radar = self.Vradar.value  # keep equations clean
         self.az = radar.azimuth['data'][
             radar.sweep_start_ray_index['data'][self.Vtilt.value]:
@@ -101,7 +117,7 @@ https://www.mail-archive.com/matplotlib-users@lists.sourceforge.net/msg00661.htm
         self.xys[:, 1] = y.flatten()
 
     def motion_notify_callback(self, event):
-        '''Create the shape in plot area'''
+        '''Create the shape in plot area.'''
         if event.inaxes:
             ax = event.inaxes
             x, y = event.xdata, event.ydata
@@ -165,14 +181,14 @@ https://www.mail-archive.com/matplotlib-users@lists.sourceforge.net/msg00661.htm
                     self.VroiData.change(data)
 
     def connect(self):
-        '''Connect the ROI instance'''
+        '''Connect the ROI instance.'''
         self.motionID = self.fig.canvas.mpl_connect(
             'motion_notify_event', self.motion_notify_callback)
         self.buttonID = self.fig.canvas.mpl_connect(
             'button_press_event', self.button_press_callback)
 
     def disconnect(self):
-        '''Disconnect the ROI instance'''
+        '''Disconnect the ROI instance.'''
         self.fig.canvas.mpl_disconnect(self.motionID)
         self.fig.canvas.mpl_disconnect(self.buttonID)
 
@@ -189,10 +205,15 @@ http://stackoverflow.com/questions/12608835/writing-a-qtablewidget-to-a-csv-or-x
 
         # Add buttons for functionality
         self.buttonViewTable = QtGui.QPushButton('View Tabular Data', self)
+        self.buttonViewTable.setToolTip("View ROI Data in popup window")
         self.buttonOpenTable = QtGui.QPushButton('Open Tabular Data', self)
+        self.buttonOpenTable.setToolTip("Open a ROI Data CSV file")
         self.buttonSaveTable = QtGui.QPushButton('Save Tabular Data', self)
+        self.buttonSaveTable.setToolTip("Save a ROI Data CSV file")
         self.buttonResetROI = QtGui.QPushButton('Reset ROI', self)
+        self.buttonResetROI.setToolTip("Clear the ROI")
         self.buttonHelp = QtGui.QPushButton('Help', self)
+        self.buttonHelp.setToolTip("About using ROI")
         self.buttonViewTable.clicked.connect(self.viewTable)
         self.buttonOpenTable.clicked.connect(self.openTable)
         self.buttonSaveTable.clicked.connect(self.saveTable)
@@ -208,17 +229,19 @@ http://stackoverflow.com/questions/12608835/writing-a-qtablewidget-to-a-csv-or-x
         self.rBox_layout.addWidget(self.buttonHelp)
 
     def displayHelp(self):
-        # XXX I invite anyone to improve this help information
-        text = "Draw a Path in the Display Window using the Mouse\n\n"
-        text += "Functions:\n"
-        text += "    Primary Mouse Button - add vertex\n"
-        text += "    Hold - freely draw path\n"
-        text += "    Secundary Button - close path\n"
+
+        text = "<b>Using the Region of Interest (ROI) Tool</b><br><br>"
+        text += "<i>Purpose</i>:<br>"
+        text += "Draw a path in the display window using the Mouse.<br><br>"
+        text += "<i>Functions</i>:<br>"
+        text += " Primary Mouse Button (e.g. left button)- add vertex<br>"
+        text += " Hold button to draw free-hand path<br>"
+        text += " Secondary Button (e.g. right button)- close path<br>"
 
         common.ShowLongText(text)
 
     def viewTable(self):
-        '''View a Table of ROI points'''
+        '''View a Table of ROI points.'''
         # Instantiate Table
         self.table = common.CreateTable(self.columns)
         self.table.display_data(self.VroiData.value)
@@ -227,7 +250,7 @@ http://stackoverflow.com/questions/12608835/writing-a-qtablewidget-to-a-csv-or-x
         self.table.show()
 
     def saveTable(self):
-        '''Save a Table of ROI points to a CSV file'''
+        '''Save a Table of ROI points to a CSV file.'''
         data = self.VroiData.value
         fsuggest = 'ROI_' + self.getField() + '_' + \
             str(data[:, 0].mean()) + '_' + \
@@ -267,6 +290,7 @@ http://stackoverflow.com/questions/12608835/writing-a-qtablewidget-to-a-csv-or-x
 #                    print "%8.2f %8.2f %8.2f %8.3f %8.2f %8d %8d" %\
 
     def openTable(self):
+        '''Open a saved table of ROI points from a CSV file.'''
         path = QtGui.QFileDialog.getOpenFileName(
                 self, 'Open File', '', 'CSV(*.csv)')
         if path == '':
@@ -283,7 +307,7 @@ http://stackoverflow.com/questions/12608835/writing-a-qtablewidget-to-a-csv-or-x
         self.VroiData.change(data)
 
     def resetROI(self):
-        '''Clear the ROI lines from plot and reset things'''
+        '''Clear the ROI lines from plot and reset things.'''
         for i in xrange(len(self.poly)):
             self.poly[i].remove()
 
@@ -294,23 +318,19 @@ http://stackoverflow.com/questions/12608835/writing-a-qtablewidget-to-a-csv-or-x
         self.statusbar.showMessage("Select Region with Mouse")
 
     def closeEvent(self, QCloseEvent):
-        '''Reimplementations to remove from components list'''
+        '''Reimplementations to remove from components list.'''
         self.resetROI()
         self.disconnect()
         super(ROI, self).closeEvent(QCloseEvent)
 
-#    def NewRadar(self, variable, value, False):
-#        '''Update the display list when radar variable is changed.'''
-#        print "In NewRadar"
-
 
 class _RoiStart(QtGui.QDialog):
     '''
-    Dialog Class for graphical Start of Roi, to be used in guiStart
+    Dialog Class for graphical start of ROI, to be used in guiStart.
     '''
 
     def __init__(self):
-        '''Initialize the class to create the interface'''
+        '''Initialize the class to create the interface.'''
         super(_RoiStart, self).__init__()
         self.result = {"display": None}
         self.layout = QtGui.QGridLayout(self)

@@ -23,7 +23,7 @@ def _default_limits(field, plot_type):
 
     Notes::
     -----
-    Returns a dictionary of display limits and colormap instance
+    Returns a dictionary of display limits and colormap instance.
     '''
     # Limits for variables
     Z_LIMS = (-10., 65.)
@@ -67,46 +67,36 @@ def _default_limits(field, plot_type):
     # Check the field and apply the proper limits
     if field == name('reflectivity'):
         vminmax = (Z_LIMS[0], Z_LIMS[1])
-#        CMAP = 'gist_ncar'
         CMAP = 'pyart_NWSRef'
     elif field == name('velocity'):
         vminmax = (VR_LIMS[0], VR_LIMS[1])
-#        CMAP = 'RdBu_r'
         CMAP = 'pyart_NWSVel'
     elif field == name('differential_reflectivity'):
         vminmax = (ZDR_LIMS[0], ZDR_LIMS[1])
-#        CMAP = 'RdYlBu_r'
         CMAP = 'pyart_BuDRd12'
     elif field == name('cross_correlation_ratio'):
         vminmax = (RHO_HV_LIMS[0], RHO_HV_LIMS[1])
-#        CMAP = 'cool'
         CMAP = 'pyart_BrBu12'
     elif field == name('specific_differential_phase'):
         vminmax = (KDP_LIMS[0], KDP_LIMS[1])
-#        CMAP = 'YlOrBr'
         CMAP = 'pyart_BrBu12'
     elif field == name('normalized_coherent_power'):
         vminmax = (NCP_LIMS[0], NCP_LIMS[1])
-#        CMAP = 'jet'
         CMAP = 'pyart_Carbone17'
     elif field == name('spectrum_width'):
         vminmax = (SW_LIMS[0], SW_LIMS[1])
-#        CMAP = 'gist_ncar'
         CMAP = 'pyart_Carbone17'
     elif field == name('differential_phase'):
         vminmax = (PHIDP_LIMS[0], PHIDP_LIMS[1])
-#        CMAP = 'RdBu_r'
         CMAP = 'pyart_BlueBrown11'
     elif field == name('total_power'):
         vminmax = (TP_LIMS[0], TP_LIMS[1])
-#        CMAP = 'jet'
         CMAP = 'pyart_StepSeq25'
     elif field == name('radar_echo_classification'):
         vminmax = (0, 12)
         CMAP = 'pyart_EWilson17'
     else:
         vminmax = (Z_LIMS[0], Z_LIMS[1])
-#        CMAP = 'gist_ncar'
         CMAP = 'pyart_Carbone17'
 
     limit_strs = ('vmin', 'vmax', 'xmin', 'xmax', 'ymin', 'ymax')
@@ -128,7 +118,6 @@ def _default_limits(field, plot_type):
 # Limits Dialog Class Methods #
 ###############################
 
-
 def limits_dialog(limits, cmap, name):
     '''Function to instantiate a Display Limits Window.
 
@@ -137,7 +126,7 @@ def limits_dialog(limits, cmap, name):
     limits - dict
         Dictionary containing display limits.
     name - string
-        Window name to add as prefix in window title .
+        Window name to add as prefix in window title.
 
     Notes::
     -----

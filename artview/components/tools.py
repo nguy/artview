@@ -182,8 +182,7 @@ class ValueClick(QtGui.QMainWindow):
 ###############################
 # Use a custom Method #
 ###############################
-
-
+# Is this obsolete using the plugin/component interface? 
 def custom_tool(tooldict):
     '''Allow user to activate self-defined tool.
 
@@ -207,6 +206,7 @@ def custom_tool(tooldict):
 class ZoomPan(QtGui.QMainWindow):
     '''
     Class for Zoom and Pan of display.
+    Activated through mouse drags and wheel movements.
 
     Modified an original answer found here:
 http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-wheel
@@ -265,7 +265,7 @@ http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-
         self.fig = ax.get_figure()  # get the figure of interest
 
     def connect(self):
-        '''Connect the ZoomPan instance'''
+        '''Connect the ZoomPan instance.'''
         self.scrollID = self.fig.canvas.mpl_connect(
             'scroll_event', self.onZoom)
         self.pressID = self.fig.canvas.mpl_connect(
@@ -276,7 +276,7 @@ http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-
             'motion_notify_event', self.onMotion)
 
     def onZoom(self, event):
-        '''Recalculate limits when zoomed'''
+        '''Recalculate limits when zoomed.'''
         cur_xlim = self.ax.get_xlim()
         cur_ylim = self.ax.get_ylim()
 
@@ -300,12 +300,6 @@ http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-
         relx = (cur_xlim[1] - xdata)/(cur_xlim[1] - cur_xlim[0])
         rely = (cur_ylim[1] - ydata)/(cur_ylim[1] - cur_ylim[0])
 
-#        self.ax.set_xlim(
-#            [xdata - new_width * (1-relx), xdata + new_width * (relx)])
-#        self.ax.set_ylim(
-#            [ydata - new_height * (1-rely), ydata + new_height * (rely)])
-#        self.ax.figure.canvas.draw()
-
         # Record the new limits and pass them to main window
         self.Vlims.value['xmin'] = xdata - new_width * (1-relx)
         self.Vlims.value['xmax'] = xdata + new_width * (relx)
@@ -314,7 +308,7 @@ http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-
         self.Vlims.change(self.Vlims.value)
 
     def onPress(self, event):
-        '''Get the current event parameters'''
+        '''Get the current event parameters.'''
         if event.inaxes != self.ax:
             return
         self.cur_xlim = self.ax.get_xlim()
@@ -327,7 +321,7 @@ http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-
         self.ax.figure.canvas.draw()
 
     def onMotion(self, event):
-        '''Redraw the plot when panned'''
+        '''Redraw the plot when panned.'''
         if self.press is None:
             return
         if event.inaxes != self.ax:
@@ -346,7 +340,7 @@ http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-
         self.Vlims.change(limits)
 
     def disconnect(self):
-        '''Disconnect the ZoomPan instance'''
+        '''Disconnect the ZoomPan instance.'''
         self.fig.canvas.mpl_disconnect(self.scrollID)
         self.fig.canvas.mpl_disconnect(self.pressID)
         self.fig.canvas.mpl_disconnect(self.releaseID)

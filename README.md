@@ -64,24 +64,28 @@ python setup.py install --user
 Either cd into the installed folder and run:
 
 ```python
-python artview -d /some/directory/you/want/to/point/to
+artview -d /some/directory/you/want/to/point/to
 ```
 
 Or it can be run from anywhere with the following:
 
 ```python
-python -m artview
+artview
 ```
 
-The above command will look in the current working directory. Command line options
-just like the original exist to specify directory, field, etc.
+A specific file can be loaded:
 ```python
-python -m artview -d /some/directory/you/want/to/point/to
+artview -F /some/directory/you/want/to/point/to/filename
+```
+
+A specific field (e.g. reflectivity) can be loaded:
+```python
+artview -f 'reflectivity'
 ```
 
 To see the command line options:
 ```python
-python -m artview -h
+artview -h
 ```
 
 ARTview should be able to recognize and correctly handle PPI, RHI and airborne files.
@@ -95,9 +99,10 @@ to the list.
 
 [matplotlib](http://matplotlib.org)
 
-[PyQt](http://www.riverbankcomputing.co.uk/software/pyqt/intro) or [TkInter](https://wiki.python.org/moin/TkInter) 
+[PyQt](http://www.riverbankcomputing.co.uk/software/pyqt/intro)
 
-Note that the TkInter version is an older deprecated version of the code.
+An old unsupported and limited version can be found in the scripts directory and uses
+[TkInter](https://wiki.python.org/moin/TkInter) .
 
 Developed on Python 2.7.7 and 2.7.9 :: Anaconda 2.0.1 and 2.1.0
 
@@ -123,7 +128,3 @@ There has not been extensive testing, but seems reasonably stable.
 We are always looking for feedback.
 
 Please contact Nick Guy at above email or preferably open an [Issue](https://github.com/nguy/artview/issues) with any problems you encounter.
-
-Known issues exist when using python 2.6, we are trying to track these down currently.
-
-

@@ -11,7 +11,7 @@ from functools import partial
 from ..core import Variable, Component
 
 class FieldButtonWindow(Component):
-    '''Class to display the Window with Field Buttons'''
+    '''Class to display a Window with Field name radio buttons.'''
 
     Vradar = None  #: see :ref:`shared_variable`
     Vfield = None  #: see :ref:`shared_variable`
@@ -59,7 +59,7 @@ class FieldButtonWindow(Component):
     ########################
 
     def FieldSelectCmd(self, field):
-        '''Captures a selection and update field variable.'''
+        '''Captures a selection and updates field variable.'''
         self.Vfield.change(field)
 
     def CreateFieldWidget(self):
@@ -70,7 +70,7 @@ class FieldButtonWindow(Component):
         self.setCentralWidget(self.radioBox)
 
     def SetFieldRadioButtons(self):
-        '''Set a field selection using radio buttons'''
+        '''Set a field selection using radio buttons.'''
         # Instantiate the buttons into a list for future use
         self.fieldbutton = {}
 

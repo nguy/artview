@@ -15,7 +15,7 @@ common = core.common
 
 class Mapper(core.Component):
     '''
-    Interfase for executing :py:func:`pyart.map.grid_from_radars`
+    Interface for executing :py:func:`pyart.map.grid_from_radars`
     '''
 
     Vradar = None  #: see :ref:`shared_variable`
@@ -23,14 +23,14 @@ class Mapper(core.Component):
 
     @classmethod
     def guiStart(self, parent=None):
-        '''Graphical Interface for Starting this Class'''
+        '''Graphical interface for starting this class'''
         kwargs, independent = \
             common._SimplePluginStart("Mapper").startDisplay()
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
     def __init__(self, Vradar=None, Vgrid=None, name="Mapper", parent=None):
-        '''Initialize the class to create the interface
+        '''Initialize the class to create the interface.
 
         Parameters
         ----------
@@ -143,7 +143,7 @@ class Mapper(core.Component):
         self.griddingAlgo.setCurrentIndex(1)
 
     def addEspecificOptions(self, item):
-        '''Mount Options Layout depending on gridding algorithm'''
+        '''Mount Options Layout depending on gridding algorithm.'''
         self._clearLayout(self.especificLayout)
         if item == 'map_gates_to_grid':
             self.mapGatesToGridOptions()
@@ -179,7 +179,7 @@ class Mapper(core.Component):
         self.especificLayout.addWidget(self.leafsize, 13, 1, 1, 2)
 
     def _fieldsOptions(self):
-        '''Mount Options Layout related to field'''
+        '''Mount Options Layout related to field.'''
         self.gridOriginLat = QtGui.QDoubleSpinBox()
         self.gridOriginLat.setRange(-90, 90)
         self.gridOriginLat.setDecimals(8)
@@ -217,7 +217,7 @@ class Mapper(core.Component):
         self.especificLayout.addWidget(self.maxRefl, 5, 1, 1, 2)
 
     def _interpolationOptions(self):
-        '''Mount Options Layout related to interpolation'''
+        '''Mount Options Layout related to interpolation.'''
         self.mapRoi = QtGui.QCheckBox("map_roi")
         self.mapRoi.setChecked(True)
         self.especificLayout.addWidget(self.mapRoi, 6, 1, 1, 2)
@@ -251,7 +251,7 @@ class Mapper(core.Component):
         self.roiFunc.setCurrentIndex(2)
 
     def _roiFuncOptions(self, item):
-        '''Mount Options Layout related to radius of influence'''
+        '''Mount Options Layout related to radius of influence.'''
         self._clearLayout(self.roiFuncLayout)
         if item == 'constant':
             self.constantRoiOptions()
@@ -261,7 +261,7 @@ class Mapper(core.Component):
             self.distBeamRoiOptions()
 
     def _constantRoiOptions(self):
-        '''Mount Options Layout for constant roi'''
+        '''Mount Options Layout for constant ROI.'''
         self.constantRoi = QtGui.QDoubleSpinBox()
         self.constantRoi.setRange(0, 30000)
         self.constantRoi.setValue(500)
@@ -270,7 +270,7 @@ class Mapper(core.Component):
         self.roiFuncLayout.addWidget(self.constantRoi, 0, 1, 1, 2)
 
     def distRoiOptions(self):
-        '''Mount Options Layout for dist roi'''
+        '''Mount Options Layout for dist ROI.'''
         self.zFactor = QtGui.QDoubleSpinBox()
         self.zFactor.setRange(0, 30000)
         self.zFactor.setValue(0.05)
@@ -295,7 +295,7 @@ class Mapper(core.Component):
         self.roiFuncLayout.addWidget(self.minRadius, 2, 1, 1, 2)
 
     def distBeamRoiOptions(self):
-        '''Mount Options Layout for dist beam roi'''
+        '''Mount Options Layout for dist beam ROI.'''
         self.hFactor = QtGui.QDoubleSpinBox()
         self.hFactor.setRange(0, 30000)
         self.hFactor.setValue(1.0)
@@ -325,7 +325,7 @@ class Mapper(core.Component):
         self.roiFuncLayout.addWidget(self.minRadius, 3, 1, 1, 2)
 
     def newRadar(self, variable, value, strong):
-        '''Display pyart's docstring for help'''
+        '''Display Py-Art's docstring for help.'''
         if self.Vradar.value is None:
             return
         self.fieldsmenu.clear()
@@ -404,7 +404,7 @@ class Mapper(core.Component):
         print "Mapping took %fs" % (t1-t0)
 
     def _clearLayout(self, layout):
-        '''recursively remove items from layout'''
+        '''recursively remove items from layout.'''
         while layout.count():
             item = layout.takeAt(0)
             widget = item.widget()

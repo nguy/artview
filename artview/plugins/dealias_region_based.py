@@ -15,7 +15,7 @@ common = core.common
 
 class DealiasRegionBased(core.Component):
     '''
-    Interfase for executing :py:func:`pyart.correct.dealias_region_based`
+    Interface for executing :py:func:`pyart.correct.dealias_region_based`
     '''
 
     Vradar = None  #: see :ref:`shared_variable`
@@ -23,7 +23,7 @@ class DealiasRegionBased(core.Component):
 
     @classmethod
     def guiStart(self, parent=None):
-        '''Graphical Interface for Starting this Class'''
+        '''Graphical interface for starting this class'''
         kwargs, independent = \
             common._SimplePluginStart("DealiasRegionBased").startDisplay()
         kwargs['parent'] = parent
@@ -31,7 +31,7 @@ class DealiasRegionBased(core.Component):
 
     def __init__(self, Vradar=None, Vgatefilter=None,
                  name="DealiasRegionBased", parent=None):
-        '''Initialize the class to create the interface
+        '''Initialize the class to create the interface.
 
         Parameters
         ----------
@@ -85,7 +85,7 @@ class DealiasRegionBased(core.Component):
         self.show()
 
     def addGeneralOptions(self):
-        '''Mount Options Layout'''
+        '''Mount Options Layout.'''
         self.radarButton = QtGui.QPushButton("Find Variable")
         self.radarButton.clicked.connect(self.chooseRadar)
         self.generalLayout.addWidget(QtGui.QLabel("Radar"), 0, 0)
@@ -158,7 +158,7 @@ class DealiasRegionBased(core.Component):
             self.connectSharedVariable('Vradar')  # connect new
 
     def newRadar(self, variable, value, strong):
-        ''' respond to change in radar '''
+        '''respond to change in radar.'''
         if self.Vradar.value is None:
             return
 
@@ -168,18 +168,18 @@ class DealiasRegionBased(core.Component):
             self.raysWrapAround.setChecked(False)
 
     def displayHelp(self):
-        '''Display pyart's docstring for help'''
+        '''Display Py-Art's docstring for help.'''
         common.ShowLongText(pyart.correct.dealias_region_based.__doc__)
 
     def dealias_region_based(self):
-        '''Mount Options and execute
+        '''Mount Options and execute.
         :py:func:`~pyart.correct.dealias_region_based`.
         The resulting fields are added to Vradar.
         Vradar is updated, strong or weak depending on overwriting old fields.
         '''
         # test radar
         if self.Vradar.value is None:
-            common.ShowWarning("Radar is None, can not perform correction")
+            common.ShowWarning("Radar is None, can not perform correction.")
             return
         args = {
             'radar': self.Vradar.value,
@@ -230,7 +230,7 @@ class DealiasRegionBased(core.Component):
         print "Correction took %fs" % (t1-t0)
 
     def _clearLayout(self, layout):
-        '''recursively remove items from layout'''
+        '''recursively remove items from layout.'''
         while layout.count():
             item = layout.takeAt(0)
             widget = item.widget()

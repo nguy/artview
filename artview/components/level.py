@@ -12,7 +12,11 @@ from ..core import Variable, Component
 
 
 class LevelButtonWindow(Component):
-    '''Class to display the Window with Level Buttons.'''
+    '''
+    Class to display the Window with Level radio buttons.
+    The level can represent either tilts in a native radar file
+    or some height level in a gridded data file.
+    '''
 
     Vradar = None  #: see :ref:`shared_variable`
     Vgrid = None  #: see :ref:`shared_variable`
@@ -42,14 +46,14 @@ class LevelButtonWindow(Component):
             be changed afterwards.
         Vcontainer: :py:class:`~artview.core.core.Variable` instance
             Radar/Grid signal variable. None will create empty variable.
-            Will be passed to Vradar or Vgrid according with plot_type 
-            For correct behavior one and just one of those should be provided
+            Will be passed to Vradar or Vgrid according with plot_type.
+            For correct behavior one and just one of those should be provided.
         [Optional]
         name : string
             Level Radiobutton window name.
         parent : PyQt instance
             Parent instance to associate to LevelButtonWindow window.
-            If None, then Qt owns, otherwise associated w/ parent PyQt instance
+            If None, then Qt owns, otherwise associated w/ parent PyQt instance.
 
         Notes
         -----
@@ -203,8 +207,8 @@ class LevelButtonWindow(Component):
 
     @property
     def Vlevel(self):
-        ''' Alias to Vtilt, VlevelZ, VlevelY or VlevelX depending on
-        plot_type '''
+        '''Alias to Vtilt, VlevelZ, VlevelY or VlevelX depending on
+        plot_type.'''
         if self.plot_type.startswith("radar"):
             return self.Vtilt
         elif self.plot_type == "gridZ":

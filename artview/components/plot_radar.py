@@ -5,6 +5,7 @@ Class instance used to make Display.
 """
 # Load the needed packages
 import numpy as np
+import os
 import pyart
 
 from PyQt4 import QtGui, QtCore
@@ -20,13 +21,12 @@ from ..core import Variable, Component, common, VariableChoose
 
 # Save image file type and DPI (resolution)
 IMAGE_EXT = 'png'
-DPI = 100
+DPI = 200
 # ========================================================================
-
 
 class RadarDisplay(Component):
     '''
-    Class that creates a display plot, using a returned Radar structure
+    Class to create a display plot, using a returned Radar structure
     from the PyArt pyart.graph package.
     '''
 
@@ -38,7 +38,7 @@ class RadarDisplay(Component):
 
     @classmethod
     def guiStart(self, parent=None):
-        '''Grafical Interface for Starting this Class'''
+        '''Graphical interface for starting this class'''
         args = _DisplayStart().startDisplay()
         return self(**args), True
 
@@ -140,7 +140,7 @@ class RadarDisplay(Component):
         self.show()
 
     def keyPressEvent(self, event):
-        '''Reimplementation, allow tilt adjustment via the Up-Down arrow keys.'''
+        '''Allow tilt adjustment via the Up-Down arrow keys.'''
         if event.key() == QtCore.Qt.Key_Up:
             self.TiltSelectCmd(self.Vtilt.value + 1)
         elif event.key() == QtCore.Qt.Key_Down:
@@ -185,6 +185,8 @@ class RadarDisplay(Component):
         self._add_fieldBoxUI()
         # Create the Tools controls
         self._add_toolsBoxUI()
+        # Create the Informational label at top
+        self._add_infolabel()
 
     def setUILayout(self):
         '''Setup the button/display UI layout.'''
@@ -192,6 +194,7 @@ class RadarDisplay(Component):
         self.layout.addWidget(self.fieldBox, 0, 1)
         self.layout.addWidget(self.dispButton, 0, 2)
         self.layout.addWidget(self.toolsButton, 0, 3)
+        self.layout.addWidget(self.infolabel, 0, 4)
 
     #############################
     # Functionality methods #
@@ -304,7 +307,7 @@ class RadarDisplay(Component):
         self.dispCmapmenu.setFocusPolicy(QtCore.Qt.NoFocus)
         dispQuickSave = dispmenu.addAction("Quick Save Image")
         dispQuickSave.setShortcut("Ctrl+D")
-        dispQuickSave.setStatusTip(
+        dispQuickSave.setToolTip(
             "Save Image to local directory with default name")
         dispSaveFile = dispmenu.addAction("Save Image")
         dispSaveFile.setShortcut("Ctrl+S")
@@ -324,7 +327,8 @@ class RadarDisplay(Component):
         '''Create the Tilt Selection ComboBox.'''
         self.tiltBox = QtGui.QComboBox()
         self.tiltBox.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.tiltBox.setToolTip("Choose tilt elevation angle")
+        self.tiltBox.setToolTip("Choose tilt elevation angle\n"
+                                "Up/Down arrow keys Increase/Decrease tilt")
         self.tiltBox.activated[str].connect(self._tiltAction)
 
     def _add_fieldBoxUI(self):
@@ -352,6 +356,22 @@ class RadarDisplay(Component):
         toolDefault.triggered[()].connect(self.toolDefaultCmd)
         self.toolsButton.setMenu(toolmenu)
 
+    def _add_infolabel(self):
+        '''Create an information label about the display'''
+        self.infolabel = QtGui.QLabel("Filename: \n"
+                                      "Radar: \n"
+                                      "Field: \n"
+                                      "Tilt: ", self)
+        self.infolabel.setStyleSheet('color: red; font: italic 10px')
+        
+    def _update_infolabel(self):
+        self.infolabel.setText("Filename: %s\n"
+                               "Radar: %s\n"
+                               "Field: %s\n"
+                               "Tilt: %d" % (self.name,
+                                            self.Vradar.value.metadata['instrument_name'],
+                                            self.Vfield.value,
+                                            self.Vtilt.value+1))
     ########################
     # Selectionion methods #
     ########################
@@ -390,6 +410,7 @@ class RadarDisplay(Component):
         self.title = None
         if strong:
             self._update_plot()
+            self._update_infolabel()
 
     def NewField(self, variable, value, strong):
         '''
@@ -409,6 +430,7 @@ class RadarDisplay(Component):
         self.fieldBox.setCurrentIndex(idx)
         if strong and self.Vradar.value is not None:
             self._update_plot()
+            self._update_infolabel()
 
     def NewLims(self, variable, value, strong):
         '''
@@ -449,6 +471,7 @@ class RadarDisplay(Component):
         self.tiltBox.setCurrentIndex(value+1)
         if strong and self.Vradar.value is not None:
             self._update_plot()
+            self._update_infolabel()
 
     def TiltSelectCmd(self, ntilt):
         '''
@@ -633,9 +656,6 @@ class RadarDisplay(Component):
                 self.Vfield.value, vmin=cmap['vmin'],
                 vmax=cmap['vmax'], colorbar_flag=False, cmap=cmap['cmap'],
                 ax=self.ax, fig=self.fig, title=title)
-            #self.display.set_limits(
-            #    xlim=(limits['xmin'], limits['xmax']),
-            #    ylim=(limits['ymin'], limits['ymax']), ax=self.ax)
             self.display.plot_grid_lines()
 
         elif self.plot_type == "radarPpi":
@@ -646,10 +666,6 @@ class RadarDisplay(Component):
                 vmin=cmap['vmin'], vmax=cmap['vmax'],
                 colorbar_flag=False, cmap=cmap['cmap'],
                 ax=self.ax, fig=self.fig, title=self.title)
-            # Set limits
-            #self.display.set_limits(
-            #    xlim=(limits['xmin'], limits['xmax']),
-            #    ylim=(limits['ymin'], limits['ymax']), ax=self.ax)
             # Add range rings
             if self.RngRing:
                 self.display.plot_range_rings(self.RNG_RINGS, ax=self.ax)
@@ -664,9 +680,6 @@ class RadarDisplay(Component):
                 vmin=cmap['vmin'], vmax=cmap['vmax'],
                 colorbar_flag=False, cmap=cmap['cmap'],
                 ax=self.ax, fig=self.fig, title=self.title)
-            #self.display.set_limits(
-            #   xlim=(limits['xmin'], limits['xmax']),
-            #    ylim=(limits['ymin'], limits['ymax']), ax=self.ax)
             # Add range rings
             if self.RngRing:
                 self.display.plot_range_rings(self.RNG_RINGS, ax=self.ax)
@@ -778,10 +791,10 @@ class RadarDisplay(Component):
     ########################
     def _quick_savefile(self, PTYPE=IMAGE_EXT):
         '''Save the current display via PyArt interface.'''
-        path = self.display.generate_filename(
+        imagename = self.display.generate_filename(
             self.Vfield.value, self.Vtilt.value, ext=IMAGE_EXT)
-        self.canvas.print_figure(path, dpi=DPI)
-        self.statusbar.showMessage('Saved to %s' % path)
+        self.canvas.print_figure(os.path.join(os.getcwd(), imagename), dpi=DPI)
+        self.statusbar.showMessage('Saved to %s' % os.path.join(os.getcwd(), imagename))
 
     def _savefile(self, PTYPE=IMAGE_EXT):
         '''Save the current display using PyQt dialog interface.'''
@@ -816,11 +829,11 @@ class RadarDisplay(Component):
 
 class _DisplayStart(QtGui.QDialog):
     '''
-    Dialog Class for graphical Start of Display, to be used in guiStart
+    Dialog Class for graphical start of display, to be used in guiStart.
     '''
 
     def __init__(self):
-        '''Initialize the class to create the interface'''
+        '''Initialize the class to create the interface.'''
         super(_DisplayStart, self).__init__()
         self.result = {}
         self.layout = QtGui.QGridLayout(self)

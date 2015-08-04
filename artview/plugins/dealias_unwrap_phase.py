@@ -15,7 +15,7 @@ common = core.common
 
 class DealiasUnwrapPhase(core.Component):
     '''
-    Interfase for executing :py:func:`pyart.correct.dealias_unwrap_phase`
+    Interface for executing :py:func:`pyart.correct.dealias_unwrap_phase`
     '''
 
     Vradar = None  #: see :ref:`shared_variable`
@@ -23,7 +23,7 @@ class DealiasUnwrapPhase(core.Component):
 
     @classmethod
     def guiStart(self, parent=None):
-        '''Graphical Interface for Starting this Class'''
+        '''Graphical interface for starting this class.'''
         kwargs, independent = \
             common._SimplePluginStart("DealiasUnwrapPhase").startDisplay()
         kwargs['parent'] = parent
@@ -31,7 +31,7 @@ class DealiasUnwrapPhase(core.Component):
 
     def __init__(self, Vradar=None, Vgatefilter=None,
                  name="DealiasUnwrapPhase", parent=None):
-        '''Initialize the class to create the interface
+        '''Initialize the class to create the interface.
 
         Parameters
         ----------
@@ -86,7 +86,7 @@ class DealiasUnwrapPhase(core.Component):
         self.show()
 
     def addGeneralOptions(self):
-        '''Mount Options Layout'''
+        '''Mount Options Layout.'''
         self.radarButton = QtGui.QPushButton("Find Variable")
         self.radarButton.clicked.connect(self.chooseRadar)
         self.generalLayout.addWidget(QtGui.QLabel("Radar"), 0, 0)
@@ -148,7 +148,7 @@ class DealiasUnwrapPhase(core.Component):
             self.connectSharedVariable('Vradar')
 
     def newRadar(self, variable, value, strong):
-        ''' respond to change in radar '''
+        '''respond to change in radar.'''
         if self.Vradar.value is None:
             return
 
@@ -158,7 +158,7 @@ class DealiasUnwrapPhase(core.Component):
             self.raysWrapAround.setChecked(False)
 
     def displayHelp(self):
-        '''Display pyart's docstring for help'''
+        '''Display Py-Art's docstring for help.'''
         common.ShowLongText(pyart.correct.dealias_unwrap_phase.__doc__)
 
     def dealias_unwrap_phase(self):

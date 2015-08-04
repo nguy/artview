@@ -1,13 +1,13 @@
 """
 standard.py
 
-Driver function that creates ARTView display.
+Driver function that creates ARTview display.
 """
 import os
 
 def run(DirIn=os.getcwd(), filename=None, field=None):
     """
-    standard artview execution
+    The standard artview execution.
 
     It has :py:class:`~artview.components.Menu`
     with :py:class:`~artview.components.ComponentsControl`,

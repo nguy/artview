@@ -15,14 +15,14 @@ common = core.common
 
 class PhaseProcLp(core.Component):
     '''
-    Interfase for executing :py:func:`pyart.correct.phase_proc_lp`
+    Interface for executing :py:func:`pyart.correct.phase_proc_lp`
     '''
 
     Vradar = None  #: see :ref:`shared_variable`
 
     @classmethod
     def guiStart(self, parent=None):
-        '''Graphical Interface for Starting this Class'''
+        '''Graphical interface for starting this class.'''
         kwargs, independent = \
             common._SimplePluginStart("PhaseProcLp").startDisplay()
         kwargs['parent'] = parent
@@ -30,7 +30,7 @@ class PhaseProcLp(core.Component):
 
     def __init__(self, Vradar=None, Vgatefilter=None,
                  name="PhaseProcLp", parent=None):
-        '''Initialize the class to create the interface
+        '''Initialize the class to create the interface.
 
         Parameters
         ----------
@@ -75,7 +75,7 @@ class PhaseProcLp(core.Component):
         self.show()
 
     def addGeneralOptions(self):
-        '''Mount Options Layout'''
+        '''Mount Options Layout.'''
         self.radarButton = QtGui.QPushButton("Find Variable")
         self.radarButton.clicked.connect(self.chooseRadar)
         self.generalLayout.addWidget(QtGui.QLabel("Radar"), 0, 0)
@@ -213,7 +213,7 @@ class PhaseProcLp(core.Component):
             self.Vradar = getattr(item[1], item[2])
 
     def displayHelp(self):
-        '''Display pyart's docstring for help'''
+        '''Display Py-Art's docstring for help.'''
         common.ShowLongText(pyart.correct.phase_proc_lp.__doc__)
 
     def phase_proc_lp(self):
@@ -223,7 +223,7 @@ class PhaseProcLp(core.Component):
         '''
         # test radar
         if self.Vradar.value is None:
-            common.ShowWarning("Radar is None, can not perform correction")
+            common.ShowWarning("Radar is None, can not perform correction.")
             return
         # mount options
         args = {
@@ -297,7 +297,7 @@ class PhaseProcLp(core.Component):
         print "Correction took %fs" % (t1-t0)
 
     def _clearLayout(self, layout):
-        '''recursively remove items from layout'''
+        '''recursively remove items from layout.'''
         while layout.count():
             item = layout.takeAt(0)
             widget = item.widget()

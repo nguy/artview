@@ -1,7 +1,7 @@
 """
 menu.py
 
-Class instance used to create menu for ARTView app.
+Class instance used to create menu for ARTview app.
 """
 import numpy as np
 import pyart
@@ -13,7 +13,7 @@ from ..core import Variable, Component, common
 
 
 class Menu(Component):
-    '''Class to display the MainMenu'''
+    '''Class to display the MainMenu.'''
 
     Vradar = None  #: see :ref:`shared_variable`
     Vgrid = None  #: see :ref:`shared_variable`
@@ -79,10 +79,8 @@ class Menu(Component):
         self.LaunchApp()
         self.show()
 
-    # Allow advancement via left and right arrow keys
-    # and tilt adjustment via the Up-Down arrow keys
     def keyPressEvent(self, event):
-        '''Reimplementation, change files with right left button'''
+        '''Change data file with left and right arrow keys.'''
         if event.key() == QtCore.Qt.Key_Right:
             # Menu control the file and open the radar
             self.AdvanceFileSelect(self.fileindex + 1)
@@ -132,7 +130,7 @@ class Menu(Component):
     def addLayoutWidget(self, widget):
         '''
         Add a widget to central layout.
-        This function is to be called both internal and external
+        This function is to be called both internal and external.
         '''
         if sys.version_info<(2,7,0):
             frame = QtGui.QFrame()
@@ -256,7 +254,9 @@ class Menu(Component):
             self.addLayoutWidget(comp)
 
     def addFileAdvanceMenu(self):
-        '''Add an menu actions to advance to next or previous file.'''
+        '''
+        Add menu to advance to next or previous file. 
+        Or to go to the first or last file in the selected directory.'''
         self.advancemenu = self.menubar.addMenu("Advance file")
         nextAction = self.advancemenu.addAction("Next")
         nextAction.triggered[()].connect(
@@ -282,8 +282,8 @@ class Menu(Component):
     def _about(self):
         # Add a more extensive about eventually
         txOut = "This is a simple radar file browser to allow \
-                 quicklooks using the DoE PyArt software"
-        QtGui.QMessageBox.about(self, "About ARTView", txOut)
+                 quicklooks using the DoE PyArt software."
+        QtGui.QMessageBox.about(self, "About ARTview", txOut)
 
     def _get_RadarLongInfo(self):
         '''Print out the radar info to text box and terminal.'''
@@ -296,23 +296,26 @@ class Menu(Component):
 
     def _get_RadarShortInfo(self):
         '''Print out some basic info about the radar.'''
+        # For any missing data
+        infoNA = "Info not available"
+        
         try:
             rname = self.Vradar.value.metadata['instrument_name']
         except:
-            rname = "Info not available"
+            rname = infoNA
         try:
             rlon = str(self.Vradar.value.longitude['data'][0])
         except:
-            rlon = "Info not available"
+            rlon = infoNA
         try:
             rlat = str(self.Vradar.value.latitude['data'][0])
         except:
-            rlat = "Info not available"
+            rlat = infoNA
         try:
             ralt = str(self.Vradar.value.altitude['data'][0])
             raltu = self.Vradar.value.altitude['units'][0]
         except:
-            ralt = "Info not available"
+            ralt = infoNA
             raltu = " "
         try:
             maxr = str(self.Vradar.value.instrument_parameters[
@@ -320,7 +323,7 @@ class Menu(Component):
             maxru = self.Vradar.value.instrument_parameters[
                 'unambiguous_range']['units'][0]
         except:
-            maxr = "Info not available"
+            maxr = infoNA
             maxru = " "
         try:
             nyq = str(self.Vradar.value.instrument_parameters[
@@ -328,7 +331,7 @@ class Menu(Component):
             nyqu = self.Vradar.value.instrument_parameters[
                 'nyquist_velocity']['units'][0]
         except:
-            nyq = "Info not available"
+            nyq = infoNA
             nyqu = " "
         try:
             bwh = str(self.Vradar.value.instrument_parameters[
@@ -336,7 +339,7 @@ class Menu(Component):
             bwhu = self.Vradar.value.instrument_parameters[
                 'radar_beam_width_h']['units'][0]
         except:
-            bwh = "Info not available"
+            bwh = infoNA
             bwhu = " "
         try:
             bwv = str(self.Vradar.value.instrument_parameters[
@@ -344,7 +347,7 @@ class Menu(Component):
             bwvu = self.Vradar.value.instrument_parameters[
                 'radar_beam_width_v']['units'][0]
         except:
-            bwv = "Info not available"
+            bwv = infoNA
             bwvu = " "
         try:
             pw = str(self.Vradar.value.instrument_parameters[
@@ -352,16 +355,16 @@ class Menu(Component):
             pwu = self.Vradar.value.instrument_parameters[
                 'pulse_width']['units'][0]
         except:
-            pw = "Info not available"
+            pw = infoNA
             pwu = " "
         try:
             ngates = str(self.Vradar.value.ngates)
         except:
-            ngates = "Info not available"
+            ngates = infoNA
         try:
             nsweeps = str(self.Vradar.value.nsweeps)
         except:
-            nsweeps = "Info not available"
+            nsweeps = infoNA
 
         txOut = (('Radar Name: %s\n' % rname) +
                  ('Radar longitude: %s\n' % rlon) +

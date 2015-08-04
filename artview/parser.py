@@ -34,7 +34,7 @@ def parse(argv):
     # Directory argument now optional
     parser.add_argument('-d', '--directory', type=str,
                         help='directory to open', default='./')
-    parser.add_argument('-f', '--field', type=str, help='field to show',
+    parser.add_argument('-f', '--field', type=str, help='Field to show',
                         default=None)
     parser.add_argument('-F', '--file', type=str, help='File to show',
                         default=None)

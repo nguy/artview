@@ -24,8 +24,9 @@ class ValueClick(Component):
 
         Parameters::
         ----------
-        display - ARTView Display
-            Display instance to associate ValueClick. Must have following elements:
+        display - ARTview Display
+            Display instance to associate ValueClick. 
+            Must have following elements:
                 * getPlotAxis() - Matplotlib axis instance
                 * getStatusBar() - QtGui.QStatusBar
                 * getField() - string
@@ -53,7 +54,7 @@ class ValueClick(Component):
         self.connect()
 
     def connect(self):
-        '''Connect the ValueClick instance'''
+        '''Connect the ValueClick instance.'''
         self.pickPointID = self.fig.canvas.mpl_connect(
             'button_press_event', self.onPick)
 
@@ -62,7 +63,7 @@ class ValueClick(Component):
         xdata = event.xdata  # get event x location
         ydata = event.ydata  # get event y location
         if (xdata is None) or (ydata is None):
-            msg = "Please choose point inside plot area"
+            msg = "Please choose point inside plot area."
         else:
             aux = self.getNearestPoints(xdata, ydata)
             msg1 = ('x = %4.2f km,  y = %4.2f km,  z = %4.2f km,  ' %
@@ -74,10 +75,10 @@ class ValueClick(Component):
         self.statusbar.showMessage(msg)
 
     def disconnect(self):
-        '''Disconnect the ValueClick instance'''
+        '''Disconnect the ValueClick instance.'''
         self.fig.canvas.mpl_disconnect(self.pickPointID)
 
     def closeEvent(self, QCloseEvent):
-        '''Reimplementations to disconnect'''
+        '''Re-implementation to disconnect.'''
         self.disconnect()
         super(ValueClick, self).closeEvent(QCloseEvent)

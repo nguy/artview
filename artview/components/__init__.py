@@ -5,7 +5,9 @@ Main Components (:mod:`artview.components`)
 
 .. currentmodule:: artview.components
 
-ARTview offer some basic Components for visualisation of data using Py-ART.
+ARTview offers some basic Components for visualization 
+of weather radar data using Py-ART and
+ARTview functions.
 
 .. autosummary::
     :toctree: generated/
@@ -15,6 +17,7 @@ ARTview offer some basic Components for visualisation of data using Py-ART.
     TiltButtonWindow
     FieldButtonWindow
     ComponentsControl
+    ROI
 """
 
 from .plot_radar import RadarDisplay

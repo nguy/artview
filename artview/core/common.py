@@ -110,11 +110,12 @@ def string_dialog(stringIn, title, msg):
 
 class _SimplePluginStart(QtGui.QDialog):
     '''
-    Dialog Class for grafical Start of Display, to be used in guiStart
+    Dialog Class for graphical Start of Display, 
+    to be used in guiStart.
     '''
 
     def __init__(self, name):
-        '''Initialize the class to create the interface'''
+        '''Initialize the class to create the interface.'''
         super(_SimplePluginStart, self).__init__()
         self.result = {}
         self.layout = QtGui.QGridLayout(self)
@@ -126,7 +127,6 @@ class _SimplePluginStart(QtGui.QDialog):
         self.setupUi()
 
     def setupUi(self):
-
         self.layout.addWidget(QtGui.QLabel("Name"), 0, 0)
         self.name = QtGui.QLineEdit(self._name)
         self.layout.addWidget(self.name, 0, 1)
@@ -151,7 +151,7 @@ class _SimplePluginStart(QtGui.QDialog):
 
 
 class CreateTable(QtGui.QTableWidget):
-    """ Creates a custom table widget """
+    """Creates a custom table widget."""
     def __init__(self, column_names, name="Table",
                  textcolor="black", bgcolor="gray", parent=None, *args):
         QtGui.QTableWidget.__init__(self, *args)
@@ -164,8 +164,8 @@ class CreateTable(QtGui.QTableWidget):
         self.colnames = column_names
 
     def display_data(self, data):
-        """ Reads in data from a 2D array and formats and displays it in
-            the table """
+        """Reads in data from a 2D array and formats and displays it in
+            the table."""
 
         if len(data) == 0:
             data = ["No data for selected ROI."]
