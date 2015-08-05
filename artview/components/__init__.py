@@ -16,7 +16,7 @@ ARTview functions.
     Menu
     LevelButtonWindow
     FieldButtonWindow
-    ComponentsControl
+    LinkDisplay
     ROI
 """
 
@@ -25,5 +25,5 @@ from .plot_grid import GridDisplay
 from .menu import Menu
 from .level import LevelButtonWindow
 from .field import FieldButtonWindow
-from .component_control import ComponentsControl
+from .component_control import LinkDisplay
 from .roi import ROI
