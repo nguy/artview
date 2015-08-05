@@ -129,8 +129,7 @@ class GridDisplay(Component):
         self.connectAllVariables()
 
         # Set plot title and colorbar units to defaults
-        # TODO convert title to grid
-        #self.title = None
+        self.title = None
         self.units = None
 
         # set default latlon lines
@@ -160,7 +159,7 @@ class GridDisplay(Component):
 
         # Initialize grid variable
         self.Newgrid(None, None, True)
-
+        self._update_fig_ax()
         self.show()
 
     def keyPressEvent(self, event):
@@ -287,9 +286,16 @@ class GridDisplay(Component):
     def _open_levelbuttonwindow(self):
         '''Open a TiltButtonWindow instance.'''
         from .level import LevelButtonWindow
-        self.levelbuttonwindow = LevelButtonWindow(
-            self.Vlevel, self.plot_type, Vcontainer=self.Vgrid,
-            name=self.name+" Level Selection", parent=self.parent)
+        if self.plot_type == "gridZ":
+            self.levelbuttonwindow = LevelButtonWindow(
+                self.Vlevel, self.plot_type, Vcontainer=self.Vgrid,
+                controlType="radio", name=self.name+" Level Selection",
+                parent=self.parent)
+        else:
+            self.levelbuttonwindow = LevelButtonWindow(
+                self.Vlevel, self.plot_type, Vcontainer=self.Vgrid,
+                controlType="slider", name=self.name+" Level Selection",
+                parent=self.parent)
 
     def _open_fieldbuttonwindow(self):
         '''Open a FieldButtonWindow instance.'''
@@ -315,27 +321,26 @@ class GridDisplay(Component):
         dispmenu = QtGui.QMenu(self)
         dispLimits = dispmenu.addAction("Adjust Display Limits")
         dispLimits.setToolTip("Set data, X, and Y range limits")
-        # TODO convert me to grid
-        #dispTitle = dispmenu.addAction("Change Title")
-        #dispTitle.setToolTip("Change plot title")
+        dispTitle = dispmenu.addAction("Change Title")
+        dispTitle.setToolTip("Change plot title")
         dispUnit = dispmenu.addAction("Change Units")
         dispUnit.setToolTip("Change units string")
         self.dispCmap = dispmenu.addAction("Change Colormap")
         self.dispCmapmenu = QtGui.QMenu("Change Cmap")
         self.dispCmapmenu.setFocusPolicy(QtCore.Qt.NoFocus)
-        #dispQuickSave = dispmenu.addAction("Quick Save Image")
-        #dispQuickSave.setShortcut("Ctrl+D")
-        #dispQuickSave.setStatusTip(
-        #    "Save Image to local directory with default name")
-        #dispSaveFile = dispmenu.addAction("Save Image")
-        #dispSaveFile.setShortcut("Ctrl+S")
-        #dispSaveFile.setStatusTip("Save Image using dialog")
+        dispQuickSave = dispmenu.addAction("Quick Save Image")
+        dispQuickSave.setShortcut("Ctrl+D")
+        dispQuickSave.setStatusTip(
+            "Save Image to local directory with default name")
+        dispSaveFile = dispmenu.addAction("Save Image")
+        dispSaveFile.setShortcut("Ctrl+S")
+        dispSaveFile.setStatusTip("Save Image using dialog")
 
         dispLimits.triggered[()].connect(self._open_LimsDialog)
-        #dispTitle.triggered[()].connect(self._title_input)
+        dispTitle.triggered[()].connect(self._title_input)
         dispUnit.triggered[()].connect(self._units_input)
-        #dispQuickSave.triggered[()].connect(self._quick_savefile)
-        #dispSaveFile.triggered[()].connect(self._savefile)
+        dispQuickSave.triggered[()].connect(self._quick_savefile)
+        dispSaveFile.triggered[()].connect(self._savefile)
 
         self._add_cmaps_to_button()
         self.dispButton.setMenu(dispmenu)
@@ -623,9 +628,9 @@ class GridDisplay(Component):
         else:
             self.YSIZE = 8
         xwidth = 0.7
-        yheight = 0.7 * float(self.YSIZE) / float(self.XSIZE)
-        self.ax.set_position([0.2, 0.55-0.5*yheight, xwidth, yheight])
-        self.cax.set_position([0.2, 0.10, xwidth, 0.02])
+        yheight = 0.7
+        self.ax.set_position([0.15, 0.15, xwidth, yheight])
+        self.cax.set_position([0.15+xwidth, 0.15, 0.02, yheight])
         self._update_axes()
 
     def _set_figure_canvas(self):
@@ -636,7 +641,6 @@ class GridDisplay(Component):
 
     def _update_plot(self):
         '''Draw/Redraw the plot.'''
-        self._check_default_field()
 
         # Create the plot with PyArt GridMapDisplay
         self.ax.cla()  # Clear the plot axes
@@ -647,11 +651,10 @@ class GridDisplay(Component):
             return
 
         # Reset to default title if user entered nothing w/ Title button
-        # TODO convert title to grid
-        #if self.title == '':
-        #    title = None
-        #else:
-        #    title = self.title
+        if self.title == '':
+            title = None
+        else:
+            title = self.title
 
         limits = self.Vlims.value
         cmap = self.Vcmap.value
@@ -663,15 +666,18 @@ class GridDisplay(Component):
                                       ax=self.ax)
             self.plot = self.display.plot_grid(
                     self.Vfield.value, self.VlevelZ.value, vmin=cmap['vmin'],
-                    vmax=cmap['vmax'],cmap=cmap['cmap'])
+                    vmax=cmap['vmax'],cmap=cmap['cmap'], colorbar_flag=False,
+                    title=title, ax=self.ax, fig=self.fig)
         elif self.plot_type == "gridY":
-             self.plot = self.display.plot_latitude_slice(
-                    self.Vfield.value, vmin=cmap['vmin'],
-                    vmax=cmap['vmax'],cmap=cmap['cmap'])
+             self.plot = self.display.plot_latitudinal_level(
+                    self.Vfield.value, self.VlevelY.value, vmin=cmap['vmin'],
+                    vmax=cmap['vmax'], cmap=cmap['cmap'], colorbar_flag=False,
+                    title=title, ax=self.ax, fig=self.fig)
         elif self.plot_type == "gridX":
-             self.plot = self.display.plot_longitude_slice(
-                    self.Vfield.value, vmin=cmap['vmin'],
-                    vmax=cmap['vmax'],cmap=cmap['cmap'])
+             self.plot = self.display.plot_longitudinal_level(
+                    self.Vfield.value, self.VlevelX.value, vmin=cmap['vmin'],
+                    vmax=cmap['vmax'], cmap=cmap['cmap'], colorbar_flag=False,
+                    title=title, ax=self.ax, fig=self.fig)
 
         limits = self.Vlims.value
         x = self.ax.get_xlim()
@@ -685,7 +691,7 @@ class GridDisplay(Component):
         norm = mlabNormalize(vmin=cmap['vmin'],
                              vmax=cmap['vmax'])
         self.cbar = mlabColorbarBase(self.cax, cmap=cmap['cmap'],
-                                     norm=norm, orientation='horizontal')
+                                     norm=norm, orientation='vertical')
         # colorbar - use specified units or default depending on
         # what has or has not been entered
         if self.units is None or self.units == '':
@@ -718,43 +724,6 @@ class GridDisplay(Component):
     #########################
     # Check methods #
     #########################
-
-    def _check_default_field(self):
-        '''
-        Hack to perform a check on reflectivity to make it work with
-        #a larger number of files as there are many nomenclature is the
-        weather radar world.
-
-        This should only occur upon start up with a new file.
-        '''
-        if self.Vfield.value == pyart.config.get_field_name('reflectivity'):
-            if self.Vfield.value in self.fieldnames:
-                pass
-            elif 'CZ' in self.fieldnames:
-                self.Vfield.change('CZ', False)
-            elif 'DZ' in self.fieldnames:
-                self.Vfield.change('DZ', False)
-            elif 'dbz' in self.fieldnames:
-                self.Vfield.change('dbz', False)
-            elif 'DBZ' in self.fieldnames:
-                self.Vfield.change('DBZ', False)
-            elif 'dBZ' in self.fieldnames:
-                self.Vfield.change('dBZ', False)
-            elif 'Z' in self.fieldnames:
-                self.Vfield.change('Z', False)
-            elif 'DBZ_S' in self.fieldnames:
-                self.Vfield.change('DBZ_S', False)
-            elif 'reflectivity_horizontal'in self.fieldnames:
-                self.Vfield.change('reflectivity_horizontal', False)
-            elif 'DBZH' in self.fieldnames:
-                self.Vfield.change('DBZH', False)
-            else:
-                msg = "Could not find the field name.\n\
-                      You can add an additional name by modifying the\n\
-                      'check_default_field' function in plot.py\n\
-                      Please send a note to ARTView folks to add this name\n\
-                      Thanks!"
-                common.ShowWarning(msg)
 
     def _set_default_limits(self, strong=True):
         ''' Set limits to pre-defined default.'''
@@ -799,18 +768,17 @@ class GridDisplay(Component):
     ########################
     # Image save methods #
     ########################
+
     def _quick_savefile(self, PTYPE=IMAGE_EXT):
         '''Save the current display via PyArt interface.'''
-        # TODO convert me to grid
         PNAME = self.display.generate_filename(
-            self.Vfield.value, self.Vtilt.value, ext=IMAGE_EXT)
+            self.Vfield.value, self.Vlevel.value, ext=IMAGE_EXT)
         print "Creating " + PNAME
 
     def _savefile(self, PTYPE=IMAGE_EXT):
         '''Save the current display using PyQt dialog interface.'''
-        # TODO convert me to grid
         PBNAME = self.display.generate_filename(
-            self.Vfield.value, self.Vtilt.value, ext=IMAGE_EXT)
+            self.Vfield.value, self.Vlevel.value, ext=IMAGE_EXT)
         file_choices = "PNG (*.png)|*.png"
         path = unicode(QtGui.QFileDialog.getSaveFileName(
             self, 'Save file', '', file_choices))

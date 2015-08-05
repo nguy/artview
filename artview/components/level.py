@@ -27,7 +27,7 @@ class LevelButtonWindow(Component):
     Vcmap = None #: see :ref:`shared_variable`
 
 
-    def __init__(self, Vlevel, plot_type, Vcontainer=None, controlType="slider",
+    def __init__(self, Vlevel, plot_type, Vcontainer=None, controlType="radio",
                  name="LevelButtons", parent=None):
         '''Initialize the class to create the Level Selection interface.
 
@@ -115,8 +115,9 @@ class LevelButtonWindow(Component):
         if self.plot_type.startswith("radar"):
             txt = "%.2f deg" % self.elevs[value]
         else:
-            txt = "%.2f km" % self.elevs[value] / 1000.
+            txt = "%.2f km" % (self.elevs[value] / 1000.)
         QtGui.QToolTip.showText(QtGui.QCursor.pos(), txt)
+        self.Vlevel.change(value, False)
 
     def CreateLevelWidget(self):
         '''Create a widget to store radio buttons to control level adjust.'''

@@ -39,7 +39,12 @@ def run(DirIn=os.getcwd(), filename=None, field=None):
 
     # start Displays
     Vtilt = Variable(0)
-    plot1 = GridDisplay(Vgrid, Variable(field), Vtilt, name="Display1",
+    Vfield = Variable(field)
+    plot1 = GridDisplay(Vgrid, Vfield, Vtilt, name="Display1",
+                    parent=MainMenu)
+    plot2 = GridDisplay(Vgrid, Vfield, Vtilt, name="DisplayLat", plot_type="gridY",
+                    parent=MainMenu)
+    plot3 = GridDisplay(Vgrid, Vfield, Vtilt, name="DisplayLon", plot_type="gridX",
                     parent=MainMenu)
 
     # start ComponentsControl
