@@ -366,6 +366,7 @@ class RadarDisplay(Component):
                                       "Field: \n"
                                       "Tilt: ", self)
         self.infolabel.setStyleSheet('color: red; font: italic 10px')
+        self.infolabel.setToolTip("Filename")
 
     def _update_infolabel(self):
         self.infolabel.setText("Radar: %s\n"
@@ -373,6 +374,8 @@ class RadarDisplay(Component):
                                "Tilt: %d" % (self.Vradar.value.metadata['instrument_name'],
                                             self.Vfield.value,
                                             self.Vtilt.value+1))
+                                            
+        self.infolabel.setToolTip(self.Vradar.value.filename)
 
     ########################
     # Selectionion methods #
@@ -632,7 +635,6 @@ class RadarDisplay(Component):
     def _set_figure_canvas(self):
         '''Set the figure canvas to draw in window area.'''
         self.canvas = FigureCanvasQTAgg(self.fig)
-        self.canvas.setToolTip("Filename")
         # Add the widget to the canvas
         self.layout.addWidget(self.canvas, 1, 0, 7, 6)
 

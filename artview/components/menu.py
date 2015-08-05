@@ -74,7 +74,7 @@ class Menu(Component):
             else:
                 self.filename = filename
                 self._openfile()
-
+        
         # Launch the GUI interface
         self.LaunchApp()
         self.show()
@@ -217,7 +217,7 @@ class Menu(Component):
 
     def addComponentMenu(self):
         '''Add Component Menu to menu bar.'''
-        self.componentmenu = self.menubar.addMenu('&Components')
+        self.componentmenu = self.menubar.addMenu('&Advanced Tools')
 
     def addLayoutMenuItem(self, widget):
         '''Add widget item to Layout Menu.'''
@@ -257,7 +257,7 @@ class Menu(Component):
         '''
         Add menu to advance to next or previous file. 
         Or to go to the first or last file in the selected directory.'''
-        self.advancemenu = self.menubar.addMenu("Advance file")
+        self.advancemenu = self.menubar.addMenu("Change file")
         nextAction = self.advancemenu.addAction("Next")
         nextAction.triggered[()].connect(
             lambda findex=self.fileindex + 1: self.AdvanceFileSelect(findex))
@@ -437,11 +437,15 @@ https://rawgit.com/nguy/artview/master/docs/build/html/index.html"""
         if self.mode in ("radar", "all"):
             try:
                 radar = pyart.io.read(self.filename, delay_field_loading=True)
+                #Add the filename for Display
+                radar.filename = self.filename
                 self.Vradar.change(radar)
                 return
             except:
                 try:
                     radar = pyart.io.read(self.filename)
+                    #Add the filename for Display
+                    radar.filename = self.filename
                     self.Vradar.change(radar)
                     return
                 except:
