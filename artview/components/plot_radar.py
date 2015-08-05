@@ -350,30 +350,30 @@ class RadarDisplay(Component):
         toolValueClick = toolmenu.addAction("Click for Value")
         toolROI = toolmenu.addAction("Select a Region of Interest")
         toolCustom = toolmenu.addAction("Use Custom Tool")
+        toolReset = toolmenu.addAction("Reset Tools")
         toolDefault = toolmenu.addAction("Reset File Defaults")
         toolZoomPan.triggered[()].connect(self.toolZoomPanCmd)
         toolValueClick.triggered[()].connect(self.toolValueClickCmd)
         toolROI.triggered[()].connect(self.toolROICmd)
         toolCustom.triggered[()].connect(self.toolCustomCmd)
+        toolReset.triggered[()].connect(self.toolResetCmd)
         toolDefault.triggered[()].connect(self.toolDefaultCmd)
         self.toolsButton.setMenu(toolmenu)
 
     def _add_infolabel(self):
         '''Create an information label about the display'''
-        self.infolabel = QtGui.QLabel("Filename: \n"
-                                      "Radar: \n"
+        self.infolabel = QtGui.QLabel("Radar: \n"
                                       "Field: \n"
                                       "Tilt: ", self)
         self.infolabel.setStyleSheet('color: red; font: italic 10px')
-        
+
     def _update_infolabel(self):
-        self.infolabel.setText("Filename: %s\n"
-                               "Radar: %s\n"
+        self.infolabel.setText("Radar: %s\n"
                                "Field: %s\n"
-                               "Tilt: %d" % (self.name,
-                                            self.Vradar.value.metadata['instrument_name'],
+                               "Tilt: %d" % (self.Vradar.value.metadata['instrument_name'],
                                             self.Vfield.value,
                                             self.Vtilt.value+1))
+
     ########################
     # Selectionion methods #
     ########################
@@ -560,6 +560,11 @@ class RadarDisplay(Component):
         from . import tools
         tools.custom_tool(self.tools)
 
+    def toolResetCmd(self):
+        '''Reset tools via disconnect.'''
+        from . import tools
+        self.tools = tools.reset_tools(self.tools)
+
     def toolDefaultCmd(self):
         '''Restore the Display defaults.'''
         from . import tools
@@ -627,6 +632,7 @@ class RadarDisplay(Component):
     def _set_figure_canvas(self):
         '''Set the figure canvas to draw in window area.'''
         self.canvas = FigureCanvasQTAgg(self.fig)
+        self.canvas.setToolTip("Filename")
         # Add the widget to the canvas
         self.layout.addWidget(self.canvas, 1, 0, 7, 6)
 
@@ -700,8 +706,8 @@ class RadarDisplay(Component):
                 self.units = ''
         self.cbar.set_label(self.units)
 
-        print "Plotting %s field, Tilt %d in %s" % (
-            self.Vfield.value, self.Vtilt.value+1, self.name)
+#        print "Plotting %s field, Tilt %d in %s" % (
+#            self.Vfield.value, self.Vtilt.value+1, self.name)
         self.canvas.draw()
 
     def _update_axes(self):

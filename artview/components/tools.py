@@ -29,8 +29,8 @@ def restore_default_display(tooldict, field, scan_type):
 
     Parameters
     ----------
-    zoompan - ZoomPan class instance
-        A ZoomPan class instance.
+    tooldict - dictionary
+        A dictionary of tool instances.
     field - string
         Name of field to display.
     scan_type - "ppi", "rhi", "airborne" or None
@@ -38,18 +38,36 @@ def restore_default_display(tooldict, field, scan_type):
 
     Notes
     -----
-    Returns updated zoompan class instance, limits dictionary, and colormap.
+    Disconnects all tools and resets limits and colormap to default.
     '''
-    # ****Need to check if this would work****
-    for tool in tooldict:
-        if tooldict[tool] is not None:
-            tooldict[tool].disconnect()
-            tooldict[tool] = None
+#    for tool in tooldict:
+#        if tooldict[tool] is not None:
+#            tooldict[tool].disconnect()
+#            tooldict[tool] = None
+    tooldict = reset_tools(tooldict)
 
     display_limits, cmap = limits._default_limits(field, scan_type)
 
     return tooldict, display_limits, cmap
 
+def reset_tools(tooldict):
+    '''Reset the Tools dictionary.
+
+    Parameters
+    ----------
+    tooldict - dictionary
+        A dictionary of tool instances.
+
+    Notes
+    -----
+    Disconnects all tools.
+    '''
+    for tool in tooldict:
+        if tooldict[tool] is not None:
+            tooldict[tool].disconnect()
+            tooldict[tool] = None
+
+    return tooldict
 ##################################
 # Mouse Click Value Class Method #
 ##################################

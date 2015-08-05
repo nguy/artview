@@ -81,13 +81,11 @@ class ROI(Component):
         self.fig = self.ax.get_figure()
         self.getPathInteriorValues = display.getPathInteriorValues
         self.getField = display.getField
-#        self.display = display
         self.columns = ("X", "Y", "Azimuth", "Range", "Value",
                         "Az Index", "R Index")
         self.statusbar.showMessage("Select Region with Mouse")
 
         self._initialize_ROI_vars()
-#        self._setup_ROI_vars()
         self.CreateROIWidget()
         self.connect()
         self.show()
@@ -100,22 +98,6 @@ class ROI(Component):
         self.line = None
         self.verts = []
         self.poly = []
-
-    def _setup_ROI_vars(self):
-        '''Setup variables from radar instance for ROI selection.'''
-        radar = self.Vradar.value  # keep equations clean
-        self.az = radar.azimuth['data'][
-            radar.sweep_start_ray_index['data'][self.Vtilt.value]:
-            radar.sweep_end_ray_index['data'][self.Vtilt.value]+1]
-        self.r = radar.range['data']/1000.
-        self.big = np.ones(shape=(self.az.size, self.r.size))
-        self.xys = np.empty(shape=(self.az.size*self.r.size, 2))
-        self.rbig = self.big*self.r
-        self.azbig = self.big*self.az.reshape(self.az.size, 1)
-        x = self.rbig * np.sin(self.azbig*np.pi/180.)
-        y = self.rbig * np.cos(self.azbig*np.pi/180.)
-        self.xys[:, 0] = x.flatten()
-        self.xys[:, 1] = y.flatten()
 
     def motion_notify_callback(self, event):
         '''Create the shape in plot area.'''
@@ -198,8 +180,8 @@ class ROI(Component):
         Open and Save Table methods borrowed from:
         http://stackoverflow.com/questions/12608835/writing-a-qtablewidget-to-a-csv-or-xls
         '''
-        self.ROIbox = QtGui.QGroupBox("Region of Interest Selection",
-                                      parent=self)
+        self.ROIbox = QtGui.QGroupBox("Region of Interest Selection")#,
+#                                      parent=self)
         self.rBox_layout = QtGui.QVBoxLayout(self.ROIbox)
         self.ROIbox.setLayout(self.rBox_layout)
         self.setCentralWidget(self.ROIbox)
@@ -211,6 +193,8 @@ class ROI(Component):
         self.buttonOpenTable.setToolTip("Open a ROI Data CSV file")
         self.buttonSaveTable = QtGui.QPushButton('Save Tabular Data', self)
         self.buttonSaveTable.setToolTip("Save a ROI Data CSV file")
+        self.buttonStats = QtGui.QPushButton('Stats', self)
+        self.buttonStats.setToolTip("Show basic statistics of selected ROI")
         self.buttonResetROI = QtGui.QPushButton('Reset ROI', self)
         self.buttonResetROI.setToolTip("Clear the ROI")
         self.buttonHelp = QtGui.QPushButton('Help', self)
@@ -218,6 +202,7 @@ class ROI(Component):
         self.buttonViewTable.clicked.connect(self.viewTable)
         self.buttonOpenTable.clicked.connect(self.openTable)
         self.buttonSaveTable.clicked.connect(self.saveTable)
+        self.buttonStats.clicked.connect(self.displayStats)
         self.buttonResetROI.clicked.connect(self.resetROI)
         self.buttonHelp.clicked.connect(self.displayHelp)
 
@@ -226,6 +211,7 @@ class ROI(Component):
         self.rBox_layout.addWidget(self.buttonViewTable)
         self.rBox_layout.addWidget(self.buttonOpenTable)
         self.rBox_layout.addWidget(self.buttonSaveTable)
+        self.rBox_layout.addWidget(self.buttonStats)
         self.rBox_layout.addWidget(self.buttonResetROI)
         self.rBox_layout.addWidget(self.buttonHelp)
 
@@ -245,12 +231,15 @@ class ROI(Component):
 
     def viewTable(self):
         '''View a Table of ROI points.'''
-        # Instantiate Table
-        self.table = common.CreateTable(self.columns)
-        self.table.display_data(self.VroiData.value)
-
-        # Show the table
-        self.table.show()
+        # Check that data has been selected or loaded
+        if self.VroiData.value is not None:
+            # Instantiate Table
+            self.table = common.CreateTable(self.columns)        
+            self.table.display_data(self.VroiData.value)
+            # Show the table
+            self.table.show()
+        else:
+            common.ShowWarning("Please select or open ROI first")
 
     def saveTable(self):
         '''Save a Table of ROI points to a CSV file.'''
@@ -263,6 +252,7 @@ class ROI(Component):
         if not path.isEmpty():
             with open(unicode(path), 'wb') as stream:
                 writer = csv.writer(stream)
+                writer.writerow(self.columns)
                 for row in range(data.shape[0]):
                     rowdata = []
                     for column in range(data.shape[1]):
@@ -301,11 +291,12 @@ class ROI(Component):
         data = []
         if not path.isEmpty():
             with open(unicode(path), 'rb') as stream:
-                for rowdata in csv.reader(stream):
-                    row = [None]*7
-                    for column, item in enumerate(rowdata):
-                        row[column] = float(item.decode('utf8'))
-                    data.append(row)
+                for rownum, rowdata in enumerate(csv.reader(stream)):
+                    if rownum > 0:
+                        row = [None]*7
+                        for column, item in enumerate(rowdata):
+                            row[column] = float(item.decode('utf8'))
+                        data.append(row)
         data = np.array(data)
         self.VroiData.change(data)
 
@@ -316,8 +307,10 @@ class ROI(Component):
 
         # Redraw to remove the lines and reinitialize variable
         self.fig.canvas.draw()
+        
+        # Renew variables, etc.
+        self.VroiData = Variable(None)
         self._initialize_ROI_vars()
-#        self._setup_ROI_vars()
         self.statusbar.showMessage("Select Region with Mouse")
 
     def closeEvent(self, QCloseEvent):
@@ -326,6 +319,18 @@ class ROI(Component):
         self.disconnect()
         super(ROI, self).closeEvent(QCloseEvent)
 
+    def displayStats(self):
+        '''Calculate basic statistics of the ROI list.'''
+        from ..core import common
+        if self.VroiData.value is None:
+            common.ShowWarning("Please select ROI first")
+        else:
+            roistats = common._array_stats(self.VroiData.value[:, 4])
+            text = "<b>Basic statistics for the selected ROI</b><br><br>"
+            for stat in roistats:
+                text += "<i>%s</i>: %5.2f<br>"%(stat, roistats[stat])
+            self.statdialog, self.stattext = common.ShowLongText(text, modal=False)
+#            QtGui.QMessageBox.information(self, "ROI Stats", text)
 
 class _RoiStart(QtGui.QDialog):
     '''
