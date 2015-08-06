@@ -12,7 +12,7 @@ from .. import core
 common = core.common
 
 
-class LinkDisplay(core.Component):
+class LinkPlugins(core.Component):
     '''
     Class instance for control variables shared between components.
     
@@ -26,11 +26,11 @@ class LinkDisplay(core.Component):
     @classmethod
     def guiStart(self, parent=None):
         kwargs, independent = \
-            common._SimplePluginStart("LinkDisplay").startDisplay()
+            common._SimplePluginStart("LinkPlugins").startDisplay()
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
-    def __init__(self, components=None, name="LinkDisplay", parent=None):
+    def __init__(self, components=None, name="LinkPlugins", parent=None):
         '''Initialize the class to create the interface.
 
         Parameters
@@ -46,7 +46,7 @@ class LinkDisplay(core.Component):
             If None, then Qt owns, otherwise associated w/ parent PyQt instance.
 
         '''
-        super(LinkDisplay, self).__init__(name=name, parent=parent)
+        super(LinkPlugins, self).__init__(name=name, parent=parent)
         self.central_widget = QtGui.QWidget()
         self.setCentralWidget(self.central_widget)
         self.layout = QtGui.QGridLayout(self.central_widget)

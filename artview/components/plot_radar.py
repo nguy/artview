@@ -366,7 +366,7 @@ class RadarDisplay(Component):
                                       "Field: \n"
                                       "Tilt: ", self)
         self.infolabel.setStyleSheet('color: red; font: italic 10px')
-        self.infolabel.setToolTip("Filename")
+        self.infolabel.setToolTip("Filename not loaded")
 
     def _update_infolabel(self):
         self.infolabel.setText("Radar: %s\n"
@@ -374,8 +374,8 @@ class RadarDisplay(Component):
                                "Tilt: %d" % (self.Vradar.value.metadata['instrument_name'],
                                             self.Vfield.value,
                                             self.Vtilt.value+1))
-                                            
-        self.infolabel.setToolTip(self.Vradar.value.filename)
+        if hasattr(self.Vradar.value, 'filename'):
+            self.infolabel.setToolTip(self.Vradar.value.filename)
 
     ########################
     # Selectionion methods #

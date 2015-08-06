@@ -10,21 +10,21 @@ def run(DirIn=os.getcwd(), filename=None, field=None):
     The standard artview execution.
 
     It has :py:class:`~artview.components.Menu`
-    with :py:class:`~artview.components.LinkDisplay`,
+    with :py:class:`~artview.components.LinkPlugins`,
 
     2 :py:class:`~artview.components.RadarDisplay`,
 
     graphical start for:
         * All :py:class:`~artview.plugins`
         * :py:class:`~artview.components.RadarDisplay`
-        * :py:class:`~artview.components.LinkDisplay`
+        * :py:class:`~artview.components.LinkPlugins`
     """
     from PyQt4 import QtGui, QtCore
     import sys
 
     from ..core import Variable
     from ..components import RadarDisplay, Menu, LevelButtonWindow, \
-        LinkDisplay, SelectRegion
+        LinkPlugins, SelectRegion
 
     # handle input
     if field is None:
@@ -45,14 +45,14 @@ def run(DirIn=os.getcwd(), filename=None, field=None):
     plot2 = RadarDisplay(Vradar, Variable(field), Vtilt2, name="Display2",
                     parent=MainMenu)
 
-    # start LinkDisplay
-    control = LinkDisplay()
+    # start LinkPlugins
+    control = LinkPlugins()
 
     # add control to Menu
     MainMenu.addLayoutWidget(control)
 
     # add grafical starts
-    MainMenu.addComponent(LinkDisplay)
+    MainMenu.addComponent(LinkPlugins)
     MainMenu.addComponent(RadarDisplay)
     MainMenu.addComponent(SelectRegion)
 
