@@ -1,5 +1,5 @@
 """
-roi.py
+select_region.py
 
 Class to select a Region of interest in Display.
 """
@@ -14,7 +14,7 @@ import csv
 from ..core import Variable, Component, common, VariableChoose, componentsList
 
 
-class ROI(Component):
+class SelectRegion(Component):
     '''
     Select a Region of Interest. 
     
@@ -37,21 +37,21 @@ class ROI(Component):
     https://www.mail-archive.com/matplotlib-users@lists.sourceforge.net/msg00661.html
     '''
 
-    VroiData = None #: see :ref:`shared_variable`
+    VSelectRegion = None #: see :ref:`shared_variable`
 
     @classmethod
     def guiStart(self, parent=None):
-        args, independent = _RoiStart().startDisplay()
+        args, independent = _SelectRegionStart().startDisplay()
         return self(**args), independent
 
-    def __init__(self, display, name="ROI", parent=None):
+    def __init__(self, display, name="SelectRegion", parent=None):
         '''
-        Initialize the class to select an ROI on display.
+        Initialize the class to select an Region of Interest on display.
 
         Parameters
         ----------
         display - ARTView Display
-            Display instance to associate ROI. Must have following elements:
+            Display instance to associate SelectRegion. Must have following elements:
                 * getPlotAxis() - Matplotlib axis instance
                 * getStatusBar() - QtGui.QStatusBar
                 * getField() - string
@@ -62,16 +62,16 @@ class ROI(Component):
         name - string
             Window name.
         parent - PyQt instance
-            Parent instance to associate to ROI instance.
+            Parent instance to associate to SelectRegion instance.
             If None, then Qt owns, otherwise associated with parent PyQt
             instance.
 
         Notes
         -----
         '''
-        super(ROI, self).__init__(name=name, parent=parent)
-        self.VroiData = Variable(None)
-        self.sharedVariables = {"VroiData": None}
+        super(SelectRegion, self).__init__(name=name, parent=parent)
+        self.VSelectRegion = Variable(None)
+        self.sharedVariables = {"VSelectRegion": None}
 
         # Connect the components
         self.connectAllVariables()
@@ -85,13 +85,13 @@ class ROI(Component):
                         "Az Index", "R Index")
         self.statusbar.showMessage("Select Region with Mouse")
 
-        self._initialize_ROI_vars()
-        self.CreateROIWidget()
+        self._initialize_SelectRegion_vars()
+        self.CreateSelectRegionWidget()
         self.connect()
         self.show()
 
-    def _initialize_ROI_vars(self):
-        '''Initialize variables to be used in ROI selection.'''
+    def _initialize_SelectRegion_vars(self):
+        '''Initialize variables to be used in SelectRegion selection.'''
         self.previous_point = []
         self.start_point = []
         self.end_point = []
@@ -161,49 +161,49 @@ class ROI(Component):
                 data = self.getPathInteriorValues(path)
                 if data is not None:
                     data = np.concatenate(data).reshape(7, -1).transpose()
-                    self.VroiData.change(data)
+                    self.VSelectRegion.change(data)
 
     def connect(self):
-        '''Connect the ROI instance.'''
+        '''Connect the SelectRegion instance.'''
         self.motionID = self.fig.canvas.mpl_connect(
             'motion_notify_event', self.motion_notify_callback)
         self.buttonID = self.fig.canvas.mpl_connect(
             'button_press_event', self.button_press_callback)
 
     def disconnect(self):
-        '''Disconnect the ROI instance.'''
+        '''Disconnect the SelectRegion instance.'''
         self.fig.canvas.mpl_disconnect(self.motionID)
         self.fig.canvas.mpl_disconnect(self.buttonID)
 
-    def CreateROIWidget(self):
-        '''Create a widget to access ROI tools.
+    def CreateSelectRegionWidget(self):
+        '''Create a widget to access SelectRegion tools.
         Open and Save Table methods borrowed from:
         http://stackoverflow.com/questions/12608835/writing-a-qtablewidget-to-a-csv-or-xls
         '''
-        self.ROIbox = QtGui.QGroupBox("Region of Interest Selection")#,
+        self.SelectRegionbox = QtGui.QGroupBox("Region of Interest Selection")#,
 #                                      parent=self)
-        self.rBox_layout = QtGui.QVBoxLayout(self.ROIbox)
-        self.ROIbox.setLayout(self.rBox_layout)
-        self.setCentralWidget(self.ROIbox)
+        self.rBox_layout = QtGui.QVBoxLayout(self.SelectRegionbox)
+        self.SelectRegionbox.setLayout(self.rBox_layout)
+        self.setCentralWidget(self.SelectRegionbox)
 
         # Add buttons for functionality
         self.buttonViewTable = QtGui.QPushButton('View Tabular Data', self)
-        self.buttonViewTable.setToolTip("View ROI Data in popup window")
+        self.buttonViewTable.setToolTip("View Region Data in popup window")
         self.buttonOpenTable = QtGui.QPushButton('Open Tabular Data', self)
-        self.buttonOpenTable.setToolTip("Open a ROI Data CSV file")
+        self.buttonOpenTable.setToolTip("Open a Region Data CSV file")
         self.buttonSaveTable = QtGui.QPushButton('Save Tabular Data', self)
-        self.buttonSaveTable.setToolTip("Save a ROI Data CSV file")
+        self.buttonSaveTable.setToolTip("Save a Region Data CSV file")
         self.buttonStats = QtGui.QPushButton('Stats', self)
-        self.buttonStats.setToolTip("Show basic statistics of selected ROI")
-        self.buttonResetROI = QtGui.QPushButton('Reset ROI', self)
-        self.buttonResetROI.setToolTip("Clear the ROI")
+        self.buttonStats.setToolTip("Show basic statistics of selected Region")
+        self.buttonResetSelectRegion = QtGui.QPushButton('Reset Region', self)
+        self.buttonResetSelectRegion.setToolTip("Clear the Region")
         self.buttonHelp = QtGui.QPushButton('Help', self)
-        self.buttonHelp.setToolTip("About using ROI")
+        self.buttonHelp.setToolTip("About using SelectRegion")
         self.buttonViewTable.clicked.connect(self.viewTable)
         self.buttonOpenTable.clicked.connect(self.openTable)
         self.buttonSaveTable.clicked.connect(self.saveTable)
         self.buttonStats.clicked.connect(self.displayStats)
-        self.buttonResetROI.clicked.connect(self.resetROI)
+        self.buttonResetSelectRegion.clicked.connect(self.resetSelectRegion)
         self.buttonHelp.clicked.connect(self.displayHelp)
 
         # Create functionality buttons
@@ -212,12 +212,12 @@ class ROI(Component):
         self.rBox_layout.addWidget(self.buttonOpenTable)
         self.rBox_layout.addWidget(self.buttonSaveTable)
         self.rBox_layout.addWidget(self.buttonStats)
-        self.rBox_layout.addWidget(self.buttonResetROI)
+        self.rBox_layout.addWidget(self.buttonResetSelectRegion)
         self.rBox_layout.addWidget(self.buttonHelp)
 
     def displayHelp(self):
 
-        text = "<b>Using the Region of Interest (ROI) Tool</b><br><br>"
+        text = "<b>Using the Region of Interest (SelectRegion) Tool</b><br><br>"
         text += "<i>Purpose</i>:<br>"
         text += "Draw a path in the display window using the Mouse.<br><br>"
         text += "<i>Functions</i>:<br>"
@@ -230,21 +230,21 @@ class ROI(Component):
         common.ShowLongText(text)
 
     def viewTable(self):
-        '''View a Table of ROI points.'''
+        '''View a Table of Region points.'''
         # Check that data has been selected or loaded
-        if self.VroiData.value is not None:
+        if self.VSelectRegion.value is not None:
             # Instantiate Table
             self.table = common.CreateTable(self.columns)        
-            self.table.display_data(self.VroiData.value)
+            self.table.display_data(self.VSelectRegion.value)
             # Show the table
             self.table.show()
         else:
-            common.ShowWarning("Please select or open ROI first")
+            common.ShowWarning("Please select or open Region first")
 
     def saveTable(self):
-        '''Save a Table of ROI points to a CSV file.'''
-        data = self.VroiData.value
-        fsuggest = 'ROI_' + self.getField() + '_' + \
+        '''Save a Table of SelectRegion points to a CSV file.'''
+        data = self.VSelectRegion.value
+        fsuggest = 'SelectRegion_' + self.getField() + '_' + \
             str(data[:, 0].mean()) + '_' + \
             str(data[:, 1].mean())+'.csv'
         path = QtGui.QFileDialog.getSaveFileName(
@@ -283,7 +283,7 @@ class ROI(Component):
 #                    print "%8.2f %8.2f %8.2f %8.3f %8.2f %8d %8d" %\
 
     def openTable(self):
-        '''Open a saved table of ROI points from a CSV file.'''
+        '''Open a saved table of SelectRegion points from a CSV file.'''
         path = QtGui.QFileDialog.getOpenFileName(
                 self, 'Open File', '', 'CSV(*.csv)')
         if path == '':
@@ -298,10 +298,10 @@ class ROI(Component):
                             row[column] = float(item.decode('utf8'))
                         data.append(row)
         data = np.array(data)
-        self.VroiData.change(data)
+        self.VSelectRegion.change(data)
 
-    def resetROI(self):
-        '''Clear the ROI lines from plot and reset things.'''
+    def resetSelectRegion(self):
+        '''Clear the SelectRegion lines from plot and reset things.'''
         for i in xrange(len(self.poly)):
             self.poly[i].remove()
 
@@ -309,37 +309,36 @@ class ROI(Component):
         self.fig.canvas.draw()
         
         # Renew variables, etc.
-        self.VroiData = Variable(None)
-        self._initialize_ROI_vars()
+        self.VSelectRegion = Variable(None)
+        self._initialize_SelectRegion_vars()
         self.statusbar.showMessage("Select Region with Mouse")
 
     def closeEvent(self, QCloseEvent):
         '''Reimplementations to remove from components list.'''
-        self.resetROI()
+        self.resetSelectRegion()
         self.disconnect()
-        super(ROI, self).closeEvent(QCloseEvent)
+        super(SelectRegion, self).closeEvent(QCloseEvent)
 
     def displayStats(self):
-        '''Calculate basic statistics of the ROI list.'''
+        '''Calculate basic statistics of the SelectRegion list.'''
         from ..core import common
-        if self.VroiData.value is None:
-            common.ShowWarning("Please select ROI first")
+        if self.VSelectRegion.value is None:
+            common.ShowWarning("Please select SelectRegion first")
         else:
-            roistats = common._array_stats(self.VroiData.value[:, 4])
-            text = "<b>Basic statistics for the selected ROI</b><br><br>"
-            for stat in roistats:
-                text += "<i>%s</i>: %5.2f<br>"%(stat, roistats[stat])
+            SelectRegionstats = common._array_stats(self.VSelectRegion.value[:, 4])
+            text = "<b>Basic statistics for the selected Region</b><br><br>"
+            for stat in SelectRegionstats:
+                text += "<i>%s</i>: %5.2f<br>"%(stat, SelectRegionstats[stat])
             self.statdialog, self.stattext = common.ShowLongText(text, modal=False)
-#            QtGui.QMessageBox.information(self, "ROI Stats", text)
 
-class _RoiStart(QtGui.QDialog):
+class _SelectRegionStart(QtGui.QDialog):
     '''
-    Dialog Class for graphical start of ROI, to be used in guiStart.
+    Dialog Class for graphical start of SelectRegion, to be used in guiStart.
     '''
 
     def __init__(self):
         '''Initialize the class to create the interface.'''
-        super(_RoiStart, self).__init__()
+        super(_SelectRegionStart, self).__init__()
         self.result = {"display": None}
         self.layout = QtGui.QGridLayout(self)
         # set window as modal
@@ -363,7 +362,7 @@ class _RoiStart(QtGui.QDialog):
         self.layout.addWidget(self.displayCombo, 0, 1, 1, 3)
         self.fillCombo()
 
-        self.name = QtGui.QLineEdit("Roi")
+        self.name = QtGui.QLineEdit("SelectRegion")
         self.layout.addWidget(QtGui.QLabel("name"), 1, 0)
         self.layout.addWidget(self.name, 1, 1, 1, 3)
 

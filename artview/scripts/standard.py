@@ -24,7 +24,7 @@ def run(DirIn=os.getcwd(), filename=None, field=None):
 
     from ..core import Variable
     from ..components import RadarDisplay, Menu, LevelButtonWindow, \
-        LinkDisplay, ROI
+        LinkDisplay, SelectRegion
 
     # handle input
     if field is None:
@@ -54,7 +54,7 @@ def run(DirIn=os.getcwd(), filename=None, field=None):
     # add grafical starts
     MainMenu.addComponent(LinkDisplay)
     MainMenu.addComponent(RadarDisplay)
-    MainMenu.addComponent(ROI)
+    MainMenu.addComponent(SelectRegion)
 
     # add all plugins to grafical start
     try:

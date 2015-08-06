@@ -13,11 +13,6 @@ from ..core import Variable, Component, common, VariableChoose
 
 class ValueClick(Component):
 
-#    @classmethod
-#    def guiStart(self, parent=None):
-#        args, independent = _RoiStart().startDisplay()
-#        return self(**args), independent
-
     def __init__(self, display, name="ValueClick", parent=None):
         '''
         Initialize the class to pick value from display.

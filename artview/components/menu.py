@@ -158,7 +158,7 @@ class Menu(Component):
         if not hasattr(Comp, 'guiStart'):
             raise ValueError("Component has no guiStart Method")
             return
-        self.addComponentMenuItem(Comp)
+        self.addPluginMenuItem(Comp)
 
     ######################
     # Menu build methods #
@@ -171,7 +171,7 @@ class Menu(Component):
         self.addFileMenu()
         self.addAboutMenu()
         self.addFileAdvanceMenu()
-        self.addComponentMenu()
+        self.addPluginMenu()
 
     def addFileMenu(self):
         '''Add the File Menu to menubar.'''
@@ -215,9 +215,9 @@ class Menu(Component):
         self.layoutmenu = self.menubar.addMenu('&Layout')
         self.layoutmenuItems = {}
 
-    def addComponentMenu(self):
+    def addPluginMenu(self):
         '''Add Component Menu to menu bar.'''
-        self.componentmenu = self.menubar.addMenu('&Advanced Tools')
+        self.pluginmenu = self.menubar.addMenu('&Advanced Tools')
 
     def addLayoutMenuItem(self, widget):
         '''Add widget item to Layout Menu.'''
@@ -240,9 +240,9 @@ class Menu(Component):
             self.layoutmenuItems[rep].close()
             del self.layoutmenuItems[rep]
 
-    def addComponentMenuItem(self, Comp):
+    def addPluginMenuItem(self, Comp):
         '''Add Component item to Component Menu.'''
-        action = self.componentmenu.addAction(Comp.__name__)
+        action = self.pluginmenu.addAction(Comp.__name__)
         action.triggered[()].connect(
             lambda Comp=Comp: self.startComponent(Comp))
 

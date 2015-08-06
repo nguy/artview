@@ -177,7 +177,7 @@ class CreateTable(QtGui.QTableWidget):
             the table."""
 
         if len(data) == 0:
-            data = ["No data for selected ROI."]
+            data = ["No data for selected."]
             nrows = 0
             ncols = 0
         else:

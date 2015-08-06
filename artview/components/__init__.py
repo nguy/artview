@@ -17,7 +17,7 @@ ARTview functions.
     LevelButtonWindow
     FieldButtonWindow
     LinkDisplay
-    ROI
+    SelectRegion
 """
 
 from .plot_radar import RadarDisplay
@@ -26,4 +26,4 @@ from .menu import Menu
 from .level import LevelButtonWindow
 from .field import FieldButtonWindow
 from .component_control import LinkDisplay
-from .roi import ROI
+from .select_region import SelectRegion
