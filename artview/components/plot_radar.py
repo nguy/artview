@@ -348,32 +348,35 @@ class RadarDisplay(Component):
         toolmenu = QtGui.QMenu(self)
         toolZoomPan = toolmenu.addAction("Zoom/Pan")
         toolValueClick = toolmenu.addAction("Click for Value")
-        toolROI = toolmenu.addAction("Select a Region of Interest")
+        toolSelectRegion = toolmenu.addAction("Select a Region of Interest")
         toolCustom = toolmenu.addAction("Use Custom Tool")
+        toolReset = toolmenu.addAction("Reset Tools")
         toolDefault = toolmenu.addAction("Reset File Defaults")
         toolZoomPan.triggered[()].connect(self.toolZoomPanCmd)
         toolValueClick.triggered[()].connect(self.toolValueClickCmd)
-        toolROI.triggered[()].connect(self.toolROICmd)
+        toolSelectRegion.triggered[()].connect(self.toolSelectRegionCmd)
         toolCustom.triggered[()].connect(self.toolCustomCmd)
+        toolReset.triggered[()].connect(self.toolResetCmd)
         toolDefault.triggered[()].connect(self.toolDefaultCmd)
         self.toolsButton.setMenu(toolmenu)
 
     def _add_infolabel(self):
         '''Create an information label about the display'''
-        self.infolabel = QtGui.QLabel("Filename: \n"
-                                      "Radar: \n"
+        self.infolabel = QtGui.QLabel("Radar: \n"
                                       "Field: \n"
                                       "Tilt: ", self)
         self.infolabel.setStyleSheet('color: red; font: italic 10px')
-        
+        self.infolabel.setToolTip("Filename not loaded")
+
     def _update_infolabel(self):
-        self.infolabel.setText("Filename: %s\n"
-                               "Radar: %s\n"
+        self.infolabel.setText("Radar: %s\n"
                                "Field: %s\n"
-                               "Tilt: %d" % (self.name,
-                                            self.Vradar.value.metadata['instrument_name'],
+                               "Tilt: %d" % (self.Vradar.value.metadata['instrument_name'],
                                             self.Vfield.value,
                                             self.Vtilt.value+1))
+        if hasattr(self.Vradar.value, 'filename'):
+            self.infolabel.setToolTip(self.Vradar.value.filename)
+
     ########################
     # Selectionion methods #
     ########################
@@ -550,15 +553,20 @@ class RadarDisplay(Component):
             self.units, self.ax, self.statusbar, parent=self.parent)
         self.tools['valueclick'].connect()
 
-    def toolROICmd(self):
+    def toolSelectRegionCmd(self):
         '''Creates and connects to Region of Interest instance'''
-        from .roi import ROI
-        self.tools['roi'] = ROI(self, name=self.name + " ROI", parent=self)
+        from .select_region import SelectRegion
+        self.tools['select_region'] = SelectRegion(self, name=self.name + " SelectRegion", parent=self)
 
     def toolCustomCmd(self):
         '''Allow user to activate self-defined tool.'''
         from . import tools
         tools.custom_tool(self.tools)
+
+    def toolResetCmd(self):
+        '''Reset tools via disconnect.'''
+        from . import tools
+        self.tools = tools.reset_tools(self.tools)
 
     def toolDefaultCmd(self):
         '''Restore the Display defaults.'''
@@ -700,8 +708,8 @@ class RadarDisplay(Component):
                 self.units = ''
         self.cbar.set_label(self.units)
 
-        print "Plotting %s field, Tilt %d in %s" % (
-            self.Vfield.value, self.Vtilt.value+1, self.name)
+#        print "Plotting %s field, Tilt %d in %s" % (
+#            self.Vfield.value, self.Vtilt.value+1, self.name)
         self.canvas.draw()
 
     def _update_axes(self):

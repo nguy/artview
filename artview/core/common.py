@@ -6,9 +6,10 @@ Common routines run throughout ARTView.
 
 # Load the needed packages
 from PyQt4 import QtGui, QtCore
+import numpy as np
 
 ########################
-# Warning methods #
+# Dialog methods #
 ########################
 
 
@@ -74,8 +75,8 @@ def ShowLongText(msg, modal=True):
         response = Dialog.exec_()
         return response
     else:
-        Dialog.show()
-        return
+        response = Dialog.show()
+        return Dialog, response
 
 
 def string_dialog(stringIn, title, msg):
@@ -106,6 +107,10 @@ def string_dialog(stringIn, title, msg):
         Dialog, title, msg, 0, old_val)
 
     return stringOut, entry
+
+########################
+# Start methods #
+########################
 
 
 class _SimplePluginStart(QtGui.QDialog):
@@ -149,6 +154,10 @@ class _SimplePluginStart(QtGui.QDialog):
 
         return self.result, self.independent.isChecked()
 
+########################
+# Table methods #
+########################
+
 
 class CreateTable(QtGui.QTableWidget):
     """Creates a custom table widget."""
@@ -168,7 +177,7 @@ class CreateTable(QtGui.QTableWidget):
             the table."""
 
         if len(data) == 0:
-            data = ["No data for selected ROI."]
+            data = ["No data for selected."]
             nrows = 0
             ncols = 0
         else:
@@ -190,3 +199,19 @@ class CreateTable(QtGui.QTableWidget):
         self.resizeColumnsToContents()
 
         return
+
+########################
+# Arithmetic methods #
+########################
+
+def _array_stats(data):
+    """Return a dictionary of statistics from a Numpy array"""
+    statdict = {}
+    statdict['Minimum'] = np.ma.min(data)
+    statdict['Maximum'] = np.ma.max(data)
+    statdict['Mean'] = np.ma.mean(data)
+    statdict['Median'] = np.ma.median(data)
+    statdict['Standard_Deviation'] = np.ma.std(data)
+    statdict['Variance'] = np.ma.var(data)
+        
+    return statdict

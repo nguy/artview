@@ -91,6 +91,12 @@ To see the command line options:
 python artview -h
 ```
 
+If you are having trouble starting the program and you are running Python 2.6,
+try just using the following:
+```python
+artview
+```
+
 ARTview should be able to recognize and correctly handle PPI, RHI and airborne files.
 
 The default startup uses radar reflectivity and checks for a few common names.

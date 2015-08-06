@@ -362,12 +362,12 @@ class GridDisplay(Component):
         toolmenu = QtGui.QMenu(self)
         toolZoomPan = toolmenu.addAction("Zoom/Pan")
         toolValueClick = toolmenu.addAction("Click for Value")
-        toolROI = toolmenu.addAction("Select a Region of Interest")
+        toolSelectRegion = toolmenu.addAction("Select a Region of Interest")
         toolCustom = toolmenu.addAction("Use Custom Tool")
         toolDefault = toolmenu.addAction("Reset File Defaults")
         toolZoomPan.triggered[()].connect(self.toolZoomPanCmd)
         toolValueClick.triggered[()].connect(self.toolValueClickCmd)
-        toolROI.triggered[()].connect(self.toolROICmd)
+        toolSelectRegion.triggered[()].connect(self.toolSelectRegionCmd)
         toolCustom.triggered[()].connect(self.toolCustomCmd)
         toolDefault.triggered[()].connect(self.toolDefaultCmd)
         self.toolsButton.setMenu(toolmenu)
@@ -507,10 +507,10 @@ class GridDisplay(Component):
         self.tools['valueclick'] = ValueClick(
             self, name=self.name + "ValueClick", parent=self)
 
-    def toolROICmd(self):
+    def toolSelectRegionCmd(self):
         '''Creates and connects to Region of Interest instance.'''
-        from .roi import ROI
-        self.tools['roi'] = ROI(self, name=self.name + " ROI", parent=self)
+        from .select_region import SelectRegion
+        self.tools['select_region'] = SelectRegion(self, name=self.name + " SelectRegion", parent=self)
 
     def toolCustomCmd(self):
         '''Allow user to activate self-defined tool.'''

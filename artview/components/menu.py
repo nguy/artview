@@ -74,7 +74,7 @@ class Menu(Component):
             else:
                 self.filename = filename
                 self._openfile()
-
+        
         # Launch the GUI interface
         self.LaunchApp()
         self.show()
@@ -158,7 +158,7 @@ class Menu(Component):
         if not hasattr(Comp, 'guiStart'):
             raise ValueError("Component has no guiStart Method")
             return
-        self.addComponentMenuItem(Comp)
+        self.addPluginMenuItem(Comp)
 
     ######################
     # Menu build methods #
@@ -171,7 +171,7 @@ class Menu(Component):
         self.addFileMenu()
         self.addAboutMenu()
         self.addFileAdvanceMenu()
-        self.addComponentMenu()
+        self.addPluginMenu()
 
     def addFileMenu(self):
         '''Add the File Menu to menubar.'''
@@ -215,9 +215,9 @@ class Menu(Component):
         self.layoutmenu = self.menubar.addMenu('&Layout')
         self.layoutmenuItems = {}
 
-    def addComponentMenu(self):
+    def addPluginMenu(self):
         '''Add Component Menu to menu bar.'''
-        self.componentmenu = self.menubar.addMenu('&Components')
+        self.pluginmenu = self.menubar.addMenu('&Advanced Tools')
 
     def addLayoutMenuItem(self, widget):
         '''Add widget item to Layout Menu.'''
@@ -240,9 +240,9 @@ class Menu(Component):
             self.layoutmenuItems[rep].close()
             del self.layoutmenuItems[rep]
 
-    def addComponentMenuItem(self, Comp):
+    def addPluginMenuItem(self, Comp):
         '''Add Component item to Component Menu.'''
-        action = self.componentmenu.addAction(Comp.__name__)
+        action = self.pluginmenu.addAction(Comp.__name__)
         action.triggered[()].connect(
             lambda Comp=Comp: self.startComponent(Comp))
 
@@ -257,7 +257,7 @@ class Menu(Component):
         '''
         Add menu to advance to next or previous file. 
         Or to go to the first or last file in the selected directory.'''
-        self.advancemenu = self.menubar.addMenu("Advance file")
+        self.advancemenu = self.menubar.addMenu("Change file")
         nextAction = self.advancemenu.addAction("Next")
         nextAction.triggered[()].connect(
             lambda findex=self.fileindex + 1: self.AdvanceFileSelect(findex))
@@ -437,11 +437,15 @@ https://rawgit.com/nguy/artview/master/docs/build/html/index.html"""
         if self.mode in ("radar", "all"):
             try:
                 radar = pyart.io.read(self.filename, delay_field_loading=True)
+                #Add the filename for Display
+                radar.filename = self.filename
                 self.Vradar.change(radar)
                 return
             except:
                 try:
                     radar = pyart.io.read(self.filename)
+                    #Add the filename for Display
+                    radar.filename = self.filename
                     self.Vradar.change(radar)
                     return
                 except:

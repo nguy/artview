@@ -10,7 +10,7 @@ def run(DirIn=os.getcwd(), filename=None, field=None):
     ARTview execution to pyart mapping display.
 
     It has :py:class:`~artview.components.Menu`
-    with :py:class:`~artview.components.ComponentsControl`,
+    with :py:class:`~artview.components.LinkPlugins`,
     menu is opening radar files
 
     1 radar and 1 grid sharing Vfield
@@ -20,7 +20,7 @@ def run(DirIn=os.getcwd(), filename=None, field=None):
     graphical start for:
         * All :py:class:`~artview.plugins`
         * :py:class:`~artview.components.RadarDisplay`
-        * :py:class:`~artview.components.ComponentsControl`
+        * :py:class:`~artview.components.LinkPlugins`
 
     """
     from PyQt4 import QtGui, QtCore
@@ -28,7 +28,7 @@ def run(DirIn=os.getcwd(), filename=None, field=None):
 
     from ..core import Variable
     from ..components import RadarDisplay, GridDisplay, Menu, LevelButtonWindow, \
-        ComponentsControl
+        LinkPlugins
 
     # handle input
     if field is None:
@@ -55,14 +55,14 @@ def run(DirIn=os.getcwd(), filename=None, field=None):
     mapper = plugins.Mapper(plot.Vradar, plot1.Vgrid, name="Mapper",
                             parent=MainMenu)
 
-    # start ComponentsControl
-    control = ComponentsControl()
+    # start LinkPlugins
+    control = LinkPlugins()
 
     # add control to Menu
     MainMenu.addLayoutWidget(control)
 
     # add grafical starts
-    MainMenu.addComponent(ComponentsControl)
+    MainMenu.addComponent(LinkPlugins)
     MainMenu.addComponent(RadarDisplay)
 
     # add all plugins to grafical start
