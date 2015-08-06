@@ -70,8 +70,6 @@ class PhaseProcLp(core.Component):
 
         self.addGeneralOptions()
 
-        self.newRadar(None, None, True)
-
         self.show()
 
     def addGeneralOptions(self):

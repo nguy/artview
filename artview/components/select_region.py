@@ -12,28 +12,29 @@ from matplotlib.lines import Line2D
 import csv
 
 from ..core import Variable, Component, common, VariableChoose, componentsList
+from ..core.points import Points, write_points_csv, read_points_csv
 
 
 class SelectRegion(Component):
     '''
-    Select a Region of Interest. 
-    
+    Select a Region of Interest.
+
     This tool allows the user to draw a path in the display window using
-    the mouse. The primary mouse button (often the left button) is used 
+    the mouse. The primary mouse button (often the left button) is used
     to select a point. The secondary mouse button (often the right button)
     is used to close the path of interest.
-    
+
     A straight-sided polygon may be selected by clicking and releasing
     the primary mouse button.
-    A curved shape (free-hand drawing) may be drawn by holding down 
+    A curved shape (free-hand drawing) may be drawn by holding down
     the primary mouse button.
-    
-    One caveat found is that other tools may interfere with the curved 
-    shape drawing. If this is the case select the reset file defaults in 
+
+    One caveat found is that other tools may interfere with the curved
+    shape drawing. If this is the case select the reset file defaults in
     toolbox menu.
 
     The code modified from:
-    
+
     https://www.mail-archive.com/matplotlib-users@lists.sourceforge.net/msg00661.html
     '''
 
@@ -70,8 +71,8 @@ class SelectRegion(Component):
         -----
         '''
         super(SelectRegion, self).__init__(name=name, parent=parent)
-        self.VSelectRegion = Variable(None)
-        self.sharedVariables = {"VSelectRegion": None}
+        self.Vpoints = Variable(None)
+        self.sharedVariables = {"Vpoints": None}
 
         # Connect the components
         self.connectAllVariables()
@@ -157,11 +158,10 @@ class SelectRegion(Component):
                 # Inform via status bar
                 self.statusbar.showMessage("Closed Region")
 
-                # Create arrays for indices/data
-                data = self.getPathInteriorValues(path)
-                if data is not None:
-                    data = np.concatenate(data).reshape(7, -1).transpose()
-                    self.VSelectRegion.change(data)
+                # Create Points object
+                points = self.getPathInteriorValues(path)
+                if points is not None:
+                    self.Vpoints.change(points)
 
     def connect(self):
         '''Connect the SelectRegion instance.'''
@@ -232,10 +232,10 @@ class SelectRegion(Component):
     def viewTable(self):
         '''View a Table of Region points.'''
         # Check that data has been selected or loaded
-        if self.VSelectRegion.value is not None:
+        if self.Vpoints.value is not None:
             # Instantiate Table
-            self.table = common.CreateTable(self.columns)        
-            self.table.display_data(self.VSelectRegion.value)
+            self.table = common.CreateTable(self.Vpoints.value)
+            self.table.display()
             # Show the table
             self.table.show()
         else:
@@ -243,44 +243,17 @@ class SelectRegion(Component):
 
     def saveTable(self):
         '''Save a Table of SelectRegion points to a CSV file.'''
-        data = self.VSelectRegion.value
-        fsuggest = 'SelectRegion_' + self.getField() + '_' + \
-            str(data[:, 0].mean()) + '_' + \
-            str(data[:, 1].mean())+'.csv'
-        path = QtGui.QFileDialog.getSaveFileName(
-                self, 'Save CSV Table File', fsuggest, 'CSV(*.csv)')
-        if not path.isEmpty():
-            with open(unicode(path), 'wb') as stream:
-                writer = csv.writer(stream)
-                writer.writerow(self.columns)
-                for row in range(data.shape[0]):
-                    rowdata = []
-                    for column in range(data.shape[1]):
-                        item = data[row][column]
-                        if item is not None:
-                            rowdata.append(
-                                unicode(item).encode('utf8'))
-                        else:
-                            rowdata.append('')
-                    writer.writerow(rowdata)
-        # Commented out below is alternative ascii output (needs reformating)
-# +                outfile = open(fsuggest,'w')
-# +                outfile.write(
-# "     X        Y    Azimuth   Range     Value   Az Index  R Index\n")
-# +                    outfile.write(
-# "%8.2f %8.2f %8.2f %8.3f %8.2f %8d %8d\n" %(self.xys[self.ind[i],0],
-# self.xys[self.ind[i],1], self.az[self.ind[i]/self.r.size],
-# self.r[self.ind[i]%self.r.size],
-# self.Vradar.fields[self.Vfield.value][
-# 'data'][self.Vradar.sweep_start_ray_index['data'][
-# self.Vtilt]+self.ind[i]/self.r.size,self.ind[i] \
-# % self.r.size],self.Vradar.sweep_start_ray_index['data'][self.Vtilt]+\
-# self.ind[i]/self.r.size,self.ind[i]%self.r.size))
-# +                outfile.close()
-#  msg = "     X        Y    Azimuth   Range     Value   Az Index  R Index\n"
-#                for i in range(self.ind.size):
-#                warn = common.ShowWarning(msg)
-#                    print "%8.2f %8.2f %8.2f %8.3f %8.2f %8d %8d" %\
+        points = self.Vpoints.value
+        if points is not None:
+            fsuggest = 'SelectRegion_' + self.getField() + '_' + \
+                str(points.axes['x_disp']['data'][:].mean()) + '_' + \
+                str(points.axes['y_disp']['data'][:].mean())+'.csv'
+            path = QtGui.QFileDialog.getSaveFileName(
+                    self, 'Save CSV Table File', fsuggest, 'CSV(*.csv)')
+            if not path.isEmpty():
+                write_points_csv(path, points)
+        else:
+            common.ShowWarning("Points is None, the is nothigh to save!")
 
     def openTable(self):
         '''Open a saved table of SelectRegion points from a CSV file.'''
@@ -288,17 +261,8 @@ class SelectRegion(Component):
                 self, 'Open File', '', 'CSV(*.csv)')
         if path == '':
             return
-        data = []
-        if not path.isEmpty():
-            with open(unicode(path), 'rb') as stream:
-                for rownum, rowdata in enumerate(csv.reader(stream)):
-                    if rownum > 0:
-                        row = [None]*7
-                        for column, item in enumerate(rowdata):
-                            row[column] = float(item.decode('utf8'))
-                        data.append(row)
-        data = np.array(data)
-        self.VSelectRegion.change(data)
+        points = read_points_csv(path)
+        self.Vpoints.change(points)
 
     def resetSelectRegion(self):
         '''Clear the SelectRegion lines from plot and reset things.'''
@@ -309,7 +273,7 @@ class SelectRegion(Component):
         self.fig.canvas.draw()
         
         # Renew variables, etc.
-        self.VSelectRegion = Variable(None)
+        self.Vpoints = Variable(None)
         self._initialize_SelectRegion_vars()
         self.statusbar.showMessage("Select Region with Mouse")
 
@@ -322,14 +286,18 @@ class SelectRegion(Component):
     def displayStats(self):
         '''Calculate basic statistics of the SelectRegion list.'''
         from ..core import common
-        if self.VSelectRegion.value is None:
+        if self.Vpoints.value is None:
             common.ShowWarning("Please select SelectRegion first")
         else:
-            SelectRegionstats = common._array_stats(self.VSelectRegion.value[:, 4])
+            points = self.Vpoints.value
+            field = points.fields.keys()[0]
+            SelectRegionstats = common._array_stats(
+                points.fields[field]['data'])
             text = "<b>Basic statistics for the selected Region</b><br><br>"
             for stat in SelectRegionstats:
                 text += "<i>%s</i>: %5.2f<br>"%(stat, SelectRegionstats[stat])
-            self.statdialog, self.stattext = common.ShowLongText(text, modal=False)
+            self.statdialog, self.stattext = common.ShowLongText(text,
+                                                                 modal=False)
 
 class _SelectRegionStart(QtGui.QDialog):
     '''
