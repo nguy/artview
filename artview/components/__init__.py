@@ -18,6 +18,7 @@ ARTview functions.
     FieldButtonWindow
     LinkPlugins
     SelectRegion
+    PlotDisplay
 """
 
 from .plot_radar import RadarDisplay
@@ -27,3 +28,4 @@ from .level import LevelButtonWindow
 from .field import FieldButtonWindow
 from .component_control import LinkPlugins
 from .select_region import SelectRegion
+from .plot_simple import PlotDisplay
