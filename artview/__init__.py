@@ -27,6 +27,7 @@ else:
     from . import plugins
     from . import scripts
     from . import parser
+    from . import view
 
     # define standard execution
     run = scripts.scripts['standard']

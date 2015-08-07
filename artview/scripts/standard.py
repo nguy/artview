@@ -1,41 +1,43 @@
 """
 standard.py
 
-Driver function that creates ARTview display.
+Driver function that creates ARTView display.
 """
 import os
 
 def run(DirIn=os.getcwd(), filename=None, field=None):
     """
-    The standard artview execution.
+    standard artview execution
 
     It has :py:class:`~artview.components.Menu`
-    with :py:class:`~artview.components.LinkPlugins`,
+    with :py:class:`~artview.components.ComponentsControl`,
 
-    2 :py:class:`~artview.components.RadarDisplay`,
+    2 :py:class:`~artview.components.Display`,
 
     graphical start for:
         * All :py:class:`~artview.plugins`
-        * :py:class:`~artview.components.RadarDisplay`
-        * :py:class:`~artview.components.LinkPlugins`
+        * :py:class:`~artview.components.Display`
+        * :py:class:`~artview.components.ComponentsControl`
     """
     from PyQt4 import QtGui, QtCore
     import sys
 
     from ..core import Variable
     from ..components import RadarDisplay, Menu, LevelButtonWindow, \
-        LinkPlugins, SelectRegion
-
-    # handle input
-    if field is None:
-        import pyart
-        field = pyart.config.get_field_name('reflectivity')
+        ComponentsControl, ROI
+    from ._parse_field import _parse_field
 
     app = QtGui.QApplication(sys.argv)
 
     # start Menu and initiate Vradar
     MainMenu = Menu(DirIn, filename, name="Menu")
     Vradar = MainMenu.Vradar
+
+    # handle input
+    if field is None:
+        import pyart
+        field = pyart.config.get_field_name('reflectivity')
+        _parse_field(Vradar.value, field)
 
     # start Displays
     Vtilt = Variable(0)
@@ -45,16 +47,16 @@ def run(DirIn=os.getcwd(), filename=None, field=None):
     plot2 = RadarDisplay(Vradar, Variable(field), Vtilt2, name="Display2",
                     parent=MainMenu)
 
-    # start LinkPlugins
-    control = LinkPlugins()
+    # start ComponentsControl
+    control = ComponentsControl()
 
     # add control to Menu
     MainMenu.addLayoutWidget(control)
 
     # add grafical starts
-    MainMenu.addComponent(LinkPlugins)
+    MainMenu.addComponent(ComponentsControl)
     MainMenu.addComponent(RadarDisplay)
-    MainMenu.addComponent(SelectRegion)
+    MainMenu.addComponent(ROI)
 
     # add all plugins to grafical start
     try:
@@ -71,8 +73,9 @@ def run(DirIn=os.getcwd(), filename=None, field=None):
     height = desktop_rect.height()
     width = desktop_rect.width()
 
-    menu_width = 300
-    menu_height = 180
+    menu_width = max(
+        MainMenu.menubar.sizeHint().width(), MainMenu.sizeHint().width())
+    menu_height = MainMenu.sizeHint().height()
 
     MainMenu.setGeometry(0, 0, menu_width, menu_height)
 

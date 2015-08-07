@@ -28,8 +28,9 @@ class Menu(Component):
         pathDir : string
             Input directory path to open.
         [Optional]
-        filename : string
-            File to open as first, this will skip the open file dialog.
+        filename : string, False or None
+            File to open as first. None will open file dialog. False will
+            open no file.
         Vradar : :py:class:`~artview.core.core.Variable` instance
             Radar signal variable.
             A value of None initializes an empty Variable.
@@ -71,10 +72,12 @@ class Menu(Component):
         if Vradar is None and Vgrid is None:
             if filename is None:
                 self.showFileDialog()
+            elif filename is False:
+                pass
             else:
                 self.filename = filename
                 self._openfile()
-        
+
         # Launch the GUI interface
         self.LaunchApp()
         self.show()
