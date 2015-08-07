@@ -743,27 +743,6 @@ class RadarDisplay(Component):
                 pass
             elif Zinfile:
                 self.Vfield.change(Zinfile.pop(), False)
-                
-#             elif 'CZ' in self.fieldnames:
-#                 self.Vfield.change('CZ', False)
-#             elif 'DZ' in self.fieldnames:
-#                 self.Vfield.change('DZ', False)
-#             elif 'dbz' in self.fieldnames:
-#                 self.Vfield.change('dbz', False)
-#             elif 'DBZ' in self.fieldnames:
-#                 self.Vfield.change('DBZ', False)
-#             elif 'dBZ' in self.fieldnames:
-#                 self.Vfield.change('dBZ', False)
-#             elif 'Z' in self.fieldnames:
-#                 self.Vfield.change('Z', False)
-#             elif 'DBZ_S' in self.fieldnames:
-#                 self.Vfield.change('DBZ_S', False)
-#             elif 'reflectivity_horizontal'in self.fieldnames:
-#                 self.Vfield.change('reflectivity_horizontal', False)
-#             elif 'DBZH' in self.fieldnames:
-#                 self.Vfield.change('DBZH', False)
-#             elif 'AZ' in self.fieldnames:
-#                 self.Vfield.change('AZ', False)
             else:
                  msg = """Could not find the field name.
  You can add an additional name by modifying the 'check_default_field' 
