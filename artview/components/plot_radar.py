@@ -731,34 +731,45 @@ class RadarDisplay(Component):
 
         This should only occur upon start up with a new file.
         '''
+        Zlike = ['CZ', 'DZ', 'AZ', 'Z', 
+                'dbz', 'DBZ', 'dBZ', 'DBZ_S', 'DBZ_K',
+                'reflecivity_horizontal', 'DBZH',
+                ]
+                
+        Zinfile = set(self.fieldnames).intersection(Zlike)
+        
         if self.Vfield.value == pyart.config.get_field_name('reflectivity'):
             if self.Vfield.value in self.fieldnames:
                 pass
-            elif 'CZ' in self.fieldnames:
-                self.Vfield.change('CZ', False)
-            elif 'DZ' in self.fieldnames:
-                self.Vfield.change('DZ', False)
-            elif 'dbz' in self.fieldnames:
-                self.Vfield.change('dbz', False)
-            elif 'DBZ' in self.fieldnames:
-                self.Vfield.change('DBZ', False)
-            elif 'dBZ' in self.fieldnames:
-                self.Vfield.change('dBZ', False)
-            elif 'Z' in self.fieldnames:
-                self.Vfield.change('Z', False)
-            elif 'DBZ_S' in self.fieldnames:
-                self.Vfield.change('DBZ_S', False)
-            elif 'reflectivity_horizontal'in self.fieldnames:
-                self.Vfield.change('reflectivity_horizontal', False)
-            elif 'DBZH' in self.fieldnames:
-                self.Vfield.change('DBZH', False)
+            elif Zinfile:
+                self.Vfield.change(Zinfile.pop(), False)
+                
+#             elif 'CZ' in self.fieldnames:
+#                 self.Vfield.change('CZ', False)
+#             elif 'DZ' in self.fieldnames:
+#                 self.Vfield.change('DZ', False)
+#             elif 'dbz' in self.fieldnames:
+#                 self.Vfield.change('dbz', False)
+#             elif 'DBZ' in self.fieldnames:
+#                 self.Vfield.change('DBZ', False)
+#             elif 'dBZ' in self.fieldnames:
+#                 self.Vfield.change('dBZ', False)
+#             elif 'Z' in self.fieldnames:
+#                 self.Vfield.change('Z', False)
+#             elif 'DBZ_S' in self.fieldnames:
+#                 self.Vfield.change('DBZ_S', False)
+#             elif 'reflectivity_horizontal'in self.fieldnames:
+#                 self.Vfield.change('reflectivity_horizontal', False)
+#             elif 'DBZH' in self.fieldnames:
+#                 self.Vfield.change('DBZH', False)
+#             elif 'AZ' in self.fieldnames:
+#                 self.Vfield.change('AZ', False)
             else:
-                msg = "Could not find the field name.\n\
-                      You can add an additional name by modifying the\n\
-                      'check_default_field' function in plot.py\n\
-                      Please send a note to ARTView folks to add this name\n\
-                      Thanks!"
-                common.ShowWarning(msg)
+                 msg = """Could not find the field name.
+ You can add an additional name by modifying the 'check_default_field' 
+ function in plot_radar.py or plot_grid.py .
+ Please send a note to ARTView folks to add this name. Thanks!"""
+                 common.ShowWarning(msg)
 
     def _set_default_limits(self, strong=True):
         ''' Set limits to pre-defined default.'''
