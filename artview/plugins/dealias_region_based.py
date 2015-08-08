@@ -206,9 +206,15 @@ class DealiasRegionBased(core.Component):
         # execute
         print "Correcting .."
         t0 = time.time()
-        field = pyart.correct.dealias_region_based(**args)
+        try:
+            field = pyart.correct.dealias_region_based(**args)
+        except:
+            import traceback
+            error = traceback.format_exc()
+            common.ShowLongText("Py-ART fails with following error\n\n" +
+                                error)
         t1 = time.time()
-        common.ShowWarning("Correction took %fs" % (t1-t0))
+        print ("Correction took %fs" % (t1-t0))
 
         # verify field overwriting
         if args['corr_vel_field'] is None:

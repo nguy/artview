@@ -395,9 +395,15 @@ class Mapper(core.Component):
         # execute
         print "mapping .."
         t0 = time.time()
-        grid = pyart.map.grid_from_radars(**args)
+        try:
+            grid = pyart.map.grid_from_radars(**args)
+        except:
+            import traceback
+            error = traceback.format_exc()
+            common.ShowLongText("Py-ART fails with following error\n\n" +
+                                error)
         t1 = time.time()
-        common.ShowWarning("Mapping took %fs" % (t1-t0))
+        print ("Mapping took %fs" % (t1-t0))
 
         # update
         self.Vgrid.change(grid)

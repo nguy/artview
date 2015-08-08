@@ -261,9 +261,15 @@ class PhaseProcLp(core.Component):
         # execute
         print "Correcting .."
         t0 = time.time()
-        reproc_phase, sob_kdp = pyart.correct.phase_proc_lp(**args)
+        try:
+            reproc_phase, sob_kdp = pyart.correct.phase_proc_lp(**args)
+        except:
+            import traceback
+            error = traceback.format_exc()
+            common.ShowLongText("Py-ART fails with following error\n\n" +
+                                error)
         t1 = time.time()
-        common.ShowWarning("Correction took %fs" % (t1-t0))
+        print ("Correction took %fs" % (t1-t0))
 
         # verify field overwriting
         reproc_phase_name = str(self.reprocPhase.text())

@@ -200,9 +200,15 @@ class CalculateAttenuation(core.Component):
         # execute
         print "Correcting .."
         t0 = time.time()
-        spec_at, cor_z = pyart.correct.calculate_attenuation(**args)
+        try:
+            spec_at, cor_z = pyart.correct.calculate_attenuation(**args)
+        except:
+            import traceback
+            error = traceback.format_exc()
+            common.ShowLongText("Py-ART fails with following error\n\n" +
+                                error)
         t1 = time.time()
-        common.ShowWarning("Correction took %fs" % (t1-t0))
+        print ("Correction took %fs" % (t1-t0))
 
         # verify field overwriting
         if args['spec_at_field'] is None:

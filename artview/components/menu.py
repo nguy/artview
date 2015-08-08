@@ -210,9 +210,11 @@ class Menu(Component):
 
         if self.mode in ("radar", "all"):
             saveRadar = QtGui.QAction('Save Radar', self)
+            saveRadar.setStatusTip('Save Radar to Cf/Radial NetCDF')
             saveRadar.triggered.connect(self.saveRadar)
         elif self.mode in ("grid", "all"):
             saveGrid = QtGui.QAction('Save Grid', self)
+            saveGrid.setStatusTip('Save Grid NetCDF')
             saveGrid.triggered.connect(self.saveGrid)
 
         exitApp = QtGui.QAction('Close', self)
@@ -280,7 +282,7 @@ class Menu(Component):
     def addPluginMenuItem(self, Comp, label=None):
         '''Add Component item to Component Menu.
         If label is None use class name.'''
-        if label is None
+        if label is None:
             label = Comp.__name__
         action = self.pluginmenu.addAction(label)
         action.triggered[()].connect(
