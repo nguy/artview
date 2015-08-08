@@ -195,6 +195,8 @@ class SelectRegion(Component):
         self.buttonSaveTable.setToolTip("Save a Region Data CSV file")
         self.buttonStats = QtGui.QPushButton('Stats', self)
         self.buttonStats.setToolTip("Show basic statistics of selected Region")
+        self.buttonHist = QtGui.QPushButton('Plot Histogram', self)
+        self.buttonHist.setToolTip("Plot histogram of selected Region")
         self.buttonResetSelectRegion = QtGui.QPushButton('Reset Region', self)
         self.buttonResetSelectRegion.setToolTip("Clear the Region")
         self.buttonHelp = QtGui.QPushButton('Help', self)
@@ -203,6 +205,7 @@ class SelectRegion(Component):
         self.buttonOpenTable.clicked.connect(self.openTable)
         self.buttonSaveTable.clicked.connect(self.saveTable)
         self.buttonStats.clicked.connect(self.displayStats)
+        self.buttonHist.clicked.connect(self.showHist)
         self.buttonResetSelectRegion.clicked.connect(self.resetSelectRegion)
         self.buttonHelp.clicked.connect(self.displayHelp)
 
@@ -212,6 +215,7 @@ class SelectRegion(Component):
         self.rBox_layout.addWidget(self.buttonOpenTable)
         self.rBox_layout.addWidget(self.buttonSaveTable)
         self.rBox_layout.addWidget(self.buttonStats)
+        self.rBox_layout.addWidget(self.buttonHist)
         self.rBox_layout.addWidget(self.buttonResetSelectRegion)
         self.rBox_layout.addWidget(self.buttonHelp)
 
@@ -330,6 +334,16 @@ class SelectRegion(Component):
             for stat in SelectRegionstats:
                 text += "<i>%s</i>: %5.2f<br>"%(stat, SelectRegionstats[stat])
             self.statdialog, self.stattext = common.ShowLongText(text, modal=False)
+            
+    def showHist(self):
+        '''Show a histogram plot of the SelectRegion list.'''
+        from ..components.plot_simple import PlotDisplay
+        if self.VSelectRegion.value is None:
+            common.ShowWarning("Please select SelectRegion first")
+        else:
+            ploth = PlotDisplay(self.VSelectRegion.value[:, 4], plot_type="hist",
+                                name="Select Region Histogram")
+       
 
 class _SelectRegionStart(QtGui.QDialog):
     '''
