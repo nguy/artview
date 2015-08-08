@@ -73,12 +73,13 @@ class DealiasRegionBased(core.Component):
         self.generalLayout = QtGui.QGridLayout()
         self.layout.addLayout(self.generalLayout, 0, 0, 1, 2)
 
-        self.button = QtGui.QPushButton("Help")
-        self.button.clicked.connect(self.displayHelp)
-        self.layout.addWidget(self.button, 1, 0, 1, 1)
+        self.helpButton = QtGui.QPushButton("Help")
+        self.helpButton.clicked.connect(self.displayHelp)
+        self.layout.addWidget(self.helpButton, 1, 0, 1, 1)
 
         self.button = QtGui.QPushButton("Correct")
         self.button.clicked.connect(self.dealias_region_based)
+        self.button.setToolTip('Execute pyart.correct.dealias_region_based')
         self.layout.addWidget(self.button, 1, 1, 1, 1)
         self.addGeneralOptions()
 

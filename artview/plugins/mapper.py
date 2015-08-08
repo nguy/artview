@@ -72,6 +72,7 @@ class Mapper(core.Component):
 
         self.button = QtGui.QPushButton("Map")
         self.button.clicked.connect(self.grid_from_radars)
+        self.button.setToolTip('Execute pyart.map.grid_from_radars')
         self.layout.addWidget(self.button)
 
         self.addGeneralOptions()
