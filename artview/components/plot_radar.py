@@ -639,6 +639,7 @@ class RadarDisplay(Component):
         self.layout.addWidget(self.canvas, 1, 0, 7, 6)
 
     def _update_plot(self):
+        '''Draw/Redraw the plot.'''
 
         # Create the plot with PyArt RadarDisplay
         self.ax.cla()  # Clear the plot axes
@@ -729,6 +730,7 @@ class RadarDisplay(Component):
     #########################
     # Check methods #
     #########################
+
 
     def _check_file_type(self):
         '''Check file to see if the file is airborne or rhi.'''
