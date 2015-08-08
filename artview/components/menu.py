@@ -130,6 +130,28 @@ class Menu(Component):
             self.filename = filename
             self._openfile()
 
+    def saveRadar(self):
+        '''Open a dialog box to save radar file.'''
+
+        filename = QtGui.QFileDialog.getSaveFileName(
+                self, 'Save Radar File', self.dirIn)
+        filename = str(filename)
+        if filename == '' or self.Vradar.value is None:
+            return
+        else:
+            pyart.io.write_cfradial(filename, self.Vradar.value)
+
+    def saveGrid(self):
+        '''Open a dialog box to save grid file.'''
+
+        filename = QtGui.QFileDialog.getSaveFileName(
+                self, 'Save grid File', self.dirIn)
+        filename = str(filename)
+        if filename == '' or self.Vgrid.value is None:
+            return
+        else:
+            pyart.io.write_grid(filename, self.Vgrid.value)
+
     def addLayoutWidget(self, widget):
         '''
         Add a widget to central layout.
@@ -185,12 +207,23 @@ class Menu(Component):
         openFile.setStatusTip('Open new File')
         openFile.triggered.connect(self.showFileDialog)
 
+        if self.mode in ("radar", "all"):
+            saveRadar = QtGui.QAction('Save Radar', self)
+            saveRadar.triggered.connect(self.saveRadar)
+        elif self.mode in ("grid", "all"):
+            saveGrid = QtGui.QAction('Save Grid', self)
+            saveGrid.triggered.connect(self.saveGrid)
+
         exitApp = QtGui.QAction('Close', self)
         exitApp.setShortcut('Ctrl+Q')
         exitApp.setStatusTip('Exit ARTview')
         exitApp.triggered.connect(self.close)
 
         self.filemenu.addAction(openFile)
+        if self.mode in ("radar", "all"):
+            self.filemenu.addAction(saveRadar)
+        if self.mode in ("grid", "all"):
+            self.filemenu.addAction(saveGrid)
         self.filemenu.addAction(exitApp)
 
     def addAboutMenu(self):
