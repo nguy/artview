@@ -16,24 +16,24 @@ from ..core import Variable, Component, common, VariableChoose, componentsList
 
 class SelectRegion(Component):
     '''
-    Select a Region of Interest. 
-    
+    Select a Region of Interest.
+
     This tool allows the user to draw a path in the display window using
-    the mouse. The primary mouse button (often the left button) is used 
+    the mouse. The primary mouse button (often the left button) is used
     to select a point. The secondary mouse button (often the right button)
     is used to close the path of interest.
-    
+
     A straight-sided polygon may be selected by clicking and releasing
     the primary mouse button.
-    A curved shape (free-hand drawing) may be drawn by holding down 
+    A curved shape (free-hand drawing) may be drawn by holding down
     the primary mouse button.
-    
-    One caveat found is that other tools may interfere with the curved 
-    shape drawing. If this is the case select the reset file defaults in 
+
+    One caveat found is that other tools may interfere with the curved
+    shape drawing. If this is the case select the reset file defaults in
     toolbox menu.
 
     The code modified from:
-    
+
     https://www.mail-archive.com/matplotlib-users@lists.sourceforge.net/msg00661.html
     '''
 

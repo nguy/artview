@@ -13,6 +13,7 @@ ARTview functions.
     :toctree: generated/
 
     RadarDisplay
+    GridDisplay
     Menu
     LevelButtonWindow
     FieldButtonWindow

@@ -5,7 +5,7 @@ Driver function that creates ARTView display.
 """
 import os
 
-def run(DirIn=os.getcwd(), filename=None, field=None):
+def run(DirIn=None, filename=None, field=None):
     """
     standard artview execution
 
@@ -39,6 +39,8 @@ def run(DirIn=os.getcwd(), filename=None, field=None):
         import pyart
         field = pyart.config.get_field_name('reflectivity')
         field = _parse_field(Vradar.value, field)
+    if DirIn is None: # avoid reference to path while building documentation
+        DirIn = os.getcwd()
 
     # start Displays
     Vtilt = Variable(0)

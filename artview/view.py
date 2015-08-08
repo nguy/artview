@@ -1,6 +1,7 @@
 """
-artview.view
-============
+==================================
+Shell Launch (:mod:`artview.view`)
+==================================
 
 Utilities easily running ARTview from shell.
 
@@ -34,7 +35,8 @@ def view(containers, field=reflectivity):
 
     Parameters
     ----------
-    container : list of Radar or Grid objects
+    container : list of :py:class:`~pyart.core.Radar` or \
+    :py:class:`~pyart.core.Grid`  objects
         Object to visualise.
     field : str
         Field to start visualization with.
@@ -58,7 +60,7 @@ def view(containers, field=reflectivity):
     execute()
 
 def start():
-    ''' Start Qt Application and Menu '''
+    ''' Start Qt Application and :py:class:`~artview.components.Menu` '''
     global app
     if app is None:
         app = QtGui.QApplication([ ])
@@ -103,11 +105,11 @@ def close():
 
 def addRadar(radar, field=reflectivity):
     '''
-    addRadar to Artview Application.
+    add :py:class:`~artview.components.RadarDisplay` to Artview Application.
 
     Parameters
     ----------
-    radar : Radar objects
+    radar : :py:class:`~pyart.core.Radar` object
         Object to add to visualisation
     field : str
         Field to start visualization with
@@ -119,11 +121,11 @@ def addRadar(radar, field=reflectivity):
 
 def addGrid(grid, field=reflectivity):
     '''
-    addRadar to Artview Application.
+    add :py:class:`~artview.components.GridDisplay` to Artview Application.
 
     Parameters
     ----------
-    grid : Grid objects
+    grid : :py:class:`~pyart.core.Grid` object
         Object to add to visualisation
     field : str
         Field to start visualization with
