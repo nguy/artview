@@ -80,6 +80,7 @@ class Menu(Component):
 
         # Launch the GUI interface
         self.LaunchApp()
+        self.resize(300, 180)
         self.show()
 
     def keyPressEvent(self, event):
@@ -177,8 +178,8 @@ class Menu(Component):
         widget.close()
         widget.deleteLater()
 
-    def addComponent(self, Comp):
-        '''Add Component Contructor.'''
+    def addComponent(self, Comp, label=None):
+        '''Add Component Contructor. If label is None, use class name.'''
         # first test the existence of a guiStart
         if not hasattr(Comp, 'guiStart'):
             raise ValueError("Component has no guiStart Method")
@@ -276,9 +277,12 @@ class Menu(Component):
             self.layoutmenuItems[rep].close()
             del self.layoutmenuItems[rep]
 
-    def addPluginMenuItem(self, Comp):
-        '''Add Component item to Component Menu.'''
-        action = self.pluginmenu.addAction(Comp.__name__)
+    def addPluginMenuItem(self, Comp, label=None):
+        '''Add Component item to Component Menu.
+        If label is None use class name.'''
+        if label is None
+            label = Comp.__name__
+        action = self.pluginmenu.addAction(label)
         action.triggered[()].connect(
             lambda Comp=Comp: self.startComponent(Comp))
 
