@@ -1,5 +1,0 @@
-#!/Users/guy/anaconda/python.app/Contents/MacOS/python
-
-import sys
-import artview.__main__
-artview.__main__.main(sys.argv)

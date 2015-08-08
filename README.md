@@ -3,7 +3,7 @@ ARTview
 
 ARM Radar Toolkit Viewer
 
-ARTview is an interactive viewing browser that uses the [Py-Art](https://github.com/ARM-DOE/pyart) toolkit.  
+ARTview is an interactive viewing browser that uses the [Py-Art](https://github.com/ARM-DOE/pyart) toolkit.
 It allows one to easily scroll through a directory of weather radar data files 
 and visualize the data.  All file types available in PyArt can be opened with
 the ARTview browser.
@@ -12,28 +12,28 @@ the ARTview browser.
 
 With ARTview you can:
 
-	Dynamically switch fields (variables) and tilt angles via drop down menu.
-    
+    Dynamically switch fields (variables) and tilt angles via drop down menu.
+
     Dynamically switch tilt angle via radio button selection.  Also easily change 
     by using the up/down arrow keys.
-    
+
     Browse a directory by advancing with drop down "Next" and "Previous" menus or 
     by arrow left/right key.
-    
+
     View ground-based or (some) airborne radar files.
-    
+
     View PPI, sector or RHI type file scans.
-    
+
     Change display parametets such as scaling, title, units labels, colormap,  
     and add range rings.
-    
+
     Save output images from a drop-down menu (Or Ctrl+s on linux, Cmd+S on MacOS)
-    
+
     A toolbox which allows Zooming/Paning, find point values, select regions,
     interface with PyArt routines and select a custom tools a user creates.
-    
+
     The default two windows can be configured to share parameters or operate independently.
-    
+
 ## Links
 [Code repository](https://github.com/nguy/artview)
 
@@ -42,7 +42,7 @@ With ARTview you can:
 [Issues](https://github.com/nguy/artview/issues)
 
 [Py-ART](https://github.com/ARM-DOE/pyart)
-  
+
 ## News
 ARTView has become and installable package!
 It is still undergoing further functionality development, so keep an eye out for new
@@ -73,28 +73,22 @@ python artview -d /some/directory/you/want/to/point/to
 Or it can be run from anywhere with the following:
 
 ```python
-python artview
+artview
 ```
 
 A specific file can be loaded:
 ```python
-python artview -F /some/directory/you/want/to/point/to/filename
+artview -F /some/directory/you/want/to/point/to/filename
 ```
 
 A specific field (e.g. reflectivity) can be loaded:
 ```python
-python artview -f 'reflectivity'
+artview -f 'reflectivity'
 ```
 
 To see the command line options:
 ```python
-python artview -h
-```
-
-If you are having trouble starting the program and you are running Python 2.6,
-try just using the following:
-```python
-artview
+artview -h
 ```
 
 ARTview should be able to recognize and correctly handle PPI, RHI and airborne files.
@@ -104,11 +98,13 @@ If you find a file with a field that does not load, let us know and we can add i
 to the list.
 
 ## Dependencies
-[Py-Art](https://github.com/ARM-DOE/pyart)
+[Py-Art](https://github.com/ARM-DOE/pyart) >= 1.4
 
-[matplotlib](http://matplotlib.org)
+[matplotlib](http://matplotlib.org) >= 1.1.0
 
-[PyQt](http://www.riverbankcomputing.co.uk/software/pyqt/intro)
+[Basemap](http://matplotlib.org/basemap) >= 0.99
+
+[PyQt](http://www.riverbankcomputing.co.uk/software/pyqt/intro) >= 4.6
 
 An old unsupported and limited version can be found in the scripts directory and uses
 [TkInter](https://wiki.python.org/moin/TkInter) .
@@ -128,7 +124,7 @@ Nick Guy (nick.guy@uwyo.edu)
 
 Paul Hein
 
-Timothy Lang 
+Timothy Lang
 
 NOTE:: This is open source software.  Contributions are very welcome, though this is not any of our primary project.  In addition it needs to be stated that no responsibility is taken by the author for any adverse effects.
 

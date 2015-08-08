@@ -2,7 +2,7 @@ import pyart
 
 Zlike = ['CZ', 'DZ', 'AZ', 'Z',
 'dbz', 'DBZ', 'dBZ', 'DBZ_S', 'DBZ_K',
-'reflecivity_horizontal', 'DBZH',
+'reflectivity_horizontal', 'DBZH',
 ]
 
 def _parse_field(container, field):
@@ -13,6 +13,7 @@ def _parse_field(container, field):
 
     This should only occur upon start up with a new file.
     '''
+
     if container is None:
         return field
 

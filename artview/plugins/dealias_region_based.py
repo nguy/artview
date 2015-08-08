@@ -19,7 +19,7 @@ class DealiasRegionBased(core.Component):
     '''
 
     Vradar = None  #: see :ref:`shared_variable`
-    Vgatefilter = None  #: see :ref:`shared_variable`
+#    Vgatefilter = None  #: see :ref:`shared_variable`
 
     @classmethod
     def guiStart(self, parent=None):
@@ -29,7 +29,7 @@ class DealiasRegionBased(core.Component):
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
-    def __init__(self, Vradar=None, Vgatefilter=None,
+    def __init__(self, Vradar=None,# Vgatefilter=None,
                  name="DealiasRegionBased", parent=None):
         '''Initialize the class to create the interface.
 
@@ -39,16 +39,18 @@ class DealiasRegionBased(core.Component):
         Vradar : :py:class:`~artview.core.core.Variable` instance
             Radar signal variable.
             A value of None initializes an empty Variable.
-        Vgatefilter : :py:class:`~artview.core.core.Variable` instance
-            Gatefilter signal variable.
-            A value of None initializes an empty Variable.
-            [Not Implemented]
         name : string
             Field Radiobutton window name.
         parent : PyQt instance
             Parent instance to associate to this class.
             If None, then Qt owns, otherwise associated w/ parent PyQt instance
         '''
+
+#        Vgatefilter : :py:class:`~artview.core.core.Variable` instance
+#            Gatefilter signal variable.
+#            A value of None initializes an empty Variable.
+#            [Not Implemented]
+
         super(DealiasRegionBased, self).__init__(name=name, parent=parent)
         self.central_widget = QtGui.QWidget()
         self.setCentralWidget(self.central_widget)
@@ -59,13 +61,13 @@ class DealiasRegionBased(core.Component):
         else:
             self.Vradar = Vradar
 
-        if Vgatefilter is None:
-            self.Vgatefilter = core.Variable(None)
-        else:
-            self.Vgatefilter = Vgatefilter
+#        if Vgatefilter is None:
+#            self.Vgatefilter = core.Variable(None)
+#        else:
+#            self.Vgatefilter = Vgatefilter
 
-        self.sharedVariables = {"Vradar": self.newRadar,
-                                "Vgatefilter": None}
+        self.sharedVariables = {"Vradar": self.newRadar,}
+#                                "Vgatefilter": None}
         self.connectAllVariables()
 
         self.generalLayout = QtGui.QGridLayout()
@@ -127,9 +129,9 @@ class DealiasRegionBased(core.Component):
         self.checkNyquistUniform.setChecked(False)
         self.generalLayout.addWidget(self.checkNyquistUniform, 7, 1)
 
-        self.generalLayout.addWidget(QtGui.QLabel("gatefilter"), 8, 0)
+#        self.generalLayout.addWidget(QtGui.QLabel("gatefilter"), 8, 0)
         # XXX NotImplemented
-        self.generalLayout.addWidget(QtGui.QLabel("NotImplemented"), 8, 1)
+#        self.generalLayout.addWidget(QtGui.QLabel("NotImplemented"), 8, 1)
 
         self.raysWrapAround = QtGui.QCheckBox("rays_wrap_around")
         self.raysWrapAround.setChecked(True)
@@ -191,7 +193,7 @@ class DealiasRegionBased(core.Component):
             'nyquist_velocity': [i if i >= 0 else None for i in (
                 self.nyquistVelocity.value(),)][0],
             'check_nyquist_uniform': self.checkNyquistUniform.isChecked(),
-            'gatefilter': False,
+#            'gatefilter': False,
             'rays_wrap_around': self.raysWrapAround.isChecked(),
             'keep_original': self.keepOriginal.isChecked(),
             'vel_field': [None if a == "" else a for a in (

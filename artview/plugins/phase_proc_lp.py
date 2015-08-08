@@ -28,7 +28,7 @@ class PhaseProcLp(core.Component):
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
-    def __init__(self, Vradar=None, Vgatefilter=None,
+    def __init__(self, Vradar=None,# Vgatefilter=None,
                  name="PhaseProcLp", parent=None):
         '''Initialize the class to create the interface.
 
@@ -69,8 +69,6 @@ class PhaseProcLp(core.Component):
         self.layout.addWidget(self.button, 1, 1, 1, 1)
 
         self.addGeneralOptions()
-
-        self.newRadar(None, None, True)
 
         self.show()
 
