@@ -416,6 +416,6 @@ class _SelectRegionStart(QtGui.QDialog):
         self.result['name'] = str(self.name.text())
         self.result["display"] = self.displays[
                                          self.displayCombo.currentIndex()]
-        print (self.result['name'])
+        print((self.result['name']))
 
         return self.result, self.independent.isChecked()

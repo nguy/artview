@@ -196,10 +196,10 @@ class CalculateAttenuation(core.Component):
             'corr_refl_field': [None if a == "" else a for a in (
                 str(self.corrReflField.text()),)][0],
         }
-        print args
+        print(args)
 
         # execute
-        print "Correcting .."
+        print("Correcting ..")
         t0 = time.time()
         try:
             spec_at, cor_z = pyart.correct.calculate_attenuation(**args)
@@ -209,7 +209,7 @@ class CalculateAttenuation(core.Component):
             common.ShowLongText("Py-ART fails with following error\n\n" +
                                 error)
         t1 = time.time()
-        print ("Correction took %fs" % (t1-t0))
+        print(("Correction took %fs" % (t1-t0)))
 
         # verify field overwriting
         if args['spec_at_field'] is None:
@@ -245,7 +245,7 @@ class CalculateAttenuation(core.Component):
         self.Vradar.value.add_field(spec_at_field_name, spec_at, True)
         self.Vradar.value.add_field(corr_refl_field_name, cor_z, True)
         self.Vradar.change(self.Vradar.value, strong_update)
-        print "Correction took %fs" % (t1-t0)
+        print("Correction took %fs" % (t1-t0))
 
     def _clearLayout(self, layout):
         '''recursively remove items from layout.'''

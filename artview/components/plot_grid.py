@@ -227,9 +227,9 @@ class GridDisplay(Component):
         limits, cmap, change = limits_dialog(self.Vlims.value, self.Vcmap.value, self.name)
         if change == 1:
             self.Vcmap.change(cmap, False)
-            print limits
+            print(limits)
             self.Vlims.change(limits)
-            print self.Vlims.value
+            print(self.Vlims.value)
 
     def _fillLevelBox(self):
         '''Fill in the Level Window Box with current levels.'''
@@ -690,14 +690,14 @@ class GridDisplay(Component):
         self.cbar.set_label(self.units)
 
         if self.plot_type == "gridZ":
-            print "Plotting %s field, Z level %d in %s" % (
-                self.Vfield.value, self.VlevelZ.value+1, self.name)
+            print("Plotting %s field, Z level %d in %s" % (
+                self.Vfield.value, self.VlevelZ.value+1, self.name))
         elif self.plot_type == "gridY":
-            print "Plotting %s field, Y level %d in %s" % (
-                self.Vfield.value, self.VlevelY.value+1, self.name)
+            print("Plotting %s field, Y level %d in %s" % (
+                self.Vfield.value, self.VlevelY.value+1, self.name))
         elif self.plot_type == "gridX":
-            print "Plotting %s field, X level %d in %s" % (
-                self.Vfield.value, self.VlevelX.value+1, self.name)
+            print("Plotting %s field, X level %d in %s" % (
+                self.Vfield.value, self.VlevelX.value+1, self.name))
 
 
         self.canvas.draw()

@@ -391,10 +391,10 @@ class Mapper(core.Component):
             args['algorithm'] = str(self.algorithm.currentText())
             args['leafsize'] = self.leafsize.value()
 
-        print args
+        print(args)
 
         # execute
-        print "mapping .."
+        print("mapping ..")
         t0 = time.time()
         try:
             grid = pyart.map.grid_from_radars(**args)
@@ -404,11 +404,11 @@ class Mapper(core.Component):
             common.ShowLongText("Py-ART fails with following error\n\n" +
                                 error)
         t1 = time.time()
-        print ("Mapping took %fs" % (t1-t0))
+        print(("Mapping took %fs" % (t1-t0)))
 
         # update
         self.Vgrid.change(grid)
-        print "Mapping took %fs" % (t1-t0)
+        print("Mapping took %fs" % (t1-t0))
 
     def _clearLayout(self, layout):
         '''recursively remove items from layout.'''
