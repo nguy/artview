@@ -11,7 +11,7 @@ import sys
 if sys.version_info[0] < 3:
     import version
 else:
-    import version
+    from . import version
 NAME = 'ARTview'
 VERSION = version.version
 

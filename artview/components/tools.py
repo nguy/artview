@@ -50,6 +50,7 @@ def restore_default_display(tooldict, field, scan_type):
 
     return tooldict, display_limits, cmap
 
+
 def reset_tools(tooldict):
     '''Reset the Tools dictionary.
 
@@ -193,14 +194,16 @@ class ValueClick(QtGui.QMainWindow):
         '''Disconnect the ZoomPan instance'''
         self.fig.canvas.mpl_disconnect(self.pickPointID)
 
-    def NewRadar(self, variable, value, False):
+    def NewRadar(self, variable, value, flag=False):
         '''Update the display list when radar variable is changed.'''
         print("In NewRadar")
 
 ###############################
 # Use a custom Method #
 ###############################
-# Is this obsolete using the plugin/component interface? 
+# Is this obsolete using the plugin/component interface?
+
+
 def custom_tool(tooldict):
     '''Allow user to activate self-defined tool.
 
@@ -463,6 +466,7 @@ def interior_grid(path, grid, level, plot_type):
                             y_index[np.newaxis]), axis=0)
     return (xys[ind], index.transpose())
 
+
 def nearest_point_grid(grid, zvalue, yvalue, xvalue):
     '''
     Return the nearest bins to a given position.
@@ -494,11 +498,11 @@ def nearest_point_grid(grid, zvalue, yvalue, xvalue):
 
     # TODO consider projection change
     zdata, zvalue = np.meshgrid(grid.axes["z_disp"]["data"], zvalue)
-    z_index = np.argmin(np.abs(zdata-zvalue),axis=1)
+    z_index = np.argmin(np.abs(zdata-zvalue), axis=1)
     ydata, yvalue = np.meshgrid(grid.axes["y_disp"]["data"], yvalue)
-    y_index = np.argmin(np.abs(ydata-yvalue),axis=1)
+    y_index = np.argmin(np.abs(ydata-yvalue), axis=1)
     xdata, xvalue = np.meshgrid(grid.axes["x_disp"]["data"], xvalue)
-    x_index = np.argmin(np.abs(xdata-xvalue),axis=1)
+    x_index = np.argmin(np.abs(xdata-xvalue), axis=1)
 
     index = np.concatenate((z_index[np.newaxis],
                             y_index[np.newaxis],
