@@ -3,8 +3,6 @@ core.py
 
 Class instance to create Variables and establish change signals.
 
-
-
 """
 
 # Load the needed packages

@@ -627,7 +627,7 @@ class RadarDisplay(Component):
         else:
             self.YSIZE = 8
         xwidth = 0.7
-        yheight = 0.7 * float(self.YSIZE) / float(self.XSIZE)
+        yheight = 0.7 #* float(self.YSIZE) / float(self.XSIZE)
         self.ax.set_position([0.2, 0.55-0.5*yheight, xwidth, yheight])
         self.cax.set_position([0.2, 0.10, xwidth, 0.02])
         self._update_axes()
@@ -640,7 +640,6 @@ class RadarDisplay(Component):
 
     def _update_plot(self):
         '''Draw/Redraw the plot.'''
-        self._check_default_field()
 
         # Create the plot with PyArt RadarDisplay
         self.ax.cla()  # Clear the plot axes
@@ -648,7 +647,16 @@ class RadarDisplay(Component):
 
         if self.Vfield.value not in self.Vradar.value.fields.keys():
             self.canvas.draw()
+            self.statusbar.setStyleSheet("QStatusBar{padding-left:8px;" +
+                                      "background:rgba(255,0,0,255);" +
+                                      "color:black;font-weight:bold;}")
+            self.statusbar.showMessage("Field not Found in Radar", msecs= 5000)
             return
+        else:
+            self.statusbar.setStyleSheet("QStatusBar{padding-left:8px;" +
+                                      "background:rgba(0,0,0,0);" +
+                                      "color:black;font-weight:bold;}")
+            self.statusbar.clearMessage()
 
         # Reset to default title if user entered nothing w/ Title button
         if self.title == '':
@@ -723,46 +731,6 @@ class RadarDisplay(Component):
     # Check methods #
     #########################
 
-    def _check_default_field(self):
-        '''
-        Hack to perform a check on reflectivity to make it work with
-        a larger number of files as there are many nomenclature is the
-        weather radar world.
-
-        This should only occur upon start up with a new file.
-        '''
-        Zlike = ['CZ', 'DZ', 'AZ', 'Z', 
-                'dbz', 'DBZ', 'dBZ', 'DBZ_S', 'DBZ_K',
-                'reflecivity_horizontal', 'DBZH',
-                ]
-                
-        Zinfile = set(self.fieldnames).intersection(Zlike)
-        
-        if self.Vfield.value == pyart.config.get_field_name('reflectivity'):
-            if self.Vfield.value in self.fieldnames:
-                pass
-            elif Zinfile:
-                self.Vfield.change(Zinfile.pop(), False)
-            else:
-                 msg = """Could not find the field name.
- You can add an additional name by modifying the 'check_default_field' 
- function in plot_radar.py or plot_grid.py .
- Please send a note to ARTView folks to add this name. Thanks!"""
-                 common.ShowWarning(msg)
-
-    def _set_default_limits(self, strong=True):
-        ''' Set limits to pre-defined default.'''
-        from .limits import _default_limits
-        limits, cmap = _default_limits(
-            self.Vfield.value, self.plot_type)
-        self.Vlims.change(limits, strong)
-
-    def _set_default_cmap(self, strong=True):
-        ''' Set colormap to pre-defined default.'''
-        from .limits import _default_limits
-        limits, cmap = _default_limits(
-            self.Vfield.value, self.plot_type)
-        self.Vcmap.change(cmap, strong)
 
     def _check_file_type(self):
         '''Check file to see if the file is airborne or rhi.'''
@@ -781,10 +749,23 @@ class RadarDisplay(Component):
                 self.plot_type = "radarRhi"
 
         if self.plot_type != old_plot_type:
-            print "Changed Scan types, reinitializing"
-            self._check_default_field()
+            print("Changed Scan types, reinitializing")
             self._set_default_limits()
             self._update_fig_ax()
+
+    def _set_default_limits(self, strong=True):
+        ''' Set limits to pre-defined default.'''
+        from .limits import _default_limits
+        limits, cmap = _default_limits(
+            self.Vfield.value, self.plot_type)
+        self.Vlims.change(limits, strong)
+
+    def _set_default_cmap(self, strong=True):
+        ''' Set colormap to pre-defined default.'''
+        from .limits import _default_limits
+        limits, cmap = _default_limits(
+            self.Vfield.value, self.plot_type)
+        self.Vcmap.change(cmap, strong)
 
     ########################
     # Image save methods #

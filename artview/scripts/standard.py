@@ -1,23 +1,24 @@
 """
 standard.py
 
-Driver function that creates ARTview display.
+Driver function that creates ARTView display.
 """
 import os
 
-def run(DirIn=os.getcwd(), filename=None, field=None):
+def run(DirIn=None, filename=None, field=None):
     """
-    The standard artview execution.
+    standard artview execution
 
     It has :py:class:`~artview.components.Menu`
     with :py:class:`~artview.components.LinkPlugins`,
 
-    2 :py:class:`~artview.components.RadarDisplay`,
+    2 :py:class:`~artview.components.Display`,
 
     graphical start for:
         * All :py:class:`~artview.plugins`
         * :py:class:`~artview.components.RadarDisplay`
         * :py:class:`~artview.components.LinkPlugins`
+        * :py:class:`~artview.components.SelectRegion`
     """
     from PyQt4 import QtGui, QtCore
     import sys
@@ -25,17 +26,21 @@ def run(DirIn=os.getcwd(), filename=None, field=None):
     from ..core import Variable
     from ..components import RadarDisplay, Menu, LevelButtonWindow, \
         LinkPlugins, SelectRegion
-
-    # handle input
-    if field is None:
-        import pyart
-        field = pyart.config.get_field_name('reflectivity')
+    from ._parse_field import _parse_field
 
     app = QtGui.QApplication(sys.argv)
 
     # start Menu and initiate Vradar
     MainMenu = Menu(DirIn, filename, name="Menu")
     Vradar = MainMenu.Vradar
+
+    # handle input
+    if field is None:
+        import pyart
+        field = pyart.config.get_field_name('reflectivity')
+        field = _parse_field(Vradar.value, field)
+    if DirIn is None: # avoid reference to path while building documentation
+        DirIn = os.getcwd()
 
     # start Displays
     Vtilt = Variable(0)
@@ -45,7 +50,7 @@ def run(DirIn=os.getcwd(), filename=None, field=None):
     plot2 = RadarDisplay(Vradar, Variable(field), Vtilt2, name="Display2",
                     parent=MainMenu)
 
-    # start LinkPlugins
+    # start ComponentsControl
     control = LinkPlugins()
 
     # add control to Menu

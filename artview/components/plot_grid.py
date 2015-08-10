@@ -227,9 +227,9 @@ class GridDisplay(Component):
         limits, cmap, change = limits_dialog(self.Vlims.value, self.Vcmap.value, self.name)
         if change == 1:
             self.Vcmap.change(cmap, False)
-            print limits
+            print(limits)
             self.Vlims.change(limits)
-            print self.Vlims.value
+            print(self.Vlims.value)
 
     def _fillLevelBox(self):
         '''Fill in the Level Window Box with current levels.'''
@@ -285,7 +285,7 @@ class GridDisplay(Component):
             self._update_plot()
 
     def _open_levelbuttonwindow(self):
-        '''Open a TiltButtonWindow instance.'''
+        '''Open a LevelButtonWindow instance.'''
         from .level import LevelButtonWindow
         self.levelbuttonwindow = LevelButtonWindow(
             self.Vlevel, self.plot_type, Vcontainer=self.Vgrid,
@@ -690,14 +690,14 @@ class GridDisplay(Component):
         self.cbar.set_label(self.units)
 
         if self.plot_type == "gridZ":
-            print "Plotting %s field, Z level %d in %s" % (
-                self.Vfield.value, self.VlevelZ.value+1, self.name)
+            print("Plotting %s field, Z level %d in %s" % (
+                self.Vfield.value, self.VlevelZ.value+1, self.name))
         elif self.plot_type == "gridY":
-            print "Plotting %s field, Y level %d in %s" % (
-                self.Vfield.value, self.VlevelY.value+1, self.name)
+            print("Plotting %s field, Y level %d in %s" % (
+                self.Vfield.value, self.VlevelY.value+1, self.name))
         elif self.plot_type == "gridX":
-            print "Plotting %s field, X level %d in %s" % (
-                self.Vfield.value, self.VlevelX.value+1, self.name)
+            print("Plotting %s field, X level %d in %s" % (
+                self.Vfield.value, self.VlevelX.value+1, self.name))
 
 
         self.canvas.draw()
@@ -797,14 +797,14 @@ class GridDisplay(Component):
     def _quick_savefile(self, PTYPE=IMAGE_EXT):
         '''Save the current display via PyArt interface.'''
         imagename = self.display.generate_filename(
-            self.Vfield.value, self.Vtilt.value, ext=IMAGE_EXT)
+            self.Vfield.value, self.Vlevel.value, ext=IMAGE_EXT)
         self.canvas.print_figure(os.path.join(os.getcwd(), imagename), dpi=DPI)
         self.statusbar.showMessage('Saved to %s' % os.path.join(os.getcwd(), imagename))
 
     def _savefile(self, PTYPE=IMAGE_EXT):
         '''Save the current display using PyQt dialog interface.'''
         PBNAME = self.display.generate_filename(
-            self.Vfield.value, self.Vtilt.value, ext=IMAGE_EXT)
+            self.Vfield.value, self.Vlevel.value, ext=IMAGE_EXT)
         file_choices = "PNG (*.png)|*.png"
         path = unicode(QtGui.QFileDialog.getSaveFileName(
             self, 'Save file', PBNAME, file_choices))
@@ -895,7 +895,7 @@ class _DisplayStart(QtGui.QDialog):
         if item is None:
             return
         else:
-            self.result["Vlevel"] = getattr(item[1], item[2])
+            self.result["VlevelZ"] = getattr(item[1], item[2])
 
     def chooseLims(self):
         item = VariableChoose().chooseVariable()
@@ -924,7 +924,7 @@ class _DisplayStart(QtGui.QDialog):
         self.layout.addWidget(self.fieldButton, 2, 3)
 
         self.levelButton = QtGui.QPushButton("Find Variable")
-        self.levelButton.clicked.connect(self.chooseTilt)
+        self.levelButton.clicked.connect(self.chooseLevel)
         self.layout.addWidget(QtGui.QLabel("Vlevel"), 3, 0)
         self.level = QtGui.QSpinBox()
         self.layout.addWidget(self.level, 3, 1)
@@ -955,13 +955,13 @@ class _DisplayStart(QtGui.QDialog):
             common.ShowWarning("Must select a variable for Vgrid.")
             # I'm allowing this to continue, but this will result in error
 
-        # if Vfield, Vtilt, Vlims were not select create new
+        # if Vfield, Vlevel, Vlims were not select create new
         field = str(self.field.text())
         level = self.level.value()
         if 'Vfield' not in self.result:
             self.result['Vfield'] = Variable(field)
-        if 'Vlevel' not in self.result:
-            self.result['Vlevel'] = Variable(level)
+        if 'VlevelZ' not in self.result:
+            self.result['VlevelZ'] = Variable(level)
 
         self.result['name'] = str(self.name.text())
         self.result['plot_type'] = str(self.plot_type.text())

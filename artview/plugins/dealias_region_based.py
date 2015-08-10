@@ -19,7 +19,7 @@ class DealiasRegionBased(core.Component):
     '''
 
     Vradar = None  #: see :ref:`shared_variable`
-    Vgatefilter = None  #: see :ref:`shared_variable`
+#    Vgatefilter = None  #: see :ref:`shared_variable`
 
     @classmethod
     def guiStart(self, parent=None):
@@ -29,7 +29,7 @@ class DealiasRegionBased(core.Component):
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
-    def __init__(self, Vradar=None, Vgatefilter=None,
+    def __init__(self, Vradar=None,# Vgatefilter=None,
                  name="DealiasRegionBased", parent=None):
         '''Initialize the class to create the interface.
 
@@ -39,16 +39,18 @@ class DealiasRegionBased(core.Component):
         Vradar : :py:class:`~artview.core.core.Variable` instance
             Radar signal variable.
             A value of None initializes an empty Variable.
-        Vgatefilter : :py:class:`~artview.core.core.Variable` instance
-            Gatefilter signal variable.
-            A value of None initializes an empty Variable.
-            [Not Implemented]
         name : string
             Field Radiobutton window name.
         parent : PyQt instance
             Parent instance to associate to this class.
             If None, then Qt owns, otherwise associated w/ parent PyQt instance
         '''
+
+#        Vgatefilter : :py:class:`~artview.core.core.Variable` instance
+#            Gatefilter signal variable.
+#            A value of None initializes an empty Variable.
+#            [Not Implemented]
+
         super(DealiasRegionBased, self).__init__(name=name, parent=parent)
         self.central_widget = QtGui.QWidget()
         self.setCentralWidget(self.central_widget)
@@ -59,24 +61,25 @@ class DealiasRegionBased(core.Component):
         else:
             self.Vradar = Vradar
 
-        if Vgatefilter is None:
-            self.Vgatefilter = core.Variable(None)
-        else:
-            self.Vgatefilter = Vgatefilter
+#        if Vgatefilter is None:
+#            self.Vgatefilter = core.Variable(None)
+#        else:
+#            self.Vgatefilter = Vgatefilter
 
-        self.sharedVariables = {"Vradar": self.newRadar,
-                                "Vgatefilter": None}
+        self.sharedVariables = {"Vradar": self.newRadar,}
+#                                "Vgatefilter": None}
         self.connectAllVariables()
 
         self.generalLayout = QtGui.QGridLayout()
         self.layout.addLayout(self.generalLayout, 0, 0, 1, 2)
 
-        self.button = QtGui.QPushButton("Help")
-        self.button.clicked.connect(self.displayHelp)
-        self.layout.addWidget(self.button, 1, 0, 1, 1)
+        self.helpButton = QtGui.QPushButton("Help")
+        self.helpButton.clicked.connect(self.displayHelp)
+        self.layout.addWidget(self.helpButton, 1, 0, 1, 1)
 
         self.button = QtGui.QPushButton("Correct")
         self.button.clicked.connect(self.dealias_region_based)
+        self.button.setToolTip('Execute pyart.correct.dealias_region_based')
         self.layout.addWidget(self.button, 1, 1, 1, 1)
         self.addGeneralOptions()
 
@@ -127,9 +130,9 @@ class DealiasRegionBased(core.Component):
         self.checkNyquistUniform.setChecked(False)
         self.generalLayout.addWidget(self.checkNyquistUniform, 7, 1)
 
-        self.generalLayout.addWidget(QtGui.QLabel("gatefilter"), 8, 0)
+#        self.generalLayout.addWidget(QtGui.QLabel("gatefilter"), 8, 0)
         # XXX NotImplemented
-        self.generalLayout.addWidget(QtGui.QLabel("NotImplemented"), 8, 1)
+#        self.generalLayout.addWidget(QtGui.QLabel("NotImplemented"), 8, 1)
 
         self.raysWrapAround = QtGui.QCheckBox("rays_wrap_around")
         self.raysWrapAround.setChecked(True)
@@ -191,7 +194,7 @@ class DealiasRegionBased(core.Component):
             'nyquist_velocity': [i if i >= 0 else None for i in (
                 self.nyquistVelocity.value(),)][0],
             'check_nyquist_uniform': self.checkNyquistUniform.isChecked(),
-            'gatefilter': False,
+#            'gatefilter': False,
             'rays_wrap_around': self.raysWrapAround.isChecked(),
             'keep_original': self.keepOriginal.isChecked(),
             'vel_field': [None if a == "" else a for a in (
@@ -199,14 +202,20 @@ class DealiasRegionBased(core.Component):
             'corr_vel_field': [None if a == "" else a for a in (
                 str(self.corrVelField.text()),)][0],
         }
-        print args
+        print(args)
 
         # execute
-        print "Correcting .."
+        print("Correcting ..")
         t0 = time.time()
-        field = pyart.correct.dealias_region_based(**args)
+        try:
+            field = pyart.correct.dealias_region_based(**args)
+        except:
+            import traceback
+            error = traceback.format_exc()
+            common.ShowLongText("Py-ART fails with following error\n\n" +
+                                error)
         t1 = time.time()
-        common.ShowWarning("Correction took %fs" % (t1-t0))
+        print(("Correction took %fs" % (t1-t0)))
 
         # verify field overwriting
         if args['corr_vel_field'] is None:
@@ -227,7 +236,7 @@ class DealiasRegionBased(core.Component):
         # add fields and update
         self.Vradar.value.add_field(name, field, True)
         self.Vradar.change(self.Vradar.value, strong_update)
-        print "Correction took %fs" % (t1-t0)
+        print("Correction took %fs" % (t1-t0))
 
     def _clearLayout(self, layout):
         '''recursively remove items from layout.'''

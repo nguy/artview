@@ -28,8 +28,9 @@ class Menu(Component):
         pathDir : string
             Input directory path to open.
         [Optional]
-        filename : string
-            File to open as first, this will skip the open file dialog.
+        filename : string, False or None
+            File to open as first. None will open file dialog. False will
+            open no file.
         Vradar : :py:class:`~artview.core.core.Variable` instance
             Radar signal variable.
             A value of None initializes an empty Variable.
@@ -71,12 +72,15 @@ class Menu(Component):
         if Vradar is None and Vgrid is None:
             if filename is None:
                 self.showFileDialog()
+            elif filename is False:
+                pass
             else:
                 self.filename = filename
                 self._openfile()
-        
+
         # Launch the GUI interface
         self.LaunchApp()
+        self.resize(300, 180)
         self.show()
 
     def keyPressEvent(self, event):
@@ -127,6 +131,28 @@ class Menu(Component):
             self.filename = filename
             self._openfile()
 
+    def saveRadar(self):
+        '''Open a dialog box to save radar file.'''
+
+        filename = QtGui.QFileDialog.getSaveFileName(
+                self, 'Save Radar File', self.dirIn)
+        filename = str(filename)
+        if filename == '' or self.Vradar.value is None:
+            return
+        else:
+            pyart.io.write_cfradial(filename, self.Vradar.value)
+
+    def saveGrid(self):
+        '''Open a dialog box to save grid file.'''
+
+        filename = QtGui.QFileDialog.getSaveFileName(
+                self, 'Save grid File', self.dirIn)
+        filename = str(filename)
+        if filename == '' or self.Vgrid.value is None:
+            return
+        else:
+            pyart.io.write_grid(filename, self.Vgrid.value)
+
     def addLayoutWidget(self, widget):
         '''
         Add a widget to central layout.
@@ -152,8 +178,8 @@ class Menu(Component):
         widget.close()
         widget.deleteLater()
 
-    def addComponent(self, Comp):
-        '''Add Component Contructor.'''
+    def addComponent(self, Comp, label=None):
+        '''Add Component Contructor. If label is None, use class name.'''
         # first test the existence of a guiStart
         if not hasattr(Comp, 'guiStart'):
             raise ValueError("Component has no guiStart Method")
@@ -182,12 +208,25 @@ class Menu(Component):
         openFile.setStatusTip('Open new File')
         openFile.triggered.connect(self.showFileDialog)
 
+        if self.mode in ("radar", "all"):
+            saveRadar = QtGui.QAction('Save Radar', self)
+            saveRadar.setStatusTip('Save Radar to Cf/Radial NetCDF')
+            saveRadar.triggered.connect(self.saveRadar)
+        if self.mode in ("grid", "all"):
+            saveGrid = QtGui.QAction('Save Grid', self)
+            saveGrid.setStatusTip('Save Grid NetCDF')
+            saveGrid.triggered.connect(self.saveGrid)
+
         exitApp = QtGui.QAction('Close', self)
         exitApp.setShortcut('Ctrl+Q')
         exitApp.setStatusTip('Exit ARTview')
         exitApp.triggered.connect(self.close)
 
         self.filemenu.addAction(openFile)
+        if self.mode in ("radar", "all"):
+            self.filemenu.addAction(saveRadar)
+        if self.mode in ("grid", "all"):
+            self.filemenu.addAction(saveGrid)
         self.filemenu.addAction(exitApp)
 
     def addAboutMenu(self):
@@ -240,9 +279,12 @@ class Menu(Component):
             self.layoutmenuItems[rep].close()
             del self.layoutmenuItems[rep]
 
-    def addPluginMenuItem(self, Comp):
-        '''Add Component item to Component Menu.'''
-        action = self.pluginmenu.addAction(Comp.__name__)
+    def addPluginMenuItem(self, Comp, label=None):
+        '''Add Component item to Component Menu.
+        If label is None use class name.'''
+        if label is None:
+            label = Comp.__name__
+        action = self.pluginmenu.addAction(label)
         action.triggered[()].connect(
             lambda Comp=Comp: self.startComponent(Comp))
 
@@ -297,7 +339,7 @@ https://rawgit.com/nguy/artview/master/docs/build/html/index.html"""
         # Get the radar info form rada object and print it
         txOut = self.Vradar.value.info()
 
-        print txOut
+        print(txOut)
         QtGui.QMessageBox.information(self, "Long Radar Info",
                                       "See terminal window")
 
@@ -397,7 +439,7 @@ https://rawgit.com/nguy/artview/master/docs/build/html/index.html"""
     def AdvanceFileSelect(self, findex):
         '''Captures a selection and open file.'''
         if findex > (len(self.filelist)-1):
-            print len(self.filelist)
+            print(len(self.filelist))
             msg = "End of directory, cannot advance!"
             common.ShowWarning(msg)
             findex = (len(self.filelist) - 1)
@@ -417,13 +459,14 @@ https://rawgit.com/nguy/artview/master/docs/build/html/index.html"""
 
     def _openfile(self):
         '''Open a file via a file selection window.'''
-        print "Opening file " + self.filename
+        print("Opening file " + self.filename)
 
         # Update to current directory when file is chosen
         self.dirIn = os.path.dirname(self.filename)
 
         # Get a list of files in the working directory
         self.filelist = os.listdir(self.dirIn)
+        self.filelist.sort()
 
         if os.path.basename(self.filename) in self.filelist:
             self.fileindex = self.filelist.index(
@@ -450,7 +493,7 @@ https://rawgit.com/nguy/artview/master/docs/build/html/index.html"""
                     return
                 except:
                     import traceback
-                    print traceback.format_exc()
+                    print(traceback.format_exc())
                     radar_warning = True
         elif self.mode in ("grid", "all"):
             try:
@@ -465,7 +508,7 @@ https://rawgit.com/nguy/artview/master/docs/build/html/index.html"""
                     return
                 except:
                     import traceback
-                    print traceback.format_exc()
+                    print(traceback.format_exc())
                     grid_warning = True
 
         if grid_warning or radar_warning:

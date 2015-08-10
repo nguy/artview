@@ -170,8 +170,8 @@ class LinkPlugins(core.Component):
         self.comp1.connectSharedVariable(var)
         # comp1.var.change(comp0.var.value), just to emit signal
         getattr(self.comp1, var).change(getattr(self.comp0, var).value)
-        print "connect var %s of %s from %s" % (
-            var, self.comp1.name, self.comp0.name)
+        print("connect var %s of %s from %s" % (
+            var, self.comp1.name, self.comp0.name))
 
     def disconnectVar(self, var):
         '''Turn variable in component 1 independente of component 0.'''
@@ -183,8 +183,8 @@ class LinkPlugins(core.Component):
         self.comp1.connectSharedVariable(var)
         # comp1.var.change(comp0.var.value)
         getattr(self.comp1, var).change(getattr(self.comp0, var).value)
-        print "disconnect var %s of %s from %s" % (
-            var, self.comp1.name, self.comp0.name)
+        print("disconnect var %s of %s from %s" % (
+            var, self.comp1.name, self.comp0.name))
 
     def _clearLayout(self, layout):
         '''Recursively remove items from layout.'''

@@ -195,7 +195,7 @@ class ValueClick(QtGui.QMainWindow):
 
     def NewRadar(self, variable, value, False):
         '''Update the display list when radar variable is changed.'''
-        print "In NewRadar"
+        print("In NewRadar")
 
 ###############################
 # Use a custom Method #
@@ -310,7 +310,7 @@ http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-
         else:
             # deal with something that should never happen
             scale_factor = 1
-            print event.button
+            print(event.button)
 
         new_width = (cur_xlim[1] - cur_xlim[0]) * scale_factor
         new_height = (cur_ylim[1] - cur_ylim[0]) * scale_factor

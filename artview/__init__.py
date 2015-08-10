@@ -1,6 +1,28 @@
 """
-ARTView:
-========
+========================
+ARTview (:mod:`artview`)
+========================
+
+.. _user:
+
+################
+Reference Manual
+################
+
+:Release: |version|
+:Date: |today|
+
+This guide provides details on all public functions, modules and classes
+included in ARTview which a typical user will use on a regular basis.
+
+.. toctree::
+    :maxdepth: 1
+
+    core
+    components
+    plugins
+    scripts
+    view
 
 """
 
@@ -27,6 +49,7 @@ else:
     from . import plugins
     from . import scripts
     from . import parser
+    from . import view
 
     # define standard execution
     run = scripts.scripts['standard']

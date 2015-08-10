@@ -72,6 +72,7 @@ class Mapper(core.Component):
 
         self.button = QtGui.QPushButton("Map")
         self.button.clicked.connect(self.grid_from_radars)
+        self.button.setToolTip('Execute pyart.map.grid_from_radars')
         self.layout.addWidget(self.button)
 
         self.addGeneralOptions()
@@ -390,18 +391,23 @@ class Mapper(core.Component):
             args['algorithm'] = str(self.algorithm.currentText())
             args['leafsize'] = self.leafsize.value()
 
-        print args
+        print(args)
 
         # execute
-        print "mapping .."
+        print("mapping ..")
         t0 = time.time()
-        grid = pyart.map.grid_from_radars(**args)
+        try:
+            grid = pyart.map.grid_from_radars(**args)
+        except:
+            import traceback
+            error = traceback.format_exc()
+            common.ShowLongText("Py-ART fails with following error\n\n" +
+                                error)
         t1 = time.time()
-        common.ShowWarning("Mapping took %fs" % (t1-t0))
+        print(("Mapping took %fs" % (t1-t0)))
 
         # update
         self.Vgrid.change(grid)
-        print "Mapping took %fs" % (t1-t0)
 
     def _clearLayout(self, layout):
         '''recursively remove items from layout.'''
