@@ -1,0 +1,6 @@
+artview.components.GridDisplay.getField
+=======================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: GridDisplay.getField

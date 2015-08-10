@@ -1,0 +1,6 @@
+artview.components.GridDisplay.setUILayout
+==========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: GridDisplay.setUILayout

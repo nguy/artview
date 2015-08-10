@@ -1,0 +1,6 @@
+artview.components.GridDisplay.NewLevel
+=======================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: GridDisplay.NewLevel

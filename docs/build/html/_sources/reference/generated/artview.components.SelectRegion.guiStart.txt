@@ -1,0 +1,6 @@
+artview.components.SelectRegion.guiStart
+========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: SelectRegion.guiStart

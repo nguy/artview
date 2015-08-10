@@ -1,6 +1,0 @@
-artview.components.RadarDisplay.toolROICmd
-==========================================
-
-.. currentmodule:: artview.components
-
-.. automethod:: RadarDisplay.toolROICmd

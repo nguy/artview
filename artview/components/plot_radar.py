@@ -782,7 +782,7 @@ class RadarDisplay(Component):
                 self.plot_type = "radarRhi"
 
         if self.plot_type != old_plot_type:
-            print "Changed Scan types, reinitializing"
+            print("Changed Scan types, reinitializing")
             self._set_default_limits()
             self._update_fig_ax()
 

@@ -193,9 +193,9 @@ class ValueClick(QtGui.QMainWindow):
         '''Disconnect the ZoomPan instance'''
         self.fig.canvas.mpl_disconnect(self.pickPointID)
 
-    def NewRadar(self, variable, value, False):
+    def NewRadar(self, variable, value, flag=False):
         '''Update the display list when radar variable is changed.'''
-        print "In NewRadar"
+        print("In NewRadar")
 
 ###############################
 # Use a custom Method #
@@ -310,7 +310,7 @@ http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-
         else:
             # deal with something that should never happen
             scale_factor = 1
-            print event.button
+            print(event.button)
 
         new_width = (cur_xlim[1] - cur_xlim[0]) * scale_factor
         new_height = (cur_ylim[1] - cur_ylim[0]) * scale_factor
@@ -415,7 +415,7 @@ def interior_radar(path, radar, tilt):
     gateIndex = ind % ngates
     index = np.concatenate((rayIndex[np.newaxis],
                             gateIndex[np.newaxis]), axis=0)
-    return (xys[ind], index.transpose())
+    return (xys[ind], index.transpose().astype(np.int))
 
 
 def interior_grid(path, grid, level, plot_type):

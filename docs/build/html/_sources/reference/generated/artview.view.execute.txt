@@ -1,0 +1,6 @@
+artview.view.execute
+====================
+
+.. currentmodule:: artview.view
+
+.. autofunction:: execute

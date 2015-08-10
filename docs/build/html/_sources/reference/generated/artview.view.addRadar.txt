@@ -1,0 +1,6 @@
+artview.view.addRadar
+=====================
+
+.. currentmodule:: artview.view
+
+.. autofunction:: addRadar

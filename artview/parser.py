@@ -5,9 +5,13 @@ Parse the input code from execution program.
 """
 
 import argparse
+import sys
 
 # Get the version
-import version
+if sys.version_info[0] < 3:
+    import version
+else:
+    import version
 NAME = 'ARTview'
 VERSION = version.version
 

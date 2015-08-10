@@ -182,7 +182,6 @@ def write_points_csv(filename, points):
                         unicode(item).encode('utf8'))
                 else:
                     rowdata.append('')
-            print rowdata
             writer.writerow(rowdata)
 
 def read_points_csv(filename):

@@ -1,0 +1,6 @@
+artview.components.SelectRegion.showHist
+========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: SelectRegion.showHist

@@ -1,6 +1,0 @@
-artview.components.ROI.CreateROIWidget
-======================================
-
-.. currentmodule:: artview.components
-
-.. automethod:: ROI.CreateROIWidget

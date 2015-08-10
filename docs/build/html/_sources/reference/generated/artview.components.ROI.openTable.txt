@@ -1,6 +1,0 @@
-artview.components.ROI.openTable
-================================
-
-.. currentmodule:: artview.components
-
-.. automethod:: ROI.openTable

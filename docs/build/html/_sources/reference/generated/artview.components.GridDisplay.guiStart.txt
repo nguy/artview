@@ -1,0 +1,6 @@
+artview.components.GridDisplay.guiStart
+=======================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: GridDisplay.guiStart

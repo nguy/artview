@@ -1,0 +1,6 @@
+artview.components.SelectRegion.motion_notify_callback
+======================================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: SelectRegion.motion_notify_callback

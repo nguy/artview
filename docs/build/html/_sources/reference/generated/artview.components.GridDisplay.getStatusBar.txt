@@ -1,0 +1,6 @@
+artview.components.GridDisplay.getStatusBar
+===========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: GridDisplay.getStatusBar

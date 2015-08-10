@@ -26,9 +26,9 @@ def ShowWarning(msg):
     flags = QtGui.QMessageBox.StandardButton()
     response = QtGui.QMessageBox.warning(Dialog, "Warning!", msg, flags)
     if response == 0:
-        print msg
+        print(msg)
     else:
-        print "Warning Discarded!"
+        print("Warning Discarded!")
 
     return response
 
@@ -47,9 +47,9 @@ def ShowQuestion(msg):
         Dialog, "Question", msg,
         QtGui.QMessageBox.Ok, QtGui.QMessageBox.Cancel)
     if response == QtGui.QMessageBox.Ok:
-        print msg
+        print(msg)
     else:
-        print "Warning Discarded!"
+        print("Warning Discarded!")
 
     return response
 

@@ -189,10 +189,10 @@ class DealiasUnwrapPhase(core.Component):
                 str(self.corrVelField.text()),)][0],
             'skip_checks': self.skipChecks.isChecked(),
         }
-        print args
+        print(args)
 
         # execute
-        print "Correcting .."
+        print("Correcting ..")
         t0 = time.time()
         try:
             field = pyart.correct.dealias_unwrap_phase(**args)
@@ -202,7 +202,7 @@ class DealiasUnwrapPhase(core.Component):
             common.ShowLongText("Py-ART fails with following error\n\n" +
                                 error)
         t1 = time.time()
-        print ("Correction took %fs" % (t1-t0))
+        print(("Correction took %fs" % (t1-t0)))
 
         # verify field overwriting
         if args['corr_vel_field'] is None:
@@ -223,7 +223,7 @@ class DealiasUnwrapPhase(core.Component):
         # add fields and update
         self.Vradar.value.add_field(name, field, True)
         self.Vradar.change(self.Vradar.value, strong_update)
-        print "Correction took %fs" % (t1-t0)
+        print("Correction took %fs" % (t1-t0))
 
     def _clearLayout(self, layout):
         '''recursively remove items from layout'''

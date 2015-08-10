@@ -1,0 +1,6 @@
+artview.components.SelectRegion.resetSelectRegion
+=================================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: SelectRegion.resetSelectRegion

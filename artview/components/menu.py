@@ -339,7 +339,7 @@ https://rawgit.com/nguy/artview/master/docs/build/html/index.html"""
         # Get the radar info form rada object and print it
         txOut = self.Vradar.value.info()
 
-        print txOut
+        print(txOut)
         QtGui.QMessageBox.information(self, "Long Radar Info",
                                       "See terminal window")
 
@@ -439,7 +439,7 @@ https://rawgit.com/nguy/artview/master/docs/build/html/index.html"""
     def AdvanceFileSelect(self, findex):
         '''Captures a selection and open file.'''
         if findex > (len(self.filelist)-1):
-            print len(self.filelist)
+            print(len(self.filelist))
             msg = "End of directory, cannot advance!"
             common.ShowWarning(msg)
             findex = (len(self.filelist) - 1)
@@ -459,7 +459,7 @@ https://rawgit.com/nguy/artview/master/docs/build/html/index.html"""
 
     def _openfile(self):
         '''Open a file via a file selection window.'''
-        print "Opening file " + self.filename
+        print("Opening file " + self.filename)
 
         # Update to current directory when file is chosen
         self.dirIn = os.path.dirname(self.filename)
@@ -493,7 +493,7 @@ https://rawgit.com/nguy/artview/master/docs/build/html/index.html"""
                     return
                 except:
                     import traceback
-                    print traceback.format_exc()
+                    print(traceback.format_exc())
                     radar_warning = True
         elif self.mode in ("grid", "all"):
             try:
@@ -508,7 +508,7 @@ https://rawgit.com/nguy/artview/master/docs/build/html/index.html"""
                     return
                 except:
                     import traceback
-                    print traceback.format_exc()
+                    print(traceback.format_exc())
                     grid_warning = True
 
         if grid_warning or radar_warning:

@@ -294,23 +294,26 @@ class SelectRegion(Component):
             common.ShowWarning("Please select SelectRegion first")
         else:
             points = self.Vpoints.value
-            field = points.fields.keys()[0]
+            field = list(points.fields.keys())[0]
             SelectRegionstats = common._array_stats(
                 points.fields[field]['data'])
             text = "<b>Basic statistics for the selected Region</b><br><br>"
             for stat in SelectRegionstats:
                 text += "<i>%s</i>: %5.2f<br>"%(stat, SelectRegionstats[stat])
-            self.statdialog, self.stattext = common.ShowLongText(text, modal=False)
+            self.statdialog, self.stattext = common.ShowLongText(text,
+                                                                 modal=False)
 
     def showHist(self):
         '''Show a histogram plot of the SelectRegion list.'''
         from ..components.plot_simple import PlotDisplay
-        if self.VSelectRegion.value is None:
+        if self.Vpoints.value is None:
             common.ShowWarning("Please select SelectRegion first")
         else:
-            ploth = PlotDisplay(self.VSelectRegion.value[:, 4], plot_type="hist",
-                                name="Select Region Histogram")
-       
+            points = self.Vpoints.value
+            field = list(points.fields.keys())[0]
+            plot = PlotDisplay(
+                points.fields[field]['data'], plot_type="hist",
+                name="Select Region Histogram")
 
 class _SelectRegionStart(QtGui.QDialog):
     '''
@@ -383,6 +386,6 @@ class _SelectRegionStart(QtGui.QDialog):
         self.result['name'] = str(self.name.text())
         self.result["display"] = self.displays[
                                          self.displayCombo.currentIndex()]
-        print (self.result['name'])
+        print((self.result['name']))
 
         return self.result, self.independent.isChecked()

@@ -257,10 +257,10 @@ class PhaseProcLp(core.Component):
             'window_len': self.windowLen.value(),
             'proc': self.proc.value(),
         }
-        print args
+        print(args)
 
         # execute
-        print "Correcting .."
+        print("Correcting ..")
         t0 = time.time()
         try:
             reproc_phase, sob_kdp = pyart.correct.phase_proc_lp(**args)
@@ -270,7 +270,7 @@ class PhaseProcLp(core.Component):
             common.ShowLongText("Py-ART fails with following error\n\n" +
                                 error)
         t1 = time.time()
-        print ("Correction took %fs" % (t1-t0))
+        print(("Correction took %fs" % (t1-t0)))
 
         # verify field overwriting
         reproc_phase_name = str(self.reprocPhase.text())
@@ -299,7 +299,7 @@ class PhaseProcLp(core.Component):
         self.Vradar.value.add_field(reproc_phase_name, reproc_phase, True)
         self.Vradar.value.add_field(sob_kdp_name, sob_kdp, True)
         self.Vradar.change(self.Vradar.value, strong_update)
-        print "Correction took %fs" % (t1-t0)
+        print("Correction took %fs" % (t1-t0))
 
     def _clearLayout(self, layout):
         '''recursively remove items from layout.'''

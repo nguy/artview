@@ -196,7 +196,7 @@ def limits_dialog(limits, cmap, name):
     buttonBox.accepted.connect(LimsDialog.accept)
     buttonBox.rejected.connect(LimsDialog.reject)
     retval = LimsDialog.exec_()
-    print retval
+    print(retval)
     if retval == 1:
         cmap['vmin'] = float(ent_dmin.text())
         cmap['vmax'] = float(ent_dmax.text())

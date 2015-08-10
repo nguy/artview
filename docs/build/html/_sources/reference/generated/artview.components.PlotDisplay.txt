@@ -1,0 +1,28 @@
+artview.components.PlotDisplay
+==============================
+
+.. currentmodule:: artview.components
+
+.. autoclass:: PlotDisplay
+   :show-inheritance:
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+         PlotDisplay.LaunchGUI
+         PlotDisplay.addButtons
+         PlotDisplay.cmapSelectCmd
+         PlotDisplay.displayHelp
+         PlotDisplay.setUILayout
+   
+   
+
+   
+   
+   
+

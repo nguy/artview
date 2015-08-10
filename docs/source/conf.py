@@ -254,7 +254,7 @@ for name in ['sphinx.ext.linkcode', 'linkcode', 'numpydoc.linkcode']:
     except ImportError:
         pass
 else:
-    print "NOTE: linkcode extension not found -- no links to source generated"
+    print("NOTE: linkcode extension not found -- no links to source generated")
 
 def linkcode_resolve(domain, info):
     """

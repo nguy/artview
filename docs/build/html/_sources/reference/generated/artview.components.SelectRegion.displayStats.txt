@@ -1,0 +1,6 @@
+artview.components.SelectRegion.displayStats
+============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: SelectRegion.displayStats

@@ -1,0 +1,6 @@
+artview.components.GridDisplay.NewField
+=======================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: GridDisplay.NewField

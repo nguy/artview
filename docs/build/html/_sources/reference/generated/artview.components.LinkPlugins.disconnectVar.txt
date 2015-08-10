@@ -1,0 +1,6 @@
+artview.components.LinkPlugins.disconnectVar
+============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: LinkPlugins.disconnectVar

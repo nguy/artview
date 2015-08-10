@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="ARTview 0.2.2 documentation" href="../index.html" />
-    <link rel="up" title="Reference Manual" href="index.html" />
+    <link rel="up" title="ARTview (artview)" href="index.html" />
     <link rel="next" title="artview.components.RadarDisplay" href="generated/artview.components.RadarDisplay.html" />
     <link rel="prev" title="Core (artview.core)" href="core.html" /> 
   </head>
@@ -49,7 +49,7 @@
           <a href="core.html" title="Core (artview.core)"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">ARTview 0.2.2 documentation</a> &raquo;</li>
-          <li><a href="index.html" accesskey="U">Reference Manual</a> &raquo;</li> 
+          <li><a href="index.html" accesskey="U">ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -72,20 +72,26 @@ ARTview functions.</p>
 <tr class="row-odd"><td><a class="reference internal" href="generated/artview.components.RadarDisplay.html#artview.components.RadarDisplay" title="artview.components.RadarDisplay"><tt class="xref py py-obj docutils literal"><span class="pre">RadarDisplay</span></tt></a>(Vradar,&nbsp;Vfield,&nbsp;Vtilt[,&nbsp;Vlims,&nbsp;...])</td>
 <td>Class to create a display plot, using a returned Radar structure</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/artview.components.Menu.html#artview.components.Menu" title="artview.components.Menu"><tt class="xref py py-obj docutils literal"><span class="pre">Menu</span></tt></a>(pathDir[,&nbsp;filename,&nbsp;Vradar,&nbsp;Vgrid,&nbsp;...])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/artview.components.GridDisplay.html#artview.components.GridDisplay" title="artview.components.GridDisplay"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay</span></tt></a>(Vgrid,&nbsp;Vfield[,&nbsp;VlevelZ,&nbsp;...])</td>
+<td>Class to create a display plot, using a Grid structure.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/artview.components.Menu.html#artview.components.Menu" title="artview.components.Menu"><tt class="xref py py-obj docutils literal"><span class="pre">Menu</span></tt></a>(pathDir[,&nbsp;filename,&nbsp;Vradar,&nbsp;Vgrid,&nbsp;...])</td>
 <td>Class to display the MainMenu.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/artview.components.LevelButtonWindow.html#artview.components.LevelButtonWindow" title="artview.components.LevelButtonWindow"><tt class="xref py py-obj docutils literal"><span class="pre">LevelButtonWindow</span></tt></a>(Vlevel,&nbsp;plot_type[,&nbsp;...])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/artview.components.LevelButtonWindow.html#artview.components.LevelButtonWindow" title="artview.components.LevelButtonWindow"><tt class="xref py py-obj docutils literal"><span class="pre">LevelButtonWindow</span></tt></a>(Vlevel,&nbsp;plot_type[,&nbsp;...])</td>
 <td>Class to display the Window with Level radio buttons.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/artview.components.FieldButtonWindow.html#artview.components.FieldButtonWindow" title="artview.components.FieldButtonWindow"><tt class="xref py py-obj docutils literal"><span class="pre">FieldButtonWindow</span></tt></a>(Vradar,&nbsp;Vfield[,&nbsp;name,&nbsp;parent])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/artview.components.FieldButtonWindow.html#artview.components.FieldButtonWindow" title="artview.components.FieldButtonWindow"><tt class="xref py py-obj docutils literal"><span class="pre">FieldButtonWindow</span></tt></a>(Vradar,&nbsp;Vfield[,&nbsp;name,&nbsp;parent])</td>
 <td>Class to display a Window with Field name radio buttons.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/artview.components.ComponentsControl.html#artview.components.ComponentsControl" title="artview.components.ComponentsControl"><tt class="xref py py-obj docutils literal"><span class="pre">ComponentsControl</span></tt></a>([components,&nbsp;name,&nbsp;parent])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/artview.components.LinkPlugins.html#artview.components.LinkPlugins" title="artview.components.LinkPlugins"><tt class="xref py py-obj docutils literal"><span class="pre">LinkPlugins</span></tt></a>([components,&nbsp;name,&nbsp;parent])</td>
 <td>Class instance for control variables shared between components.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/artview.components.ROI.html#artview.components.ROI" title="artview.components.ROI"><tt class="xref py py-obj docutils literal"><span class="pre">ROI</span></tt></a>(display[,&nbsp;name,&nbsp;parent])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/artview.components.SelectRegion.html#artview.components.SelectRegion" title="artview.components.SelectRegion"><tt class="xref py py-obj docutils literal"><span class="pre">SelectRegion</span></tt></a>(display[,&nbsp;name,&nbsp;parent])</td>
 <td>Select a Region of Interest.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/artview.components.PlotDisplay.html#artview.components.PlotDisplay" title="artview.components.PlotDisplay"><tt class="xref py py-obj docutils literal"><span class="pre">PlotDisplay</span></tt></a>(data[,&nbsp;ydata,&nbsp;plot_type,&nbsp;title,&nbsp;...])</td>
+<td>Class to create a display plot, using data and a key for plot type.</td>
 </tr>
 </tbody>
 </table>
@@ -144,12 +150,12 @@ ARTview functions.</p>
           <a href="core.html" title="Core (artview.core)"
              >previous</a> |</li>
         <li><a href="../index.html">ARTview 0.2.2 documentation</a> &raquo;</li>
-          <li><a href="index.html" >Reference Manual</a> &raquo;</li> 
+          <li><a href="index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Aug 04, 2015.
+      Last updated on Aug 10, 2015.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
