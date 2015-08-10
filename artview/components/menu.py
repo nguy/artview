@@ -212,7 +212,7 @@ class Menu(Component):
             saveRadar = QtGui.QAction('Save Radar', self)
             saveRadar.setStatusTip('Save Radar to Cf/Radial NetCDF')
             saveRadar.triggered.connect(self.saveRadar)
-        elif self.mode in ("grid", "all"):
+        if self.mode in ("grid", "all"):
             saveGrid = QtGui.QAction('Save Grid', self)
             saveGrid.setStatusTip('Save Grid NetCDF')
             saveGrid.triggered.connect(self.saveGrid)
@@ -466,6 +466,7 @@ https://rawgit.com/nguy/artview/master/docs/build/html/index.html"""
 
         # Get a list of files in the working directory
         self.filelist = os.listdir(self.dirIn)
+        self.filelist.sort()
 
         if os.path.basename(self.filename) in self.filelist:
             self.fileindex = self.filelist.index(
