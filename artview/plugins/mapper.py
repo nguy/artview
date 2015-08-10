@@ -408,7 +408,6 @@ class Mapper(core.Component):
 
         # update
         self.Vgrid.change(grid)
-        print("Mapping took %fs" % (t1-t0))
 
     def _clearLayout(self, layout):
         '''recursively remove items from layout.'''
