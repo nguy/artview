@@ -193,11 +193,12 @@ class CreateTable(QtGui.QTableWidget):
             # Set each cell to be a QTableWidgetItem from _process_row method
             for j, name in enumerate(colnames):
                 if name in self.points.axes:
-                    item = QtGui.QTableWidgetItem(str(
-                        self.points.axes[name]['data'][i]).format("%8.3f"))
+                    item = QtGui.QTableWidgetItem("%8.3f" %
+                        self.points.axes[name]['data'][i])
                 else:
-                    item = QtGui.QTableWidgetItem(str(
-                        self.points.fields[name]['data'][i]).format("%8.3f"))
+                    item = QtGui.QTableWidgetItem("%8.3f" %
+                        self.points.fields[name]['data'][i])
+
                 item.setBackgroundColor = QtGui.QColor(self.bgcolor)
                 item.setTextColor = QtGui.QColor(self.textcolor)
                 self.setItem(i, j, item)
