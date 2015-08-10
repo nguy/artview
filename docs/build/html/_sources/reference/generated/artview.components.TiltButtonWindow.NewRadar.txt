@@ -1,6 +1,0 @@
-artview.components.TiltButtonWindow.NewRadar
-============================================
-
-.. currentmodule:: artview.components
-
-.. automethod:: TiltButtonWindow.NewRadar

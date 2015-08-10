@@ -1,0 +1,6 @@
+artview.components.GridDisplay.getPathInteriorValues
+====================================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: GridDisplay.getPathInteriorValues

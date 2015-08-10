@@ -1,0 +1,6 @@
+artview.components.LevelButtonWindow.NewRadar
+=============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: LevelButtonWindow.NewRadar

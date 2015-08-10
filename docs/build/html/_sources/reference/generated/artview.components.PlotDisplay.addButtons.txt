@@ -1,0 +1,6 @@
+artview.components.PlotDisplay.addButtons
+=========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: PlotDisplay.addButtons

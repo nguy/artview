@@ -1,0 +1,60 @@
+artview.components.GridDisplay
+==============================
+
+.. currentmodule:: artview.components
+
+.. autoclass:: GridDisplay
+   :show-inheritance:
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+         GridDisplay.FieldSelectCmd
+         GridDisplay.LaunchGUI
+         GridDisplay.LevelSelectCmd
+         GridDisplay.NewCmap
+         GridDisplay.NewField
+         GridDisplay.NewLevel
+         GridDisplay.NewLims
+         GridDisplay.Newgrid
+         GridDisplay.addButtons
+         GridDisplay.change_plot_type
+         GridDisplay.cmapSelectCmd
+         GridDisplay.getField
+         GridDisplay.getNearestPoints
+         GridDisplay.getPathInteriorValues
+         GridDisplay.getPlotAxis
+         GridDisplay.getStatusBar
+         GridDisplay.getUnits
+         GridDisplay.guiStart
+         GridDisplay.keyPressEvent
+         GridDisplay.setUILayout
+         GridDisplay.toolCustomCmd
+         GridDisplay.toolDefaultCmd
+         GridDisplay.toolSelectRegionCmd
+         GridDisplay.toolValueClickCmd
+         GridDisplay.toolZoomPanCmd
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+   
+   
+   .. autoattribute:: Vcmap
+   .. autoattribute:: Vfield
+   .. autoattribute:: Vgrid
+   .. autoattribute:: Vlevel
+   .. autoattribute:: VlevelX
+   .. autoattribute:: VlevelY
+   .. autoattribute:: VlevelZ
+   .. autoattribute:: levels
+   
+   
+

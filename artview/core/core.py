@@ -3,12 +3,11 @@ core.py
 
 Class instance to create Variables and establish change signals.
 
-
-
 """
 
 # Load the needed packages
 from PyQt4 import QtGui, QtCore
+import sys
 
 # keet track of all components, this is not fundamental, but may be usefull
 # for some control utilities
@@ -16,7 +15,7 @@ from PyQt4 import QtGui, QtCore
 
 class Variable(QtCore.QObject):
     '''
-    Class that holds a value, changing that with change() emits a signal
+    Class that holds a value, using change() emits a signal.
 
     There is no mandatory naming for instances of this Class, however ARTview
     components name variable according to the following table, using it is
@@ -78,7 +77,6 @@ class Variable(QtCore.QObject):
     value = None  #: Value of the Variable
 
     def __init__(self, value=None):
-        ''' initialize '''
         QtCore.QObject.__init__(self)
         self.value = value
 
@@ -92,15 +90,17 @@ class Variable(QtCore.QObject):
             New Value to be assigned to the variable.
         [Optional]
         strong : bool, optional
-            Define if this is a strong, or a weak change. This is a some what
-            subjective decision: strong is default, a weak change should be
-            used to indicate to the slot that this change should not trigger
-            any costly computation. Reasons for this are: When initialising
-            variables, variable is likely to change again shortly, another
-            more important variable is being changed as well etc.
+            Define if this is a strong, or a weak change. This is a somewhat
+            subjective decision: strong is default.
+            
+            A weak change should be used to indicate to the slot that the 
+            change should not trigger any costly computation. 
+            Reasons for this are: When initializing a variable, it is likely 
+            to change again shortly, or another more important variable is 
+            being changed as well etc.
 
             .. note::
-                Defining how to respond to strong/weak changes is
+                Defining how to respond to strong/weak changes is the
                 responsibility of the slot, most can just ignore the
                 difference, but the costly ones should be aware.
 
@@ -113,7 +113,8 @@ class Variable(QtCore.QObject):
 
 
 class ComponentsList(QtCore.QObject):
-    '''Keep track of Components in a list and emit signals.
+    '''
+    Keep track of Components in a list and emit signals.
     Methods append and remove are provided and emit signals,
     direct acess to the list is allowed with 'ComponentList.list',
     but not recomended.'''
@@ -150,7 +151,7 @@ componentsList = ComponentsList()
 
 class Component(QtGui.QMainWindow):
     '''
-    Abstract class for a ART-view component
+    Abstract class for an ART-view component.
     '''
 
     def __init__(self, name="Component", parent=None, flags=QtCore.Qt.Widget):
@@ -166,7 +167,10 @@ class Component(QtGui.QMainWindow):
             Parent instance to associate to Component. If None, then Qt owns,
             otherwise associated with parent PyQt instance.
         '''
-        super(Component, self).__init__(parent=parent, flags=flags)
+        if sys.version_info<(2,7,0):
+            super(Component, self).__init__()
+        else:
+            super(Component, self).__init__(parent=parent, flags=flags)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose, True)
         self.name = name
         self.parent = parent
@@ -175,18 +179,18 @@ class Component(QtGui.QMainWindow):
         componentsList.append(self)
 
     def connectAllVariables(self):
-        '''Call connectSharedVariable for all keys in sharedVariables'''
+        '''Call connectSharedVariable for all keys in sharedVariables.'''
         for var in self.sharedVariables.keys():
             self.connectSharedVariable(var)
 
     def disconnectAllVariables(self):
-        '''Call connectSharedVariable for all keys in sharedVariables'''
+        '''Call connectSharedVariable for all keys in sharedVariables.'''
         for var in self.sharedVariables.keys():
             self.disconnectSharedVariable(var)
 
     def connectSharedVariable(self, var):
         '''Connect variable 'var' to its slot as defined in
-        sharedVariables dictionary'''
+        sharedVariables dictionary.'''
         if var in self.sharedVariables:
             if self.sharedVariables[var] is not None:
                 QtCore.QObject.connect(
@@ -198,7 +202,7 @@ class Component(QtGui.QMainWindow):
 
     def disconnectSharedVariable(self, var):
         '''Connect variable 'var' to its slot as defined in
-        sharedVariables dictionary'''
+        sharedVariables dictionary.'''
         if var in self.sharedVariables:
             if self.sharedVariables[var] is not None:
                 QtCore.QObject.disconnect(
@@ -210,7 +214,7 @@ class Component(QtGui.QMainWindow):
 
     def keyPressEvent(self, event):
         '''Reimplementation, pass keyEvent to parent,
-        even if a diferent window'''
+        even if a diferent window.'''
         if self.parent is None:
             super(Component, self).keyPressEvent(event)
         else:
@@ -219,7 +223,7 @@ class Component(QtGui.QMainWindow):
             self.parent.keyPressEvent(event)
 
     def closeEvent(self, QCloseEvent):
-        '''Reimplementation to remove from components list'''
+        '''Reimplementation to remove from components list.'''
         componentsList.remove(self)
         self.disconnectAllVariables()
         super(Component, self).closeEvent(QCloseEvent)

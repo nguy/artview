@@ -1,0 +1,6 @@
+artview.components.LevelButtonWindow.NewGrid
+============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: LevelButtonWindow.NewGrid

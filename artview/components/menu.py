@@ -1,19 +1,19 @@
 """
 menu.py
 
-Class instance used to create menu for ARTView app.
+Class instance used to create menu for ARTview app.
 """
 import numpy as np
 import pyart
 
-import os
+import os, sys
 from PyQt4 import QtGui, QtCore
 
 from ..core import Variable, Component, common
 
 
 class Menu(Component):
-    '''Class to display the MainMenu'''
+    '''Class to display the MainMenu.'''
 
     Vradar = None  #: see :ref:`shared_variable`
     Vgrid = None  #: see :ref:`shared_variable`
@@ -28,8 +28,9 @@ class Menu(Component):
         pathDir : string
             Input directory path to open.
         [Optional]
-        filename : string
-            File to open as first, this will skip the open file dialog.
+        filename : string, False or None
+            File to open as first. None will open file dialog. False will
+            open no file.
         Vradar : :py:class:`~artview.core.core.Variable` instance
             Radar signal variable.
             A value of None initializes an empty Variable.
@@ -71,18 +72,19 @@ class Menu(Component):
         if Vradar is None and Vgrid is None:
             if filename is None:
                 self.showFileDialog()
+            elif filename is False:
+                pass
             else:
                 self.filename = filename
                 self._openfile()
 
         # Launch the GUI interface
         self.LaunchApp()
+        self.resize(300, 180)
         self.show()
 
-    # Allow advancement via left and right arrow keys
-    # and tilt adjustment via the Up-Down arrow keys
     def keyPressEvent(self, event):
-        '''Reimplementation, change files with right left button'''
+        '''Change data file with left and right arrow keys.'''
         if event.key() == QtCore.Qt.Key_Right:
             # Menu control the file and open the radar
             self.AdvanceFileSelect(self.fileindex + 1)
@@ -100,15 +102,22 @@ class Menu(Component):
         '''Launches a GUI interface.'''
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
 
-        # Create layout
-        self.central_widget = QtGui.QWidget()
-        self.setCentralWidget(self.central_widget)
-        self.centralLayout = QtGui.QVBoxLayout(self.central_widget)
-        self.centralLayout.setSpacing(8)
-        self.frames = {}
-
         # Create the menus
         self.CreateMenu()
+
+        # Create layout
+        if sys.version_info<(2,7,0):
+            self.central_widget = QtGui.QWidget()
+            self.setCentralWidget(self.central_widget)
+            self.centralLayout = QtGui.QVBoxLayout(self.central_widget)
+            self.centralLayout.setSpacing(8)
+            self.frames = {}
+            self.addLayoutMenu()
+        else:
+            self.mdiArea = QtGui.QMdiArea()
+            self.setCentralWidget(self.mdiArea)
+            self.mdiArea.setViewMode(1)
+            self.mdiArea.setTabsClosable(True)
 
     def showFileDialog(self):
         '''Open a dialog box to choose file.'''
@@ -122,18 +131,43 @@ class Menu(Component):
             self.filename = filename
             self._openfile()
 
+    def saveRadar(self):
+        '''Open a dialog box to save radar file.'''
+
+        filename = QtGui.QFileDialog.getSaveFileName(
+                self, 'Save Radar File', self.dirIn)
+        filename = str(filename)
+        if filename == '' or self.Vradar.value is None:
+            return
+        else:
+            pyart.io.write_cfradial(filename, self.Vradar.value)
+
+    def saveGrid(self):
+        '''Open a dialog box to save grid file.'''
+
+        filename = QtGui.QFileDialog.getSaveFileName(
+                self, 'Save grid File', self.dirIn)
+        filename = str(filename)
+        if filename == '' or self.Vgrid.value is None:
+            return
+        else:
+            pyart.io.write_grid(filename, self.Vgrid.value)
+
     def addLayoutWidget(self, widget):
         '''
         Add a widget to central layout.
-        This function is to be called both internal and external
+        This function is to be called both internal and external.
         '''
-        frame = QtGui.QFrame()
-        frame.setFrameShape(QtGui.QFrame.Box)
-        layout = QtGui.QVBoxLayout(frame)
-        layout.addWidget(widget)
-        self.frames[widget.__repr__()] = frame
-        self.centralLayout.addWidget(frame)
-        self.addLayoutMenuItem(widget)
+        if sys.version_info<(2,7,0):
+            frame = QtGui.QFrame()
+            frame.setFrameShape(QtGui.QFrame.Box)
+            layout = QtGui.QVBoxLayout(frame)
+            layout.addWidget(widget)
+            self.frames[widget.__repr__()] = widget
+            self.centralLayout.addWidget(widget)
+            self.addLayoutMenuItem(widget)
+        else:
+            self.mdiArea.addSubWindow(widget)
 
     def removeLayoutWidget(self, widget):
         '''Remove widget from central layout.'''
@@ -144,13 +178,13 @@ class Menu(Component):
         widget.close()
         widget.deleteLater()
 
-    def addComponent(self, Comp):
-        '''Add Component Contructor.'''
+    def addComponent(self, Comp, label=None):
+        '''Add Component Contructor. If label is None, use class name.'''
         # first test the existence of a guiStart
         if not hasattr(Comp, 'guiStart'):
             raise ValueError("Component has no guiStart Method")
             return
-        self.addComponentMenuItem(Comp)
+        self.addPluginMenuItem(Comp)
 
     ######################
     # Menu build methods #
@@ -163,8 +197,7 @@ class Menu(Component):
         self.addFileMenu()
         self.addAboutMenu()
         self.addFileAdvanceMenu()
-        self.addLayoutMenu()
-        self.addComponentMenu()
+        self.addPluginMenu()
 
     def addFileMenu(self):
         '''Add the File Menu to menubar.'''
@@ -175,20 +208,33 @@ class Menu(Component):
         openFile.setStatusTip('Open new File')
         openFile.triggered.connect(self.showFileDialog)
 
+        if self.mode in ("radar", "all"):
+            saveRadar = QtGui.QAction('Save Radar', self)
+            saveRadar.setStatusTip('Save Radar to Cf/Radial NetCDF')
+            saveRadar.triggered.connect(self.saveRadar)
+        if self.mode in ("grid", "all"):
+            saveGrid = QtGui.QAction('Save Grid', self)
+            saveGrid.setStatusTip('Save Grid NetCDF')
+            saveGrid.triggered.connect(self.saveGrid)
+
         exitApp = QtGui.QAction('Close', self)
         exitApp.setShortcut('Ctrl+Q')
-        exitApp.setStatusTip('Exit ARTView')
+        exitApp.setStatusTip('Exit ARTview')
         exitApp.triggered.connect(self.close)
 
         self.filemenu.addAction(openFile)
+        if self.mode in ("radar", "all"):
+            self.filemenu.addAction(saveRadar)
+        if self.mode in ("grid", "all"):
+            self.filemenu.addAction(saveGrid)
         self.filemenu.addAction(exitApp)
 
     def addAboutMenu(self):
         '''Add Help menu to menubar.'''
         self.aboutmenu = self.menubar.addMenu('About')
 
-        self._aboutArtview = QtGui.QAction('ARTView', self)
-        self._aboutArtview.setStatusTip('About ARTView')
+        self._aboutArtview = QtGui.QAction('ARTview', self)
+        self._aboutArtview.setStatusTip('About ARTview')
         self._aboutArtview.triggered.connect(self._about)
 
         self.RadarShort = QtGui.QAction('Radar Short', self)
@@ -208,9 +254,9 @@ class Menu(Component):
         self.layoutmenu = self.menubar.addMenu('&Layout')
         self.layoutmenuItems = {}
 
-    def addComponentMenu(self):
+    def addPluginMenu(self):
         '''Add Component Menu to menu bar.'''
-        self.componentmenu = self.menubar.addMenu('&Components')
+        self.pluginmenu = self.menubar.addMenu('&Advanced Tools')
 
     def addLayoutMenuItem(self, widget):
         '''Add widget item to Layout Menu.'''
@@ -233,9 +279,12 @@ class Menu(Component):
             self.layoutmenuItems[rep].close()
             del self.layoutmenuItems[rep]
 
-    def addComponentMenuItem(self, Comp):
-        '''Add Component item to Component Menu.'''
-        action = self.componentmenu.addAction(Comp.__name__)
+    def addPluginMenuItem(self, Comp, label=None):
+        '''Add Component item to Component Menu.
+        If label is None use class name.'''
+        if label is None:
+            label = Comp.__name__
+        action = self.pluginmenu.addAction(label)
         action.triggered[()].connect(
             lambda Comp=Comp: self.startComponent(Comp))
 
@@ -247,8 +296,10 @@ class Menu(Component):
             self.addLayoutWidget(comp)
 
     def addFileAdvanceMenu(self):
-        '''Add an menu actions to advance to next or previous file.'''
-        self.advancemenu = self.menubar.addMenu("Advance file")
+        '''
+        Add menu to advance to next or previous file. 
+        Or to go to the first or last file in the selected directory.'''
+        self.advancemenu = self.menubar.addMenu("Change file")
         nextAction = self.advancemenu.addAction("Next")
         nextAction.triggered[()].connect(
             lambda findex=self.fileindex + 1: self.AdvanceFileSelect(findex))
@@ -272,38 +323,48 @@ class Menu(Component):
 
     def _about(self):
         # Add a more extensive about eventually
-        txOut = "This is a simple radar file browser to allow \
-                 quicklooks using the DoE PyArt software"
-        QtGui.QMessageBox.about(self, "About ARTView", txOut)
+        txOut = """ARTview is a visualization package that leverages the
+DoE PyArt python software to view individual weather
+radar data files or to browse a directory of data.
+                 
+If you hover over butttons and menus with the mouse,
+more instructions and information are available.
+                 
+More complete documentation can be found at:
+https://rawgit.com/nguy/artview/master/docs/build/html/index.html"""
+        QtGui.QMessageBox.about(self, "About ARTview", txOut)
 
     def _get_RadarLongInfo(self):
         '''Print out the radar info to text box and terminal.'''
         # Get the radar info form rada object and print it
         txOut = self.Vradar.value.info()
 
-        print txOut
+        print(txOut)
         QtGui.QMessageBox.information(self, "Long Radar Info",
                                       "See terminal window")
 
     def _get_RadarShortInfo(self):
         '''Print out some basic info about the radar.'''
+        # For any missing data
+        infoNA = "Info not available"
+        
         try:
             rname = self.Vradar.value.metadata['instrument_name']
         except:
-            rname = "Info not available"
+            rname = infoNA
         try:
             rlon = str(self.Vradar.value.longitude['data'][0])
         except:
-            rlon = "Info not available"
+            rlon = infoNA
         try:
             rlat = str(self.Vradar.value.latitude['data'][0])
         except:
-            rlat = "Info not available"
+            rlat = infoNA
         try:
             ralt = str(self.Vradar.value.altitude['data'][0])
             raltu = self.Vradar.value.altitude['units'][0]
         except:
-            ralt = "Info not available"
+            ralt = infoNA
             raltu = " "
         try:
             maxr = str(self.Vradar.value.instrument_parameters[
@@ -311,7 +372,7 @@ class Menu(Component):
             maxru = self.Vradar.value.instrument_parameters[
                 'unambiguous_range']['units'][0]
         except:
-            maxr = "Info not available"
+            maxr = infoNA
             maxru = " "
         try:
             nyq = str(self.Vradar.value.instrument_parameters[
@@ -319,7 +380,7 @@ class Menu(Component):
             nyqu = self.Vradar.value.instrument_parameters[
                 'nyquist_velocity']['units'][0]
         except:
-            nyq = "Info not available"
+            nyq = infoNA
             nyqu = " "
         try:
             bwh = str(self.Vradar.value.instrument_parameters[
@@ -327,7 +388,7 @@ class Menu(Component):
             bwhu = self.Vradar.value.instrument_parameters[
                 'radar_beam_width_h']['units'][0]
         except:
-            bwh = "Info not available"
+            bwh = infoNA
             bwhu = " "
         try:
             bwv = str(self.Vradar.value.instrument_parameters[
@@ -335,7 +396,7 @@ class Menu(Component):
             bwvu = self.Vradar.value.instrument_parameters[
                 'radar_beam_width_v']['units'][0]
         except:
-            bwv = "Info not available"
+            bwv = infoNA
             bwvu = " "
         try:
             pw = str(self.Vradar.value.instrument_parameters[
@@ -343,16 +404,16 @@ class Menu(Component):
             pwu = self.Vradar.value.instrument_parameters[
                 'pulse_width']['units'][0]
         except:
-            pw = "Info not available"
+            pw = infoNA
             pwu = " "
         try:
             ngates = str(self.Vradar.value.ngates)
         except:
-            ngates = "Info not available"
+            ngates = infoNA
         try:
             nsweeps = str(self.Vradar.value.nsweeps)
         except:
-            nsweeps = "Info not available"
+            nsweeps = infoNA
 
         txOut = (('Radar Name: %s\n' % rname) +
                  ('Radar longitude: %s\n' % rlon) +
@@ -378,7 +439,7 @@ class Menu(Component):
     def AdvanceFileSelect(self, findex):
         '''Captures a selection and open file.'''
         if findex > (len(self.filelist)-1):
-            print len(self.filelist)
+            print(len(self.filelist))
             msg = "End of directory, cannot advance!"
             common.ShowWarning(msg)
             findex = (len(self.filelist) - 1)
@@ -389,7 +450,7 @@ class Menu(Component):
             findex = 0
             return
         self.fileindex = findex
-        self.filename = self.dirIn + "/" + self.filelist[findex]
+        self.filename = os.path.join(self.dirIn, self.filelist[findex])
         self._openfile()
 
     ########################
@@ -398,13 +459,14 @@ class Menu(Component):
 
     def _openfile(self):
         '''Open a file via a file selection window.'''
-        print "Opening file " + self.filename
+        print("Opening file " + self.filename)
 
         # Update to current directory when file is chosen
         self.dirIn = os.path.dirname(self.filename)
 
         # Get a list of files in the working directory
         self.filelist = os.listdir(self.dirIn)
+        self.filelist.sort()
 
         if os.path.basename(self.filename) in self.filelist:
             self.fileindex = self.filelist.index(
@@ -418,16 +480,20 @@ class Menu(Component):
         if self.mode in ("radar", "all"):
             try:
                 radar = pyart.io.read(self.filename, delay_field_loading=True)
+                #Add the filename for Display
+                radar.filename = self.filename
                 self.Vradar.change(radar)
                 return
             except:
                 try:
                     radar = pyart.io.read(self.filename)
+                    #Add the filename for Display
+                    radar.filename = self.filename
                     self.Vradar.change(radar)
                     return
                 except:
                     import traceback
-                    print traceback.format_exc()
+                    print(traceback.format_exc())
                     radar_warning = True
         elif self.mode in ("grid", "all"):
             try:
@@ -442,7 +508,7 @@ class Menu(Component):
                     return
                 except:
                     import traceback
-                    print traceback.format_exc()
+                    print(traceback.format_exc())
                     grid_warning = True
 
         if grid_warning or radar_warning:

@@ -15,23 +15,23 @@ common = core.common
 
 class DealiasUnwrapPhase(core.Component):
     '''
-    Interfase for executing :py:func:`pyart.correct.dealias_unwrap_phase`
+    Interface for executing :py:func:`pyart.correct.dealias_unwrap_phase`
     '''
 
     Vradar = None  #: see :ref:`shared_variable`
-    Vgatefilter = None  #: see :ref:`shared_variable`
+#    Vgatefilter = None  #: see :ref:`shared_variable`
 
     @classmethod
     def guiStart(self, parent=None):
-        '''Graphical Interface for Starting this Class'''
+        '''Graphical interface for starting this class.'''
         kwargs, independent = \
             common._SimplePluginStart("DealiasUnwrapPhase").startDisplay()
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
-    def __init__(self, Vradar=None, Vgatefilter=None,
+    def __init__(self, Vradar=None,# Vgatefilter=None,
                  name="DealiasUnwrapPhase", parent=None):
-        '''Initialize the class to create the interface
+        '''Initialize the class to create the interface.
 
         Parameters
         ----------
@@ -39,16 +39,18 @@ class DealiasUnwrapPhase(core.Component):
         Vradar : :py:class:`~artview.core.core.Variable` instance
             Radar signal variable.
             A value of None initializes an empty Variable.
-        Vgatefilter : :py:class:`~artview.core.core.Variable` instance
-            Gatefilter signal variable.
-            A value of None initializes an empty Variable.
-            [Not Implemented]
         name : string
             Field Radiobutton window name.
         parent : PyQt instance
             Parent instance to associate to this class.
             If None, then Qt owns, otherwise associated w/ parent PyQt instance
         '''
+
+#        Vgatefilter : :py:class:`~artview.core.core.Variable` instance
+#           Gatefilter signal variable.
+#            A value of None initializes an empty Variable.
+#            [Not Implemented]
+
         super(DealiasUnwrapPhase, self).__init__(name=name, parent=parent)
         self.central_widget = QtGui.QWidget()
         self.setCentralWidget(self.central_widget)
@@ -59,24 +61,25 @@ class DealiasUnwrapPhase(core.Component):
         else:
             self.Vradar = Vradar
 
-        if Vgatefilter is None:
-            self.Vgatefilter = core.Variable(None)
-        else:
-            self.Vgatefilter = Vgatefilter
+#        if Vgatefilter is None:
+#            self.Vgatefilter = core.Variable(None)
+#        else:
+#            self.Vgatefilter = Vgatefilter
 
-        self.sharedVariables = {"Vradar": self.newRadar,
-                                "Vgatefilter": None}
+        self.sharedVariables = {"Vradar": self.newRadar,}
+#                                "Vgatefilter": None}
         self.connectAllVariables()
 
         self.generalLayout = QtGui.QGridLayout()
         self.layout.addLayout(self.generalLayout, 0, 0, 1, 2)
 
-        self.button = QtGui.QPushButton("Help")
-        self.button.clicked.connect(self.displayHelp)
-        self.layout.addWidget(self.button, 1, 0, 1, 1)
+        self.helpButton = QtGui.QPushButton("Help")
+        self.helpButton.clicked.connect(self.displayHelp)
+        self.layout.addWidget(self.helpButton, 1, 0, 1, 1)
 
         self.button = QtGui.QPushButton("Correct")
         self.button.clicked.connect(self.dealias_unwrap_phase)
+        self.button.setToolTip('Execute pyart.correct.dealias_unwrap_phase')
         self.layout.addWidget(self.button, 1, 1, 1, 1)
 
         self.addGeneralOptions()
@@ -86,7 +89,7 @@ class DealiasUnwrapPhase(core.Component):
         self.show()
 
     def addGeneralOptions(self):
-        '''Mount Options Layout'''
+        '''Mount Options Layout.'''
         self.radarButton = QtGui.QPushButton("Find Variable")
         self.radarButton.clicked.connect(self.chooseRadar)
         self.generalLayout.addWidget(QtGui.QLabel("Radar"), 0, 0)
@@ -111,9 +114,9 @@ class DealiasUnwrapPhase(core.Component):
         self.checkNyquistUniform.setChecked(False)
         self.generalLayout.addWidget(self.checkNyquistUniform, 3, 1)
 
-        self.generalLayout.addWidget(QtGui.QLabel("gatefilter"), 4, 0)
+#        self.generalLayout.addWidget(QtGui.QLabel("gatefilter"), 4, 0)
         # XXX NotImplemented
-        self.generalLayout.addWidget(QtGui.QLabel("NotImplemented"), 4, 1)
+#        self.generalLayout.addWidget(QtGui.QLabel("NotImplemented"), 4, 1)
 
         self.raysWrapAround = QtGui.QCheckBox("rays_wrap_around")
         self.raysWrapAround.setChecked(True)
@@ -148,7 +151,7 @@ class DealiasUnwrapPhase(core.Component):
             self.connectSharedVariable('Vradar')
 
     def newRadar(self, variable, value, strong):
-        ''' respond to change in radar '''
+        '''respond to change in radar.'''
         if self.Vradar.value is None:
             return
 
@@ -158,7 +161,7 @@ class DealiasUnwrapPhase(core.Component):
             self.raysWrapAround.setChecked(False)
 
     def displayHelp(self):
-        '''Display pyart's docstring for help'''
+        '''Display Py-Art's docstring for help.'''
         common.ShowLongText(pyart.correct.dealias_unwrap_phase.__doc__)
 
     def dealias_unwrap_phase(self):
@@ -177,7 +180,7 @@ class DealiasUnwrapPhase(core.Component):
             'nyquist_velocity': [i if i >= 0 else None for i in (
                 self.nyquistVelocity.value(),)][0],
             'check_nyquist_uniform': self.checkNyquistUniform.isChecked(),
-            'gatefilter': False,
+#            'gatefilter': False,
             'rays_wrap_around': self.raysWrapAround.isChecked(),
             'keep_original': self.keepOriginal.isChecked(),
             'vel_field': [None if a == "" else a for a in (
@@ -186,14 +189,20 @@ class DealiasUnwrapPhase(core.Component):
                 str(self.corrVelField.text()),)][0],
             'skip_checks': self.skipChecks.isChecked(),
         }
-        print args
+        print(args)
 
         # execute
-        print "Correcting .."
+        print("Correcting ..")
         t0 = time.time()
-        field = pyart.correct.dealias_unwrap_phase(**args)
+        try:
+            field = pyart.correct.dealias_unwrap_phase(**args)
+        except:
+            import traceback
+            error = traceback.format_exc()
+            common.ShowLongText("Py-ART fails with following error\n\n" +
+                                error)
         t1 = time.time()
-        common.ShowWarning("Correction took %fs" % (t1-t0))
+        print(("Correction took %fs" % (t1-t0)))
 
         # verify field overwriting
         if args['corr_vel_field'] is None:
@@ -214,7 +223,7 @@ class DealiasUnwrapPhase(core.Component):
         # add fields and update
         self.Vradar.value.add_field(name, field, True)
         self.Vradar.change(self.Vradar.value, strong_update)
-        print "Correction took %fs" % (t1-t0)
+        print("Correction took %fs" % (t1-t0))
 
     def _clearLayout(self, layout):
         '''recursively remove items from layout'''

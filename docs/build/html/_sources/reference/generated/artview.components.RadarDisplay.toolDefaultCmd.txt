@@ -1,0 +1,6 @@
+artview.components.RadarDisplay.toolDefaultCmd
+==============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: RadarDisplay.toolDefaultCmd

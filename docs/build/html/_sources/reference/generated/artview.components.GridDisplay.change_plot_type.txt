@@ -1,0 +1,6 @@
+artview.components.GridDisplay.change_plot_type
+===============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: GridDisplay.change_plot_type

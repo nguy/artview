@@ -1,0 +1,6 @@
+artview.components.SelectRegion.closeEvent
+==========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: SelectRegion.closeEvent

@@ -1,0 +1,6 @@
+artview.components.LevelButtonWindow.NewLevel
+=============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: LevelButtonWindow.NewLevel

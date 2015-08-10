@@ -1,0 +1,6 @@
+artview.components.Menu.saveGrid
+================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Menu.saveGrid

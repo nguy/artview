@@ -1,6 +1,0 @@
-artview.components.TiltButtonWindow.CreateTiltWidget
-====================================================
-
-.. currentmodule:: artview.components
-
-.. automethod:: TiltButtonWindow.CreateTiltWidget

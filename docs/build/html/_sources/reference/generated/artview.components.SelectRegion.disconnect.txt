@@ -1,0 +1,6 @@
+artview.components.SelectRegion.disconnect
+==========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: SelectRegion.disconnect

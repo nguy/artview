@@ -1,0 +1,6 @@
+artview.components.GridDisplay.cmapSelectCmd
+============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: GridDisplay.cmapSelectCmd

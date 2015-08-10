@@ -6,9 +6,10 @@ Common routines run throughout ARTView.
 
 # Load the needed packages
 from PyQt4 import QtGui, QtCore
+import numpy as np
 
 ########################
-# Warning methods #
+# Dialog methods #
 ########################
 
 
@@ -25,9 +26,9 @@ def ShowWarning(msg):
     flags = QtGui.QMessageBox.StandardButton()
     response = QtGui.QMessageBox.warning(Dialog, "Warning!", msg, flags)
     if response == 0:
-        print msg
+        print(msg)
     else:
-        print "Warning Discarded!"
+        print("Warning Discarded!")
 
     return response
 
@@ -46,9 +47,9 @@ def ShowQuestion(msg):
         Dialog, "Question", msg,
         QtGui.QMessageBox.Ok, QtGui.QMessageBox.Cancel)
     if response == QtGui.QMessageBox.Ok:
-        print msg
+        print(msg)
     else:
-        print "Warning Discarded!"
+        print("Warning Discarded!")
 
     return response
 
@@ -74,8 +75,8 @@ def ShowLongText(msg, modal=True):
         response = Dialog.exec_()
         return response
     else:
-        Dialog.show()
-        return
+        response = Dialog.show()
+        return Dialog, response
 
 
 def string_dialog(stringIn, title, msg):
@@ -107,14 +108,19 @@ def string_dialog(stringIn, title, msg):
 
     return stringOut, entry
 
+########################
+# Start methods #
+########################
+
 
 class _SimplePluginStart(QtGui.QDialog):
     '''
-    Dialog Class for grafical Start of Display, to be used in guiStart
+    Dialog Class for graphical Start of Display, 
+    to be used in guiStart.
     '''
 
     def __init__(self, name):
-        '''Initialize the class to create the interface'''
+        '''Initialize the class to create the interface.'''
         super(_SimplePluginStart, self).__init__()
         self.result = {}
         self.layout = QtGui.QGridLayout(self)
@@ -126,7 +132,6 @@ class _SimplePluginStart(QtGui.QDialog):
         self.setupUi()
 
     def setupUi(self):
-
         self.layout.addWidget(QtGui.QLabel("Name"), 0, 0)
         self.name = QtGui.QLineEdit(self._name)
         self.layout.addWidget(self.name, 0, 1)
@@ -149,9 +154,13 @@ class _SimplePluginStart(QtGui.QDialog):
 
         return self.result, self.independent.isChecked()
 
+########################
+# Table methods #
+########################
+
 
 class CreateTable(QtGui.QTableWidget):
-    """ Creates a custom table widget """
+    """Creates a custom table widget."""
     def __init__(self, column_names, name="Table",
                  textcolor="black", bgcolor="gray", parent=None, *args):
         QtGui.QTableWidget.__init__(self, *args)
@@ -164,11 +173,11 @@ class CreateTable(QtGui.QTableWidget):
         self.colnames = column_names
 
     def display_data(self, data):
-        """ Reads in data from a 2D array and formats and displays it in
-            the table """
+        """Reads in data from a 2D array and formats and displays it in
+            the table."""
 
         if len(data) == 0:
-            data = ["No data for selected ROI."]
+            data = ["No data for selected."]
             nrows = 0
             ncols = 0
         else:
@@ -190,3 +199,19 @@ class CreateTable(QtGui.QTableWidget):
         self.resizeColumnsToContents()
 
         return
+
+########################
+# Arithmetic methods #
+########################
+
+def _array_stats(data):
+    """Return a dictionary of statistics from a Numpy array"""
+    statdict = {}
+    statdict['Minimum'] = np.ma.min(data)
+    statdict['Maximum'] = np.ma.max(data)
+    statdict['Mean'] = np.ma.mean(data)
+    statdict['Median'] = np.ma.median(data)
+    statdict['Standard_Deviation'] = np.ma.std(data)
+    statdict['Variance'] = np.ma.var(data)
+        
+    return statdict

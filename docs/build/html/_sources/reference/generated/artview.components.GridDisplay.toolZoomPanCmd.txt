@@ -1,0 +1,6 @@
+artview.components.GridDisplay.toolZoomPanCmd
+=============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: GridDisplay.toolZoomPanCmd

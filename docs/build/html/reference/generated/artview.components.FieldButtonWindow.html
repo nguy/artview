@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -29,7 +27,7 @@
     <link rel="top" title="ARTview 0.2.2 documentation" href="../../index.html" />
     <link rel="up" title="Main Components (artview.components)" href="../components.html" />
     <link rel="next" title="artview.components.FieldButtonWindow.CreateFieldWidget" href="artview.components.FieldButtonWindow.CreateFieldWidget.html" />
-    <link rel="prev" title="artview.components.TiltButtonWindow.TiltSelectCmd" href="artview.components.TiltButtonWindow.TiltSelectCmd.html" /> 
+    <link rel="prev" title="artview.components.LevelButtonWindow.SetLevelRadioButtonsRadar" href="artview.components.LevelButtonWindow.SetLevelRadioButtonsRadar.html" /> 
   </head>
   <body>
     <div class="related">
@@ -48,11 +46,11 @@
           <a href="artview.components.FieldButtonWindow.CreateFieldWidget.html" title="artview.components.FieldButtonWindow.CreateFieldWidget"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="artview.components.TiltButtonWindow.TiltSelectCmd.html" title="artview.components.TiltButtonWindow.TiltSelectCmd"
+          <a href="artview.components.LevelButtonWindow.SetLevelRadioButtonsRadar.html" title="artview.components.LevelButtonWindow.SetLevelRadioButtonsRadar"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">ARTview 0.2.2 documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Reference Manual</a> &raquo;</li>
-          <li><a href="../components.html" accesskey="U">Main Components (<tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
+          <li><a href="../index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li>
+          <li><a href="../components.html" accesskey="U">Main Components (<tt class="docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -67,7 +65,7 @@
 <dt id="artview.components.FieldButtonWindow">
 <em class="property">class </em><tt class="descclassname">artview.components.</tt><tt class="descname">FieldButtonWindow</tt><big>(</big><em>Vradar</em>, <em>Vfield</em>, <em>name='FieldButtons'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/field.py#L13"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.FieldButtonWindow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><tt class="xref py py-class docutils literal"><span class="pre">artview.core.core.Component</span></tt></a></p>
-<p>Class to display the Window with Field Buttons</p>
+<p>Class to display a Window with Field name radio buttons.</p>
 <dl class="method">
 <dt id="artview.components.FieldButtonWindow.__init__">
 <tt class="descname">__init__</tt><big>(</big><em>Vradar</em>, <em>Vfield</em>, <em>name='FieldButtons'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/field.py#L19"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.FieldButtonWindow.__init__" title="Permalink to this definition">¶</a></dt>
@@ -76,7 +74,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>Vradar</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>Vradar</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
 <blockquote>
 <div><p>Radar signal variable.</p>
 </div></blockquote>
@@ -92,14 +90,15 @@
 <p><strong>parent</strong> : PyQt instance</p>
 <blockquote class="last">
 <div><p>Parent instance to associate to FieldButtonWindow.
-If None, then Qt owns, otherwise associated with parent PyQt instance.</p>
+If None, then Qt owns, otherwise associated with parent PyQt 
+instance.</p>
 </div></blockquote>
 </td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Notes</p>
-<p>This class records the selected button and passes the 
+<p>This class records the selected button and passes the
 change value back to variable.</p>
 </dd></dl>
 
@@ -114,16 +113,16 @@ change value back to variable.</p>
 <td>Create a widget to store radio buttons to control field adjust.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="artview.components.FieldButtonWindow.FieldSelectCmd.html#artview.components.FieldButtonWindow.FieldSelectCmd" title="artview.components.FieldButtonWindow.FieldSelectCmd"><tt class="xref py py-obj docutils literal"><span class="pre">FieldButtonWindow.FieldSelectCmd</span></tt></a>(field)</td>
-<td>Captures a selection and update field variable.</td>
+<td>Captures a selection and updates field variable.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="artview.components.FieldButtonWindow.NewField.html#artview.components.FieldButtonWindow.NewField" title="artview.components.FieldButtonWindow.NewField"><tt class="xref py py-obj docutils literal"><span class="pre">FieldButtonWindow.NewField</span></tt></a>(variable,&nbsp;value,&nbsp;...)</td>
-<td>Slot for &#8216;ValueChanged&#8217; signal of <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Vfield</span></tt></a>.</td>
+<td>Slot for &#8216;ValueChanged&#8217; signal of</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="artview.components.FieldButtonWindow.NewRadar.html#artview.components.FieldButtonWindow.NewRadar" title="artview.components.FieldButtonWindow.NewRadar"><tt class="xref py py-obj docutils literal"><span class="pre">FieldButtonWindow.NewRadar</span></tt></a>(variable,&nbsp;value,&nbsp;...)</td>
-<td>Slot for &#8216;ValueChanged&#8217; signal of <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Vradar</span></tt></a>.</td>
+<td>Slot for &#8216;ValueChanged&#8217; signal of</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="artview.components.FieldButtonWindow.SetFieldRadioButtons.html#artview.components.FieldButtonWindow.SetFieldRadioButtons" title="artview.components.FieldButtonWindow.SetFieldRadioButtons"><tt class="xref py py-obj docutils literal"><span class="pre">FieldButtonWindow.SetFieldRadioButtons</span></tt></a>()</td>
-<td>Set a field selection using radio buttons</td>
+<td>Set a field selection using radio buttons.</td>
 </tr>
 </tbody>
 </table>
@@ -151,8 +150,8 @@ change value back to variable.</p>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="artview.components.TiltButtonWindow.TiltSelectCmd.html"
-                        title="previous chapter">artview.components.TiltButtonWindow.TiltSelectCmd</a></p>
+  <p class="topless"><a href="artview.components.LevelButtonWindow.SetLevelRadioButtonsRadar.html"
+                        title="previous chapter">artview.components.LevelButtonWindow.SetLevelRadioButtonsRadar</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="artview.components.FieldButtonWindow.CreateFieldWidget.html"
                         title="next chapter">artview.components.FieldButtonWindow.CreateFieldWidget</a></p>
@@ -194,17 +193,17 @@ change value back to variable.</p>
           <a href="artview.components.FieldButtonWindow.CreateFieldWidget.html" title="artview.components.FieldButtonWindow.CreateFieldWidget"
              >next</a> |</li>
         <li class="right" >
-          <a href="artview.components.TiltButtonWindow.TiltSelectCmd.html" title="artview.components.TiltButtonWindow.TiltSelectCmd"
+          <a href="artview.components.LevelButtonWindow.SetLevelRadioButtonsRadar.html" title="artview.components.LevelButtonWindow.SetLevelRadioButtonsRadar"
              >previous</a> |</li>
         <li><a href="../../index.html">ARTview 0.2.2 documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Reference Manual</a> &raquo;</li>
-          <li><a href="../components.html" >Main Components (<tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
+          <li><a href="../index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li>
+          <li><a href="../components.html" >Main Components (<tt class="docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Jul 09, 2015.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Last updated on Aug 10, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

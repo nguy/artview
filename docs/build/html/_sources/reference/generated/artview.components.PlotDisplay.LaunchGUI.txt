@@ -1,0 +1,6 @@
+artview.components.PlotDisplay.LaunchGUI
+========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: PlotDisplay.LaunchGUI

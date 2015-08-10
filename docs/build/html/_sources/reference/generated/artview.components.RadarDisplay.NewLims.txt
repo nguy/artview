@@ -1,0 +1,6 @@
+artview.components.RadarDisplay.NewLims
+=======================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: RadarDisplay.NewLims

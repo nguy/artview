@@ -54,7 +54,7 @@ The Basics
     instance a different name is important for identifying them afterward.
 
     A slightly more useful component is a
-    :py:class:`~artview.components.Display`, but this need a
+    :py:class:`~artview.components.RadarDisplay`, but this need a
     :py:class:`pyart.core.Radar` instance. Luckily Py-ART has some example we
     can use:
 
@@ -76,14 +76,14 @@ The Basics
         Vtilt = artview.core.Variable(0) #  first sweep
 
         # start display
-        display = artview.components.Display(Vradar, Vfield, Vtilt,
+        display = artview.components.RadarDisplay(Vradar, Vfield, Vtilt,
                                        name="DisplayRadar")
 
         # start program
         app.exec_() # lock until all windows are closed
 
     So here things start to get more complicated, the question is: why we
-    can't pass radar to :py:class:`~artview.components.Display`, but
+    can't pass radar to :py:class:`~artview.components.RadarDisplay`, but
     rather need to put it inside :py:class:`~artview.core.core.Variable`?
     The point is that we want display to be able to share this radar with
     other components, in C this could be done using pointers, this is kind of
@@ -100,7 +100,7 @@ Shared Variables
     plot this files. This is simple: instead of creating a new
     :py:class:`~artview.core.core.Variable` we take it from
     :py:class:`~artview.components.Menu` and pass to
-    :py:class:`~artview.components.Display`:
+    :py:class:`~artview.components.RadarDisplay`:
 
     .. code-block:: python
 
@@ -121,7 +121,7 @@ Shared Variables
         Vtilt = artview.core.Variable(0) #  first sweep
 
         # start display
-        display = artview.components.Display(Vradar, Vfield, Vtilt,
+        display = artview.components.RadarDisplay(Vradar, Vfield, Vtilt,
                                        name="DisplayRadar")
 
         # start program
@@ -129,7 +129,7 @@ Shared Variables
 
     So now we have the most simple script one would want.
     :py:class:`~artview.components.Menu` opens a file and
-    :py:class:`~artview.components.Display` plots it. But ARTview is much more
+    :py:class:`~artview.components.RadarDisplay` plots it. But ARTview is much more
     powerful, suppose you want the following: Compare side to side two fields
     of the same radar. One can just add an other display
 
@@ -154,7 +154,7 @@ Shared Variables
         Vtilt1 = artview.core.Variable(0) #  first sweep
 
         # start display
-        display1 = artview.components.Display(Vradar1, Vfield1, Vtilt1,
+        display1 = artview.components.RadarDisplay(Vradar1, Vfield1, Vtilt1,
                                         name="DisplayRadar")
 
         # DISPLAY 2
@@ -169,14 +169,14 @@ Shared Variables
         Vtilt2 = artview.core.Variable(0) #  first sweep
 
         # start display
-        display = artview.components.Display(Vradar2, Vfield2, Vtilt2,
+        display = artview.components.RadarDisplay(Vradar2, Vfield2, Vtilt2,
                                        name="DisplayRadar")
 
         # start program
         app.exec_() # lock until all windows are closed
 
     This script will open 1 :py:class:`~artview.components.Menu` and 2
-    :py:class:`~artview.components.Display`, both show the same file but
+    :py:class:`~artview.components.RadarDisplay`, both show the same file but
     different fields. But we have actually made a mistake, because the two
     Displays are also with different sweeps, that is, they start with the same
     one but if the user changes the sweep of the first this will not change
@@ -206,7 +206,7 @@ Shared Variables
         Vtilt1 = artview.core.Variable(0) #  first sweep
 
         # start display
-        display1 = artview.components.Display(Vradar1, Vfield1, Vtilt1,
+        display1 = artview.components.RadarDisplay(Vradar1, Vfield1, Vtilt1,
                                         name="DisplayRadar")
 
         # DISPLAY 2
@@ -223,7 +223,7 @@ Shared Variables
         Vtilt2 = Vtilt1
 
         # start display
-        display2 = artview.components.Display(Vradar2, Vfield2, Vtilt2,
+        display2 = artview.components.RadarDisplay(Vradar2, Vfield2, Vtilt2,
                                         name="DisplayRadar")
 
         # start program
@@ -283,7 +283,7 @@ Graphical Tools
 
     So we know how to close windows, what about opening new ones. This is more
     complicated, as for now some components can just be started a priory in
-    the script, but some other like :py:class:`~artview.components.Display`
+    the script, but some other like :py:class:`~artview.components.RadarDisplay`
     and :py:class:`~artview.components.ComponentsControl` have the `GUIstart`
     method and can be started by the user at execution time, for that use the
     Menu method :py:func:`~artview.components.Menu.addComponentMenuItem`, for
@@ -295,7 +295,7 @@ Graphical Tools
         menu = artview.components.Menu(DirIn="/", name="Menu")
 
         # start Control
-        menu.addComponentMenuItem(artview.components.Display)
+        menu.addComponentMenuItem(artview.components.RadarDisplay)
 
     Now you may found Display at the components sub-menu and start a new one
     there.

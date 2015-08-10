@@ -1,6 +1,0 @@
-artview.components.Display.keyPressEvent
-========================================
-
-.. currentmodule:: artview.components
-
-.. automethod:: Display.keyPressEvent

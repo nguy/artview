@@ -1,0 +1,6 @@
+artview.components.RadarDisplay.TiltSelectCmd
+=============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: RadarDisplay.TiltSelectCmd

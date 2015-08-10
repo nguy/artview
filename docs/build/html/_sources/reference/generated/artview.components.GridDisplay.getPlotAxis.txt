@@ -1,0 +1,6 @@
+artview.components.GridDisplay.getPlotAxis
+==========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: GridDisplay.getPlotAxis

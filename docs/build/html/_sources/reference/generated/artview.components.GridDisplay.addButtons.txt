@@ -1,0 +1,6 @@
+artview.components.GridDisplay.addButtons
+=========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: GridDisplay.addButtons

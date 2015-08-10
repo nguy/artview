@@ -1,0 +1,6 @@
+artview.components.GridDisplay.getUnits
+=======================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: GridDisplay.getUnits

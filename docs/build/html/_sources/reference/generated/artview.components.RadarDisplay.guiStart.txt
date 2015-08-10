@@ -1,0 +1,6 @@
+artview.components.RadarDisplay.guiStart
+========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: RadarDisplay.guiStart

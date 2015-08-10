@@ -1,0 +1,6 @@
+artview.components.RadarDisplay.toolCustomCmd
+=============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: RadarDisplay.toolCustomCmd
