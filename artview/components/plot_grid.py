@@ -17,6 +17,7 @@ from matplotlib.colorbar import ColorbarBase as mlabColorbarBase
 from matplotlib.pyplot import cm
 
 from ..core import Variable, Component, common, VariableChoose
+from ..core.points import Points
 
 # Save image file type and DPI (resolution)
 IMAGE_EXT = 'png'
@@ -227,9 +228,7 @@ class GridDisplay(Component):
         limits, cmap, change = limits_dialog(self.Vlims.value, self.Vcmap.value, self.name)
         if change == 1:
             self.Vcmap.change(cmap, False)
-            print limits
             self.Vlims.change(limits)
-            print self.Vlims.value
 
     def _fillLevelBox(self):
         '''Fill in the Level Window Box with current elevation angles.'''
@@ -539,27 +538,82 @@ class GridDisplay(Component):
 
         Returns
         -------
-        x, y, azi, range, value, ray_idx, range_inx: ndarray
-            Truplet of 1arrays containing x,y coordinate, azimuth,
-            range, current field value, ray index and range index
-            for all bin of the current grid and tilt inside path.
+        points: Points
+            Points object containing all bins of the current radar
+            and tilt inside path. Axes : 'x_disp', 'y_disp', 'ray_index',
+            'range_index', 'azimuth', 'range'. Fields: just current field
 
         Notes
         -----
-            If Vgrid.value is None, returns None
+            If Vradar.value is None, returns None
         '''
-        # TODO convert to grid
         from .tools import interior_grid
         grid = self.Vgrid.value
         if grid is None:
-            return (np.array([]),)*7
+            return None
 
         xy, idx = interior_grid(path, grid, self.Vlevel.value, self.plot_type)
-        aux = (xy[:, 0], xy[:, 1], grid.azimuth['data'][idx[:, 0]],
-               grid.range['data'][idx[:, 1]] / 1000.,
-               grid.fields[self.Vfield.value]['data'][idx[:, 0], idx[:, 1]],
-               idx[:, 0], idx[:, 1])
-        return aux
+
+        if self.plot_type == "gridZ":
+            x = xy[:, 0] * 1000.
+            y = xy[:, 1] * 1000.
+            z = np.ones_like(xy[:, 0]) * self.levels[self.VlevelZ.value]
+            x_idx = idx[:, 0]
+            y_idx = idx[:, 1]
+            z_idx = np.ones_like(idx[:, 0]) * self.VlevelZ.value
+        elif self.plot_type == "gridY":
+            x = xy[:, 0] * 1000.
+            z = xy[:, 1] * 1000.
+            y = np.ones_like(xy[:, 0]) * self.levels[self.VlevelY.value]
+            x_idx = idx[:, 0]
+            z_idx = idx[:, 1]
+            y_idx = np.ones_like(idx[:, 0]) * self.VlevelY.value
+        elif self.plot_type == "gridX":
+            z = xy[:, 0] * 1000.
+            y = xy[:, 1] * 1000.
+            x = np.ones_like(xy[:, 0]) * self.levels[self.VlevelX.value]
+            z_idx = idx[:, 0]
+            y_idx = idx[:, 1]
+            x_idx = np.ones_like(idx[:, 0]) * self.VlevelX.value
+
+        xaxis = {'data':  x,
+                 'long_name': 'X-coordinate in Cartesian system',
+                 'axis': 'X',
+                 'units': 'm'}
+
+        yaxis = {'data':  y,
+                 'long_name': 'Y-coordinate in Cartesian system',
+                 'axis': 'Y',
+                 'units': 'm'}
+
+        zaxis = {'data':  z,
+                 'long_name': 'Z-coordinate in Cartesian system',
+                 'axis': 'Z',
+                 'units': 'm'}
+
+        field = grid.fields[self.Vfield.value].copy()
+        field['data'] = grid.fields[self.Vfield.value]['data'][
+            z_idx, y_idx, x_idx]
+
+        x_idx = {'data': x_idx,
+                   'long_name': 'index in nx dimension'}
+        y_idx = {'data': y_idx,
+                   'long_name': 'index in ny dimension'}
+        z_idx = {'data': z_idx,
+                   'long_name': 'index in nz dimension'}
+
+        axes = {'x_disp':xaxis,
+                'y_disp':yaxis,
+                'z_disp':zaxis,
+                'x_index':x_idx,
+                'y_index':y_idx,
+                'z_index':z_idx,}
+
+        fields = {self.Vfield.value: field}
+
+        points = Points(fields, axes, grid.metadata.copy(), xy.shape[0])
+
+        return points
 
     def getNearestPoints(self, xdata, ydata):
         '''

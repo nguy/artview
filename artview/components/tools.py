@@ -682,7 +682,7 @@ def interior_radar(path, radar, tilt):
     gateIndex = ind % ngates
     index = np.concatenate((rayIndex[np.newaxis],
                             gateIndex[np.newaxis]), axis=0)
-    return (xys[ind], index.transpose())
+    return (xys[ind], index.transpose().astype(np.int))
 
 
 def interior_grid(path, grid, level, plot_type):
@@ -728,7 +728,7 @@ def interior_grid(path, grid, level, plot_type):
     y_index = ind % ny
     index = np.concatenate((x_index[np.newaxis],
                             y_index[np.newaxis]), axis=0)
-    return (xys[ind], index.transpose())
+    return (xys[ind], index.transpose().astype(np.int))
 
 def nearest_point_grid(grid, zvalue, yvalue, xvalue):
     '''
@@ -770,4 +770,4 @@ def nearest_point_grid(grid, zvalue, yvalue, xvalue):
     index = np.concatenate((z_index[np.newaxis],
                             y_index[np.newaxis],
                             x_index[np.newaxis],), axis=0)
-    return index.transpose()
+    return index.transpose().astype(np.int)
