@@ -90,6 +90,7 @@ class GridDisplay(Component):
         '''
         super(GridDisplay, self).__init__(name=name, parent=parent)
         self.setFocusPolicy(QtCore.Qt.ClickFocus)
+        self.basemap = None
         # Set up signal, so that DISPLAY can react to
         # external (or internal) changes in grid, field,
         # lims and level (expected to be Core.Variable instances)
@@ -525,10 +526,8 @@ class GridDisplay(Component):
     def toolDefaultCmd(self):
         '''Restore the Display defaults.'''
         from . import tools
-        self.tools, limits, cmap = tools.restore_default_display(
-            self.tools, self.Vfield.value, self.scan_type)
-        self.Vcmap.change(cmap)
-        self.Vlims.change(limits)
+        self._set_default_limits()
+        self._set_default_cmap()
 
     def getPathInteriorValues(self, path):
         '''
@@ -662,19 +661,22 @@ class GridDisplay(Component):
         self.display = pyart.graph.GridMapDisplay(self.Vgrid.value)
         # Create Plot
         if self.plot_type == "gridZ":
-            self.display.plot_basemap(self.lat_lines, self.lon_lines,
-                                      ax=self.ax)
+            self.display.plot_basemap(
+                self.lat_lines, self.lon_lines, ax=self.ax)
+            self.basemap = self.display.get_basemap()
             self.plot = self.display.plot_grid(
                     self.Vfield.value, self.VlevelZ.value, vmin=cmap['vmin'],
                     vmax=cmap['vmax'],cmap=cmap['cmap'], colorbar_flag=False,
                     title=title, ax=self.ax, fig=self.fig)
         elif self.plot_type == "gridY":
-             self.plot = self.display.plot_latitudinal_level(
+            self.basemap = None
+            self.plot = self.display.plot_latitudinal_level(
                     self.Vfield.value, self.VlevelY.value, vmin=cmap['vmin'],
                     vmax=cmap['vmax'], cmap=cmap['cmap'], colorbar_flag=False,
                     title=title, ax=self.ax, fig=self.fig)
         elif self.plot_type == "gridX":
-             self.plot = self.display.plot_longitudinal_level(
+            self.basemap = None
+            self.plot = self.display.plot_longitudinal_level(
                     self.Vfield.value, self.VlevelX.value, vmin=cmap['vmin'],
                     vmax=cmap['vmax'], cmap=cmap['cmap'], colorbar_flag=False,
                     title=title, ax=self.ax, fig=self.fig)
@@ -727,18 +729,59 @@ class GridDisplay(Component):
 
     def _set_default_limits(self, strong=True):
         ''' Set limits to pre-defined default.'''
-        # TODO convert me to grid
-        from .limits import _default_limits
-        limits, cmap = _default_limits(
-            self.Vfield.value, "PPI")
+        limits = self.Vlims.value
+        if limits is None:
+            limits = {}
+        if self.Vgrid.value is None:
+            limits['xmin'] = 0
+            limits['xmax'] = 1
+            limits['ymin'] = 0
+            limits['ymax'] = 1
+        elif self.plot_type == "gridZ":
+            if self.basemap is not None:
+                limits['xmin'] = self.basemap.llcrnrx
+                limits['xmax'] = self.basemap.urcrnrx
+                limits['ymin'] = self.basemap.llcrnry
+                limits['ymax'] = self.basemap.urcrnry
+            else:
+                limits['xmin'] = -150
+                limits['xmax'] = 150
+                limits['ymin'] = -150
+                limits['ymax'] = 150
+        elif self.plot_type == "gridY":
+            limits['xmin'] = (self.Vgrid.value.axes['x_disp']['data'][0] /
+                              1000.)
+            limits['xmax'] = (self.Vgrid.value.axes['x_disp']['data'][-1] /
+                              1000.)
+            limits['ymin'] = (self.Vgrid.value.axes['z_disp']['data'][0] /
+                                1000.)
+            limits['ymax'] = (self.Vgrid.value.axes['z_disp']['data'][-1] /
+                                1000.)
+        elif self.plot_type == "gridX":
+            limits['xmin'] = (self.Vgrid.value.axes['y_disp']['data'][0] /
+                              1000.)
+            limits['xmax'] = (self.Vgrid.value.axes['y_disp']['data'][-1] /
+                              1000.)
+            limits['ymin'] = (self.Vgrid.value.axes['z_disp']['data'][0] /
+                                1000.)
+            limits['ymax'] = (self.Vgrid.value.axes['z_disp']['data'][-1] /
+                                1000.)
         self.Vlims.change(limits, strong)
 
     def _set_default_cmap(self, strong=True):
         ''' Set colormap to pre-defined default.'''
-        # TODO convert me to grid
-        from .limits import _default_limits
-        limits, cmap = _default_limits(
-            self.Vfield.value, "PPI")
+        cmap = self.Vcmap.value
+        if cmap is None:
+            cmap = {}
+        cmap['cmap'] = pyart.config.get_field_colormap(self.Vfield.value)
+        vmin, vmax = pyart.config.get_field_limits(
+            self.Vfield.value, self.Vgrid.value)
+        if vmin is None:
+            cmap['vmin'] = -32
+            cmap['vmax'] = 72
+        else:
+            cmap['vmin'] = vmin
+            cmap['vmax'] = vmax
         self.Vcmap.change(cmap, strong)
 
     def _check_file_type(self):
