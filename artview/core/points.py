@@ -2,7 +2,7 @@
 points.py
 """
 
-
+import numpy as np
 
 
 class Points:
@@ -61,7 +61,7 @@ class Points:
         self.fields = {}
         self.metadata = metadata
         self.axes = axes
-        self.npoins = npoints
+        self.npoints = npoints
         for key in fields.keys():
             self.add_field(key, fields[key])
         return
@@ -100,7 +100,7 @@ class Points:
             raise ValueError(err)
         if 'data' not in dic:
             raise KeyError("dic must contain a 'data' key")
-        if dic['data'].shape != (self.npoits,):
+        if dic['data'].shape != (self.npoints,):
             t =  (self.npoits,)
             err = "'data' has invalid shape, should be (%i, %i)" % t
             raise ValueError(err)
@@ -161,8 +161,9 @@ def write_points_csv(filename, points):
         rowdata = []
         for key in axes_key:
             rowdata.append(unicode(key).encode('utf8'))
-        for key in fields_key:
+        for key in fields_keys:
             rowdata.append(unicode(key).encode('utf8'))
+        writer.writerow(rowdata)
 
         # data
         for row in range(points.npoints):
@@ -196,13 +197,13 @@ def read_points_csv(filename):
         Point object read.
     '''
     data = []
-    with open(unicode(path), 'rb') as stream:
+    with open(unicode(filename), 'rb') as stream:
         for rowdata in csv.reader(stream):
             data.append(rowdata)
 
     header = data.pop(0)
     arrays = {}
-    npoins = len(data)
+    npoints = len(data)
     for key in header:
         arrays[key] = np.ma.masked_all((npoints,))
 
@@ -219,3 +220,4 @@ def read_points_csv(filename):
         else:
             fields[key] = {'data': arrays[key]}
     points = Points(fields, axes, {}, npoints)
+    return points

@@ -155,42 +155,50 @@ class _SimplePluginStart(QtGui.QDialog):
         return self.result, self.independent.isChecked()
 
 ########################
-# Table methods #
+#    Table methods     #
 ########################
 
 
 class CreateTable(QtGui.QTableWidget):
     """Creates a custom table widget."""
-    def __init__(self, column_names, name="Table",
+    def __init__(self, points, name="Table",
                  textcolor="black", bgcolor="gray", parent=None, *args):
         QtGui.QTableWidget.__init__(self, *args)
+        self.points = points
         self.setSelectionMode(self.ContiguousSelection)
         self.setGeometry(0, 0, 700, 400)
         self.setShowGrid(True)
         self.textcolor = textcolor
         self.bgcolor = bgcolor
 
-        self.colnames = column_names
-
-    def display_data(self, data):
+    def display(self):
         """Reads in data from a 2D array and formats and displays it in
             the table."""
 
-        if len(data) == 0:
+        if self.points is None:
             data = ["No data for selected."]
             nrows = 0
             ncols = 0
         else:
-            nrows, ncols = data.shape[0], data.shape[1]
+            nrows = self.points.npoints
+            colnames = self.points.axes.keys() + self.points.fields.keys()
+            ncols = len(colnames)
 
         self.setRowCount(nrows)
         self.setColumnCount(ncols)
-        self.setHorizontalHeaderLabels(self.colnames)
+        colnames = self.points.axes.keys() + self.points.fields.keys()
+        self.setHorizontalHeaderLabels(colnames)
 
         for i in xrange(nrows):
             # Set each cell to be a QTableWidgetItem from _process_row method
-            for j in xrange(ncols):
-                item = QtGui.QTableWidgetItem(str(data[i, j]).format("%8.3f"))
+            for j, name in enumerate(colnames):
+                if name in self.points.axes:
+                    item = QtGui.QTableWidgetItem("%8.3f" %
+                        self.points.axes[name]['data'][i])
+                else:
+                    item = QtGui.QTableWidgetItem("%8.3f" %
+                        self.points.fields[name]['data'][i])
+
                 item.setBackgroundColor = QtGui.QColor(self.bgcolor)
                 item.setTextColor = QtGui.QColor(self.textcolor)
                 self.setItem(i, j, item)
@@ -201,7 +209,7 @@ class CreateTable(QtGui.QTableWidget):
         return
 
 ########################
-# Arithmetic methods #
+#  Arithmetic methods  #
 ########################
 
 def _array_stats(data):

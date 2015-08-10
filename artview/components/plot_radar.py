@@ -18,6 +18,7 @@ from matplotlib.colorbar import ColorbarBase as mlabColorbarBase
 from matplotlib.pyplot import cm
 
 from ..core import Variable, Component, common, VariableChoose
+from ..core.points import Points
 
 # Save image file type and DPI (resolution)
 IMAGE_EXT = 'png'
@@ -586,10 +587,10 @@ class RadarDisplay(Component):
 
         Returns
         -------
-        x, y, azi, range, value, ray_idx, range_inx: ndarray
-            Truplet of 1arrays containing x,y coordinate, azimuth,
-            range, current field value, ray index and range index
-            for all bin of the current radar and tilt inside path.
+        points: Points
+            Points object containing all bins of the current radar
+            and tilt inside path. Axes : 'x_disp', 'y_disp', 'ray_index',
+            'range_index', 'azimuth', 'range'. Fields: just current field
 
         Notes
         -----
@@ -598,14 +599,46 @@ class RadarDisplay(Component):
         from .tools import interior_radar
         radar = self.Vradar.value
         if radar is None:
-            return (np.array([]),)*7
+            return None
 
         xy, idx = interior_radar(path, radar, self.Vtilt.value)
-        aux = (xy[:, 0], xy[:, 1], radar.azimuth['data'][idx[:, 0]],
-               radar.range['data'][idx[:, 1]] / 1000.,
-               radar.fields[self.Vfield.value]['data'][idx[:, 0], idx[:, 1]],
-               idx[:, 0], idx[:, 1])
-        return aux
+        xaxis = {'data':  xy[:, 0] * 1000.,
+                 'long_name': 'X-coordinate in Cartesian system',
+                 'axis': 'X',
+                 'units': 'm'}
+
+        yaxis = {'data':  xy[:, 1] * 1000.,
+                 'long_name': 'Y-coordinate in Cartesian system',
+                 'axis': 'Y',
+                 'units': 'm'}
+
+        azi = radar.azimuth.copy()
+        azi['data'] = radar.azimuth['data'][idx[:, 0]]
+
+        rng = radar.range.copy()
+        rng['data'] = radar.range['data'][idx[:, 1]]
+
+        field = radar.fields[self.Vfield.value].copy()
+        field['data'] = radar.fields[self.Vfield.value]['data'][
+            idx[:, 0], idx[:, 1]]
+
+        ray_idx = {'data': idx[:, 0],
+                   'long_name': 'index in ray dimension'}
+        rng_idx = {'data': idx[:, 1],
+                   'long_name': 'index in range dimension'}
+
+        axes = {'x_disp':xaxis,
+                'y_disp':yaxis,
+                'ray_index':ray_idx,
+                'range_index':rng_idx,
+                'azimuth':azi,
+                'range':rng}
+
+        fields = {self.Vfield.value: field}
+
+        points = Points(fields, axes, radar.metadata.copy(), xy.shape[0])
+
+        return points
 
     ####################
     # Plotting methods #

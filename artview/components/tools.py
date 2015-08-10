@@ -418,7 +418,7 @@ def interior_radar(path, radar, tilt):
     gateIndex = ind % ngates
     index = np.concatenate((rayIndex[np.newaxis],
                             gateIndex[np.newaxis]), axis=0)
-    return (xys[ind], index.transpose())
+    return (xys[ind], index.transpose().astype(np.int))
 
 
 def interior_grid(path, grid, level, plot_type):
