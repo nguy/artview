@@ -22,7 +22,7 @@ from ..core.points import Points
 
 # Save image file type and DPI (resolution)
 IMAGE_EXT = 'png'
-DPI = 100
+DPI = 200
 # ========================================================================
 
 
@@ -210,6 +210,9 @@ class GridDisplay(Component):
         self._add_fieldBoxUI()
         # Create the Tools controls
         self._add_toolsBoxUI()
+        # Create the Informational label at top
+        self._add_infolabel()
+
 
     def setUILayout(self):
         '''Setup the button/display UI layout.'''
@@ -217,6 +220,7 @@ class GridDisplay(Component):
         self.layout.addWidget(self.fieldBox, 0, 1)
         self.layout.addWidget(self.dispButton, 0, 2)
         self.layout.addWidget(self.toolsButton, 0, 3)
+        self.layout.addWidget(self.infolabel, 0, 4)
 
     #############################
     # Functionality methods #
@@ -330,7 +334,7 @@ class GridDisplay(Component):
         self.dispCmapmenu.setFocusPolicy(QtCore.Qt.NoFocus)
         dispQuickSave = dispmenu.addAction("Quick Save Image")
         dispQuickSave.setShortcut("Ctrl+D")
-        dispQuickSave.setStatusTip(
+        dispQuickSave.setToolTip(
             "Save Image to local directory with default name")
         dispSaveFile = dispmenu.addAction("Save Image")
         dispSaveFile.setShortcut("Ctrl+S")
@@ -349,14 +353,18 @@ class GridDisplay(Component):
         '''Create the Level Selection ComboBox.'''
         self.levelBox = QtGui.QComboBox()
         self.levelBox.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.levelBox.setToolTip("Choose level")
+        self.levelBox.setToolTip("Select level slice to display.\n"
+                                "'Level Window' will launch popup.\n"
+                                "Up/Down arrow keys Increase/Decrease level.")
+
         self.levelBox.activated[str].connect(self._levelAction)
 
     def _add_fieldBoxUI(self):
         '''Create the Field Selection ComboBox.'''
         self.fieldBox = QtGui.QComboBox()
         self.fieldBox.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.fieldBox.setToolTip("Choose variable/field")
+        self.fieldBox.setToolTip("Select variable/field in data file.\n"
+                                 "'Field Window' will launch popup.\n")
         self.fieldBox.activated[str].connect(self._fieldAction)
 
     def _add_toolsBoxUI(self):
@@ -369,13 +377,32 @@ class GridDisplay(Component):
         toolValueClick = toolmenu.addAction("Click for Value")
         toolSelectRegion = toolmenu.addAction("Select a Region of Interest")
         toolCustom = toolmenu.addAction("Use Custom Tool")
+        toolReset = toolmenu.addAction("Reset Tools")
         toolDefault = toolmenu.addAction("Reset File Defaults")
         toolZoomPan.triggered[()].connect(self.toolZoomPanCmd)
         toolValueClick.triggered[()].connect(self.toolValueClickCmd)
         toolSelectRegion.triggered[()].connect(self.toolSelectRegionCmd)
         toolCustom.triggered[()].connect(self.toolCustomCmd)
+        toolReset.triggered[()].connect(self.toolResetCmd)
         toolDefault.triggered[()].connect(self.toolDefaultCmd)
         self.toolsButton.setMenu(toolmenu)
+
+    def _add_infolabel(self):
+        '''Create an information label about the display'''
+        self.infolabel = QtGui.QLabel("Grid: \n"
+                                      "Field: \n"
+                                      "Level: ", self)
+        self.infolabel.setStyleSheet('color: red; font: italic 10px')
+        self.infolabel.setToolTip("Filename not loaded")
+
+    def _update_infolabel(self):
+        self.infolabel.setText("Grid: %s\n"
+                               "Field: %s\n"
+                               "Level: %d" % (self.Vgrid.value.metadata['instrument_name'],
+                                            self.Vfield.value,
+                                            self.Vlevel.value+1))
+        if hasattr(self.Vgrid.value, 'filename'):
+            self.infolabel.setToolTip(self.Vgrid.value.filename)
 
     ########################
     # Selectionion methods #
@@ -413,6 +440,7 @@ class GridDisplay(Component):
         self.title = None
         if strong:
             self._update_plot()
+            self._update_infolabel()
 
     def NewField(self, variable, value, strong):
         '''
@@ -432,6 +460,7 @@ class GridDisplay(Component):
         self.fieldBox.setCurrentIndex(idx)
         if strong and self.Vgrid.value is not None:
             self._update_plot()
+            self._update_infolabel()
 
     def NewLims(self, variable, value, strong):
         '''
@@ -472,6 +501,7 @@ class GridDisplay(Component):
         self.levelBox.setCurrentIndex(value+1)
         if strong and self.Vgrid.value is not None:
             self._update_plot()
+            self._update_infolabel()
 
     def LevelSelectCmd(self, nlevel):
         '''
@@ -522,6 +552,11 @@ class GridDisplay(Component):
         from . import tools
         tools.custom_tool(self.tools)
 
+    def toolResetCmd(self):
+        '''Reset tools via disconnect.'''
+        from . import tools
+        self.tools = tools.reset_tools(self.tools)
+
     def toolDefaultCmd(self):
         '''Restore the Display defaults.'''
         from . import tools
@@ -540,8 +575,8 @@ class GridDisplay(Component):
         -------
         points: Points
             Points object containing all bins of the current radar
-            and tilt inside path. Axes : 'x_disp', 'y_disp', 'ray_index',
-            'range_index', 'azimuth', 'range'. Fields: just current field
+            and tilt inside path. Axes : 'x_disp', 'y_disp', 'x_disp',
+            'x_index', 'y_index', 'z_index'. Fields: just current field
 
         Notes
         -----
@@ -552,11 +587,12 @@ class GridDisplay(Component):
         if grid is None:
             return None
 
-        xy, idx = interior_grid(path, grid, self.Vlevel.value, self.plot_type)
+        xy, idx = interior_grid(path, grid, self.basemap, self.Vlevel.value,
+                                self.plot_type)
 
         if self.plot_type == "gridZ":
-            x = xy[:, 0] * 1000.
-            y = xy[:, 1] * 1000.
+            x = xy[:, 0]
+            y = xy[:, 1]
             z = np.ones_like(xy[:, 0]) * self.levels[self.VlevelZ.value]
             x_idx = idx[:, 0]
             y_idx = idx[:, 1]
@@ -635,24 +671,26 @@ class GridDisplay(Component):
         '''
         from .tools import nearest_point_grid
         grid = self.Vgrid.value
-        print(xdata, ydata)
-        print(self.display.basemap(xdata, ydata,inverse=True))
-                # map center
+
+        # map center
         lat0 = self.Vgrid.value.axes['lat']['data'][0]
         lon0 = self.Vgrid.value.axes['lon']['data'][0]
-        print(lat0,lon0)
+
         if grid is None:
             return (np.array([]),)*7
 
         if self.plot_type == "gridZ":
-            idx = nearest_point_grid(grid, self.levels[self.VlevelZ.value],
-                                     ydata, xdata)
+            idx = nearest_point_grid(
+                grid, self.basemap, self.levels[self.VlevelZ.value], ydata,
+                xdata)
         elif self.plot_type == "gridY":
-            idx = nearest_point_grid(grid, ydata,
-                                     self.levels[self.VlevelY.value], x_data)
+            idx = nearest_point_grid(
+                grid, self.basemap, ydata * 1000.,
+                self.levels[self.VlevelY.value], xdata * 1000.)
         elif self.plot_type == "gridX":
-            idx = nearest_point_grid(grid, ydata, x_data,
-                                     self.levels[self.VlevelX.value])
+            idx = nearest_point_grid(
+                grid, self.basemap, ydata * 1000., xdata * 1000.,
+                self.levels[self.VlevelX.value])
         aux = (grid.axes['x_disp']['data'][idx[:,2]],
                grid.axes['y_disp']['data'][idx[:,1]],
                grid.axes['z_disp']['data'][idx[:,0]],
@@ -701,7 +739,16 @@ class GridDisplay(Component):
 
         if self.Vfield.value not in self.Vgrid.value.fields.keys():
             self.canvas.draw()
+            self.statusbar.setStyleSheet("QStatusBar{padding-left:8px;" +
+                                      "background:rgba(255,0,0,255);" +
+                                      "color:black;font-weight:bold;}")
+            self.statusbar.showMessage("Field not Found in Radar", msecs= 5000)
             return
+        else:
+            self.statusbar.setStyleSheet("QStatusBar{padding-left:8px;" +
+                                      "background:rgba(0,0,0,0);" +
+                                      "color:black;font-weight:bold;}")
+            self.statusbar.clearMessage()
 
         # Reset to default title if user entered nothing w/ Title button
         if self.title == '':
@@ -875,11 +922,11 @@ class GridDisplay(Component):
 
     def _savefile(self, PTYPE=IMAGE_EXT):
         '''Save the current display using PyQt dialog interface.'''
-        PBNAME = self.display.generate_filename(
+        imagename = self.display.generate_filename(
             self.Vfield.value, self.Vlevel.value, ext=IMAGE_EXT)
         file_choices = "PNG (*.png)|*.png"
         path = unicode(QtGui.QFileDialog.getSaveFileName(
-            self, 'Save file', PBNAME, file_choices))
+            self, 'Save file', imagename, file_choices))
         if path:
             self.canvas.print_figure(path, dpi=DPI)
             self.statusbar.showMessage('Saved to %s' % path)

@@ -8,10 +8,14 @@ import argparse
 import sys
 
 # Get the version
-if sys.version_info[0] < 3:
+# AG - python 3 decided it doesn't like scripts inside modules.
+# I have read some posts about it and no one has a real solution.
+# http://stackoverflow.com/questions/16981921/relative-imports-in-python-3
+try:
     import version
-else:
+except:
     from . import version
+
 NAME = 'ARTview'
 VERSION = version.version
 

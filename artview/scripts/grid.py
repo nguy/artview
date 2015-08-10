@@ -24,7 +24,7 @@ def run(DirIn=os.getcwd(), filename=None, field=None):
 
     from ..core import Variable
     from ..components import GridDisplay, Menu, LevelButtonWindow, \
-        ComponentsControl, ROI
+        LinkPlugins, SelectRegion
 
     # handle input
     if field is None:
@@ -48,15 +48,15 @@ def run(DirIn=os.getcwd(), filename=None, field=None):
                     parent=MainMenu)
 
     # start ComponentsControl
-    control = ComponentsControl()
+    control = LinkPlugins()
 
     # add control to Menu
     MainMenu.addLayoutWidget(control)
 
     # add grafical starts
-    MainMenu.addComponent(ComponentsControl)
+    MainMenu.addComponent(LinkPlugins)
     MainMenu.addComponent(GridDisplay)
-    MainMenu.addComponent(ROI)
+    MainMenu.addComponent(SelectRegion)
 
     # add all plugins to grafical start
     try:
