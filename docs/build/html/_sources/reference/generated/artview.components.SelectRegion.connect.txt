@@ -1,0 +1,6 @@
+artview.components.SelectRegion.connect
+=======================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: SelectRegion.connect

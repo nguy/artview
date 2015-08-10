@@ -1,0 +1,6 @@
+artview.components.GridDisplay.keyPressEvent
+============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: GridDisplay.keyPressEvent

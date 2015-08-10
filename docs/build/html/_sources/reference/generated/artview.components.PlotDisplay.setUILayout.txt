@@ -1,0 +1,6 @@
+artview.components.PlotDisplay.setUILayout
+==========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: PlotDisplay.setUILayout

@@ -1,0 +1,6 @@
+artview.view.addGrid
+====================
+
+.. currentmodule:: artview.view
+
+.. autofunction:: addGrid

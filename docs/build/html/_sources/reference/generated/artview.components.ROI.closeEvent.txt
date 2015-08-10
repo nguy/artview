@@ -1,6 +1,0 @@
-artview.components.ROI.closeEvent
-=================================
-
-.. currentmodule:: artview.components
-
-.. automethod:: ROI.closeEvent

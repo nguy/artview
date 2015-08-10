@@ -27,7 +27,7 @@
     <link rel="top" title="ARTview 0.2.2 documentation" href="../../index.html" />
     <link rel="up" title="Main Components (artview.components)" href="../components.html" />
     <link rel="next" title="artview.components.Menu.AdvanceFileSelect" href="artview.components.Menu.AdvanceFileSelect.html" />
-    <link rel="prev" title="artview.components.RadarDisplay.toolZoomPanCmd" href="artview.components.RadarDisplay.toolZoomPanCmd.html" /> 
+    <link rel="prev" title="artview.components.GridDisplay.toolZoomPanCmd" href="artview.components.GridDisplay.toolZoomPanCmd.html" /> 
   </head>
   <body>
     <div class="related">
@@ -46,10 +46,10 @@
           <a href="artview.components.Menu.AdvanceFileSelect.html" title="artview.components.Menu.AdvanceFileSelect"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="artview.components.RadarDisplay.toolZoomPanCmd.html" title="artview.components.RadarDisplay.toolZoomPanCmd"
+          <a href="artview.components.GridDisplay.toolZoomPanCmd.html" title="artview.components.GridDisplay.toolZoomPanCmd"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">ARTview 0.2.2 documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Reference Manual</a> &raquo;</li>
+          <li><a href="../index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li>
           <li><a href="../components.html" accesskey="U">Main Components (<tt class="docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
       </ul>
     </div>  
@@ -79,9 +79,10 @@
 <div><p>Input directory path to open.</p>
 </div></blockquote>
 <p><strong>[Optional]</strong> :</p>
-<p><strong>filename</strong> : string</p>
+<p><strong>filename</strong> : string, False or None</p>
 <blockquote>
-<div><p>File to open as first, this will skip the open file dialog.</p>
+<div><p>File to open as first. None will open file dialog. False will
+open no file.</p>
 </div></blockquote>
 <p><strong>Vradar</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
 <blockquote>
@@ -135,14 +136,8 @@ a menubar for the program.</p>
 <tr class="row-even"><td><a class="reference internal" href="artview.components.Menu.addAboutMenu.html#artview.components.Menu.addAboutMenu" title="artview.components.Menu.addAboutMenu"><tt class="xref py py-obj docutils literal"><span class="pre">Menu.addAboutMenu</span></tt></a>()</td>
 <td>Add Help menu to menubar.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="artview.components.Menu.addComponent.html#artview.components.Menu.addComponent" title="artview.components.Menu.addComponent"><tt class="xref py py-obj docutils literal"><span class="pre">Menu.addComponent</span></tt></a>(Comp)</td>
-<td>Add Component Contructor.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="artview.components.Menu.addComponentMenu.html#artview.components.Menu.addComponentMenu" title="artview.components.Menu.addComponentMenu"><tt class="xref py py-obj docutils literal"><span class="pre">Menu.addComponentMenu</span></tt></a>()</td>
-<td>Add Component Menu to menu bar.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="artview.components.Menu.addComponentMenuItem.html#artview.components.Menu.addComponentMenuItem" title="artview.components.Menu.addComponentMenuItem"><tt class="xref py py-obj docutils literal"><span class="pre">Menu.addComponentMenuItem</span></tt></a>(Comp)</td>
-<td>Add Component item to Component Menu.</td>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.Menu.addComponent.html#artview.components.Menu.addComponent" title="artview.components.Menu.addComponent"><tt class="xref py py-obj docutils literal"><span class="pre">Menu.addComponent</span></tt></a>(Comp[,&nbsp;label])</td>
+<td>Add Component Contructor. If label is None, use class name.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="artview.components.Menu.addFileAdvanceMenu.html#artview.components.Menu.addFileAdvanceMenu" title="artview.components.Menu.addFileAdvanceMenu"><tt class="xref py py-obj docutils literal"><span class="pre">Menu.addFileAdvanceMenu</span></tt></a>()</td>
 <td>Add menu to advance to next or previous file.</td>
@@ -159,6 +154,12 @@ a menubar for the program.</p>
 <tr class="row-even"><td><a class="reference internal" href="artview.components.Menu.addLayoutWidget.html#artview.components.Menu.addLayoutWidget" title="artview.components.Menu.addLayoutWidget"><tt class="xref py py-obj docutils literal"><span class="pre">Menu.addLayoutWidget</span></tt></a>(widget)</td>
 <td>Add a widget to central layout.</td>
 </tr>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.Menu.addPluginMenu.html#artview.components.Menu.addPluginMenu" title="artview.components.Menu.addPluginMenu"><tt class="xref py py-obj docutils literal"><span class="pre">Menu.addPluginMenu</span></tt></a>()</td>
+<td>Add Component Menu to menu bar.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.Menu.addPluginMenuItem.html#artview.components.Menu.addPluginMenuItem" title="artview.components.Menu.addPluginMenuItem"><tt class="xref py py-obj docutils literal"><span class="pre">Menu.addPluginMenuItem</span></tt></a>(Comp[,&nbsp;label])</td>
+<td>Add Component item to Component Menu.</td>
+</tr>
 <tr class="row-odd"><td><a class="reference internal" href="artview.components.Menu.keyPressEvent.html#artview.components.Menu.keyPressEvent" title="artview.components.Menu.keyPressEvent"><tt class="xref py py-obj docutils literal"><span class="pre">Menu.keyPressEvent</span></tt></a>(event)</td>
 <td>Change data file with left and right arrow keys.</td>
 </tr>
@@ -167,6 +168,12 @@ a menubar for the program.</p>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="artview.components.Menu.removeLayoutWidget.html#artview.components.Menu.removeLayoutWidget" title="artview.components.Menu.removeLayoutWidget"><tt class="xref py py-obj docutils literal"><span class="pre">Menu.removeLayoutWidget</span></tt></a>(widget)</td>
 <td>Remove widget from central layout.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.Menu.saveGrid.html#artview.components.Menu.saveGrid" title="artview.components.Menu.saveGrid"><tt class="xref py py-obj docutils literal"><span class="pre">Menu.saveGrid</span></tt></a>()</td>
+<td>Open a dialog box to save grid file.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.Menu.saveRadar.html#artview.components.Menu.saveRadar" title="artview.components.Menu.saveRadar"><tt class="xref py py-obj docutils literal"><span class="pre">Menu.saveRadar</span></tt></a>()</td>
+<td>Open a dialog box to save radar file.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="artview.components.Menu.showFileDialog.html#artview.components.Menu.showFileDialog" title="artview.components.Menu.showFileDialog"><tt class="xref py py-obj docutils literal"><span class="pre">Menu.showFileDialog</span></tt></a>()</td>
 <td>Open a dialog box to choose file.</td>
@@ -200,8 +207,8 @@ a menubar for the program.</p>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="artview.components.RadarDisplay.toolZoomPanCmd.html"
-                        title="previous chapter">artview.components.RadarDisplay.toolZoomPanCmd</a></p>
+  <p class="topless"><a href="artview.components.GridDisplay.toolZoomPanCmd.html"
+                        title="previous chapter">artview.components.GridDisplay.toolZoomPanCmd</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="artview.components.Menu.AdvanceFileSelect.html"
                         title="next chapter">artview.components.Menu.AdvanceFileSelect</a></p>
@@ -243,16 +250,16 @@ a menubar for the program.</p>
           <a href="artview.components.Menu.AdvanceFileSelect.html" title="artview.components.Menu.AdvanceFileSelect"
              >next</a> |</li>
         <li class="right" >
-          <a href="artview.components.RadarDisplay.toolZoomPanCmd.html" title="artview.components.RadarDisplay.toolZoomPanCmd"
+          <a href="artview.components.GridDisplay.toolZoomPanCmd.html" title="artview.components.GridDisplay.toolZoomPanCmd"
              >previous</a> |</li>
         <li><a href="../../index.html">ARTview 0.2.2 documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Reference Manual</a> &raquo;</li>
+          <li><a href="../index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li>
           <li><a href="../components.html" >Main Components (<tt class="docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Aug 04, 2015.
+      Last updated on Aug 10, 2015.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>

@@ -26,7 +26,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="ARTview 0.2.2 documentation" href="index.html" />
     <link rel="next" title="Tutorial: Writing your own Plugin" href="plugin_tutorial.html" />
-    <link rel="prev" title="artview.scripts.standard" href="reference/generated/artview.scripts.standard.html" /> 
+    <link rel="prev" title="artview.view.addGrid" href="reference/generated/artview.view.addGrid.html" /> 
   </head>
   <body>
     <div class="related">
@@ -45,7 +45,7 @@
           <a href="plugin_tutorial.html" title="Tutorial: Writing your own Plugin"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="reference/generated/artview.scripts.standard.html" title="artview.scripts.standard"
+          <a href="reference/generated/artview.view.addGrid.html" title="artview.view.addGrid"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">ARTview 0.2.2 documentation</a> &raquo;</li> 
       </ul>
@@ -284,7 +284,7 @@ keep changing your script every time. For that there is a tool that allow
 the user to change the sharing behavior of
 Components, that is connect/disconnect variables
 between components. This is the
-<a class="reference internal" href="reference/generated/artview.components.ComponentsControl.html#artview.components.ComponentsControl" title="artview.components.ComponentsControl"><tt class="xref py py-class docutils literal"><span class="pre">ComponentsControl</span></tt></a> and to get it running
+<tt class="xref py py-class docutils literal"><span class="pre">ComponentsControl</span></tt> and to get it running
 just add the following line to your script</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">control</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">ComponentsControl</span><span class="p">()</span>
 </pre></div>
@@ -321,9 +321,9 @@ components (components always accept a parent key), for instance</p>
 <p>So we know how to close windows, what about opening new ones. This is more
 complicated, as for now some components can just be started a priory in
 the script, but some other like <a class="reference internal" href="reference/generated/artview.components.RadarDisplay.html#artview.components.RadarDisplay" title="artview.components.RadarDisplay"><tt class="xref py py-class docutils literal"><span class="pre">RadarDisplay</span></tt></a>
-and <a class="reference internal" href="reference/generated/artview.components.ComponentsControl.html#artview.components.ComponentsControl" title="artview.components.ComponentsControl"><tt class="xref py py-class docutils literal"><span class="pre">ComponentsControl</span></tt></a> have the <cite>GUIstart</cite>
+and <tt class="xref py py-class docutils literal"><span class="pre">ComponentsControl</span></tt> have the <cite>GUIstart</cite>
 method and can be started by the user at execution time, for that use the
-Menu method <a class="reference internal" href="reference/generated/artview.components.Menu.addComponentMenuItem.html#artview.components.Menu.addComponentMenuItem" title="artview.components.Menu.addComponentMenuItem"><tt class="xref py py-func docutils literal"><span class="pre">addComponentMenuItem</span></tt></a>, for
+Menu method <tt class="xref py py-func docutils literal"><span class="pre">addComponentMenuItem</span></tt>, for
 instance</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="c"># start Menu</span>
 <span class="n">menu</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="n">DirIn</span><span class="o">=</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;Menu&quot;</span><span class="p">)</span>
@@ -396,8 +396,8 @@ However as for now if you want to put it there you should do two things:</p>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="reference/generated/artview.scripts.standard.html"
-                        title="previous chapter">artview.scripts.standard</a></p>
+  <p class="topless"><a href="reference/generated/artview.view.addGrid.html"
+                        title="previous chapter">artview.view.addGrid</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="plugin_tutorial.html"
                         title="next chapter">Tutorial: Writing your own Plugin</a></p>
@@ -439,14 +439,14 @@ However as for now if you want to put it there you should do two things:</p>
           <a href="plugin_tutorial.html" title="Tutorial: Writing your own Plugin"
              >next</a> |</li>
         <li class="right" >
-          <a href="reference/generated/artview.scripts.standard.html" title="artview.scripts.standard"
+          <a href="reference/generated/artview.view.addGrid.html" title="artview.view.addGrid"
              >previous</a> |</li>
         <li><a href="index.html">ARTview 0.2.2 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Aug 04, 2015.
+      Last updated on Aug 10, 2015.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>

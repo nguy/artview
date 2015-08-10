@@ -1,0 +1,6 @@
+artview.components.RadarDisplay.toolSelectRegionCmd
+===================================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: RadarDisplay.toolSelectRegionCmd

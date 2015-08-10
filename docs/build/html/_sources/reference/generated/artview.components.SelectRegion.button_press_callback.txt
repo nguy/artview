@@ -1,0 +1,6 @@
+artview.components.SelectRegion.button_press_callback
+=====================================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: SelectRegion.button_press_callback

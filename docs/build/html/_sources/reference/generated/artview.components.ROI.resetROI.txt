@@ -1,6 +1,0 @@
-artview.components.ROI.resetROI
-===============================
-
-.. currentmodule:: artview.components
-
-.. automethod:: ROI.resetROI

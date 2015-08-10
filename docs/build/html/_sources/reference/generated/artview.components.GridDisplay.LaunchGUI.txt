@@ -1,0 +1,6 @@
+artview.components.GridDisplay.LaunchGUI
+========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: GridDisplay.LaunchGUI

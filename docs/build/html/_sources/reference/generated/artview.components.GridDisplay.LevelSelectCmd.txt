@@ -1,0 +1,6 @@
+artview.components.GridDisplay.LevelSelectCmd
+=============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: GridDisplay.LevelSelectCmd

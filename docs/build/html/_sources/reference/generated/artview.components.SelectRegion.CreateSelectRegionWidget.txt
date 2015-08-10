@@ -1,0 +1,6 @@
+artview.components.SelectRegion.CreateSelectRegionWidget
+========================================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: SelectRegion.CreateSelectRegionWidget

@@ -35,7 +35,8 @@ artview.components.RadarDisplay
          RadarDisplay.setUILayout
          RadarDisplay.toolCustomCmd
          RadarDisplay.toolDefaultCmd
-         RadarDisplay.toolROICmd
+         RadarDisplay.toolResetCmd
+         RadarDisplay.toolSelectRegionCmd
          RadarDisplay.toolValueClickCmd
          RadarDisplay.toolZoomPanCmd
    

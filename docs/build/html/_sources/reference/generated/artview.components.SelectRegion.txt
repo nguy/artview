@@ -1,0 +1,42 @@
+artview.components.SelectRegion
+===============================
+
+.. currentmodule:: artview.components
+
+.. autoclass:: SelectRegion
+   :show-inheritance:
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+         SelectRegion.CreateSelectRegionWidget
+         SelectRegion.button_press_callback
+         SelectRegion.closeEvent
+         SelectRegion.connect
+         SelectRegion.disconnect
+         SelectRegion.displayHelp
+         SelectRegion.displayStats
+         SelectRegion.guiStart
+         SelectRegion.motion_notify_callback
+         SelectRegion.openTable
+         SelectRegion.resetSelectRegion
+         SelectRegion.saveTable
+         SelectRegion.showHist
+         SelectRegion.viewTable
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+   
+   
+   .. autoattribute:: VSelectRegion
+   
+   
+

@@ -27,7 +27,7 @@
     <link rel="top" title="ARTview 0.2.2 documentation" href="../../index.html" />
     <link rel="up" title="Main Components (artview.components)" href="../components.html" />
     <link rel="next" title="artview.components.RadarDisplay.FieldSelectCmd" href="artview.components.RadarDisplay.FieldSelectCmd.html" />
-    <link rel="prev" title="artview.components.ROI.viewTable" href="artview.components.ROI.viewTable.html" /> 
+    <link rel="prev" title="artview.components.PlotDisplay.setUILayout" href="artview.components.PlotDisplay.setUILayout.html" /> 
   </head>
   <body>
     <div class="related">
@@ -46,10 +46,10 @@
           <a href="artview.components.RadarDisplay.FieldSelectCmd.html" title="artview.components.RadarDisplay.FieldSelectCmd"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="artview.components.ROI.viewTable.html" title="artview.components.ROI.viewTable"
+          <a href="artview.components.PlotDisplay.setUILayout.html" title="artview.components.PlotDisplay.setUILayout"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">ARTview 0.2.2 documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Reference Manual</a> &raquo;</li>
+          <li><a href="../index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li>
           <li><a href="../components.html" accesskey="U">Main Components (<tt class="docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
       </ul>
     </div>  
@@ -187,13 +187,16 @@ change value back to variable.</p>
 <tr class="row-odd"><td><a class="reference internal" href="artview.components.RadarDisplay.toolDefaultCmd.html#artview.components.RadarDisplay.toolDefaultCmd" title="artview.components.RadarDisplay.toolDefaultCmd"><tt class="xref py py-obj docutils literal"><span class="pre">RadarDisplay.toolDefaultCmd</span></tt></a>()</td>
 <td>Restore the Display defaults.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="artview.components.RadarDisplay.toolROICmd.html#artview.components.RadarDisplay.toolROICmd" title="artview.components.RadarDisplay.toolROICmd"><tt class="xref py py-obj docutils literal"><span class="pre">RadarDisplay.toolROICmd</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.RadarDisplay.toolResetCmd.html#artview.components.RadarDisplay.toolResetCmd" title="artview.components.RadarDisplay.toolResetCmd"><tt class="xref py py-obj docutils literal"><span class="pre">RadarDisplay.toolResetCmd</span></tt></a>()</td>
+<td>Reset tools via disconnect.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.RadarDisplay.toolSelectRegionCmd.html#artview.components.RadarDisplay.toolSelectRegionCmd" title="artview.components.RadarDisplay.toolSelectRegionCmd"><tt class="xref py py-obj docutils literal"><span class="pre">RadarDisplay.toolSelectRegionCmd</span></tt></a>()</td>
 <td>Creates and connects to Region of Interest instance</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="artview.components.RadarDisplay.toolValueClickCmd.html#artview.components.RadarDisplay.toolValueClickCmd" title="artview.components.RadarDisplay.toolValueClickCmd"><tt class="xref py py-obj docutils literal"><span class="pre">RadarDisplay.toolValueClickCmd</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.RadarDisplay.toolValueClickCmd.html#artview.components.RadarDisplay.toolValueClickCmd" title="artview.components.RadarDisplay.toolValueClickCmd"><tt class="xref py py-obj docutils literal"><span class="pre">RadarDisplay.toolValueClickCmd</span></tt></a>()</td>
 <td>Creates and connects to Point-and-click value retrieval</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="artview.components.RadarDisplay.toolZoomPanCmd.html#artview.components.RadarDisplay.toolZoomPanCmd" title="artview.components.RadarDisplay.toolZoomPanCmd"><tt class="xref py py-obj docutils literal"><span class="pre">RadarDisplay.toolZoomPanCmd</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.RadarDisplay.toolZoomPanCmd.html#artview.components.RadarDisplay.toolZoomPanCmd" title="artview.components.RadarDisplay.toolZoomPanCmd"><tt class="xref py py-obj docutils literal"><span class="pre">RadarDisplay.toolZoomPanCmd</span></tt></a>()</td>
 <td>Creates and connects to a Zoom/Pan instance.</td>
 </tr>
 </tbody>
@@ -240,8 +243,8 @@ change value back to variable.</p>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="artview.components.ROI.viewTable.html"
-                        title="previous chapter">artview.components.ROI.viewTable</a></p>
+  <p class="topless"><a href="artview.components.PlotDisplay.setUILayout.html"
+                        title="previous chapter">artview.components.PlotDisplay.setUILayout</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="artview.components.RadarDisplay.FieldSelectCmd.html"
                         title="next chapter">artview.components.RadarDisplay.FieldSelectCmd</a></p>
@@ -283,16 +286,16 @@ change value back to variable.</p>
           <a href="artview.components.RadarDisplay.FieldSelectCmd.html" title="artview.components.RadarDisplay.FieldSelectCmd"
              >next</a> |</li>
         <li class="right" >
-          <a href="artview.components.ROI.viewTable.html" title="artview.components.ROI.viewTable"
+          <a href="artview.components.PlotDisplay.setUILayout.html" title="artview.components.PlotDisplay.setUILayout"
              >previous</a> |</li>
         <li><a href="../../index.html">ARTview 0.2.2 documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Reference Manual</a> &raquo;</li>
+          <li><a href="../index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li>
           <li><a href="../components.html" >Main Components (<tt class="docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Aug 04, 2015.
+      Last updated on Aug 10, 2015.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
