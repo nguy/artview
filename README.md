@@ -8,6 +8,8 @@ It allows one to easily scroll through a directory of weather radar data files
 and visualize the data.  All file types available in PyArt can be opened with
 the ARTview browser.
 
+![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.27358.svg)](http://dx.doi.org/10.5281/zenodo.27358)
+
 ![Screenshot](https://github.com/nguy/artview/blob/master/ARTView_Screenshot.png)
 
 With ARTview you can:
