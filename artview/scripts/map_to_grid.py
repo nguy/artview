@@ -5,7 +5,7 @@ Driver function that creates ARTview display.
 """
 import os
 
-def run(DirIn=os.getcwd(), filename=None, field=None):
+def run(DirIn=None, filename=None, field=None):
     """
     ARTview execution to pyart mapping display.
 
@@ -34,6 +34,8 @@ def run(DirIn=os.getcwd(), filename=None, field=None):
     if field is None:
         import pyart
         field = pyart.config.get_field_name('reflectivity')
+    if DirIn is None: # avoid reference to path while building documentation
+        DirIn = os.getcwd()
 
     # start pyqt
     app = QtGui.QApplication(sys.argv)
