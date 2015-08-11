@@ -1,6 +1,0 @@
-artview.components.GridDisplay.toolCustomCmd
-============================================
-
-.. currentmodule:: artview.components
-
-.. automethod:: GridDisplay.toolCustomCmd

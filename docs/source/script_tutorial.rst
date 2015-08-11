@@ -3,17 +3,17 @@
 Tutorial: Writing your own Script
 =================================
 
-    This Section is intended as a walk-through for the creation of custom
+    This tutorial is intended as a walk-through for the creation of a custom
     script in ARTview. It is also useful to understand how to use the ARTview
-    package. It covers the basics of starting components and how to make they
+    package. It covers the basics of starting components and how to make them
     interact with each other.
 
 The Basics
 ----------
 
-    Artview run over PyQt, therefore before using any component you need to
+    Artview runs with PyQt, therefore before using any component you need to
     start a PyQt application. After defining what you want, you need to get it
-    to run, otherwise windows will not respond. Your basic script look like
+    to run, otherwise windows will not respond. Your basic script will look like
     this:
 
     .. code-block:: python
@@ -31,8 +31,8 @@ The Basics
         # start program
         app.exec_() # lock until all windows are closed
 
-    So the whole question is about what to do between those line. The most
-    simple thing you can do is start a single
+    So what to do between those line?
+    The simplest thing you can do is start a single instance
     :py:class:`~artview.core.core.Component` (or plugin), for instance
     :py:class:`~artview.components.Menu`:
 
@@ -50,12 +50,12 @@ The Basics
         # start program
         app.exec_() # lock until all windows are closed
 
-    This will open a Menu instance with name "Menu", giving every new
+    The above will open a Menu instance with name "Menu". Note: giving every new
     instance a different name is important for identifying them afterward.
 
     A slightly more useful component is a
-    :py:class:`~artview.components.RadarDisplay`, but this need a
-    :py:class:`pyart.core.Radar` instance. Luckily Py-ART has some example we
+    :py:class:`~artview.components.RadarDisplay`, but this needs a
+    :py:class:`pyart.core.Radar` instance. Luckily Py-ART has examples we
     can use:
 
     .. code-block:: python
@@ -82,24 +82,29 @@ The Basics
         # start program
         app.exec_() # lock until all windows are closed
 
-    So here things start to get more complicated, the question is: why we
-    can't pass radar to :py:class:`~artview.components.RadarDisplay`, but
-    rather need to put it inside :py:class:`~artview.core.core.Variable`?
-    The point is that we want display to be able to share this radar with
-    other components, in C this could be done using pointers, this is kind of
-    an equivalent for python, more about that in the next section.
+    Now things start to get more complicated.
+    The question is: Why we can't pass the radar instance directly to 
+    :py:class:`~artview.components.RadarDisplay`, but
+    rather need to put it inside a :py:class:`~artview.core.core.Variable` instance?
+
+    We want our display(s) to be able to share this radar instance with
+    other components. In C programming this could be done using pointers, and here
+    we employ a kind of equivalent for Python. More about that in the next section.
 
 Shared Variables
 ----------------
 
     The use of shared variables is an important part of ARTview, all attributes
-    that expect a :py:class:`~artview.core.core.Variable` instance are marked
-    with a capital V. Let see how this work, lets try the following:
-    :py:class:`~artview.components.Menu` has the possibility of opening radar
-    files and put them in :py:attr:`Menu.Vradar`, we want to use display to
-    plot this files. This is simple: instead of creating a new
+    that expect a :py:class:`~artview.core.core.Variable` instance are indicated
+    by a capital V. Let's see how this works.
+
+    Using :py:class:`~artview.components.Menu` we can open radar
+    files and put them in :py:attr:`Menu.Vradar`. Since this is a visualization
+    package we want to plot this files.
+
+    This is simple. Instead of creating a new
     :py:class:`~artview.core.core.Variable` we take it from
-    :py:class:`~artview.components.Menu` and pass to
+    :py:class:`~artview.components.Menu` and pass it to
     :py:class:`~artview.components.RadarDisplay`:
 
     .. code-block:: python
@@ -128,10 +133,14 @@ Shared Variables
         app.exec_() # lock until all windows are closed
 
     So now we have the most simple script one would want.
+
     :py:class:`~artview.components.Menu` opens a file and
-    :py:class:`~artview.components.RadarDisplay` plots it. But ARTview is much more
-    powerful, suppose you want the following: Compare side to side two fields
-    of the same radar. One can just add an other display
+
+    :py:class:`~artview.components.RadarDisplay` plots it. 
+
+    But ARTview is much more powerful. 
+    Suppose you want to compare two fields of the same radar
+    side-by-side. Simply add another display:
 
     .. code-block:: python
 
@@ -176,13 +185,17 @@ Shared Variables
         app.exec_() # lock until all windows are closed
 
     This script will open 1 :py:class:`~artview.components.Menu` and 2
-    :py:class:`~artview.components.RadarDisplay`, both show the same file but
-    different fields. But we have actually made a mistake, because the two
-    Displays are also with different sweeps, that is, they start with the same
-    one but if the user changes the sweep of the first this will not change
-    the second, and we would want it to change together. To get that behavior
-    we just need to change 1 line: don't create a new Vtilt
-    :py:class:`~artview.core.core.Variable`, use the old one
+    :py:class:`~artview.components.RadarDisplay` instance. Both show the same 
+    file, but different fields. 
+
+    However, we have actually made a mistake. Because the Displays use 
+    different sweeps (Vtilt) - that is, they start with the same
+    tilt but the user changes the sweep of the first - this will not change
+    the second. We'd like them to change together.
+
+    To get that behavior, we just need to change one line. Instead of 
+    creating a new Vtilt :py:class:`~artview.core.core.Variable`, 
+    use the old one:
 
     .. code-block:: python
         :emphasize-lines: 32-34
@@ -232,25 +245,27 @@ Shared Variables
 Graphical Tools
 ---------------
 
-    In the last section we made a script with two displays sharing Vradar and
-    Vtilt but not sharing Vfield, we will let to you to explore the other
-    possible sharing configurations. But there is also the possibility that
-    you don't know the kind of sharing that you want and you don't want to
-    keep changing your script every time. For that there is a tool that allow
-    the user to change the sharing behavior of
-    Components, that is connect/disconnect variables
-    between components. This is the
-    :py:class:`~artview.components.ComponentsControl` and to get it running
-    just add the following line to your script
+    In the previous section we made a script with two displays sharing Vradar and
+    Vtilt but not sharing Vfield, we will leave this as an exercise to explore 
+    other potential sharing configurations. 
+
+    There is the possibility that you don't know the kind of sharing that you want.
+    AND you don't want to keep changing your script every time. There is a tool 
+    that allows the user to modify the sharing behavior of Components, 
+    that is to connect/disconnect variables between components (e.g. Displays). 
+    This is :py:class:`~artview.components.ComponentsControl`. To get it running
+    just add the following line to your script:
 
     .. code-block:: python
 
         control = artview.components.ComponentsControl()
 
-    The Problem here is that now we got 4 independent windows floating around
-    our Desktop, to avoid that :py:class:`~artview.components.Menu` has the
-    method :py:func:`~artview.components.Menu.addLayoutWidget`, this allow
-    putting other Components inside Menu, for instance like this:
+    Now we got 4 independent windows floating around our Desktop.
+    To avoid this :py:class:`~artview.components.Menu` has the
+    method :py:func:`~artview.components.Menu.addLayoutWidget`, 
+    which offers the ability to put additional Components inside the Menu window.
+
+    For instance like this:
 
     .. code-block:: python
 
@@ -263,15 +278,17 @@ Graphical Tools
         # put control inside Menu
         menu.addLayoutWidget(control)
 
-    The only problem here is that you lose the close button for `control`, to
-    over come that menu has the layout sub-menu that allow the user to close
+    The only problem here is that you lose the close button for `control`. To
+    overcome this deficiency, the menu has a layout sub-menu so the user can close
     components inside the main menu.
 
-    Ok, may be you don't want to put components inside menu, your problem is
-    you want to close all windows at once, and not having to close each one.
-    To get that we use that PyQt closes all children windows of a window when
-    this is closed, so a good police is to pass menu as parent for all other
-    components (components always accept a parent key), for instance
+    Ok, maybe you don't want to put components inside menu. Your problem is
+    that you would like to close all windows at once and not each individually.
+    For this we leverage the fact that PyQt closes all children instances (windows) 
+    of an existing (parent) window. A good policy is to pass menu as the parent 
+    for all other components (components always accept a parent key)
+
+    For instance:
 
     .. code-block:: python
 
@@ -281,12 +298,14 @@ Graphical Tools
         # start Control
         control = artview.components.ComponentsControl(parent=menu)
 
-    So we know how to close windows, what about opening new ones. This is more
-    complicated, as for now some components can just be started a priory in
-    the script, but some other like :py:class:`~artview.components.RadarDisplay`
-    and :py:class:`~artview.components.ComponentsControl` have the `GUIstart`
-    method and can be started by the user at execution time, for that use the
-    Menu method :py:func:`~artview.components.Menu.addComponentMenuItem`, for
+    Yay, we know how to close windows! What about opening new ones?
+
+    This is a bit more complicated. Some components can just be started as 
+    a priori in the script. But some components like 
+    :py:class:`~artview.components.RadarDisplay` and 
+    :py:class:`~artview.components.ComponentsControl` have the `GUIstart`
+    method and can be started by the user at execution time. To do this, use the
+    Menu method :py:func:`~artview.components.Menu.addComponentMenuItem`. For
     instance
 
     .. code-block:: python
@@ -297,19 +316,19 @@ Graphical Tools
         # start Control
         menu.addComponentMenuItem(artview.components.RadarDisplay)
 
-    Now you may found Display at the components sub-menu and start a new one
+    Now you find Display in the components sub-menu and can start a new one
     there.
 
 Plug-ins
 --------
 
-    Plug-ins are define as user specific components that don't interfere in
-    the over all working of ARTview, they are all found in the :artview:`artview/plugins`
+    Plug-ins are defined as user specific components that don't interfere in
+    the over all working of ARTview. They are found in the :artview:`artview/plugins`
     folder and accessed in :py:mod:`artview.plugins`. For specific
-    information on what each plug-in does please see the reference-manual, I
-    just want to say that by default we ask that all plug-ins have the
-    `GUIstart` method, therefore to access them at execution time add the
-    following at your script
+    information on what each plug-in does please see the reference-manual.
+    By default we ask that all plug-ins have the
+    `GUIstart` method. Therefore to access them at execution time add the
+    following at your script:
 
     .. code-block:: python
 
@@ -326,10 +345,16 @@ Official Scripts
 ----------------
 
     ARTview has a :artview:`artview/scripts` folder where some "official" scripts are
-    found, including the standard one that is executed with the
-    ``python -m artview`` command. We don't particularly recommend putting your
-    script there as some details on how that folder work may change with time.
-    However as for now if you want to put it there you should do two things:
+    found, including the standard startup that is executed with the
+    ``artview`` command. It's not particularly recommended to put your
+    script there as some details on how that folder works may change with time. 
+    If you'd like to see your script included in the future, please submit an 
+    `Issue <https://github.com/nguy/artview/issues>`_
+    at the code repository or introduce a 
+    `pull request <https://help.github.com/articles/using-pull-requests/>`_
+    of your modified code.
+
+    However, if you want to put your script there you should do two things:
 
     * Put your script inside a run function
       ``def run(DirIn='./', filename=None, field=None):``
@@ -337,5 +362,5 @@ Official Scripts
     * Don't import artview, but its parts relatively, that is:
       ``from .. import core, components, plugins``
 
-    Doing this you may found your script according to its file name in
+    Doing this you may find your script according to its file name in
     :py:mod:`artview.scripts`

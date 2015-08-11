@@ -34,8 +34,8 @@ artview.components.GridDisplay
          GridDisplay.guiStart
          GridDisplay.keyPressEvent
          GridDisplay.setUILayout
-         GridDisplay.toolCustomCmd
          GridDisplay.toolDefaultCmd
+         GridDisplay.toolResetCmd
          GridDisplay.toolSelectRegionCmd
          GridDisplay.toolValueClickCmd
          GridDisplay.toolZoomPanCmd

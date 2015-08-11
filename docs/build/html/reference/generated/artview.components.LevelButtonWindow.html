@@ -63,14 +63,14 @@
 <h1>artview.components.LevelButtonWindow<a class="headerlink" href="#artview-components-levelbuttonwindow" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="artview.components.LevelButtonWindow">
-<em class="property">class </em><tt class="descclassname">artview.components.</tt><tt class="descname">LevelButtonWindow</tt><big>(</big><em>Vlevel</em>, <em>plot_type</em>, <em>Vcontainer=None</em>, <em>name='LevelButtons'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/level.py#L14"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.LevelButtonWindow" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">artview.components.</tt><tt class="descname">LevelButtonWindow</tt><big>(</big><em>Vlevel</em>, <em>plot_type</em>, <em>Vcontainer=None</em>, <em>controlType='radio'</em>, <em>name='LevelButtons'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/level.py#L14"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.LevelButtonWindow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><tt class="xref py py-class docutils literal"><span class="pre">artview.core.core.Component</span></tt></a></p>
 <p>Class to display the Window with Level radio buttons.
 The level can represent either tilts in a native radar file
 or some height level in a gridded data file.</p>
 <dl class="method">
 <dt id="artview.components.LevelButtonWindow.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>Vlevel</em>, <em>plot_type</em>, <em>Vcontainer=None</em>, <em>name='LevelButtons'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/level.py#L34"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.LevelButtonWindow.__init__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__init__</tt><big>(</big><em>Vlevel</em>, <em>plot_type</em>, <em>Vcontainer=None</em>, <em>controlType='radio'</em>, <em>name='LevelButtons'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/level.py#L34"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.LevelButtonWindow.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize the class to create the Level Selection interface.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -87,13 +87,16 @@ or &#8220;gridX&#8221;. If starting with &#8220;radar&#8221; Vlevel will be pass
 otherwise to VlevelZ, VlevelY or VlevelX respectively. This can&#8217;t
 be changed afterwards.</p>
 </div></blockquote>
-<p><strong>Vcontainer: :py:class:`~artview.core.core.Variable` instance</strong> :</p>
+<p><strong>Vcontainer</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
 <blockquote>
 <div><p>Radar/Grid signal variable. None will create empty variable.
-Will be passed to Vradar or Vgrid according with plot_type.
-For correct behavior one and just one of those should be provided.</p>
+Will be passed to Vradar or Vgrid according with plot_type.</p>
 </div></blockquote>
 <p><strong>[Optional]</strong> :</p>
+<p><strong>controlType</strong> : &#8220;radio&#8221; or &#8220;slider&#8221;</p>
+<blockquote>
+<div><p>Type of control used, radio button or slider bar.</p>
+</div></blockquote>
 <p><strong>name</strong> : string</p>
 <blockquote>
 <div><p>Level Radiobutton window name.</p>
@@ -125,20 +128,26 @@ change value back to variable.</p>
 <tr class="row-even"><td><a class="reference internal" href="artview.components.LevelButtonWindow.LevelSelectCmd.html#artview.components.LevelButtonWindow.LevelSelectCmd" title="artview.components.LevelButtonWindow.LevelSelectCmd"><tt class="xref py py-obj docutils literal"><span class="pre">LevelButtonWindow.LevelSelectCmd</span></tt></a>(nlevel)</td>
 <td>Captures a selection and update level variable.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="artview.components.LevelButtonWindow.NewGrid.html#artview.components.LevelButtonWindow.NewGrid" title="artview.components.LevelButtonWindow.NewGrid"><tt class="xref py py-obj docutils literal"><span class="pre">LevelButtonWindow.NewGrid</span></tt></a>(variable,&nbsp;value,&nbsp;...)</td>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.LevelButtonWindow.LevelSelectCmdSlider.html#artview.components.LevelButtonWindow.LevelSelectCmdSlider" title="artview.components.LevelButtonWindow.LevelSelectCmdSlider"><tt class="xref py py-obj docutils literal"><span class="pre">LevelButtonWindow.LevelSelectCmdSlider</span></tt></a>()</td>
+<td>Captures a selection and update level variable.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.LevelButtonWindow.NewGrid.html#artview.components.LevelButtonWindow.NewGrid" title="artview.components.LevelButtonWindow.NewGrid"><tt class="xref py py-obj docutils literal"><span class="pre">LevelButtonWindow.NewGrid</span></tt></a>(variable,&nbsp;value,&nbsp;...)</td>
 <td>Slot for &#8216;ValueChanged&#8217; signal of</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="artview.components.LevelButtonWindow.NewLevel.html#artview.components.LevelButtonWindow.NewLevel" title="artview.components.LevelButtonWindow.NewLevel"><tt class="xref py py-obj docutils literal"><span class="pre">LevelButtonWindow.NewLevel</span></tt></a>(variable,&nbsp;value,&nbsp;...)</td>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.LevelButtonWindow.NewLevel.html#artview.components.LevelButtonWindow.NewLevel" title="artview.components.LevelButtonWindow.NewLevel"><tt class="xref py py-obj docutils literal"><span class="pre">LevelButtonWindow.NewLevel</span></tt></a>(variable,&nbsp;value,&nbsp;...)</td>
 <td>Slot for &#8216;ValueChanged&#8217; signal of</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="artview.components.LevelButtonWindow.NewRadar.html#artview.components.LevelButtonWindow.NewRadar" title="artview.components.LevelButtonWindow.NewRadar"><tt class="xref py py-obj docutils literal"><span class="pre">LevelButtonWindow.NewRadar</span></tt></a>(variable,&nbsp;value,&nbsp;...)</td>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.LevelButtonWindow.NewRadar.html#artview.components.LevelButtonWindow.NewRadar" title="artview.components.LevelButtonWindow.NewRadar"><tt class="xref py py-obj docutils literal"><span class="pre">LevelButtonWindow.NewRadar</span></tt></a>(variable,&nbsp;value,&nbsp;...)</td>
 <td>Slot for &#8216;ValueChanged&#8217; signal of</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="artview.components.LevelButtonWindow.SetLevelRadioButtonsGrid.html#artview.components.LevelButtonWindow.SetLevelRadioButtonsGrid" title="artview.components.LevelButtonWindow.SetLevelRadioButtonsGrid"><tt class="xref py py-obj docutils literal"><span class="pre">LevelButtonWindow.SetLevelRadioButtonsGrid</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.LevelButtonWindow.SetLevelRadioButtonsGrid.html#artview.components.LevelButtonWindow.SetLevelRadioButtonsGrid" title="artview.components.LevelButtonWindow.SetLevelRadioButtonsGrid"><tt class="xref py py-obj docutils literal"><span class="pre">LevelButtonWindow.SetLevelRadioButtonsGrid</span></tt></a>()</td>
 <td>Set a level selection using radio buttons.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="artview.components.LevelButtonWindow.SetLevelRadioButtonsRadar.html#artview.components.LevelButtonWindow.SetLevelRadioButtonsRadar" title="artview.components.LevelButtonWindow.SetLevelRadioButtonsRadar"><tt class="xref py py-obj docutils literal"><span class="pre">LevelButtonWindow.SetLevelRadioButtonsRadar</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.LevelButtonWindow.SetLevelRadioButtonsRadar.html#artview.components.LevelButtonWindow.SetLevelRadioButtonsRadar" title="artview.components.LevelButtonWindow.SetLevelRadioButtonsRadar"><tt class="xref py py-obj docutils literal"><span class="pre">LevelButtonWindow.SetLevelRadioButtonsRadar</span></tt></a>()</td>
 <td>Set a level selection using radio buttons.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.LevelButtonWindow.showValue.html#artview.components.LevelButtonWindow.showValue" title="artview.components.LevelButtonWindow.showValue"><tt class="xref py py-obj docutils literal"><span class="pre">LevelButtonWindow.showValue</span></tt></a>(value)</td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -255,7 +264,7 @@ plot_type.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Aug 10, 2015.
+      Last updated on Aug 11, 2015.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
