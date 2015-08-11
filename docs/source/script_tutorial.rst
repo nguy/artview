@@ -134,9 +134,7 @@ Shared Variables
 
     So now we have the most simple script one would want.
 
-    :py:class:`~artview.components.Menu` opens a file and
-
-    :py:class:`~artview.components.RadarDisplay` plots it. 
+    :py:class:`~artview.components.Menu` opens a file and :py:class:`~artview.components.RadarDisplay` plots it. 
 
     But ARTview is much more powerful. 
     Suppose you want to compare two fields of the same radar
@@ -252,13 +250,13 @@ Graphical Tools
     There is the possibility that you don't know the kind of sharing that you want.
     AND you don't want to keep changing your script every time. There is a tool 
     that allows the user to modify the sharing behavior of Components, 
-    that is to connect/disconnect variables between components (e.g. Displays). 
-    This is :py:class:`~artview.components.ComponentsControl`. To get it running
+    that is to link/unlink variables between components (e.g. Displays). 
+    This is :py:class:`~artview.components.LinkPlugins`. To get it running
     just add the following line to your script:
 
     .. code-block:: python
 
-        control = artview.components.ComponentsControl()
+        control = artview.components.LinkPlugins()
 
     Now we got 4 independent windows floating around our Desktop.
     To avoid this :py:class:`~artview.components.Menu` has the
@@ -273,14 +271,10 @@ Graphical Tools
         menu = artview.components.Menu(DirIn="/", name="Menu")
 
         # start Control
-        control = artview.components.ComponentsControl()
+        control = artview.components.LinkPlugins()
 
         # put control inside Menu
         menu.addLayoutWidget(control)
-
-    The only problem here is that you lose the close button for `control`. To
-    overcome this deficiency, the menu has a layout sub-menu so the user can close
-    components inside the main menu.
 
     Ok, maybe you don't want to put components inside menu. Your problem is
     that you would like to close all windows at once and not each individually.
@@ -296,16 +290,16 @@ Graphical Tools
         menu = artview.components.Menu(DirIn="/", name="Menu")
 
         # start Control
-        control = artview.components.ComponentsControl(parent=menu)
+        control = artview.components.LinkPlugins(parent=menu)
 
     Yay, we know how to close windows! What about opening new ones?
 
     This is a bit more complicated. Some components can just be started as 
     a priori in the script. But some components like 
     :py:class:`~artview.components.RadarDisplay` and 
-    :py:class:`~artview.components.ComponentsControl` have the `GUIstart`
+    :py:class:`~artview.components.LinkPlugins` have the `GUIstart`
     method and can be started by the user at execution time. To do this, use the
-    Menu method :py:func:`~artview.components.Menu.addComponentMenuItem`. For
+    Menu method :py:func:`~artview.components.Menu.addComponent`. For
     instance
 
     .. code-block:: python
@@ -314,7 +308,7 @@ Graphical Tools
         menu = artview.components.Menu(DirIn="/", name="Menu")
 
         # start Control
-        menu.addComponentMenuItem(artview.components.RadarDisplay)
+        menu.addComponent(artview.components.RadarDisplay)
 
     Now you find Display in the components sub-menu and can start a new one
     there.

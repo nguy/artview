@@ -177,8 +177,7 @@ package we want to plot this files.</p>
 </pre></div>
 </div>
 <p>So now we have the most simple script one would want.</p>
-<p><a class="reference internal" href="reference/generated/artview.components.Menu.html#artview.components.Menu" title="artview.components.Menu"><tt class="xref py py-class docutils literal"><span class="pre">Menu</span></tt></a> opens a file and</p>
-<p><a class="reference internal" href="reference/generated/artview.components.RadarDisplay.html#artview.components.RadarDisplay" title="artview.components.RadarDisplay"><tt class="xref py py-class docutils literal"><span class="pre">RadarDisplay</span></tt></a> plots it.</p>
+<p><a class="reference internal" href="reference/generated/artview.components.Menu.html#artview.components.Menu" title="artview.components.Menu"><tt class="xref py py-class docutils literal"><span class="pre">Menu</span></tt></a> opens a file and <a class="reference internal" href="reference/generated/artview.components.RadarDisplay.html#artview.components.RadarDisplay" title="artview.components.RadarDisplay"><tt class="xref py py-class docutils literal"><span class="pre">RadarDisplay</span></tt></a> plots it.</p>
 <p>But ARTview is much more powerful.
 Suppose you want to compare two fields of the same radar
 side-by-side. Simply add another display:</p>
@@ -287,10 +286,10 @@ other potential sharing configurations.</p>
 <p>There is the possibility that you don&#8217;t know the kind of sharing that you want.
 AND you don&#8217;t want to keep changing your script every time. There is a tool
 that allows the user to modify the sharing behavior of Components,
-that is to connect/disconnect variables between components (e.g. Displays).
-This is <tt class="xref py py-class docutils literal"><span class="pre">ComponentsControl</span></tt>. To get it running
+that is to link/unlink variables between components (e.g. Displays).
+This is <a class="reference internal" href="reference/generated/artview.components.LinkPlugins.html#artview.components.LinkPlugins" title="artview.components.LinkPlugins"><tt class="xref py py-class docutils literal"><span class="pre">LinkPlugins</span></tt></a>. To get it running
 just add the following line to your script:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">control</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">ComponentsControl</span><span class="p">()</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">control</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">LinkPlugins</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Now we got 4 independent windows floating around our Desktop.
@@ -302,15 +301,12 @@ which offers the ability to put additional Components inside the Menu window.</p
 <span class="n">menu</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="n">DirIn</span><span class="o">=</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;Menu&quot;</span><span class="p">)</span>
 
 <span class="c"># start Control</span>
-<span class="n">control</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">ComponentsControl</span><span class="p">()</span>
+<span class="n">control</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">LinkPlugins</span><span class="p">()</span>
 
 <span class="c"># put control inside Menu</span>
 <span class="n">menu</span><span class="o">.</span><span class="n">addLayoutWidget</span><span class="p">(</span><span class="n">control</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The only problem here is that you lose the close button for <cite>control</cite>. To
-overcome this deficiency, the menu has a layout sub-menu so the user can close
-components inside the main menu.</p>
 <p>Ok, maybe you don&#8217;t want to put components inside menu. Your problem is
 that you would like to close all windows at once and not each individually.
 For this we leverage the fact that PyQt closes all children instances (windows)
@@ -321,22 +317,22 @@ for all other components (components always accept a parent key)</p>
 <span class="n">menu</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="n">DirIn</span><span class="o">=</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;Menu&quot;</span><span class="p">)</span>
 
 <span class="c"># start Control</span>
-<span class="n">control</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">ComponentsControl</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">menu</span><span class="p">)</span>
+<span class="n">control</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">LinkPlugins</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">menu</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Yay, we know how to close windows! What about opening new ones?</p>
 <p>This is a bit more complicated. Some components can just be started as
 a priori in the script. But some components like
 <a class="reference internal" href="reference/generated/artview.components.RadarDisplay.html#artview.components.RadarDisplay" title="artview.components.RadarDisplay"><tt class="xref py py-class docutils literal"><span class="pre">RadarDisplay</span></tt></a> and
-<tt class="xref py py-class docutils literal"><span class="pre">ComponentsControl</span></tt> have the <cite>GUIstart</cite>
+<a class="reference internal" href="reference/generated/artview.components.LinkPlugins.html#artview.components.LinkPlugins" title="artview.components.LinkPlugins"><tt class="xref py py-class docutils literal"><span class="pre">LinkPlugins</span></tt></a> have the <cite>GUIstart</cite>
 method and can be started by the user at execution time. To do this, use the
-Menu method <tt class="xref py py-func docutils literal"><span class="pre">addComponentMenuItem</span></tt>. For
+Menu method <a class="reference internal" href="reference/generated/artview.components.Menu.addComponent.html#artview.components.Menu.addComponent" title="artview.components.Menu.addComponent"><tt class="xref py py-func docutils literal"><span class="pre">addComponent</span></tt></a>. For
 instance</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="c"># start Menu</span>
 <span class="n">menu</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="n">DirIn</span><span class="o">=</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;Menu&quot;</span><span class="p">)</span>
 
 <span class="c"># start Control</span>
-<span class="n">menu</span><span class="o">.</span><span class="n">addComponentMenuItem</span><span class="p">(</span><span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">RadarDisplay</span><span class="p">)</span>
+<span class="n">menu</span><span class="o">.</span><span class="n">addComponent</span><span class="p">(</span><span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">RadarDisplay</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Now you find Display in the components sub-menu and can start a new one

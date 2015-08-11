@@ -117,6 +117,7 @@ Shared Variables
 
     In defining a shared variable you should have three things clear in
     your mind: 
+
     1. the name (starting with capital V)
     2. the function it will perform
     3. the type of value it will hold
