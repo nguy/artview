@@ -257,7 +257,7 @@ class SelectRegion(Component):
             if not path.isEmpty():
                 write_points_csv(path, points)
         else:
-            common.ShowWarning("Points is None, the is nothigh to save!")
+            common.ShowWarning("Points is None, no data to save!")
 
     def openTable(self):
         '''Open a saved table of SelectRegion points from a CSV file.'''
