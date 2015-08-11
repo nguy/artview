@@ -5,6 +5,7 @@ Driver function that creates ARTView display.
 """
 import os
 
+
 def run(DirIn=None, filename=None, field=None):
     """
     standard artview execution
@@ -39,16 +40,16 @@ def run(DirIn=None, filename=None, field=None):
         import pyart
         field = pyart.config.get_field_name('reflectivity')
         field = _parse_field(Vradar.value, field)
-    if DirIn is None: # avoid reference to path while building documentation
+    if DirIn is None:  # avoid reference to path while building documentation
         DirIn = os.getcwd()
 
     # start Displays
     Vtilt = Variable(0)
     Vtilt2 = Variable(0)
     plot1 = RadarDisplay(Vradar, Variable(field), Vtilt, name="Display1",
-                    parent=MainMenu)
+                         parent=MainMenu)
     plot2 = RadarDisplay(Vradar, Variable(field), Vtilt2, name="Display2",
-                    parent=MainMenu)
+                         parent=MainMenu)
 
     # start ComponentsControl
     control = LinkPlugins()
