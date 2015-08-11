@@ -574,13 +574,13 @@ class GridDisplay(Component):
         Returns
         -------
         points: Points
-            Points object containing all bins of the current radar
-            and tilt inside path. Axes : 'x_disp', 'y_disp', 'x_disp',
+            Points object containing all bins of the current grid
+            and level inside path. Axes : 'x_disp', 'y_disp', 'x_disp',
             'x_index', 'y_index', 'z_index'. Fields: just current field
 
         Notes
         -----
-            If Vradar.value is None, returns None
+            If Vgrid.value is None, returns None
         '''
         from .tools import interior_grid
         grid = self.Vgrid.value
@@ -740,14 +740,14 @@ class GridDisplay(Component):
         if self.Vfield.value not in self.Vgrid.value.fields.keys():
             self.canvas.draw()
             self.statusbar.setStyleSheet("QStatusBar{padding-left:8px;" +
-                                      "background:rgba(255,0,0,255);" +
-                                      "color:black;font-weight:bold;}")
+                                         "background:rgba(255,0,0,255);" +
+                                         "color:black;font-weight:bold;}")
             self.statusbar.showMessage("Field not Found in Radar", msecs= 5000)
             return
         else:
             self.statusbar.setStyleSheet("QStatusBar{padding-left:8px;" +
-                                      "background:rgba(0,0,0,0);" +
-                                      "color:black;font-weight:bold;}")
+                                         "background:rgba(0,0,0,0);" +
+                                         "color:black;font-weight:bold;}")
             self.statusbar.clearMessage()
 
         # Reset to default title if user entered nothing w/ Title button
@@ -813,7 +813,6 @@ class GridDisplay(Component):
         elif self.plot_type == "gridX":
             print("Plotting %s field, X level %d in %s" % (
                 self.Vfield.value, self.VlevelX.value+1, self.name))
-
 
         self.canvas.draw()
 

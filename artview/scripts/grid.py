@@ -67,5 +67,22 @@ def run(DirIn=os.getcwd(), filename=None, field=None):
         import warnings
         warnings.warn("Loading Plugins Fail")
 
+    # Replace in Screen
+    desktop_rect = QtGui.QDesktopWidget().screenGeometry()
+
+    height = desktop_rect.height()
+    width = desktop_rect.width()
+
+    menu_width = 300
+    menu_height = 180
+
+    MainMenu.setGeometry(0, 0, menu_width, menu_height)
+
+    plot_size = min(height-60-menu_height, width/2) - 50
+    plot1.setGeometry(0, height-plot_size, plot_size, plot_size)
+    plot2.setGeometry(width/2, 40, plot_size, (height-40)/2)
+    plot3.setGeometry(width/2, (height-40)/2+40, plot_size, (height-40)/2)
+
     # start program
     app.exec_()
+
