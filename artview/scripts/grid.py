@@ -1,5 +1,5 @@
 """
-standard.py
+grid.py
 
 Driver function that creates ARTView display.
 """

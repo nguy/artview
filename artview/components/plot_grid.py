@@ -376,13 +376,11 @@ class GridDisplay(Component):
         toolZoomPan = toolmenu.addAction("Zoom/Pan")
         toolValueClick = toolmenu.addAction("Click for Value")
         toolSelectRegion = toolmenu.addAction("Select a Region of Interest")
-        toolCustom = toolmenu.addAction("Use Custom Tool")
         toolReset = toolmenu.addAction("Reset Tools")
         toolDefault = toolmenu.addAction("Reset File Defaults")
         toolZoomPan.triggered[()].connect(self.toolZoomPanCmd)
         toolValueClick.triggered[()].connect(self.toolValueClickCmd)
         toolSelectRegion.triggered[()].connect(self.toolSelectRegionCmd)
-        toolCustom.triggered[()].connect(self.toolCustomCmd)
         toolReset.triggered[()].connect(self.toolResetCmd)
         toolDefault.triggered[()].connect(self.toolDefaultCmd)
         self.toolsButton.setMenu(toolmenu)
@@ -546,11 +544,6 @@ class GridDisplay(Component):
         '''Creates and connects to Region of Interest instance.'''
         from .select_region import SelectRegion
         self.tools['select_region'] = SelectRegion(self, name=self.name + " SelectRegion", parent=self)
-
-    def toolCustomCmd(self):
-        '''Allow user to activate self-defined tool.'''
-        from . import tools
-        tools.custom_tool(self.tools)
 
     def toolResetCmd(self):
         '''Reset tools via disconnect.'''
