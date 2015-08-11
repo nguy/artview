@@ -100,7 +100,7 @@ If you find a file with a field that does not load, let us know and we can add i
 to the list.
 
 ## Dependencies
-[Py-Art](https://github.com/ARM-DOE/pyart) >= 1.4
+[Py-Art](https://github.com/ARM-DOE/pyart) >= 1.5
 
 [matplotlib](http://matplotlib.org) >= 1.1.0
 

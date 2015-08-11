@@ -275,7 +275,7 @@ class SelectRegion(Component):
 
         # Redraw to remove the lines and reinitialize variable
         self.fig.canvas.draw()
-        
+
         # Renew variables, etc.
         self.Vpoints = Variable(None)
         self._initialize_SelectRegion_vars()

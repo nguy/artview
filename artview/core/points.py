@@ -32,6 +32,7 @@ class Points:
         * x_index, y_index, z_index: indexes in a Grid object, shape: (npoints,).
         * ray_index, range_index: indexes in a Radar object, shape: (npoints,).
     * metadata: dictionary of global attributes
+
     Py-ART Variable
     ---------------
     A Py-ART variable is a dictionary or dictionary-like instance made to

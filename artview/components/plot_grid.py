@@ -18,10 +18,11 @@ from matplotlib.colorbar import ColorbarBase as mlabColorbarBase
 from matplotlib.pyplot import cm
 
 from ..core import Variable, Component, common, VariableChoose
+from ..core.points import Points
 
 # Save image file type and DPI (resolution)
 IMAGE_EXT = 'png'
-DPI = 100
+DPI = 200
 # ========================================================================
 
 
@@ -91,6 +92,7 @@ class GridDisplay(Component):
         '''
         super(GridDisplay, self).__init__(name=name, parent=parent)
         self.setFocusPolicy(QtCore.Qt.ClickFocus)
+        self.basemap = None
         # Set up signal, so that DISPLAY can react to
         # external (or internal) changes in grid, field,
         # lims and level (expected to be Core.Variable instances)
@@ -130,8 +132,7 @@ class GridDisplay(Component):
         self.connectAllVariables()
 
         # Set plot title and colorbar units to defaults
-        # TODO convert title to grid
-        #self.title = None
+        self.title = None
         self.units = None
 
         # set default latlon lines
@@ -160,7 +161,7 @@ class GridDisplay(Component):
 
         # Initialize grid variable
         self.Newgrid(None, None, True)
-
+        self._update_fig_ax()
         self.show()
 
     def keyPressEvent(self, event):
@@ -209,6 +210,9 @@ class GridDisplay(Component):
         self._add_fieldBoxUI()
         # Create the Tools controls
         self._add_toolsBoxUI()
+        # Create the Informational label at top
+        self._add_infolabel()
+
 
     def setUILayout(self):
         '''Setup the button/display UI layout.'''
@@ -216,6 +220,7 @@ class GridDisplay(Component):
         self.layout.addWidget(self.fieldBox, 0, 1)
         self.layout.addWidget(self.dispButton, 0, 2)
         self.layout.addWidget(self.toolsButton, 0, 3)
+        self.layout.addWidget(self.infolabel, 0, 4)
 
     #############################
     # Functionality methods #
@@ -227,9 +232,7 @@ class GridDisplay(Component):
         limits, cmap, change = limits_dialog(self.Vlims.value, self.Vcmap.value, self.name)
         if change == 1:
             self.Vcmap.change(cmap, False)
-            print(limits)
             self.Vlims.change(limits)
-            print(self.Vlims.value)
 
     def _fillLevelBox(self):
         '''Fill in the Level Window Box with current levels.'''
@@ -287,9 +290,16 @@ class GridDisplay(Component):
     def _open_levelbuttonwindow(self):
         '''Open a LevelButtonWindow instance.'''
         from .level import LevelButtonWindow
-        self.levelbuttonwindow = LevelButtonWindow(
-            self.Vlevel, self.plot_type, Vcontainer=self.Vgrid,
-            name=self.name+" Level Selection", parent=self.parent)
+        if self.plot_type == "gridZ":
+            self.levelbuttonwindow = LevelButtonWindow(
+                self.Vlevel, self.plot_type, Vcontainer=self.Vgrid,
+                controlType="radio", name=self.name+" Level Selection",
+                parent=self.parent)
+        else:
+            self.levelbuttonwindow = LevelButtonWindow(
+                self.Vlevel, self.plot_type, Vcontainer=self.Vgrid,
+                controlType="slider", name=self.name+" Level Selection",
+                parent=self.parent)
 
     def _open_fieldbuttonwindow(self):
         '''Open a FieldButtonWindow instance.'''
@@ -315,27 +325,26 @@ class GridDisplay(Component):
         dispmenu = QtGui.QMenu(self)
         dispLimits = dispmenu.addAction("Adjust Display Limits")
         dispLimits.setToolTip("Set data, X, and Y range limits")
-        # TODO convert me to grid
-        #dispTitle = dispmenu.addAction("Change Title")
-        #dispTitle.setToolTip("Change plot title")
+        dispTitle = dispmenu.addAction("Change Title")
+        dispTitle.setToolTip("Change plot title")
         dispUnit = dispmenu.addAction("Change Units")
         dispUnit.setToolTip("Change units string")
         self.dispCmap = dispmenu.addAction("Change Colormap")
         self.dispCmapmenu = QtGui.QMenu("Change Cmap")
         self.dispCmapmenu.setFocusPolicy(QtCore.Qt.NoFocus)
-        #dispQuickSave = dispmenu.addAction("Quick Save Image")
-        #dispQuickSave.setShortcut("Ctrl+D")
-        #dispQuickSave.setStatusTip(
-        #    "Save Image to local directory with default name")
-        #dispSaveFile = dispmenu.addAction("Save Image")
-        #dispSaveFile.setShortcut("Ctrl+S")
-        #dispSaveFile.setStatusTip("Save Image using dialog")
+        dispQuickSave = dispmenu.addAction("Quick Save Image")
+        dispQuickSave.setShortcut("Ctrl+D")
+        dispQuickSave.setToolTip(
+            "Save Image to local directory with default name")
+        dispSaveFile = dispmenu.addAction("Save Image")
+        dispSaveFile.setShortcut("Ctrl+S")
+        dispSaveFile.setStatusTip("Save Image using dialog")
 
         dispLimits.triggered[()].connect(self._open_LimsDialog)
-        #dispTitle.triggered[()].connect(self._title_input)
+        dispTitle.triggered[()].connect(self._title_input)
         dispUnit.triggered[()].connect(self._units_input)
-        #dispQuickSave.triggered[()].connect(self._quick_savefile)
-        #dispSaveFile.triggered[()].connect(self._savefile)
+        dispQuickSave.triggered[()].connect(self._quick_savefile)
+        dispSaveFile.triggered[()].connect(self._savefile)
 
         self._add_cmaps_to_button()
         self.dispButton.setMenu(dispmenu)
@@ -344,14 +353,18 @@ class GridDisplay(Component):
         '''Create the Level Selection ComboBox.'''
         self.levelBox = QtGui.QComboBox()
         self.levelBox.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.levelBox.setToolTip("Choose level")
+        self.levelBox.setToolTip("Select level slice to display.\n"
+                                "'Level Window' will launch popup.\n"
+                                "Up/Down arrow keys Increase/Decrease level.")
+
         self.levelBox.activated[str].connect(self._levelAction)
 
     def _add_fieldBoxUI(self):
         '''Create the Field Selection ComboBox.'''
         self.fieldBox = QtGui.QComboBox()
         self.fieldBox.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.fieldBox.setToolTip("Choose variable/field")
+        self.fieldBox.setToolTip("Select variable/field in data file.\n"
+                                 "'Field Window' will launch popup.\n")
         self.fieldBox.activated[str].connect(self._fieldAction)
 
     def _add_toolsBoxUI(self):
@@ -363,14 +376,31 @@ class GridDisplay(Component):
         toolZoomPan = toolmenu.addAction("Zoom/Pan")
         toolValueClick = toolmenu.addAction("Click for Value")
         toolSelectRegion = toolmenu.addAction("Select a Region of Interest")
-        toolCustom = toolmenu.addAction("Use Custom Tool")
+        toolReset = toolmenu.addAction("Reset Tools")
         toolDefault = toolmenu.addAction("Reset File Defaults")
         toolZoomPan.triggered[()].connect(self.toolZoomPanCmd)
         toolValueClick.triggered[()].connect(self.toolValueClickCmd)
         toolSelectRegion.triggered[()].connect(self.toolSelectRegionCmd)
-        toolCustom.triggered[()].connect(self.toolCustomCmd)
+        toolReset.triggered[()].connect(self.toolResetCmd)
         toolDefault.triggered[()].connect(self.toolDefaultCmd)
         self.toolsButton.setMenu(toolmenu)
+
+    def _add_infolabel(self):
+        '''Create an information label about the display'''
+        self.infolabel = QtGui.QLabel("Grid: \n"
+                                      "Field: \n"
+                                      "Level: ", self)
+        self.infolabel.setStyleSheet('color: red; font: italic 10px')
+        self.infolabel.setToolTip("Filename not loaded")
+
+    def _update_infolabel(self):
+        self.infolabel.setText("Grid: %s\n"
+                               "Field: %s\n"
+                               "Level: %d" % (self.Vgrid.value.metadata['instrument_name'],
+                                            self.Vfield.value,
+                                            self.Vlevel.value+1))
+        if hasattr(self.Vgrid.value, 'filename'):
+            self.infolabel.setToolTip(self.Vgrid.value.filename)
 
     ########################
     # Selectionion methods #
@@ -408,6 +438,7 @@ class GridDisplay(Component):
         self.title = None
         if strong:
             self._update_plot()
+            self._update_infolabel()
 
     def NewField(self, variable, value, strong):
         '''
@@ -427,6 +458,7 @@ class GridDisplay(Component):
         self.fieldBox.setCurrentIndex(idx)
         if strong and self.Vgrid.value is not None:
             self._update_plot()
+            self._update_infolabel()
 
     def NewLims(self, variable, value, strong):
         '''
@@ -467,6 +499,7 @@ class GridDisplay(Component):
         self.levelBox.setCurrentIndex(value+1)
         if strong and self.Vgrid.value is not None:
             self._update_plot()
+            self._update_infolabel()
 
     def LevelSelectCmd(self, nlevel):
         '''
@@ -512,18 +545,16 @@ class GridDisplay(Component):
         from .select_region import SelectRegion
         self.tools['select_region'] = SelectRegion(self, name=self.name + " SelectRegion", parent=self)
 
-    def toolCustomCmd(self):
-        '''Allow user to activate self-defined tool.'''
+    def toolResetCmd(self):
+        '''Reset tools via disconnect.'''
         from . import tools
-        tools.custom_tool(self.tools)
+        self.tools = tools.reset_tools(self.tools)
 
     def toolDefaultCmd(self):
         '''Restore the Display defaults.'''
         from . import tools
-        self.tools, limits, cmap = tools.restore_default_display(
-            self.tools, self.Vfield.value, self.scan_type)
-        self.Vcmap.change(cmap)
-        self.Vlims.change(limits)
+        self._set_default_limits()
+        self._set_default_cmap()
 
     def getPathInteriorValues(self, path):
         '''
@@ -535,27 +566,83 @@ class GridDisplay(Component):
 
         Returns
         -------
-        x, y, azi, range, value, ray_idx, range_inx: ndarray
-            Truplet of 1arrays containing x,y coordinate, azimuth,
-            range, current field value, ray index and range index
-            for all bin of the current grid and tilt inside path.
+        points: Points
+            Points object containing all bins of the current grid
+            and level inside path. Axes : 'x_disp', 'y_disp', 'x_disp',
+            'x_index', 'y_index', 'z_index'. Fields: just current field
 
         Notes
         -----
             If Vgrid.value is None, returns None
         '''
-        # TODO convert to grid
         from .tools import interior_grid
         grid = self.Vgrid.value
         if grid is None:
-            return (np.array([]),)*7
+            return None
 
-        xy, idx = interior_grid(path, grid, self.Vlevel.value, self.plot_type)
-        aux = (xy[:, 0], xy[:, 1], grid.azimuth['data'][idx[:, 0]],
-               grid.range['data'][idx[:, 1]] / 1000.,
-               grid.fields[self.Vfield.value]['data'][idx[:, 0], idx[:, 1]],
-               idx[:, 0], idx[:, 1])
-        return aux
+        xy, idx = interior_grid(path, grid, self.basemap, self.Vlevel.value,
+                                self.plot_type)
+
+        if self.plot_type == "gridZ":
+            x = xy[:, 0]
+            y = xy[:, 1]
+            z = np.ones_like(xy[:, 0]) * self.levels[self.VlevelZ.value]
+            x_idx = idx[:, 0]
+            y_idx = idx[:, 1]
+            z_idx = np.ones_like(idx[:, 0]) * self.VlevelZ.value
+        elif self.plot_type == "gridY":
+            x = xy[:, 0] * 1000.
+            z = xy[:, 1] * 1000.
+            y = np.ones_like(xy[:, 0]) * self.levels[self.VlevelY.value]
+            x_idx = idx[:, 0]
+            z_idx = idx[:, 1]
+            y_idx = np.ones_like(idx[:, 0]) * self.VlevelY.value
+        elif self.plot_type == "gridX":
+            z = xy[:, 0] * 1000.
+            y = xy[:, 1] * 1000.
+            x = np.ones_like(xy[:, 0]) * self.levels[self.VlevelX.value]
+            z_idx = idx[:, 0]
+            y_idx = idx[:, 1]
+            x_idx = np.ones_like(idx[:, 0]) * self.VlevelX.value
+
+        xaxis = {'data':  x,
+                 'long_name': 'X-coordinate in Cartesian system',
+                 'axis': 'X',
+                 'units': 'm'}
+
+        yaxis = {'data':  y,
+                 'long_name': 'Y-coordinate in Cartesian system',
+                 'axis': 'Y',
+                 'units': 'm'}
+
+        zaxis = {'data':  z,
+                 'long_name': 'Z-coordinate in Cartesian system',
+                 'axis': 'Z',
+                 'units': 'm'}
+
+        field = grid.fields[self.Vfield.value].copy()
+        field['data'] = grid.fields[self.Vfield.value]['data'][
+            z_idx, y_idx, x_idx]
+
+        x_idx = {'data': x_idx,
+                   'long_name': 'index in nx dimension'}
+        y_idx = {'data': y_idx,
+                   'long_name': 'index in ny dimension'}
+        z_idx = {'data': z_idx,
+                   'long_name': 'index in nz dimension'}
+
+        axes = {'x_disp':xaxis,
+                'y_disp':yaxis,
+                'z_disp':zaxis,
+                'x_index':x_idx,
+                'y_index':y_idx,
+                'z_index':z_idx,}
+
+        fields = {self.Vfield.value: field}
+
+        points = Points(fields, axes, grid.metadata.copy(), xy.shape[0])
+
+        return points
 
     def getNearestPoints(self, xdata, ydata):
         '''
@@ -577,18 +664,26 @@ class GridDisplay(Component):
         '''
         from .tools import nearest_point_grid
         grid = self.Vgrid.value
+
+        # map center
+        lat0 = self.Vgrid.value.axes['lat']['data'][0]
+        lon0 = self.Vgrid.value.axes['lon']['data'][0]
+
         if grid is None:
             return (np.array([]),)*7
 
         if self.plot_type == "gridZ":
-            idx = nearest_point_grid(grid, self.levels[self.VlevelZ.value],
-                                     ydata, xdata)
+            idx = nearest_point_grid(
+                grid, self.basemap, self.levels[self.VlevelZ.value], ydata,
+                xdata)
         elif self.plot_type == "gridY":
-            idx = nearest_point_grid(grid, ydata,
-                                     self.levels[self.VlevelY.value], x_data)
+            idx = nearest_point_grid(
+                grid, self.basemap, ydata * 1000.,
+                self.levels[self.VlevelY.value], xdata * 1000.)
         elif self.plot_type == "gridX":
-            idx = nearest_point_grid(grid, ydata, x_data,
-                                     self.levels[self.VlevelX.value])
+            idx = nearest_point_grid(
+                grid, self.basemap, ydata * 1000., xdata * 1000.,
+                self.levels[self.VlevelX.value])
         aux = (grid.axes['x_disp']['data'][idx[:,2]],
                grid.axes['y_disp']['data'][idx[:,1]],
                grid.axes['z_disp']['data'][idx[:,0]],
@@ -617,9 +712,9 @@ class GridDisplay(Component):
         else:
             self.YSIZE = 8
         xwidth = 0.7
-        yheight = 0.7 * float(self.YSIZE) / float(self.XSIZE)
-        self.ax.set_position([0.2, 0.55-0.5*yheight, xwidth, yheight])
-        self.cax.set_position([0.2, 0.10, xwidth, 0.02])
+        yheight = 0.7
+        self.ax.set_position([0.15, 0.15, xwidth, yheight])
+        self.cax.set_position([0.15+xwidth, 0.15, 0.02, yheight])
         self._update_axes()
 
     def _set_figure_canvas(self):
@@ -630,7 +725,6 @@ class GridDisplay(Component):
 
     def _update_plot(self):
         '''Draw/Redraw the plot.'''
-        self._check_default_field()
 
         # Create the plot with PyArt GridMapDisplay
         self.ax.cla()  # Clear the plot axes
@@ -638,14 +732,22 @@ class GridDisplay(Component):
 
         if self.Vfield.value not in self.Vgrid.value.fields.keys():
             self.canvas.draw()
+            self.statusbar.setStyleSheet("QStatusBar{padding-left:8px;" +
+                                         "background:rgba(255,0,0,255);" +
+                                         "color:black;font-weight:bold;}")
+            self.statusbar.showMessage("Field not Found in Radar", msecs= 5000)
             return
+        else:
+            self.statusbar.setStyleSheet("QStatusBar{padding-left:8px;" +
+                                         "background:rgba(0,0,0,0);" +
+                                         "color:black;font-weight:bold;}")
+            self.statusbar.clearMessage()
 
         # Reset to default title if user entered nothing w/ Title button
-        # TODO convert title to grid
-        #if self.title == '':
-        #    title = None
-        #else:
-        #    title = self.title
+        if self.title == '':
+            title = None
+        else:
+            title = self.title
 
         limits = self.Vlims.value
         cmap = self.Vcmap.value
@@ -653,19 +755,25 @@ class GridDisplay(Component):
         self.display = pyart.graph.GridMapDisplay(self.Vgrid.value)
         # Create Plot
         if self.plot_type == "gridZ":
-            self.display.plot_basemap(self.lat_lines, self.lon_lines,
-                                      ax=self.ax)
+            self.display.plot_basemap(
+                self.lat_lines, self.lon_lines, ax=self.ax)
+            self.basemap = self.display.get_basemap()
             self.plot = self.display.plot_grid(
                     self.Vfield.value, self.VlevelZ.value, vmin=cmap['vmin'],
-                    vmax=cmap['vmax'],cmap=cmap['cmap'])
+                    vmax=cmap['vmax'],cmap=cmap['cmap'], colorbar_flag=False,
+                    title=title, ax=self.ax, fig=self.fig)
         elif self.plot_type == "gridY":
-             self.plot = self.display.plot_latitude_slice(
-                    self.Vfield.value, vmin=cmap['vmin'],
-                    vmax=cmap['vmax'],cmap=cmap['cmap'])
+            self.basemap = None
+            self.plot = self.display.plot_latitudinal_level(
+                    self.Vfield.value, self.VlevelY.value, vmin=cmap['vmin'],
+                    vmax=cmap['vmax'], cmap=cmap['cmap'], colorbar_flag=False,
+                    title=title, ax=self.ax, fig=self.fig)
         elif self.plot_type == "gridX":
-             self.plot = self.display.plot_longitude_slice(
-                    self.Vfield.value, vmin=cmap['vmin'],
-                    vmax=cmap['vmax'],cmap=cmap['cmap'])
+            self.basemap = None
+            self.plot = self.display.plot_longitudinal_level(
+                    self.Vfield.value, self.VlevelX.value, vmin=cmap['vmin'],
+                    vmax=cmap['vmax'], cmap=cmap['cmap'], colorbar_flag=False,
+                    title=title, ax=self.ax, fig=self.fig)
 
         limits = self.Vlims.value
         x = self.ax.get_xlim()
@@ -679,7 +787,7 @@ class GridDisplay(Component):
         norm = mlabNormalize(vmin=cmap['vmin'],
                              vmax=cmap['vmax'])
         self.cbar = mlabColorbarBase(self.cax, cmap=cmap['cmap'],
-                                     norm=norm, orientation='horizontal')
+                                     norm=norm, orientation='vertical')
         # colorbar - use specified units or default depending on
         # what has or has not been entered
         if self.units is None or self.units == '':
@@ -699,7 +807,6 @@ class GridDisplay(Component):
             print("Plotting %s field, X level %d in %s" % (
                 self.Vfield.value, self.VlevelX.value+1, self.name))
 
-
         self.canvas.draw()
 
     def _update_axes(self):
@@ -713,57 +820,61 @@ class GridDisplay(Component):
     # Check methods #
     #########################
 
-    def _check_default_field(self):
-        '''
-        Hack to perform a check on reflectivity to make it work with
-        #a larger number of files as there are many nomenclature is the
-        weather radar world.
-
-        This should only occur upon start up with a new file.
-        '''
-        if self.Vfield.value == pyart.config.get_field_name('reflectivity'):
-            if self.Vfield.value in self.fieldnames:
-                pass
-            elif 'CZ' in self.fieldnames:
-                self.Vfield.change('CZ', False)
-            elif 'DZ' in self.fieldnames:
-                self.Vfield.change('DZ', False)
-            elif 'dbz' in self.fieldnames:
-                self.Vfield.change('dbz', False)
-            elif 'DBZ' in self.fieldnames:
-                self.Vfield.change('DBZ', False)
-            elif 'dBZ' in self.fieldnames:
-                self.Vfield.change('dBZ', False)
-            elif 'Z' in self.fieldnames:
-                self.Vfield.change('Z', False)
-            elif 'DBZ_S' in self.fieldnames:
-                self.Vfield.change('DBZ_S', False)
-            elif 'reflectivity_horizontal'in self.fieldnames:
-                self.Vfield.change('reflectivity_horizontal', False)
-            elif 'DBZH' in self.fieldnames:
-                self.Vfield.change('DBZH', False)
-            else:
-                msg = "Could not find the field name.\n\
-                      You can add an additional name by modifying the\n\
-                      'check_default_field' function in plot.py\n\
-                      Please send a note to ARTView folks to add this name\n\
-                      Thanks!"
-                common.ShowWarning(msg)
-
     def _set_default_limits(self, strong=True):
         '''Set limits to pre-defined default.'''
-        # TODO convert me to grid
-        from .limits import _default_limits
-        limits, cmap = _default_limits(
-            self.Vfield.value, "PPI")
+        limits = self.Vlims.value
+        if limits is None:
+            limits = {}
+        if self.Vgrid.value is None:
+            limits['xmin'] = 0
+            limits['xmax'] = 1
+            limits['ymin'] = 0
+            limits['ymax'] = 1
+        elif self.plot_type == "gridZ":
+            if self.basemap is not None:
+                limits['xmin'] = self.basemap.llcrnrx
+                limits['xmax'] = self.basemap.urcrnrx
+                limits['ymin'] = self.basemap.llcrnry
+                limits['ymax'] = self.basemap.urcrnry
+            else:
+                limits['xmin'] = -150
+                limits['xmax'] = 150
+                limits['ymin'] = -150
+                limits['ymax'] = 150
+        elif self.plot_type == "gridY":
+            limits['xmin'] = (self.Vgrid.value.axes['x_disp']['data'][0] /
+                              1000.)
+            limits['xmax'] = (self.Vgrid.value.axes['x_disp']['data'][-1] /
+                              1000.)
+            limits['ymin'] = (self.Vgrid.value.axes['z_disp']['data'][0] /
+                                1000.)
+            limits['ymax'] = (self.Vgrid.value.axes['z_disp']['data'][-1] /
+                                1000.)
+        elif self.plot_type == "gridX":
+            limits['xmin'] = (self.Vgrid.value.axes['y_disp']['data'][0] /
+                              1000.)
+            limits['xmax'] = (self.Vgrid.value.axes['y_disp']['data'][-1] /
+                              1000.)
+            limits['ymin'] = (self.Vgrid.value.axes['z_disp']['data'][0] /
+                                1000.)
+            limits['ymax'] = (self.Vgrid.value.axes['z_disp']['data'][-1] /
+                                1000.)
         self.Vlims.change(limits, strong)
 
     def _set_default_cmap(self, strong=True):
         '''Set colormap to pre-defined default.'''
-        # TODO convert me to grid
-        from .limits import _default_limits
-        limits, cmap = _default_limits(
-            self.Vfield.value, "PPI")
+        cmap = self.Vcmap.value
+        if cmap is None:
+            cmap = {}
+        cmap['cmap'] = pyart.config.get_field_colormap(self.Vfield.value)
+        vmin, vmax = pyart.config.get_field_limits(
+            self.Vfield.value, self.Vgrid.value)
+        if vmin is None:
+            cmap['vmin'] = -32
+            cmap['vmax'] = 72
+        else:
+            cmap['vmin'] = vmin
+            cmap['vmax'] = vmax
         self.Vcmap.change(cmap, strong)
 
     def _check_file_type(self):
@@ -793,7 +904,7 @@ class GridDisplay(Component):
     ########################
     # Image save methods #
     ########################
-    # TODO convert me to grid - Update when PyArt updates this interface
+
     def _quick_savefile(self, PTYPE=IMAGE_EXT):
         '''Save the current display via PyArt interface.'''
         imagename = self.display.generate_filename(
@@ -803,11 +914,11 @@ class GridDisplay(Component):
 
     def _savefile(self, PTYPE=IMAGE_EXT):
         '''Save the current display using PyQt dialog interface.'''
-        PBNAME = self.display.generate_filename(
+        imagename = self.display.generate_filename(
             self.Vfield.value, self.Vlevel.value, ext=IMAGE_EXT)
         file_choices = "PNG (*.png)|*.png"
         path = unicode(QtGui.QFileDialog.getSaveFileName(
-            self, 'Save file', PBNAME, file_choices))
+            self, 'Save file', imagename, file_choices))
         if path:
             self.canvas.print_figure(path, dpi=DPI)
             self.statusbar.showMessage('Saved to %s' % path)
