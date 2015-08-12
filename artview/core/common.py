@@ -108,6 +108,73 @@ def string_dialog(stringIn, title, msg):
 
     return stringOut, entry
 
+def string_dialog_with_reset(stringIn, title, msg, reset=None):
+    '''
+    Show a Dialog box.
+
+    Parameters::
+    ----------
+    stringIn - string
+        Input string to fill box initially.
+    title - string
+        Title of the dialog box.
+    msg - string
+        Message to display in box.
+    reset - default value
+
+    Notes::
+    -----
+    This box displays an initial value that can be changed.
+    The value that is then entered is returned via the stringOut and entry variables.
+    '''
+    if stringIn is None:
+        old_val = ''
+    else:
+        old_val = stringIn
+
+    # start dialog
+    Dialog = QtGui.QDialog()
+    Dialog.setWindowTitle(title)
+    gridLayout = QtGui.QGridLayout(Dialog)
+    # add mensage and edit line
+    gridLayout.addWidget(QtGui.QLabel(msg), 0, 0, 1, 1)
+    lineEdit = QtGui.QLineEdit(old_val, Dialog)
+    gridLayout.addWidget(lineEdit, 1, 0, 1, 1)
+    # add buttons
+    buttonBox = QtGui.QDialogButtonBox(Dialog)
+    buttonBox.setOrientation(QtCore.Qt.Horizontal)
+    if reset is not None:
+        buttons = (QtGui.QDialogButtonBox.Reset |
+                   QtGui.QDialogButtonBox.Cancel |
+                   QtGui.QDialogButtonBox.Ok)
+    else:
+        buttons = (QtGui.QDialogButtonBox.Cancel |
+                   QtGui.QDialogButtonBox.Ok)
+    buttonBox.setStandardButtons(buttons)
+    gridLayout.addWidget(buttonBox, 2, 0, 1, 1)
+
+    # handel click signal
+    def handleClick(button):
+        enum = buttonBox.standardButton(button)
+        if enum == QtGui.QDialogButtonBox.Reset:
+            lineEdit.setText(reset)
+        elif enum == QtGui.QDialogButtonBox.Cancel:
+            Dialog.done(0)
+        elif enum == QtGui.QDialogButtonBox.Ok:
+            Dialog.done(1)
+    buttonBox.clicked.connect(handleClick)
+
+    # run dialog
+    entry = Dialog.exec_()
+    if entry == 1:
+        entry = True
+    else:
+        entry = False
+    # get result
+    stringOut = lineEdit.text()
+
+    return stringOut, entry
+
 ########################
 # Start methods #
 ########################
