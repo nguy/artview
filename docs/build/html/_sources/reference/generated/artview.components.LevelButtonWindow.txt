@@ -16,11 +16,13 @@ artview.components.LevelButtonWindow
    
          LevelButtonWindow.CreateLevelWidget
          LevelButtonWindow.LevelSelectCmd
+         LevelButtonWindow.LevelSelectCmdSlider
          LevelButtonWindow.NewGrid
          LevelButtonWindow.NewLevel
          LevelButtonWindow.NewRadar
          LevelButtonWindow.SetLevelRadioButtonsGrid
          LevelButtonWindow.SetLevelRadioButtonsRadar
+         LevelButtonWindow.showValue
    
    
 

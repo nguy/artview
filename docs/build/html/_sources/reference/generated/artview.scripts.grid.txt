@@ -1,0 +1,6 @@
+artview.scripts.grid
+====================
+
+.. currentmodule:: artview.scripts
+
+.. autofunction:: grid

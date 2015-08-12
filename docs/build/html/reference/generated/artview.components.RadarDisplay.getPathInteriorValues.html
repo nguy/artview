@@ -64,7 +64,7 @@
 <h1>artview.components.RadarDisplay.getPathInteriorValues<a class="headerlink" href="#artview-components-radardisplay-getpathinteriorvalues" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="artview.components.RadarDisplay.getPathInteriorValues">
-<tt class="descclassname">RadarDisplay.</tt><tt class="descname">getPathInteriorValues</tt><big>(</big><em>path</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/plot_radar.py#L579"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.RadarDisplay.getPathInteriorValues" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">RadarDisplay.</tt><tt class="descname">getPathInteriorValues</tt><big>(</big><em>path</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/plot_radar.py#L577"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.RadarDisplay.getPathInteriorValues" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the bins values path.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -73,11 +73,11 @@
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>path</strong> : Matplotlib Path instance</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>x, y, azi, range, value, ray_idx, range_inx: ndarray</strong> :</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>points: Points</strong> :</p>
 <blockquote class="last">
-<div><p>Truplet of 1arrays containing x,y coordinate, azimuth,
-range, current field value, ray index and range index
-for all bin of the current radar and tilt inside path.</p>
+<div><p>Points object containing all bins of the current radar
+and tilt inside path. Axes : &#8216;x_disp&#8217;, &#8216;y_disp&#8217;, &#8216;ray_index&#8217;,
+&#8216;range_index&#8217;, &#8216;azimuth&#8217;, &#8216;range&#8217;. Fields: just current field</p>
 </div></blockquote>
 </td>
 </tr>
@@ -149,7 +149,7 @@ for all bin of the current radar and tilt inside path.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Aug 10, 2015.
+      Last updated on Aug 11, 2015.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>

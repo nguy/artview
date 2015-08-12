@@ -59,16 +59,16 @@
   <div class="section" id="tutorial-writing-your-own-script">
 <span id="script-tutorial"></span><h1>Tutorial: Writing your own Script<a class="headerlink" href="#tutorial-writing-your-own-script" title="Permalink to this headline">¶</a></h1>
 <blockquote>
-<div>This Section is intended as a walk-through for the creation of custom
+<div>This tutorial is intended as a walk-through for the creation of a custom
 script in ARTview. It is also useful to understand how to use the ARTview
-package. It covers the basics of starting components and how to make they
+package. It covers the basics of starting components and how to make them
 interact with each other.</div></blockquote>
 <div class="section" id="the-basics">
 <h2>The Basics<a class="headerlink" href="#the-basics" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><p>Artview run over PyQt, therefore before using any component you need to
+<div><p>Artview runs with PyQt, therefore before using any component you need to
 start a PyQt application. After defining what you want, you need to get it
-to run, otherwise windows will not respond. Your basic script look like
+to run, otherwise windows will not respond. Your basic script will look like
 this:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">artview</span>
 <span class="kn">from</span> <span class="nn">PyQt4</span> <span class="kn">import</span> <span class="n">QtGui</span>
@@ -84,8 +84,8 @@ this:</p>
 <span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span> <span class="c"># lock until all windows are closed</span>
 </pre></div>
 </div>
-<p>So the whole question is about what to do between those line. The most
-simple thing you can do is start a single
+<p>So what to do between those line?
+The simplest thing you can do is start a single instance
 <a class="reference internal" href="reference/generated/artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><tt class="xref py py-class docutils literal"><span class="pre">Component</span></tt></a> (or plugin), for instance
 <a class="reference internal" href="reference/generated/artview.components.Menu.html#artview.components.Menu" title="artview.components.Menu"><tt class="xref py py-class docutils literal"><span class="pre">Menu</span></tt></a>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">artview</span>
@@ -101,11 +101,11 @@ simple thing you can do is start a single
 <span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span> <span class="c"># lock until all windows are closed</span>
 </pre></div>
 </div>
-<p>This will open a Menu instance with name &#8220;Menu&#8221;, giving every new
+<p>The above will open a Menu instance with name &#8220;Menu&#8221;. Note: giving every new
 instance a different name is important for identifying them afterward.</p>
 <p>A slightly more useful component is a
-<a class="reference internal" href="reference/generated/artview.components.RadarDisplay.html#artview.components.RadarDisplay" title="artview.components.RadarDisplay"><tt class="xref py py-class docutils literal"><span class="pre">RadarDisplay</span></tt></a>, but this need a
-<a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.core.Radar.html#pyart.core.Radar" title="(in Py-ART v1.4)"><tt class="xref py py-class docutils literal"><span class="pre">pyart.core.Radar</span></tt></a> instance. Luckily Py-ART has some example we
+<a class="reference internal" href="reference/generated/artview.components.RadarDisplay.html#artview.components.RadarDisplay" title="artview.components.RadarDisplay"><tt class="xref py py-class docutils literal"><span class="pre">RadarDisplay</span></tt></a>, but this needs a
+<a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.core.Radar.html#pyart.core.Radar" title="(in Py-ART v1.4)"><tt class="xref py py-class docutils literal"><span class="pre">pyart.core.Radar</span></tt></a> instance. Luckily Py-ART has examples we
 can use:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">artview</span>
 <span class="kn">from</span> <span class="nn">PyQt4</span> <span class="kn">import</span> <span class="n">QtGui</span>
@@ -130,25 +130,27 @@ can use:</p>
 <span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span> <span class="c"># lock until all windows are closed</span>
 </pre></div>
 </div>
-<p>So here things start to get more complicated, the question is: why we
-can&#8217;t pass radar to <a class="reference internal" href="reference/generated/artview.components.RadarDisplay.html#artview.components.RadarDisplay" title="artview.components.RadarDisplay"><tt class="xref py py-class docutils literal"><span class="pre">RadarDisplay</span></tt></a>, but
-rather need to put it inside <a class="reference internal" href="reference/generated/artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a>?
-The point is that we want display to be able to share this radar with
-other components, in C this could be done using pointers, this is kind of
-an equivalent for python, more about that in the next section.</p>
+<p>Now things start to get more complicated.
+The question is: Why we can&#8217;t pass the radar instance directly to
+<a class="reference internal" href="reference/generated/artview.components.RadarDisplay.html#artview.components.RadarDisplay" title="artview.components.RadarDisplay"><tt class="xref py py-class docutils literal"><span class="pre">RadarDisplay</span></tt></a>, but
+rather need to put it inside a <a class="reference internal" href="reference/generated/artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance?</p>
+<p>We want our display(s) to be able to share this radar instance with
+other components. In C programming this could be done using pointers, and here
+we employ a kind of equivalent for Python. More about that in the next section.</p>
 </div></blockquote>
 </div>
 <div class="section" id="shared-variables">
 <h2>Shared Variables<a class="headerlink" href="#shared-variables" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>The use of shared variables is an important part of ARTview, all attributes
-that expect a <a class="reference internal" href="reference/generated/artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance are marked
-with a capital V. Let see how this work, lets try the following:
-<a class="reference internal" href="reference/generated/artview.components.Menu.html#artview.components.Menu" title="artview.components.Menu"><tt class="xref py py-class docutils literal"><span class="pre">Menu</span></tt></a> has the possibility of opening radar
-files and put them in <tt class="xref py py-attr docutils literal"><span class="pre">Menu.Vradar</span></tt>, we want to use display to
-plot this files. This is simple: instead of creating a new
+that expect a <a class="reference internal" href="reference/generated/artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance are indicated
+by a capital V. Let&#8217;s see how this works.</p>
+<p>Using <a class="reference internal" href="reference/generated/artview.components.Menu.html#artview.components.Menu" title="artview.components.Menu"><tt class="xref py py-class docutils literal"><span class="pre">Menu</span></tt></a> we can open radar
+files and put them in <tt class="xref py py-attr docutils literal"><span class="pre">Menu.Vradar</span></tt>. Since this is a visualization
+package we want to plot this files.</p>
+<p>This is simple. Instead of creating a new
 <a class="reference internal" href="reference/generated/artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> we take it from
-<a class="reference internal" href="reference/generated/artview.components.Menu.html#artview.components.Menu" title="artview.components.Menu"><tt class="xref py py-class docutils literal"><span class="pre">Menu</span></tt></a> and pass to
+<a class="reference internal" href="reference/generated/artview.components.Menu.html#artview.components.Menu" title="artview.components.Menu"><tt class="xref py py-class docutils literal"><span class="pre">Menu</span></tt></a> and pass it to
 <a class="reference internal" href="reference/generated/artview.components.RadarDisplay.html#artview.components.RadarDisplay" title="artview.components.RadarDisplay"><tt class="xref py py-class docutils literal"><span class="pre">RadarDisplay</span></tt></a>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">artview</span>
 <span class="kn">from</span> <span class="nn">PyQt4</span> <span class="kn">import</span> <span class="n">QtGui</span>
@@ -174,11 +176,11 @@ plot this files. This is simple: instead of creating a new
 <span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span> <span class="c"># lock until all windows are closed</span>
 </pre></div>
 </div>
-<p>So now we have the most simple script one would want.
-<a class="reference internal" href="reference/generated/artview.components.Menu.html#artview.components.Menu" title="artview.components.Menu"><tt class="xref py py-class docutils literal"><span class="pre">Menu</span></tt></a> opens a file and
-<a class="reference internal" href="reference/generated/artview.components.RadarDisplay.html#artview.components.RadarDisplay" title="artview.components.RadarDisplay"><tt class="xref py py-class docutils literal"><span class="pre">RadarDisplay</span></tt></a> plots it. But ARTview is much more
-powerful, suppose you want the following: Compare side to side two fields
-of the same radar. One can just add an other display</p>
+<p>So now we have the most simple script one would want.</p>
+<p><a class="reference internal" href="reference/generated/artview.components.Menu.html#artview.components.Menu" title="artview.components.Menu"><tt class="xref py py-class docutils literal"><span class="pre">Menu</span></tt></a> opens a file and <a class="reference internal" href="reference/generated/artview.components.RadarDisplay.html#artview.components.RadarDisplay" title="artview.components.RadarDisplay"><tt class="xref py py-class docutils literal"><span class="pre">RadarDisplay</span></tt></a> plots it.</p>
+<p>But ARTview is much more powerful.
+Suppose you want to compare two fields of the same radar
+side-by-side. Simply add another display:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">artview</span>
 <span class="kn">from</span> <span class="nn">PyQt4</span> <span class="kn">import</span> <span class="n">QtGui</span>
 
@@ -221,13 +223,15 @@ of the same radar. One can just add an other display</p>
 </pre></div>
 </div>
 <p>This script will open 1 <a class="reference internal" href="reference/generated/artview.components.Menu.html#artview.components.Menu" title="artview.components.Menu"><tt class="xref py py-class docutils literal"><span class="pre">Menu</span></tt></a> and 2
-<a class="reference internal" href="reference/generated/artview.components.RadarDisplay.html#artview.components.RadarDisplay" title="artview.components.RadarDisplay"><tt class="xref py py-class docutils literal"><span class="pre">RadarDisplay</span></tt></a>, both show the same file but
-different fields. But we have actually made a mistake, because the two
-Displays are also with different sweeps, that is, they start with the same
-one but if the user changes the sweep of the first this will not change
-the second, and we would want it to change together. To get that behavior
-we just need to change 1 line: don&#8217;t create a new Vtilt
-<a class="reference internal" href="reference/generated/artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a>, use the old one</p>
+<a class="reference internal" href="reference/generated/artview.components.RadarDisplay.html#artview.components.RadarDisplay" title="artview.components.RadarDisplay"><tt class="xref py py-class docutils literal"><span class="pre">RadarDisplay</span></tt></a> instance. Both show the same
+file, but different fields.</p>
+<p>However, we have actually made a mistake. Because the Displays use
+different sweeps (Vtilt) - that is, they start with the same
+tilt but the user changes the sweep of the first - this will not change
+the second. We&#8217;d like them to change together.</p>
+<p>To get that behavior, we just need to change one line. Instead of
+creating a new Vtilt <a class="reference internal" href="reference/generated/artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a>,
+use the old one:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">artview</span>
 <span class="kn">from</span> <span class="nn">PyQt4</span> <span class="kn">import</span> <span class="n">QtGui</span>
 
@@ -276,76 +280,75 @@ we just need to change 1 line: don&#8217;t create a new Vtilt
 <div class="section" id="graphical-tools">
 <h2>Graphical Tools<a class="headerlink" href="#graphical-tools" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><p>In the last section we made a script with two displays sharing Vradar and
-Vtilt but not sharing Vfield, we will let to you to explore the other
-possible sharing configurations. But there is also the possibility that
-you don&#8217;t know the kind of sharing that you want and you don&#8217;t want to
-keep changing your script every time. For that there is a tool that allow
-the user to change the sharing behavior of
-Components, that is connect/disconnect variables
-between components. This is the
-<tt class="xref py py-class docutils literal"><span class="pre">ComponentsControl</span></tt> and to get it running
-just add the following line to your script</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">control</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">ComponentsControl</span><span class="p">()</span>
+<div><p>In the previous section we made a script with two displays sharing Vradar and
+Vtilt but not sharing Vfield, we will leave this as an exercise to explore
+other potential sharing configurations.</p>
+<p>There is the possibility that you don&#8217;t know the kind of sharing that you want.
+AND you don&#8217;t want to keep changing your script every time. There is a tool
+that allows the user to modify the sharing behavior of Components,
+that is to link/unlink variables between components (e.g. Displays).
+This is <a class="reference internal" href="reference/generated/artview.components.LinkPlugins.html#artview.components.LinkPlugins" title="artview.components.LinkPlugins"><tt class="xref py py-class docutils literal"><span class="pre">LinkPlugins</span></tt></a>. To get it running
+just add the following line to your script:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">control</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">LinkPlugins</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>The Problem here is that now we got 4 independent windows floating around
-our Desktop, to avoid that <a class="reference internal" href="reference/generated/artview.components.Menu.html#artview.components.Menu" title="artview.components.Menu"><tt class="xref py py-class docutils literal"><span class="pre">Menu</span></tt></a> has the
-method <a class="reference internal" href="reference/generated/artview.components.Menu.addLayoutWidget.html#artview.components.Menu.addLayoutWidget" title="artview.components.Menu.addLayoutWidget"><tt class="xref py py-func docutils literal"><span class="pre">addLayoutWidget</span></tt></a>, this allow
-putting other Components inside Menu, for instance like this:</p>
+<p>Now we got 4 independent windows floating around our Desktop.
+To avoid this <a class="reference internal" href="reference/generated/artview.components.Menu.html#artview.components.Menu" title="artview.components.Menu"><tt class="xref py py-class docutils literal"><span class="pre">Menu</span></tt></a> has the
+method <a class="reference internal" href="reference/generated/artview.components.Menu.addLayoutWidget.html#artview.components.Menu.addLayoutWidget" title="artview.components.Menu.addLayoutWidget"><tt class="xref py py-func docutils literal"><span class="pre">addLayoutWidget</span></tt></a>,
+which offers the ability to put additional Components inside the Menu window.</p>
+<p>For instance like this:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="c"># start Menu</span>
 <span class="n">menu</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="n">DirIn</span><span class="o">=</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;Menu&quot;</span><span class="p">)</span>
 
 <span class="c"># start Control</span>
-<span class="n">control</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">ComponentsControl</span><span class="p">()</span>
+<span class="n">control</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">LinkPlugins</span><span class="p">()</span>
 
 <span class="c"># put control inside Menu</span>
 <span class="n">menu</span><span class="o">.</span><span class="n">addLayoutWidget</span><span class="p">(</span><span class="n">control</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The only problem here is that you lose the close button for <cite>control</cite>, to
-over come that menu has the layout sub-menu that allow the user to close
-components inside the main menu.</p>
-<p>Ok, may be you don&#8217;t want to put components inside menu, your problem is
-you want to close all windows at once, and not having to close each one.
-To get that we use that PyQt closes all children windows of a window when
-this is closed, so a good police is to pass menu as parent for all other
-components (components always accept a parent key), for instance</p>
+<p>Ok, maybe you don&#8217;t want to put components inside menu. Your problem is
+that you would like to close all windows at once and not each individually.
+For this we leverage the fact that PyQt closes all children instances (windows)
+of an existing (parent) window. A good policy is to pass menu as the parent
+for all other components (components always accept a parent key)</p>
+<p>For instance:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="c"># start Menu</span>
 <span class="n">menu</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="n">DirIn</span><span class="o">=</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;Menu&quot;</span><span class="p">)</span>
 
 <span class="c"># start Control</span>
-<span class="n">control</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">ComponentsControl</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">menu</span><span class="p">)</span>
+<span class="n">control</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">LinkPlugins</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">menu</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>So we know how to close windows, what about opening new ones. This is more
-complicated, as for now some components can just be started a priory in
-the script, but some other like <a class="reference internal" href="reference/generated/artview.components.RadarDisplay.html#artview.components.RadarDisplay" title="artview.components.RadarDisplay"><tt class="xref py py-class docutils literal"><span class="pre">RadarDisplay</span></tt></a>
-and <tt class="xref py py-class docutils literal"><span class="pre">ComponentsControl</span></tt> have the <cite>GUIstart</cite>
-method and can be started by the user at execution time, for that use the
-Menu method <tt class="xref py py-func docutils literal"><span class="pre">addComponentMenuItem</span></tt>, for
+<p>Yay, we know how to close windows! What about opening new ones?</p>
+<p>This is a bit more complicated. Some components can just be started as
+a priori in the script. But some components like
+<a class="reference internal" href="reference/generated/artview.components.RadarDisplay.html#artview.components.RadarDisplay" title="artview.components.RadarDisplay"><tt class="xref py py-class docutils literal"><span class="pre">RadarDisplay</span></tt></a> and
+<a class="reference internal" href="reference/generated/artview.components.LinkPlugins.html#artview.components.LinkPlugins" title="artview.components.LinkPlugins"><tt class="xref py py-class docutils literal"><span class="pre">LinkPlugins</span></tt></a> have the <cite>GUIstart</cite>
+method and can be started by the user at execution time. To do this, use the
+Menu method <a class="reference internal" href="reference/generated/artview.components.Menu.addComponent.html#artview.components.Menu.addComponent" title="artview.components.Menu.addComponent"><tt class="xref py py-func docutils literal"><span class="pre">addComponent</span></tt></a>. For
 instance</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="c"># start Menu</span>
 <span class="n">menu</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="n">DirIn</span><span class="o">=</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;Menu&quot;</span><span class="p">)</span>
 
 <span class="c"># start Control</span>
-<span class="n">menu</span><span class="o">.</span><span class="n">addComponentMenuItem</span><span class="p">(</span><span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">RadarDisplay</span><span class="p">)</span>
+<span class="n">menu</span><span class="o">.</span><span class="n">addComponent</span><span class="p">(</span><span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">RadarDisplay</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Now you may found Display at the components sub-menu and start a new one
+<p>Now you find Display in the components sub-menu and can start a new one
 there.</p>
 </div></blockquote>
 </div>
 <div class="section" id="plug-ins">
 <h2>Plug-ins<a class="headerlink" href="#plug-ins" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><p>Plug-ins are define as user specific components that don&#8217;t interfere in
-the over all working of ARTview, they are all found in the <a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/plugins">artview/plugins</a>
+<div><p>Plug-ins are defined as user specific components that don&#8217;t interfere in
+the over all working of ARTview. They are found in the <a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/plugins">artview/plugins</a>
 folder and accessed in <a class="reference internal" href="reference/plugins.html#module-artview.plugins" title="artview.plugins"><tt class="xref py py-mod docutils literal"><span class="pre">artview.plugins</span></tt></a>. For specific
-information on what each plug-in does please see the reference-manual, I
-just want to say that by default we ask that all plug-ins have the
-<cite>GUIstart</cite> method, therefore to access them at execution time add the
-following at your script</p>
+information on what each plug-in does please see the reference-manual.
+By default we ask that all plug-ins have the
+<cite>GUIstart</cite> method. Therefore to access them at execution time add the
+following at your script:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="c"># start Menu</span>
 <span class="n">menu</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="n">DirIn</span><span class="o">=</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;Menu&quot;</span><span class="p">)</span>
 
@@ -361,17 +364,22 @@ following at your script</p>
 <h2>Official Scripts<a class="headerlink" href="#official-scripts" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>ARTview has a <a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/scripts">artview/scripts</a> folder where some &#8220;official&#8221; scripts are
-found, including the standard one that is executed with the
-<tt class="docutils literal"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">artview</span></tt> command. We don&#8217;t particularly recommend putting your
-script there as some details on how that folder work may change with time.
-However as for now if you want to put it there you should do two things:</p>
+found, including the standard startup that is executed with the
+<tt class="docutils literal"><span class="pre">artview</span></tt> command. It&#8217;s not particularly recommended to put your
+script there as some details on how that folder works may change with time.
+If you&#8217;d like to see your script included in the future, please submit an
+<a class="reference external" href="https://github.com/nguy/artview/issues">Issue</a>
+at the code repository or introduce a
+<a class="reference external" href="https://help.github.com/articles/using-pull-requests/">pull request</a>
+of your modified code.</p>
+<p>However, if you want to put your script there you should do two things:</p>
 <ul class="simple">
 <li>Put your script inside a run function
 <tt class="docutils literal"><span class="pre">def</span> <span class="pre">run(DirIn='./',</span> <span class="pre">filename=None,</span> <span class="pre">field=None):</span></tt></li>
 <li>Don&#8217;t import artview, but its parts relatively, that is:
 <tt class="docutils literal"><span class="pre">from</span> <span class="pre">..</span> <span class="pre">import</span> <span class="pre">core,</span> <span class="pre">components,</span> <span class="pre">plugins</span></tt></li>
 </ul>
-<p>Doing this you may found your script according to its file name in
+<p>Doing this you may find your script according to its file name in
 <a class="reference internal" href="reference/scripts.html#module-artview.scripts" title="artview.scripts"><tt class="xref py py-mod docutils literal"><span class="pre">artview.scripts</span></tt></a></p>
 </div></blockquote>
 </div>
@@ -446,7 +454,7 @@ However as for now if you want to put it there you should do two things:</p>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Aug 10, 2015.
+      Last updated on Aug 11, 2015.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>

@@ -1,0 +1,6 @@
+artview.components.LevelButtonWindow.LevelSelectCmdSlider
+=========================================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: LevelButtonWindow.LevelSelectCmdSlider

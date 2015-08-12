@@ -1,0 +1,6 @@
+artview.components.LevelButtonWindow.showValue
+==============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: LevelButtonWindow.showValue
