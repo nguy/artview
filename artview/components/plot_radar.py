@@ -107,8 +107,8 @@ class RadarDisplay(Component):
         self.plot_type = None
 
         # Set plot title and colorbar units to defaults
-        self.title = None
-        self.units = None
+        self.title = self._get_default_title()
+        self.units = self._get_default_units()
 
         # Set the default range rings
         self.RngRingList = ["None", "10 km", "20 km", "30 km",
@@ -246,14 +246,16 @@ class RadarDisplay(Component):
 
     def _title_input(self):
         '''Retrieve new plot title.'''
-        val, entry = common.string_dialog(self.title, "Plot Title", "Title:")
+        val, entry = common.string_dialog_with_reset(
+            self.title, "Plot Title", "Title:", self._get_default_title())
         if entry is True:
             self.title = val
             self._update_plot()
 
     def _units_input(self):
         '''Retrieve new plot units.'''
-        val, entry = common.string_dialog(self.units, "Plot Units", "Units:")
+        val, entry = common.string_dialog_with_reset(
+            self.units, "Plot Units", "Units:", self._get_default_units())
         if entry is True:
             self.units = val
             self._update_plot()
@@ -414,8 +416,8 @@ class RadarDisplay(Component):
         self._fillTiltBox()
         self._fillFieldBox()
 
-        self.units = None
-        self.title = None
+        self.units = self._get_default_units()
+        self.title = self._get_default_title()
         if strong:
             self._update_plot()
             self._update_infolabel()
@@ -433,7 +435,8 @@ class RadarDisplay(Component):
         * If strong update: update plot
         '''
         self._set_default_cmap(strong=False)
-        self.units = None
+        self.units = self._get_default_units()
+        self.title = self._get_default_title()
         idx = self.fieldBox.findText(value)
         self.fieldBox.setCurrentIndex(idx)
         if strong and self.Vradar.value is not None:
@@ -688,12 +691,7 @@ class RadarDisplay(Component):
                                          "color:black;font-weight:bold;}")
             self.statusbar.clearMessage()
 
-        # Reset to default title if user entered nothing w/ Title button
-        if self.title == '':
-            title = None
-        else:
-            title = self.title
-
+        title = self.title
         limits = self.Vlims.value
         cmap = self.Vcmap.value
 
@@ -737,13 +735,6 @@ class RadarDisplay(Component):
                              vmax=cmap['vmax'])
         self.cbar = mlabColorbarBase(self.cax, cmap=cmap['cmap'],
                                      norm=norm, orientation='horizontal')
-        # colorbar - use specified units or default depending on
-        # what has or has not been entered
-        if self.units is None or self.units == '':
-            try:
-                self.units = self.Vradar.value.fields[self.field]['units']
-            except:
-                self.units = ''
         self.cbar.set_label(self.units)
 
 #        print "Plotting %s field, Tilt %d in %s" % (
@@ -804,11 +795,25 @@ class RadarDisplay(Component):
             d['vmin'] = -10
             d['vmax'] = 65
         self.Vcmap.change(d, strong)
-        print d
-        #from .limits import _default_limits
-        #limits, cmap = _default_limits(
-            #self.Vfield.value, self.scan_type)
-        #self.Vcmap.change(cmap, strong)
+
+    def _get_default_title(self):
+        '''Get default title from pyart.'''
+        if (self.Vradar.value is None or
+            self.Vfield.value not in self.Vradar.value.fields):
+            return ''
+        return pyart.graph.common.generate_title(self.Vradar.value,
+                                                 self.Vfield.value,
+                                                 self.Vtilt.value)
+
+    def _get_default_units(self):
+        '''Get default units for current radar and field.'''
+        if self.Vradar.value is not None:
+            try:
+                return self.Vradar.value.fields[self.Vfield.value]['units']
+            except:
+                return ''
+        else:
+            return ''
 
     ########################
     # Image save methods #

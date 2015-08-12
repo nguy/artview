@@ -132,8 +132,8 @@ class GridDisplay(Component):
         self.connectAllVariables()
 
         # Set plot title and colorbar units to defaults
-        self.title = None
-        self.units = None
+        self.title = self._get_default_title()
+        self.units = self._get_default_units()
 
         # set default latlon lines
         self.lat_lines = np.linspace(-90, 90, num=181)
@@ -275,14 +275,16 @@ class GridDisplay(Component):
 
     def _title_input(self):
         '''Retrieve new plot title.'''
-        val, entry = common.string_dialog(self.title, "Plot Title", "Title:")
+        val, entry = common.string_dialog_with_reset(
+            self.title, "Plot Title", "Title:", self._get_default_title())
         if entry is True:
             self.title = val
             self._update_plot()
 
     def _units_input(self):
         '''Retrieve new plot units.'''
-        val, entry = common.string_dialog(self.units, "Plot Units", "Units:")
+        val, entry = common.string_dialog_with_reset(
+            self.units, "Plot Units", "Units:", self._get_default_units())
         if entry is True:
             self.units = val
             self._update_plot()
@@ -434,8 +436,8 @@ class GridDisplay(Component):
         self._fillLevelBox()
         self._fillFieldBox()
 
-        self.units = None
-        self.title = None
+        self.units = self._get_default_units()
+        self.title = self._get_default_title()
         if strong:
             self._update_plot()
             self._update_infolabel()
@@ -453,7 +455,8 @@ class GridDisplay(Component):
         * If strong update: update plot
         '''
         self._set_default_cmap(strong=False)
-        self.units = None
+        self.units = self._get_default_units()
+        self.title = self._get_default_title()
         idx = self.fieldBox.findText(value)
         self.fieldBox.setCurrentIndex(idx)
         if strong and self.Vgrid.value is not None:
@@ -743,12 +746,7 @@ class GridDisplay(Component):
                                          "color:black;font-weight:bold;}")
             self.statusbar.clearMessage()
 
-        # Reset to default title if user entered nothing w/ Title button
-        if self.title == '':
-            title = None
-        else:
-            title = self.title
-
+        title = self.title
         limits = self.Vlims.value
         cmap = self.Vcmap.value
 
@@ -788,13 +786,6 @@ class GridDisplay(Component):
                              vmax=cmap['vmax'])
         self.cbar = mlabColorbarBase(self.cax, cmap=cmap['cmap'],
                                      norm=norm, orientation='vertical')
-        # colorbar - use specified units or default depending on
-        # what has or has not been entered
-        if self.units is None or self.units == '':
-            try:
-                self.units = self.Vgrid.value.fields[self.field]['units']
-            except:
-                self.units = ''
         self.cbar.set_label(self.units)
 
         if self.plot_type == "gridZ":
@@ -875,6 +866,32 @@ class GridDisplay(Component):
             d['vmin'] = -10
             d['vmax'] = 65
         self.Vcmap.change(d, strong)
+
+    def _get_default_title(self):
+        '''Get default title from pyart.'''
+        if (self.Vgrid.value is None or
+            self.Vfield.value not in self.Vgrid.value.fields):
+            return ''
+        if self.plot_type == "gridZ":
+            return pyart.graph.common.generate_grid_title(self.Vgrid.value,
+                                                          self.Vfield.value,
+                                                          self.Vlevel.value)
+        elif self.plot_type == "gridY":
+            return pyart.graph.common.generate_latitudinal_level_title(
+                self.Vgrid.value, self.Vfield.value, self.Vlevel.value)
+        elif self.plot_type == "gridX":
+            return pyart.graph.common.generate_longitudinal_level_title(
+                self.Vgrid.value, self.Vfield.value, self.Vlevel.value)
+
+    def _get_default_units(self):
+        '''Get default units for current grid and field.'''
+        if self.Vgrid.value is not None:
+            try:
+                return self.Vgrid.value.fields[self.Vfield.value]['units']
+            except:
+                return ''
+        else:
+            return ''
 
     def _check_file_type(self):
         '''Check file to see if the file type.'''
