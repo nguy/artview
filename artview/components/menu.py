@@ -237,17 +237,21 @@ class Menu(Component):
         self._aboutArtview.setStatusTip('About ARTview')
         self._aboutArtview.triggered.connect(self._about)
 
-        self.RadarShort = QtGui.QAction('Radar Short', self)
+        self.RadarShort = QtGui.QAction('Show Short Radar Info', self)
         self.RadarShort.setStatusTip('Print Short Radar Structure Info')
         self.RadarShort.triggered.connect(self._get_RadarShortInfo)
 
-        self.RadarLong = QtGui.QAction('Radar Long', self)
+        self.RadarLong = QtGui.QAction('Print Long Radar Info', self)
         self.RadarLong.setStatusTip('Print Long Radar Structure Info')
         self.RadarLong.triggered.connect(self._get_RadarLongInfo)
+        
+        self.PluginHelp = QtGui.QAction('Plugin Help', self)
+        self.PluginHelp.triggered.connect(self._get_pluginhelp)
 
         self.aboutmenu.addAction(self._aboutArtview)
         self.aboutmenu.addAction(self.RadarShort)
         self.aboutmenu.addAction(self.RadarLong)
+        self.aboutmenu.addAction(self.PluginHelp)
 
     def addLayoutMenu(self):
         '''Add Layout Menu to menubar.'''
@@ -335,7 +339,7 @@ https://rawgit.com/nguy/artview/master/docs/build/html/index.html"""
         QtGui.QMessageBox.about(self, "About ARTview", txOut)
 
     def _get_RadarLongInfo(self):
-        '''Print out the radar info to text box and terminal.'''
+        '''Print out the radar info to text box.'''
         # Get the radar info form rada object and print it
         txOut = self.Vradar.value.info()
 
@@ -431,6 +435,24 @@ https://rawgit.com/nguy/artview/master/docs/build/html/index.html"""
                  ('Number of sweeps: %s\n' % nsweeps))
 
         QtGui.QMessageBox.information(self, "Short Radar Info", txOut)
+        
+    def _get_pluginhelp(self):
+        '''Print out a short help text box regarding plugins.'''
+
+        text = "<b>Existing Plugins</b><br><br>"
+        text += "Current plugins can be found under the <i>Advanced Tools</i> menu.<br>"
+        text += "Most plugins have a help button for useage information.<br>"
+        text += "<br><br>"
+        text += "<b>Creating a Custom Plugin</b><br><br>"
+        text += "ARTview allows the creation of custom user plugins.<br><br>"
+        text += "Instructions and examples can be found at:<br>"
+        text += "https://rawgit.com/nguy/artview/master/docs/build/html/plugin_tutorial.html<br><br>"
+        text += "Please consider submitting your plugin for inclusion in ARTview<br>"
+        text += "  Submit a pull request if you forked the repo on Github or"
+        text += "  Post the code in an Issue:<br>"
+        text += "https://github.com/nguy/artview/issues<br><br>"
+
+        common.ShowLongText(text)
 
     ########################
     # Selectionion methods #

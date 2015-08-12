@@ -1,0 +1,6 @@
+artview.components.GridDisplay.toolResetCmd
+===========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: GridDisplay.toolResetCmd

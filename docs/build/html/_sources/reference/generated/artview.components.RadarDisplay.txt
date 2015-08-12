@@ -33,7 +33,6 @@ artview.components.RadarDisplay
          RadarDisplay.guiStart
          RadarDisplay.keyPressEvent
          RadarDisplay.setUILayout
-         RadarDisplay.toolCustomCmd
          RadarDisplay.toolDefaultCmd
          RadarDisplay.toolResetCmd
          RadarDisplay.toolSelectRegionCmd

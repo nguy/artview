@@ -55,23 +55,25 @@
   <div class="section" id="tutorial-writing-your-own-plugin">
 <span id="plugin-tutorial"></span><h1>Tutorial: Writing your own Plugin<a class="headerlink" href="#tutorial-writing-your-own-plugin" title="Permalink to this headline">¶</a></h1>
 <blockquote>
-<div>This Section is intended to present some points of awareness for any one
-wanting to create a custom plug-in for ARTview. As plug-ins are just a
-special form of Component and as ARTview is all based in Components this
-is also important to anyone (user or programmer) wanting to understand
-ARTview. Of course we can not say you how to program your plug-in, for
-that you can use all the tools available in the python programming
-language, we however suggest before starting programing let us know your
-intension and needs though our
-<a class="reference external" href="https://github.com/nguy/artview/issues">GitHub issues page</a>, we may
-provide some valuable information and ideas on how to solve the problem.</div></blockquote>
+<div><p>This tutorial presents information for any one wanting to create a
+custom plug-in for ARTview. Plug-ins are just a special form of a Component.
+ARTview is all based on Components, so this information is important
+to anyone (user or developer) wanting to understand ARTview.</p>
+<p>Plug-ins can be added by anyone and are encouraged in this open source
+environment. There are a few rules the developers have established in the
+course of setting up the ARTview infastructure (see below). There are no
+limits on how to program your plug-in, for that you can use any of the
+tools available in the Python programming language.</p>
+<p>That said, we do suggest that you start a <a class="reference external" href="https://github.com/nguy/artview/issues">Github Issue</a> as the intended tool may be
+in development or we could provide some hard-learned advice or
+ideas on how to solve the problem.</p>
+</div></blockquote>
 <div class="section" id="the-basics">
 <h2>The Basics<a class="headerlink" href="#the-basics" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><p>To allow the integration of plug-ins in ARTview we have made some rules
-that must be follow, in the risk of your plug-in or in the worse case
-ARTview not working. I will list those here and after that I will instruct
-on how to follow them.</p>
+<div><p>To allow the integration of plug-ins in ARTview the developers have had
+to make some rules to follow. Otherwise you risk the operability of your
+plug-in or in worse ARTview. Here are the requirements:</p>
 <ul>
 <li><p class="first">Plug-ins must be located in one single file in
 <a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/plugins">artview/plugins</a> ending in <strong>.py</strong>.</p>
@@ -97,88 +99,97 @@ of <a class="reference internal" href="reference/generated/artview.core.core.Com
 </div>
 </li>
 </ul>
+<p>Next we&#8217;ll discuss how these are used in creating a plug-in.</p>
 </div></blockquote>
 </div>
 <div class="section" id="the-plug-in-file">
 <h2>The Plug-in File<a class="headerlink" href="#the-plug-in-file" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><p>ARTview expect all files present in <a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/plugins">artview/plugins</a> and ending
-in <strong>.py</strong> (e.g <strong>my_plugin.py</strong>) to be importable into python and have a
-(possibly empty) list of plug-ins in the attribute <tt class="docutils literal"><span class="pre">_plugins</span></tt> (e.g
-<tt class="docutils literal"><span class="pre">_plugins</span> <span class="pre">=</span> <span class="pre">[MyPlugin]</span></tt>. Only plug-ins present in such list are added
-to <a class="reference internal" href="reference/plugins.html#module-artview.plugins" title="artview.plugins"><tt class="xref py py-mod docutils literal"><span class="pre">artview.plugins</span></tt></a>. File starting with underscore are ignored,
-this allow you to separate your plug-in in multiple file or even folders
-if needed.</p>
+<div><p>ARTview expects all plug-in files to be present in <a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/plugins">artview/plugins</a>
+and with a <strong>.py</strong> extension (e.g <strong>my_plugin.py</strong>) and to be importable into
+Python. There must also exist a (possibly empty) list of plug-ins in the
+attribute <tt class="docutils literal"><span class="pre">_plugins</span></tt> (e.g <tt class="docutils literal"><span class="pre">_plugins</span> <span class="pre">=</span> <span class="pre">[MyPlugin]</span></tt>. Only plug-ins present
+in such list are added to <a class="reference internal" href="reference/plugins.html#module-artview.plugins" title="artview.plugins"><tt class="xref py py-mod docutils literal"><span class="pre">artview.plugins</span></tt></a>. Files starting with an
+underscore(_) are ignored. This allows the separation of a plug-in into
+multiple file or even folders if needed.</p>
 <p>As the file <strong>my_plugin.py</strong> is imported inside ARTview you should not
-import it in absolute, but rather make a relative imports. That is instead
-of <tt class="docutils literal"><span class="pre">from</span> <span class="pre">artview</span> <span class="pre">import</span> <span class="pre">core,</span> <span class="pre">components</span></tt> do <tt class="docutils literal"><span class="pre">from</span> <span class="pre">..</span> <span class="pre">import</span> <span class="pre">core,</span>
-<span class="pre">components</span></tt>.</p>
+import it in an absolute sense, but rather make this a relative import. An
+example is instead of <tt class="docutils literal"><span class="pre">from</span> <span class="pre">artview</span> <span class="pre">import</span> <span class="pre">core,</span> <span class="pre">components</span></tt> do
+<tt class="docutils literal"><span class="pre">from</span> <span class="pre">..</span> <span class="pre">import</span> <span class="pre">core,</span> <span class="pre">components</span></tt>.</p>
 </div></blockquote>
 </div>
 <div class="section" id="the-component-class">
 <h2>The Component Class<a class="headerlink" href="#the-component-class" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><p>Plug-ins are just a especial case of components, therefore it must work
-just like one. For that first thing is that its is a class derived
-from <a class="reference internal" href="reference/generated/artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><tt class="xref py py-class docutils literal"><span class="pre">Component</span></tt></a>. This class for its turn
-inherit <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QMainWindow</span></tt>, so you can use any PyQt
-method of a QMainWindow while building your component, in this point of
-view there is just one difference from
+<div><p>Plug-ins are a special case of Components, therefore it must work
+just like one. The first requirement being that it is a class derived
+from <a class="reference internal" href="reference/generated/artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><tt class="xref py py-class docutils literal"><span class="pre">Component</span></tt></a>. This class in turn
+inherits <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QMainWindow</span></tt>, so you can use any PyQt
+method of a QMainWindow while building your component. Accordingly,
+there is just one difference from
 <tt class="xref py py-class docutils literal"><span class="pre">QMainWindow</span></tt> and
-<a class="reference internal" href="reference/generated/artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><tt class="xref py py-class docutils literal"><span class="pre">Component</span></tt></a>:
-<a class="reference internal" href="reference/generated/artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><tt class="xref py py-class docutils literal"><span class="pre">Component</span></tt></a> passes keyPressEvents to its
-parent, while <tt class="xref py py-class docutils literal"><span class="pre">QMainWindow</span></tt> mostly ignore it.</p>
-<p>An other particularity of <a class="reference internal" href="reference/generated/artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><tt class="xref py py-class docutils literal"><span class="pre">Component</span></tt></a> is that
-it always has a name, this is a string and have two function first it will
-define the window title and second ARTview may use it to identify
-different instances of the same component. It is important that the user
-has the possibility of defining the name at initialization, but there
-shall also be a standard, for instance
-<tt class="docutils literal"><span class="pre">def</span> <span class="pre">__init__(...,</span> <span class="pre">name=&quot;MyPlugin&quot;,</span> <span class="pre">...):</span></tt>. Further important points
-are:</p>
+<a class="reference internal" href="reference/generated/artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><tt class="xref py py-class docutils literal"><span class="pre">Component</span></tt></a>:</p>
+<p><a class="reference internal" href="reference/generated/artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><tt class="xref py py-class docutils literal"><span class="pre">Component</span></tt></a> passes keyPressEvents to its
+parent, while <tt class="xref py py-class docutils literal"><span class="pre">QMainWindow</span></tt> mostly ignores them.</p>
+<p>Another aspect of <a class="reference internal" href="reference/generated/artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><tt class="xref py py-class docutils literal"><span class="pre">Component</span></tt></a> is that
+it always has a string name. This has two functions: First, it will
+define the window title; and Second, ARTview may use it to identify
+different instances of the same component. Therefore it is important
+for the user to have the potential to define the name at initialization.
+But there is a helpful standard to follow, the common practice of
+capitilization relatively common in Python programming, along with no
+underscores. For instance <tt class="docutils literal"><span class="pre">def</span> <span class="pre">__init__(...,</span> <span class="pre">name=&quot;MyPlugin&quot;,</span> <span class="pre">...):</span></tt>.</p>
+<p>Further important points are:</p>
 <ul class="simple">
-<li>As now ARTview keep a list of initialized components in
+<li>As of now ARTview keeps a list of initialized components in
 <tt class="xref py py-attr docutils literal"><span class="pre">artview.core.core.componentsList</span></tt>.</li>
 <li><a class="reference internal" href="reference/generated/artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><tt class="xref py py-class docutils literal"><span class="pre">Component</span></tt></a> has the methods
 <a class="reference internal" href="reference/generated/artview.core.core.Component.connectSharedVariable.html#artview.core.core.Component.connectSharedVariable" title="artview.core.core.Component.connectSharedVariable"><tt class="xref py py-func docutils literal"><span class="pre">connectSharedVariable</span></tt></a> and
-<a class="reference internal" href="reference/generated/artview.core.core.Component.disconnectSharedVariable.html#artview.core.core.Component.disconnectSharedVariable" title="artview.core.core.Component.disconnectSharedVariable"><tt class="xref py py-func docutils literal"><span class="pre">disconnectSharedVariable</span></tt></a>, those
+<a class="reference internal" href="reference/generated/artview.core.core.Component.disconnectSharedVariable.html#artview.core.core.Component.disconnectSharedVariable" title="artview.core.core.Component.disconnectSharedVariable"><tt class="xref py py-func docutils literal"><span class="pre">disconnectSharedVariable</span></tt></a>, which
 will be explained in the next section.</li>
 </ul>
-<p>Finally its our policy that all components are able to stand on its own,
-one must be able to execute it as the only ARTview component, even if it
+<p>Finally it is our policy that all components are able to stand on their own.
+One must be able to execute it as the only ARTview component, even if it
 depends of other ones to work properly. Parallel to that, starting a
 component from another component is not prohibited, but it&#8217;s strongly
-unrecommended. Component iteration shall be performed mainly using shared
+discouraged. Component iteration shall be performed mainly using shared
 variables.</p>
 </div></blockquote>
 </div>
 <div class="section" id="shared-variables">
 <h2>Shared Variables<a class="headerlink" href="#shared-variables" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><p>First of all before programing with shared variables you should know how
-they work in the user side, for that <a class="reference internal" href="script_tutorial.html#script-tutorial"><em>Tutorial: Writing your own Script</em></a> may help.</p>
-<p>In defining your shared variable you should have three things clear in
-your mind: it name (starting with capital V), it function, and what kind
-of value it holds. Examples of some shared variable are present in
-the <a class="reference internal" href="reference/generated/artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a>. If your variable is already present in that
-list, use the same name.</p>
-<p>For every shared variable a component uses you must define how you want it
-to respond if the value is change, one important point to understand here
-is that you do not control a variable, any other part of ARTview shall
-change the value of your variable. What happens them it that your class
-will receive the &#8220;ValueChange&#8221; signal and will be able to execute a
-function to respond to that, that is the variable slot and it looks like
-this:</p>
+<div><p>Before using shared variables it is useful to know how they work on
+the user side. For that <a class="reference internal" href="script_tutorial.html#script-tutorial"><em>Tutorial: Writing your own Script</em></a> may help.</p>
+<p>In defining a shared variable you should have three things clear in
+your mind:</p>
+<ol class="arabic simple">
+<li>the name (starting with capital V)</li>
+<li>the function it will perform</li>
+<li>the type of value it will hold</li>
+</ol>
+<p>Examples of  shared variable are present in the <a class="reference internal" href="reference/generated/artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a>.
+If your variable is already present in that list, use the same name.</p>
+<p>For every shared variable a component uses, you must define the response
+if the value is changed. An important point to understand here
+is that you do NOT have absolute control a variable, any other part of
+ARTview may change the value of this shared variable. Hence, the &#8220;shared&#8221;
+part.</p>
+<p>By causing a change to the variable in your class, the variable will
+receive the &#8220;ValueChange&#8221; signal and executes some function in response.
+This is called the variable slot and it looks like this:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">newMyVar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">strong</span><span class="p">):</span>
 </pre></div>
 </div>
-<p>To define what is the slot of every shared variable define in <tt class="docutils literal"><span class="pre">__init__</span></tt>
-a dictionary named sharedVariables: the key is the name of a variable
-(e.g. <tt class="docutils literal"><span class="pre">&quot;VmyVar&quot;</span></tt>) and the value its slot (e.g. <tt class="docutils literal"><span class="pre">self.newMyVar</span></tt>), you
-may also give the value <tt class="docutils literal"><span class="pre">None</span></tt> to signalize that our plug-in does not
-need to respond to &#8220;ValueChanged&#8221;. You must also set to the attribute an
-instance of <a class="reference internal" href="reference/generated/artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> (e.g
-<tt class="docutils literal"><span class="pre">self.VourVar</span> <span class="pre">=</span> <span class="pre">core.Variable()</span></tt>). After those two steps call
+<p>To define the slot of every shared variable define a dictionary named
+sharedVariables in <tt class="docutils literal"><span class="pre">__init__</span></tt>. The key is the name of a variable
+(e.g. <tt class="docutils literal"><span class="pre">&quot;VmyVar&quot;</span></tt>) and the value its slot (e.g. <tt class="docutils literal"><span class="pre">self.newMyVar</span></tt>). You
+may also assign the value <tt class="docutils literal"><span class="pre">None</span></tt> to signal that the plug-in does not
+need to respond to &#8220;ValueChanged&#8221;.</p>
+<p>You must also set an attribute with the instance of
+<a class="reference internal" href="reference/generated/artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> (e.g
+<tt class="docutils literal"><span class="pre">self.VourVar</span> <span class="pre">=</span> <span class="pre">core.Variable()</span></tt>).</p>
+<p>After those two steps call
 <a class="reference internal" href="reference/generated/artview.core.core.Component.connectAllVariables.html#artview.core.core.Component.connectAllVariables" title="artview.core.core.Component.connectAllVariables"><tt class="xref py py-func docutils literal"><span class="pre">connectAllVariables</span></tt></a> to connect
 your variables to the slots. You also have access to the methods
 <a class="reference internal" href="reference/generated/artview.core.core.Component.connectSharedVariable.html#artview.core.core.Component.connectSharedVariable" title="artview.core.core.Component.connectSharedVariable"><tt class="xref py py-func docutils literal"><span class="pre">connectSharedVariable</span></tt></a> to connect a
@@ -188,43 +199,43 @@ disconnect a single variable and
 <a class="reference internal" href="reference/generated/artview.core.core.Component.disconnectAllVariables.html#artview.core.core.Component.disconnectAllVariables" title="artview.core.core.Component.disconnectAllVariables"><tt class="xref py py-func docutils literal"><span class="pre">disconnectAllVariables</span></tt></a> to
 disconnect all variables.</p>
 <p>To access the value of a variable use the
-<a class="reference internal" href="reference/generated/artview.core.core.Variable.html#artview.core.core.Variable.value" title="artview.core.core.Variable.value"><tt class="xref py py-attr docutils literal"><span class="pre">value</span></tt></a> attribute and to change it the
-<a class="reference internal" href="reference/generated/artview.core.core.Variable.change.html#artview.core.core.Variable.change" title="artview.core.core.Variable.change"><tt class="xref py py-func docutils literal"><span class="pre">change</span></tt></a> method. Once change is
-called the value is updated and after that the slot of a shared variable
-is called receiving 3 arguments: the variable, the new value and the
+<a class="reference internal" href="reference/generated/artview.core.core.Variable.html#artview.core.core.Variable.value" title="artview.core.core.Variable.value"><tt class="xref py py-attr docutils literal"><span class="pre">value</span></tt></a> attribute. To change the value
+use the <a class="reference internal" href="reference/generated/artview.core.core.Variable.change.html#artview.core.core.Variable.change" title="artview.core.core.Variable.change"><tt class="xref py py-func docutils literal"><span class="pre">change</span></tt></a> method. Once <tt class="docutils literal"><span class="pre">change</span></tt>
+is called, the value is updated and after that the slot of a shared variable
+is called receiving thre arguments: the variable, the new value and the
 strong flag. Remember that when the slot is executed the value is already
-changed, never do <tt class="docutils literal"><span class="pre">var.change(value)</span></tt> in the risk of an infinite loop.
-The final argument is a boolean value defining if this is a strong or weak
-change. True is the standard value, otherwise if the flag <tt class="docutils literal"><span class="pre">strong</span></tt> is
-False avoid making any expensive computation in your slot, like for
-instance reploting some data.</p>
-<p>Finally here are some orientation on shared variables:</p>
+changed. Never do <tt class="docutils literal"><span class="pre">var.change(value)</span></tt>, otherwise you run the risk of an
+infinite loop. The final argument is a boolean value indicating if a
+strong or weak change is requested. True is the default value. If the flag
+<tt class="docutils literal"><span class="pre">strong</span></tt> is False this avoids any expensive computations in your slot,
+like for instance replotting some data.</p>
+<p>Finally a brief orientation on shared variables:</p>
 <ul class="simple">
 <li>There are two way of getting a shared variable: <tt class="docutils literal"><span class="pre">__init__</span></tt> receives it
-or <tt class="docutils literal"><span class="pre">__init__</span></tt> initialize it. A variable that is received is consider
+or <tt class="docutils literal"><span class="pre">__init__</span></tt> initializes it. A variable that is received is considered
 to already have a valid value, an initialized variable must leave
 <tt class="docutils literal"><span class="pre">__init__</span></tt> with a valid value.</li>
-<li>If for some reason one need to change the value of a initialized
-variable inside <tt class="docutils literal"><span class="pre">__init__</span></tt> do that with a weak changes, unless you
-have a really good reason for not doing so.</li>
+<li>If for some reason one needs to change the value of a initialized
+variable inside <tt class="docutils literal"><span class="pre">__init__</span></tt> do that with a weak change (<tt class="docutils literal"><span class="pre">`strong`</span></tt> set
+to False), unless there is a really good reason for not doing this.</li>
 <li>If for some reason you need to trigger the slot of a shared variable
-inside <tt class="docutils literal"><span class="pre">__init__</span></tt> do that by direct call, do not use the variable to
-emit a signal unless you have a really good reason for doing so.</li>
+inside <tt class="docutils literal"><span class="pre">__init__</span></tt> do that by direct call. Do not use the variable to
+emit a signal unless there is a really good reason for doing so.</li>
 </ul>
 </div></blockquote>
 </div>
 <div class="section" id="graphical-start">
 <h2>Graphical Start<a class="headerlink" href="#graphical-start" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><p>For plug-ins is mandatory that they have a graphical start, this is a
-class method called <tt class="docutils literal"><span class="pre">GUIstart</span></tt> that receive an optional parent argument
-and returns two value: an initialized instance of the the plug-in and a
-boolean value. This boolean value will be used by
-<a class="reference internal" href="reference/generated/artview.components.Menu.html#artview.components.Menu" title="artview.components.Menu"><tt class="xref py py-class docutils literal"><span class="pre">Menu</span></tt></a>, if False menu will
+<div><p>A graphical start is mandatory for plug-ins. A class method called
+<tt class="docutils literal"><span class="pre">GUIstart</span></tt> that receives an optional parent argument
+and returns two values: an initialized instance of the the plug-in and a
+boolean value. The boolean value will be used by
+<a class="reference internal" href="reference/generated/artview.components.Menu.html#artview.components.Menu" title="artview.components.Menu"><tt class="xref py py-class docutils literal"><span class="pre">Menu</span></tt></a>. If False, the menu instance will
 execute <a class="reference internal" href="reference/generated/artview.components.Menu.addLayoutWidget.html#artview.components.Menu.addLayoutWidget" title="artview.components.Menu.addLayoutWidget"><tt class="xref py py-func docutils literal"><span class="pre">addLayoutWidget</span></tt></a>, otherwise the
-plug-in will be an independent window. The main difficulty in writing this
-method is defining the arguments need for initializing your plug-in, we
-will not say how you should do this, but there are some tools to help:</p>
+plug-in will be an independent window. The main difficulty in writing a
+method is defining the arguments needed for initializing your plug-in.</p>
+<p>Here are some tools in ARTview to hopefully help:</p>
 <ul class="simple">
 <li><tt class="xref py py-class docutils literal"><span class="pre">artview.core.common._SimplePluginStart</span></tt> will ask the user for
 a name and if the plug-in should be an independent window. Use like
@@ -240,14 +251,14 @@ this:</li>
 <ul class="simple">
 <li><tt class="xref py py-class docutils literal"><span class="pre">artview.core.choose_variable.VariableChoose</span></tt> will present the
 user a tree view of the current components and its shared variables,
-allowing it to select one.</li>
+allowing the selection of one instance.</li>
 </ul>
 </div></blockquote>
 </div>
 <div class="section" id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><p>Uniting all instructions of this tutorial here is an base skeleton for your Plug-in</p>
+<div><p>Combining the above tutorial, here is a skeleton outline for your Plug-in:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="c"># Load the needed packages</span>
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">core</span><span class="p">,</span> <span class="n">components</span>
 
@@ -363,7 +374,7 @@ allowing it to select one.</li>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Aug 10, 2015.
+      Last updated on Aug 11, 2015.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>

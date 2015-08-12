@@ -137,4 +137,8 @@ NOTE:: This is open source software.  Contributions are very welcome, though thi
 There has not been extensive testing, but seems reasonably stable.
 We are always looking for feedback.
 
+It is  **strongly** encouraged to use Python 2.7 or above. There are minor issues with 
+Python 2.6 operability. Some are taken care of with internal tests, however we do not
+intend to continue support for 2.6 for long.
+
 Please contact Nick Guy at above email or preferably open an [Issue](https://github.com/nguy/artview/issues) with any problems you encounter.

@@ -40,10 +40,6 @@ def restore_default_display(tooldict, field, scan_type):
     -----
     Disconnects all tools and resets limits and colormap to default.
     '''
-#    for tool in tooldict:
-#        if tooldict[tool] is not None:
-#            tooldict[tool].disconnect()
-#            tooldict[tool] = None
     tooldict = reset_tools(tooldict)
 
     display_limits, cmap = limits._default_limits(field, scan_type)
@@ -69,6 +65,7 @@ def reset_tools(tooldict):
             tooldict[tool] = None
 
     return tooldict
+
 ##################################
 # Mouse Click Value Class Method #
 ##################################
@@ -197,27 +194,6 @@ class ValueClick(QtGui.QMainWindow):
     def NewRadar(self, variable, value, flag=False):
         '''Update the display list when radar variable is changed.'''
         print("In NewRadar")
-
-###############################
-# Use a custom Method #
-###############################
-# Is this obsolete using the plugin/component interface?
-
-
-def custom_tool(tooldict):
-    '''Allow user to activate self-defined tool.
-
-    Parameters::
-    ----------
-
-    Notes::
-    -----
-    '''
-    if tooldict['zoompan'] is not None:
-        tooldict['zoompan'].disconnect()
-        tooldict['zoompan'] = None
-    msg = "This feature is inactive at present"
-    warn = common.ShowWarning(msg)
 
 ##########################
 # Zoom/Pan Class Methods #

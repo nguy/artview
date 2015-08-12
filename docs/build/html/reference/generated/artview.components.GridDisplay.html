@@ -63,12 +63,12 @@
 <h1>artview.components.GridDisplay<a class="headerlink" href="#artview-components-griddisplay" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="artview.components.GridDisplay">
-<em class="property">class </em><tt class="descclassname">artview.components.</tt><tt class="descname">GridDisplay</tt><big>(</big><em>Vgrid</em>, <em>Vfield</em>, <em>VlevelZ=None</em>, <em>VlevelY=None</em>, <em>VlevelX=None</em>, <em>Vlims=None</em>, <em>Vcmap=None</em>, <em>plot_type='gridZ'</em>, <em>name='Display'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/plot_grid.py#L28"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.GridDisplay" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">artview.components.</tt><tt class="descname">GridDisplay</tt><big>(</big><em>Vgrid</em>, <em>Vfield</em>, <em>VlevelZ=None</em>, <em>VlevelY=None</em>, <em>VlevelX=None</em>, <em>Vlims=None</em>, <em>Vcmap=None</em>, <em>plot_type='gridZ'</em>, <em>name='Display'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/plot_grid.py#L29"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.GridDisplay" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><tt class="xref py py-class docutils literal"><span class="pre">artview.core.core.Component</span></tt></a></p>
 <p>Class to create a display plot, using a Grid structure.</p>
 <dl class="method">
 <dt id="artview.components.GridDisplay.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>Vgrid</em>, <em>Vfield</em>, <em>VlevelZ=None</em>, <em>VlevelY=None</em>, <em>VlevelX=None</em>, <em>Vlims=None</em>, <em>Vcmap=None</em>, <em>plot_type='gridZ'</em>, <em>name='Display'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/plot_grid.py#L49"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.GridDisplay.__init__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__init__</tt><big>(</big><em>Vgrid</em>, <em>Vfield</em>, <em>VlevelZ=None</em>, <em>VlevelY=None</em>, <em>VlevelX=None</em>, <em>Vlims=None</em>, <em>Vcmap=None</em>, <em>plot_type='gridZ'</em>, <em>name='Display'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/plot_grid.py#L50"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.GridDisplay.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize the class to create display.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -199,11 +199,11 @@ change value back to variable.</p>
 <tr class="row-even"><td><a class="reference internal" href="artview.components.GridDisplay.setUILayout.html#artview.components.GridDisplay.setUILayout" title="artview.components.GridDisplay.setUILayout"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.setUILayout</span></tt></a>()</td>
 <td>Setup the button/display UI layout.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="artview.components.GridDisplay.toolCustomCmd.html#artview.components.GridDisplay.toolCustomCmd" title="artview.components.GridDisplay.toolCustomCmd"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.toolCustomCmd</span></tt></a>()</td>
-<td>Allow user to activate self-defined tool.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="artview.components.GridDisplay.toolDefaultCmd.html#artview.components.GridDisplay.toolDefaultCmd" title="artview.components.GridDisplay.toolDefaultCmd"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.toolDefaultCmd</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.GridDisplay.toolDefaultCmd.html#artview.components.GridDisplay.toolDefaultCmd" title="artview.components.GridDisplay.toolDefaultCmd"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.toolDefaultCmd</span></tt></a>()</td>
 <td>Restore the Display defaults.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.GridDisplay.toolResetCmd.html#artview.components.GridDisplay.toolResetCmd" title="artview.components.GridDisplay.toolResetCmd"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.toolResetCmd</span></tt></a>()</td>
+<td>Reset tools via disconnect.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="artview.components.GridDisplay.toolSelectRegionCmd.html#artview.components.GridDisplay.toolSelectRegionCmd" title="artview.components.GridDisplay.toolSelectRegionCmd"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.toolSelectRegionCmd</span></tt></a>()</td>
 <td>Creates and connects to Region of Interest instance.</td>
@@ -328,7 +328,7 @@ change value back to variable.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Aug 10, 2015.
+      Last updated on Aug 11, 2015.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
