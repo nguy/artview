@@ -1,0 +1,6 @@
+artview.components.PlotDisplay.cmapSelectCmd
+============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: PlotDisplay.cmapSelectCmd

@@ -1,0 +1,6 @@
+artview.components.LevelButtonWindow.SetLevelRadioButtonsRadar
+==============================================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: LevelButtonWindow.SetLevelRadioButtonsRadar

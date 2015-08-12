@@ -1,0 +1,6 @@
+artview.components.LevelButtonWindow.CreateLevelWidget
+======================================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: LevelButtonWindow.CreateLevelWidget

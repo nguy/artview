@@ -1,0 +1,6 @@
+artview.view.view
+=================
+
+.. currentmodule:: artview.view
+
+.. autofunction:: view

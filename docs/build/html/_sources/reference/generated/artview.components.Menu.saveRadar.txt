@@ -1,0 +1,6 @@
+artview.components.Menu.saveRadar
+=================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Menu.saveRadar

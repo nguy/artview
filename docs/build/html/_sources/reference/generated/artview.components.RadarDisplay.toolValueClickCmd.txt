@@ -1,0 +1,6 @@
+artview.components.RadarDisplay.toolValueClickCmd
+=================================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: RadarDisplay.toolValueClickCmd

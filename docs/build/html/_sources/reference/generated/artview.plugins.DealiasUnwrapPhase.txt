@@ -28,7 +28,6 @@ artview.plugins.DealiasUnwrapPhase
    .. rubric:: Attributes
    
    
-   .. autoattribute:: Vgatefilter
    .. autoattribute:: Vradar
    
    

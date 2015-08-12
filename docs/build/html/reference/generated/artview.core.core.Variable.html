@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -54,18 +52,18 @@
 <h1>artview.core.core.Variable<a class="headerlink" href="#artview-core-core-variable" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="artview.core.core.Variable">
-<em class="property">class </em><tt class="descclassname">artview.core.core.</tt><tt class="descname">Variable</tt><big>(</big><em>value=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/core/core.py#L18"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.core.core.Variable" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">artview.core.core.</tt><tt class="descname">Variable</tt><big>(</big><em>value=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/core/core.py#L16"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.core.core.Variable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtCore.QObject</span></tt></p>
-<p>Class that holds a value, changing that with change() emits a signal</p>
+<p>Class that holds a value, using change() emits a signal.</p>
 <p>There is no mandatory naming for instances of this Class, however ARTview
 components name variable according to the following table, using it is
 recommended:</p>
 <table border="1" class="docutils" id="shared-variable">
 <caption>Shared Variables Table</caption>
 <colgroup>
-<col width="14%" />
-<col width="39%" />
-<col width="47%" />
+<col width="17%" />
+<col width="29%" />
+<col width="55%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -75,33 +73,73 @@ recommended:</p>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>Vradar</td>
-<td>Hold radar open with pyart</td>
+<td>Hold radar open
+with pyart</td>
 <td><a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.core.Radar.html#pyart.core.Radar" title="(in Py-ART v1.4)"><tt class="xref py py-class docutils literal"><span class="pre">pyart.core.Radar</span></tt></a>
 instance</td>
 </tr>
 <tr class="row-odd"><td>Vgrid</td>
-<td>Hold grid open or generated
-with pyart</td>
+<td>Hold grid open or
+generated with
+pyart</td>
 <td><a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.core.Grid.html#pyart.core.Grid" title="(in Py-ART v1.4)"><tt class="xref py py-class docutils literal"><span class="pre">pyart.core.Grid</span></tt></a>
 instance</td>
 </tr>
-<tr class="row-even"><td>Vfield</td>
-<td>Name of a Field in radar file</td>
+<tr class="row-even"><td>Vcontainer</td>
+<td>Alias to Vradar or
+Vgrid</td>
+<td>Radar, Grid or None</td>
+</tr>
+<tr class="row-odd"><td>Vfield</td>
+<td>Name of a Field
+in radar file</td>
 <td>string in radar.fields.keys()</td>
 </tr>
-<tr class="row-odd"><td>Vtitl</td>
-<td>Tilt (sweep) of a radar file</td>
+<tr class="row-even"><td>Vtilt</td>
+<td>Tilt (sweep) of
+a radar file</td>
 <td>int between 0 and
-(number of sweeps)-1</td>
+(number of sweeps) - 1</td>
 </tr>
-<tr class="row-even"><td>Vlims</td>
+<tr class="row-odd"><td>VlevelZ</td>
+<td>Vertical level of
+a grid file</td>
+<td>int between 0 and
+nz - 1</td>
+</tr>
+<tr class="row-even"><td>VlevelY</td>
+<td>Latitudinal level
+of a grid file</td>
+<td>int between 0 and
+ny - 1</td>
+</tr>
+<tr class="row-odd"><td>VlevelX</td>
+<td>Longitudinal level
+of a grid file</td>
+<td>int between 0 and
+nx - 1</td>
+</tr>
+<tr class="row-even"><td>Vlevel</td>
+<td>Alias to Vtilt,
+VlevelZ, VlevelY
+or VlevelX</td>
+<td>positive integer</td>
+</tr>
+<tr class="row-odd"><td>Vlims</td>
 <td>Limits of display</td>
-<td>dict containing keys:&#8217;vmin&#8217;,
-&#8216;vmax&#8217;, &#8216;xmin&#8217;, &#8216;xmax&#8217;, &#8216;ymin&#8217;,
-&#8216;ymax&#8217; and holding float values</td>
+<td>dict containing keys: &#8216;xmin&#8217;,
+&#8216;xmax&#8217;, &#8216;ymin&#8217;, &#8216;ymax&#8217; and holding
+float values</td>
+</tr>
+<tr class="row-even"><td>Vcmap</td>
+<td>Colormap</td>
+<td>dict containing keys: &#8216;vmin&#8217; and
+&#8216;vmax&#8217; holding float values and key
+&#8216;cmap&#8217; holding colormap string name</td>
 </tr>
 <tr class="row-odd"><td>Vgatefilter</td>
-<td>Hold pyart GateFilter</td>
+<td>Hold pyart
+GateFilter</td>
 <td><a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.correct.GateFilter.html#pyart.correct.GateFilter" title="(in Py-ART v1.4)"><tt class="xref py py-class docutils literal"><span class="pre">pyart.correct.GateFilter</span></tt></a>
 instance</td>
 </tr>
@@ -117,9 +155,8 @@ changes in <tt class="file docutils literal"><span class="pre">artview/component
 </div>
 <dl class="method">
 <dt id="artview.core.core.Variable.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>value=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/core/core.py#L59"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.core.core.Variable.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>initialize</p>
-</dd></dl>
+<tt class="descname">__init__</tt><big>(</big><em>value=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/core/core.py#L79"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.core.core.Variable.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <p class="rubric">Methods</p>
 <table border="1" class="longtable docutils">
@@ -189,8 +226,8 @@ changes in <tt class="file docutils literal"><span class="pre">artview/component
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Jul 09, 2015.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Last updated on Aug 10, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

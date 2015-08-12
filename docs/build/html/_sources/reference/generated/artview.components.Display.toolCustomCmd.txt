@@ -1,6 +1,0 @@
-artview.components.Display.toolCustomCmd
-========================================
-
-.. currentmodule:: artview.components
-
-.. automethod:: Display.toolCustomCmd

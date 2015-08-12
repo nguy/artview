@@ -1,0 +1,6 @@
+artview.components.RadarDisplay.RngRingSelectCmd
+================================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: RadarDisplay.RngRingSelectCmd

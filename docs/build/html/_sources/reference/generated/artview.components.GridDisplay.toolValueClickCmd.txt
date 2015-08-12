@@ -1,0 +1,6 @@
+artview.components.GridDisplay.toolValueClickCmd
+================================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: GridDisplay.toolValueClickCmd

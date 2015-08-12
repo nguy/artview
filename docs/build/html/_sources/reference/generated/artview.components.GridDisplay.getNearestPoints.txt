@@ -1,0 +1,6 @@
+artview.components.GridDisplay.getNearestPoints
+===============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: GridDisplay.getNearestPoints

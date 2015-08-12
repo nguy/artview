@@ -21,7 +21,11 @@ scripts = {}
 for module in os.listdir(os.path.dirname(__file__)):
     if module.startswith("_") or module[-3:] != '.py':
         continue
-    tmp = __import__(module[:-3], locals(), globals())
+    if sys.version_info[0] < 3:
+        tmp = __import__(module[:-3], locals(), globals())
+    else:
+        import importlib
+        tmp = importlib.import_module('.'+module[:-3], __package__)
     try:
         scripts[module[:-3]] = tmp.run
         setattr(thismodule, module[:-3], tmp.run)

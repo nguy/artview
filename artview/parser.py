@@ -5,9 +5,17 @@ Parse the input code from execution program.
 """
 
 import argparse
+import sys
 
 # Get the version
-import version
+# AG - python 3 decided it doesn't like scripts inside modules.
+# I have read some posts about it and no one has a real solution.
+# http://stackoverflow.com/questions/16981921/relative-imports-in-python-3
+try:
+    import version
+except:
+    from . import version
+
 NAME = 'ARTview'
 VERSION = version.version
 
@@ -34,7 +42,7 @@ def parse(argv):
     # Directory argument now optional
     parser.add_argument('-d', '--directory', type=str,
                         help='directory to open', default='./')
-    parser.add_argument('-f', '--field', type=str, help='field to show',
+    parser.add_argument('-f', '--field', type=str, help='Field to show',
                         default=None)
     parser.add_argument('-F', '--file', type=str, help='File to show',
                         default=None)

@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -15,7 +13,7 @@
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
+        URL_ROOT:    './',
         VERSION:     '0.2.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
@@ -28,7 +26,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="ARTview 0.2.2 documentation" href="index.html" />
     <link rel="next" title="Tutorial: Writing your own Plugin" href="plugin_tutorial.html" />
-    <link rel="prev" title="artview.scripts.map_to_grid" href="reference/generated/artview.scripts.map_to_grid.html" /> 
+    <link rel="prev" title="artview.view.addGrid" href="reference/generated/artview.view.addGrid.html" /> 
   </head>
   <body>
     <div class="related">
@@ -47,7 +45,7 @@
           <a href="plugin_tutorial.html" title="Tutorial: Writing your own Plugin"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="reference/generated/artview.scripts.map_to_grid.html" title="artview.scripts.map_to_grid"
+          <a href="reference/generated/artview.view.addGrid.html" title="artview.view.addGrid"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">ARTview 0.2.2 documentation</a> &raquo;</li> 
       </ul>
@@ -106,7 +104,7 @@ simple thing you can do is start a single
 <p>This will open a Menu instance with name &#8220;Menu&#8221;, giving every new
 instance a different name is important for identifying them afterward.</p>
 <p>A slightly more useful component is a
-<a class="reference internal" href="reference/generated/artview.components.Display.html#artview.components.Display" title="artview.components.Display"><tt class="xref py py-class docutils literal"><span class="pre">Display</span></tt></a>, but this need a
+<a class="reference internal" href="reference/generated/artview.components.RadarDisplay.html#artview.components.RadarDisplay" title="artview.components.RadarDisplay"><tt class="xref py py-class docutils literal"><span class="pre">RadarDisplay</span></tt></a>, but this need a
 <a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.core.Radar.html#pyart.core.Radar" title="(in Py-ART v1.4)"><tt class="xref py py-class docutils literal"><span class="pre">pyart.core.Radar</span></tt></a> instance. Luckily Py-ART has some example we
 can use:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">artview</span>
@@ -125,7 +123,7 @@ can use:</p>
 <span class="n">Vtilt</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c">#  first sweep</span>
 
 <span class="c"># start display</span>
-<span class="n">display</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Display</span><span class="p">(</span><span class="n">Vradar</span><span class="p">,</span> <span class="n">Vfield</span><span class="p">,</span> <span class="n">Vtilt</span><span class="p">,</span>
+<span class="n">display</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">RadarDisplay</span><span class="p">(</span><span class="n">Vradar</span><span class="p">,</span> <span class="n">Vfield</span><span class="p">,</span> <span class="n">Vtilt</span><span class="p">,</span>
                                <span class="n">name</span><span class="o">=</span><span class="s">&quot;DisplayRadar&quot;</span><span class="p">)</span>
 
 <span class="c"># start program</span>
@@ -133,7 +131,7 @@ can use:</p>
 </pre></div>
 </div>
 <p>So here things start to get more complicated, the question is: why we
-can&#8217;t pass radar to <a class="reference internal" href="reference/generated/artview.components.Display.html#artview.components.Display" title="artview.components.Display"><tt class="xref py py-class docutils literal"><span class="pre">Display</span></tt></a>, but
+can&#8217;t pass radar to <a class="reference internal" href="reference/generated/artview.components.RadarDisplay.html#artview.components.RadarDisplay" title="artview.components.RadarDisplay"><tt class="xref py py-class docutils literal"><span class="pre">RadarDisplay</span></tt></a>, but
 rather need to put it inside <a class="reference internal" href="reference/generated/artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a>?
 The point is that we want display to be able to share this radar with
 other components, in C this could be done using pointers, this is kind of
@@ -151,7 +149,7 @@ files and put them in <tt class="xref py py-attr docutils literal"><span class="
 plot this files. This is simple: instead of creating a new
 <a class="reference internal" href="reference/generated/artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> we take it from
 <a class="reference internal" href="reference/generated/artview.components.Menu.html#artview.components.Menu" title="artview.components.Menu"><tt class="xref py py-class docutils literal"><span class="pre">Menu</span></tt></a> and pass to
-<a class="reference internal" href="reference/generated/artview.components.Display.html#artview.components.Display" title="artview.components.Display"><tt class="xref py py-class docutils literal"><span class="pre">Display</span></tt></a>:</p>
+<a class="reference internal" href="reference/generated/artview.components.RadarDisplay.html#artview.components.RadarDisplay" title="artview.components.RadarDisplay"><tt class="xref py py-class docutils literal"><span class="pre">RadarDisplay</span></tt></a>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">artview</span>
 <span class="kn">from</span> <span class="nn">PyQt4</span> <span class="kn">import</span> <span class="n">QtGui</span>
 
@@ -169,7 +167,7 @@ plot this files. This is simple: instead of creating a new
 <span class="n">Vtilt</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c">#  first sweep</span>
 
 <span class="c"># start display</span>
-<span class="n">display</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Display</span><span class="p">(</span><span class="n">Vradar</span><span class="p">,</span> <span class="n">Vfield</span><span class="p">,</span> <span class="n">Vtilt</span><span class="p">,</span>
+<span class="n">display</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">RadarDisplay</span><span class="p">(</span><span class="n">Vradar</span><span class="p">,</span> <span class="n">Vfield</span><span class="p">,</span> <span class="n">Vtilt</span><span class="p">,</span>
                                <span class="n">name</span><span class="o">=</span><span class="s">&quot;DisplayRadar&quot;</span><span class="p">)</span>
 
 <span class="c"># start program</span>
@@ -178,7 +176,7 @@ plot this files. This is simple: instead of creating a new
 </div>
 <p>So now we have the most simple script one would want.
 <a class="reference internal" href="reference/generated/artview.components.Menu.html#artview.components.Menu" title="artview.components.Menu"><tt class="xref py py-class docutils literal"><span class="pre">Menu</span></tt></a> opens a file and
-<a class="reference internal" href="reference/generated/artview.components.Display.html#artview.components.Display" title="artview.components.Display"><tt class="xref py py-class docutils literal"><span class="pre">Display</span></tt></a> plots it. But ARTview is much more
+<a class="reference internal" href="reference/generated/artview.components.RadarDisplay.html#artview.components.RadarDisplay" title="artview.components.RadarDisplay"><tt class="xref py py-class docutils literal"><span class="pre">RadarDisplay</span></tt></a> plots it. But ARTview is much more
 powerful, suppose you want the following: Compare side to side two fields
 of the same radar. One can just add an other display</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">artview</span>
@@ -200,7 +198,7 @@ of the same radar. One can just add an other display</p>
 <span class="n">Vtilt1</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c">#  first sweep</span>
 
 <span class="c"># start display</span>
-<span class="n">display1</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Display</span><span class="p">(</span><span class="n">Vradar1</span><span class="p">,</span> <span class="n">Vfield1</span><span class="p">,</span> <span class="n">Vtilt1</span><span class="p">,</span>
+<span class="n">display1</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">RadarDisplay</span><span class="p">(</span><span class="n">Vradar1</span><span class="p">,</span> <span class="n">Vfield1</span><span class="p">,</span> <span class="n">Vtilt1</span><span class="p">,</span>
                                 <span class="n">name</span><span class="o">=</span><span class="s">&quot;DisplayRadar&quot;</span><span class="p">)</span>
 
 <span class="c"># DISPLAY 2</span>
@@ -215,7 +213,7 @@ of the same radar. One can just add an other display</p>
 <span class="n">Vtilt2</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c">#  first sweep</span>
 
 <span class="c"># start display</span>
-<span class="n">display</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Display</span><span class="p">(</span><span class="n">Vradar2</span><span class="p">,</span> <span class="n">Vfield2</span><span class="p">,</span> <span class="n">Vtilt2</span><span class="p">,</span>
+<span class="n">display</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">RadarDisplay</span><span class="p">(</span><span class="n">Vradar2</span><span class="p">,</span> <span class="n">Vfield2</span><span class="p">,</span> <span class="n">Vtilt2</span><span class="p">,</span>
                                <span class="n">name</span><span class="o">=</span><span class="s">&quot;DisplayRadar&quot;</span><span class="p">)</span>
 
 <span class="c"># start program</span>
@@ -223,7 +221,7 @@ of the same radar. One can just add an other display</p>
 </pre></div>
 </div>
 <p>This script will open 1 <a class="reference internal" href="reference/generated/artview.components.Menu.html#artview.components.Menu" title="artview.components.Menu"><tt class="xref py py-class docutils literal"><span class="pre">Menu</span></tt></a> and 2
-<a class="reference internal" href="reference/generated/artview.components.Display.html#artview.components.Display" title="artview.components.Display"><tt class="xref py py-class docutils literal"><span class="pre">Display</span></tt></a>, both show the same file but
+<a class="reference internal" href="reference/generated/artview.components.RadarDisplay.html#artview.components.RadarDisplay" title="artview.components.RadarDisplay"><tt class="xref py py-class docutils literal"><span class="pre">RadarDisplay</span></tt></a>, both show the same file but
 different fields. But we have actually made a mistake, because the two
 Displays are also with different sweeps, that is, they start with the same
 one but if the user changes the sweep of the first this will not change
@@ -249,7 +247,7 @@ we just need to change 1 line: don&#8217;t create a new Vtilt
 <span class="n">Vtilt1</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c">#  first sweep</span>
 
 <span class="c"># start display</span>
-<span class="n">display1</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Display</span><span class="p">(</span><span class="n">Vradar1</span><span class="p">,</span> <span class="n">Vfield1</span><span class="p">,</span> <span class="n">Vtilt1</span><span class="p">,</span>
+<span class="n">display1</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">RadarDisplay</span><span class="p">(</span><span class="n">Vradar1</span><span class="p">,</span> <span class="n">Vfield1</span><span class="p">,</span> <span class="n">Vtilt1</span><span class="p">,</span>
                                 <span class="n">name</span><span class="o">=</span><span class="s">&quot;DisplayRadar&quot;</span><span class="p">)</span>
 
 <span class="c"># DISPLAY 2</span>
@@ -266,7 +264,7 @@ we just need to change 1 line: don&#8217;t create a new Vtilt
 </span><span class="hll"><span class="n">Vtilt2</span> <span class="o">=</span> <span class="n">Vtilt1</span>
 </span>
 <span class="c"># start display</span>
-<span class="n">display2</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Display</span><span class="p">(</span><span class="n">Vradar2</span><span class="p">,</span> <span class="n">Vfield2</span><span class="p">,</span> <span class="n">Vtilt2</span><span class="p">,</span>
+<span class="n">display2</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">RadarDisplay</span><span class="p">(</span><span class="n">Vradar2</span><span class="p">,</span> <span class="n">Vfield2</span><span class="p">,</span> <span class="n">Vtilt2</span><span class="p">,</span>
                                 <span class="n">name</span><span class="o">=</span><span class="s">&quot;DisplayRadar&quot;</span><span class="p">)</span>
 
 <span class="c"># start program</span>
@@ -286,7 +284,7 @@ keep changing your script every time. For that there is a tool that allow
 the user to change the sharing behavior of
 Components, that is connect/disconnect variables
 between components. This is the
-<a class="reference internal" href="reference/generated/artview.components.ComponentsControl.html#artview.components.ComponentsControl" title="artview.components.ComponentsControl"><tt class="xref py py-class docutils literal"><span class="pre">ComponentsControl</span></tt></a> and to get it running
+<tt class="xref py py-class docutils literal"><span class="pre">ComponentsControl</span></tt> and to get it running
 just add the following line to your script</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">control</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">ComponentsControl</span><span class="p">()</span>
 </pre></div>
@@ -322,16 +320,16 @@ components (components always accept a parent key), for instance</p>
 </div>
 <p>So we know how to close windows, what about opening new ones. This is more
 complicated, as for now some components can just be started a priory in
-the script, but some other like <a class="reference internal" href="reference/generated/artview.components.Display.html#artview.components.Display" title="artview.components.Display"><tt class="xref py py-class docutils literal"><span class="pre">Display</span></tt></a>
-and <a class="reference internal" href="reference/generated/artview.components.ComponentsControl.html#artview.components.ComponentsControl" title="artview.components.ComponentsControl"><tt class="xref py py-class docutils literal"><span class="pre">ComponentsControl</span></tt></a> have the <cite>GUIstart</cite>
+the script, but some other like <a class="reference internal" href="reference/generated/artview.components.RadarDisplay.html#artview.components.RadarDisplay" title="artview.components.RadarDisplay"><tt class="xref py py-class docutils literal"><span class="pre">RadarDisplay</span></tt></a>
+and <tt class="xref py py-class docutils literal"><span class="pre">ComponentsControl</span></tt> have the <cite>GUIstart</cite>
 method and can be started by the user at execution time, for that use the
-Menu method <a class="reference internal" href="reference/generated/artview.components.Menu.addComponentMenuItem.html#artview.components.Menu.addComponentMenuItem" title="artview.components.Menu.addComponentMenuItem"><tt class="xref py py-func docutils literal"><span class="pre">addComponentMenuItem</span></tt></a>, for
+Menu method <tt class="xref py py-func docutils literal"><span class="pre">addComponentMenuItem</span></tt>, for
 instance</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="c"># start Menu</span>
 <span class="n">menu</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="n">DirIn</span><span class="o">=</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;Menu&quot;</span><span class="p">)</span>
 
 <span class="c"># start Control</span>
-<span class="n">menu</span><span class="o">.</span><span class="n">addComponentMenuItem</span><span class="p">(</span><span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Display</span><span class="p">)</span>
+<span class="n">menu</span><span class="o">.</span><span class="n">addComponentMenuItem</span><span class="p">(</span><span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">RadarDisplay</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Now you may found Display at the components sub-menu and start a new one
@@ -398,8 +396,8 @@ However as for now if you want to put it there you should do two things:</p>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="reference/generated/artview.scripts.map_to_grid.html"
-                        title="previous chapter">artview.scripts.map_to_grid</a></p>
+  <p class="topless"><a href="reference/generated/artview.view.addGrid.html"
+                        title="previous chapter">artview.view.addGrid</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="plugin_tutorial.html"
                         title="next chapter">Tutorial: Writing your own Plugin</a></p>
@@ -441,15 +439,15 @@ However as for now if you want to put it there you should do two things:</p>
           <a href="plugin_tutorial.html" title="Tutorial: Writing your own Plugin"
              >next</a> |</li>
         <li class="right" >
-          <a href="reference/generated/artview.scripts.map_to_grid.html" title="artview.scripts.map_to_grid"
+          <a href="reference/generated/artview.view.addGrid.html" title="artview.view.addGrid"
              >previous</a> |</li>
         <li><a href="index.html">ARTview 0.2.2 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Jul 09, 2015.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Last updated on Aug 10, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

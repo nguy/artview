@@ -1,0 +1,6 @@
+artview.components.RadarDisplay.NewCmap
+=======================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: RadarDisplay.NewCmap

@@ -1,6 +1,0 @@
-artview.components.Display.toolZoomPanCmd
-=========================================
-
-.. currentmodule:: artview.components
-
-.. automethod:: Display.toolZoomPanCmd

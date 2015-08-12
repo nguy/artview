@@ -1,0 +1,6 @@
+artview.components.GridDisplay.toolSelectRegionCmd
+==================================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: GridDisplay.toolSelectRegionCmd

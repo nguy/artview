@@ -1,6 +1,0 @@
-artview.components.Display.NewTilt
-==================================
-
-.. currentmodule:: artview.components
-
-.. automethod:: Display.NewTilt

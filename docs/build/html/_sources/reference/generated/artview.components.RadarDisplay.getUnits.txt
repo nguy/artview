@@ -1,0 +1,6 @@
+artview.components.RadarDisplay.getUnits
+========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: RadarDisplay.getUnits

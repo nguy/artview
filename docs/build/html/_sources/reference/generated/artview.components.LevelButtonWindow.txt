@@ -1,0 +1,42 @@
+artview.components.LevelButtonWindow
+====================================
+
+.. currentmodule:: artview.components
+
+.. autoclass:: LevelButtonWindow
+   :show-inheritance:
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+         LevelButtonWindow.CreateLevelWidget
+         LevelButtonWindow.LevelSelectCmd
+         LevelButtonWindow.NewGrid
+         LevelButtonWindow.NewLevel
+         LevelButtonWindow.NewRadar
+         LevelButtonWindow.SetLevelRadioButtonsGrid
+         LevelButtonWindow.SetLevelRadioButtonsRadar
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+   
+   
+   .. autoattribute:: Vcmap
+   .. autoattribute:: Vgrid
+   .. autoattribute:: Vlevel
+   .. autoattribute:: VlevelX
+   .. autoattribute:: VlevelY
+   .. autoattribute:: VlevelZ
+   .. autoattribute:: Vradar
+   .. autoattribute:: Vtilt
+   
+   
+

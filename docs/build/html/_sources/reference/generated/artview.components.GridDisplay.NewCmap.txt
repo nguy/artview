@@ -1,0 +1,6 @@
+artview.components.GridDisplay.NewCmap
+======================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: GridDisplay.NewCmap

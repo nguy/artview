@@ -1,6 +1,0 @@
-artview.components.Display.getStatusBar
-=======================================
-
-.. currentmodule:: artview.components
-
-.. automethod:: Display.getStatusBar

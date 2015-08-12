@@ -19,16 +19,18 @@ artview.components.Menu
          Menu.LaunchApp
          Menu.addAboutMenu
          Menu.addComponent
-         Menu.addComponentMenu
-         Menu.addComponentMenuItem
          Menu.addFileAdvanceMenu
          Menu.addFileMenu
          Menu.addLayoutMenu
          Menu.addLayoutMenuItem
          Menu.addLayoutWidget
+         Menu.addPluginMenu
+         Menu.addPluginMenuItem
          Menu.keyPressEvent
          Menu.removeLayoutMenuItem
          Menu.removeLayoutWidget
+         Menu.saveGrid
+         Menu.saveRadar
          Menu.showFileDialog
          Menu.startComponent
    

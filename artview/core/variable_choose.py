@@ -66,7 +66,7 @@ class VariableChoose(QtGui.QDialog):
     ########################
 
     def setupUi(self):
-        '''Build main layout'''
+        '''Build main layout.'''
 
         self.model = QtGui.QStandardItemModel()
         self.addItems()
@@ -118,7 +118,7 @@ class VariableChoose(QtGui.QDialog):
             self.cancel()
 
     def _clearLayout(self, layout):
-        '''recursively remove items from layout'''
+        '''Recursively remove items from layout.'''
         while layout.count():
             item = layout.takeAt(0)
             widget = item.widget()

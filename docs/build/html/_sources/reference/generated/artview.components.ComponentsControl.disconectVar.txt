@@ -1,6 +1,0 @@
-artview.components.ComponentsControl.disconectVar
-=================================================
-
-.. currentmodule:: artview.components
-
-.. automethod:: ComponentsControl.disconectVar
