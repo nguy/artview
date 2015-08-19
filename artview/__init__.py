@@ -44,7 +44,7 @@ else:
     from .version import version as __version__
 
     import matplotlib
-    matplotlib.use('Agg')
+    matplotlib.use('Qt4Agg')
     matplotlib.rcParams['backend.qt4']='PyQt4'
 
     # import subpackages
