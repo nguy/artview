@@ -43,6 +43,10 @@ else:
     from .version import git_revision as __git_revision__
     from .version import version as __version__
 
+    import matplotlib
+    matplotlib.use('Agg')
+    matplotlib.rcParams['backend.qt4']='PyQt4'
+
     # import subpackages
     from . import core
     from . import components
