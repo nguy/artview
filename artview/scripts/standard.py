@@ -77,8 +77,8 @@ def run(DirIn=None, filename=None, field=None):
     height = desktop_rect.height()
     width = desktop_rect.width()
 
-    menu_width = 300
-    menu_height = 180
+    menu_width = 400
+    menu_height = 200
 
     MainMenu.setGeometry(0, 0, menu_width, menu_height)
 

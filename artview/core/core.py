@@ -8,6 +8,9 @@ Class instance to create Variables and establish change signals.
 # Load the needed packages
 from PyQt4 import QtGui, QtCore
 import sys
+import pickle
+
+from . import common
 
 # keet track of all components, this is not fundamental, but may be usefull
 # for some control utilities
@@ -92,7 +95,7 @@ class Variable(QtCore.QObject):
         strong : bool, optional
             Define if this is a strong, or a weak change. This is a somewhat
             subjective decision: strong is default.
-            
+
             A weak change should be used to indicate to the slot that the 
             change should not trigger any costly computation. 
             Reasons for this are: When initializing a variable, it is likely 
@@ -176,7 +179,38 @@ class Component(QtGui.QMainWindow):
         self.parent = parent
         self.setWindowTitle(name)
         self.sharedVariables = {}
+        self.variableButtons = {}
         componentsList.append(self)
+
+        # build Bar
+        self.menubar = self.menuBar()
+        self.variableBar = QtGui.QWidget()
+        self.variableBar.setToolTip('Drag-Drop Bar')
+        self.variableBarLayout = QtGui.QVBoxLayout()
+        self.variableBarLayout.setSizeConstraint(QtGui.QLayout.SetFixedSize)
+        self.variableBar.setLayout(self.variableBarLayout)
+        self.variableBar.hide()
+        self.variableBarLayout.addWidget(QtGui.QLabel("Drag-Drop\nVariables\n   here. "))
+        self.action = self.menubar.addAction("Variables")
+        self.action.triggered.connect(self.variablesShowHide)
+
+        # Create GUI for Variables Bar
+        self.componentCentralWidget = QtGui.QWidget()
+        super(Component, self).setCentralWidget(self.componentCentralWidget)
+        self.componentCentralLayout = QtGui.QHBoxLayout(self.componentCentralWidget)
+        self.componentCentralLayout.setSpacing(0)
+        self.componentCentralLayout.setMargin(0)
+        self.componentCentralLayout.addWidget(self.variableBar)
+        self.componentCentralLayout.setAlignment(self.variableBar, QtCore.Qt.AlignTop)
+
+    def setCentralWidget(self, widget):
+        self.componentCentralLayout.addWidget(widget)
+
+    def variablesShowHide(self):
+        if self.variableBar.isVisible():
+            self.variableBar.hide()
+        else:
+            self.variableBar.show()
 
     def connectAllVariables(self):
         '''Call connectSharedVariable for all keys in sharedVariables.'''
@@ -190,8 +224,13 @@ class Component(QtGui.QMainWindow):
 
     def connectSharedVariable(self, var):
         '''Connect variable 'var' to its slot as defined in
-        sharedVariables dictionary.'''
+        sharedVariables dictionary. Also add variable drag-drop button.'''
         if var in self.sharedVariables:
+            if var not in self.variableButtons:
+                self.variableButtons[var] = VariableButton(var, self)
+                self.variableBarLayout.addWidget(self.variableButtons[var])
+            self.variableButtons[var].show()
+
             if self.sharedVariables[var] is not None:
                 QtCore.QObject.connect(
                     getattr(self, var), QtCore.SIGNAL("ValueChanged"),
@@ -202,8 +241,10 @@ class Component(QtGui.QMainWindow):
 
     def disconnectSharedVariable(self, var):
         '''Connect variable 'var' to its slot as defined in
-        sharedVariables dictionary.'''
+        sharedVariables dictionary. Also remove variable drag-drop button.'''
         if var in self.sharedVariables:
+            if var in self.variableButtons:
+                self.variableButtons[var].hide()
             if self.sharedVariables[var] is not None:
                 QtCore.QObject.disconnect(
                     getattr(self, var), QtCore.SIGNAL("ValueChanged"),
@@ -227,3 +268,85 @@ class Component(QtGui.QMainWindow):
         componentsList.remove(self)
         self.disconnectAllVariables()
         super(Component, self).closeEvent(QCloseEvent)
+
+
+class QMenuWithLayout(QtGui.QMenu):
+    '''Create a Menu with a layout attribute.'''
+
+    def __init__(self, *args, **kwargs):
+        super(QMenuWithLayout, self).__init__(*args, **kwargs)
+        self.layout = QtGui.QVBoxLayout()
+        self.layout.setSizeConstraint(QtGui.QLayout.SetFixedSize)
+        self.setLayout(self.layout)
+
+
+class VariableButton(QtGui.QPushButton):
+
+    def __init__(self, varName, parent):
+        super(VariableButton, self).__init__(varName[1::], parent)
+        print (varName)
+        self.variableName = varName
+        self.component = parent
+
+        self.setAcceptDrops(True)
+        self.pressed.connect(self.startDrag)
+
+    def startDrag(self):
+        drag = QtGui.QDrag(self)
+        mimeData = QtCore.QMimeData()
+        data = (self.variableName, componentsList.index(self.component))
+        mimeData.setData('MoveQLabel', QtCore.QByteArray(pickle.dumps(data)))
+
+        drag.setMimeData(mimeData)
+        drag.start(QtCore.Qt.LinkAction)
+
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasFormat('MoveQLabel'):
+            event.accept()
+        else:
+            event.reject()
+
+
+    def dropEvent(self, event):
+        serial = event.mimeData().data('MoveQLabel')
+        data = pickle.loads(serial)
+        component = componentsList[data[1]]
+        variableName = data[0]
+        print (self.component.name, self.variableName,
+                     component.name , variableName)
+        if component != self.component or variableName != self.variableName:
+            newVar = getattr(component, variableName)
+            myVar = getattr(self.component, self.variableName)
+            if myVar != newVar:
+                aux = common.ShowQuestion(
+                    "Current Variable: %s::%s\n" %
+                    (self.component.name, self.variableName) +
+                    "New Variable:     %s::%s\n" %
+                    (component.name , variableName) +
+                    "Replace Current Variable with New One?")
+                if aux == QtGui.QMessageBox.Ok:
+                    # Disconect old Variable
+                    self.component.disconnectSharedVariable(self.variableName)
+                    # my = new
+                    setattr(self.component, self.variableName, newVar)
+                    # Connect new Variable
+                    self.component.connectSharedVariable(self.variableName)
+                    # just to emit signal
+                    newVar.change(newVar.value)
+            else:
+                aux = common.ShowQuestion(
+                    "Current Variable: %s::%s\n" %
+                    (self.component.name, self.variableName) +
+                    "New Variable:     %s::%s\n" %
+                    (component.name , variableName) +
+                    "Variable are the same, unlink them?")
+                if aux == QtGui.QMessageBox.Ok:
+                    # Disconect old Variable
+                    self.component.disconnectSharedVariable(self.variableName)
+                    # my = new
+                    var = Variable()
+                    setattr(self.component, self.variableName, var)
+                    # Connect new Variable
+                    self.component.connectSharedVariable(self.variableName)
+                    # just to emit signal
+                    var.change(myVar.value)
