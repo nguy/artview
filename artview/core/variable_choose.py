@@ -11,7 +11,7 @@ from functools import partial
 
 from . import core
 from . import common
-
+import pickle
 
 class VariableChoose(QtGui.QDialog):
     '''
@@ -126,3 +126,29 @@ class VariableChoose(QtGui.QDialog):
                 widget.deleteLater()
             else:
                 self._clearLayout(item.layout())
+
+class VariableDropBox(QtGui.QFrame):
+    '''Create a Label box where the use can drop a variable.'''
+
+    def __init__(self, label):
+        '''Initialize the class to create the interface.'''
+        super(VariableDropBox, self).__init__()
+        self.setFrameShape(QtGui.QFrame.Box)
+        layout = QtGui.QVBoxLayout(self)
+        layout.addWidget(QtGui.QLabel(label))
+        self.setAcceptDrops(True)
+
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasFormat('MoveQLabel'):
+            event.accept()
+        else:
+            event.reject()
+
+    def dropEvent(self, event):
+        '''Emit the Dropped signal with the dropped variable.'''
+        serial = event.mimeData().data('MoveQLabel')
+        data = pickle.loads(serial)
+        component = core.componentsList[data[1]]
+        variableName = data[0]
+        newVar = getattr(component, variableName)
+        self.emit(QtCore.SIGNAL("Dropped"), newVar)

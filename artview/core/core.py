@@ -95,7 +95,7 @@ class Variable(QtCore.QObject):
         strong : bool, optional
             Define if this is a strong, or a weak change. This is a somewhat
             subjective decision: strong is default.
-            
+
             A weak change should be used to indicate to the slot that the 
             change should not trigger any costly computation. 
             Reasons for this are: When initializing a variable, it is likely 
@@ -179,6 +179,7 @@ class Component(QtGui.QMainWindow):
         self.parent = parent
         self.setWindowTitle(name)
         self.sharedVariables = {}
+        self.variableButtons = {}
         componentsList.append(self)
 
         # build Bar
@@ -206,7 +207,6 @@ class Component(QtGui.QMainWindow):
         self.componentCentralLayout.addWidget(widget)
 
     def variablesShowHide(self):
-        print ("haha")
         if self.variableBar.isVisible():
             self.variableBar.hide()
         else:
@@ -216,8 +216,6 @@ class Component(QtGui.QMainWindow):
         '''Call connectSharedVariable for all keys in sharedVariables.'''
         for var in self.sharedVariables.keys():
             self.connectSharedVariable(var)
-            button = VariableButton(var, self)
-            self.variableBarLayout.addWidget(button)
 
     def disconnectAllVariables(self):
         '''Call connectSharedVariable for all keys in sharedVariables.'''
@@ -226,8 +224,13 @@ class Component(QtGui.QMainWindow):
 
     def connectSharedVariable(self, var):
         '''Connect variable 'var' to its slot as defined in
-        sharedVariables dictionary.'''
+        sharedVariables dictionary. Also add variable drag-drop button.'''
         if var in self.sharedVariables:
+            if var not in self.variableButtons:
+                self.variableButtons[var] = VariableButton(var, self)
+                self.variableBarLayout.addWidget(self.variableButtons[var])
+            self.variableButtons[var].show()
+
             if self.sharedVariables[var] is not None:
                 QtCore.QObject.connect(
                     getattr(self, var), QtCore.SIGNAL("ValueChanged"),
@@ -238,8 +241,10 @@ class Component(QtGui.QMainWindow):
 
     def disconnectSharedVariable(self, var):
         '''Connect variable 'var' to its slot as defined in
-        sharedVariables dictionary.'''
+        sharedVariables dictionary. Also remove variable drag-drop button.'''
         if var in self.sharedVariables:
+            if var in self.variableButtons:
+                self.variableButtons[var].hide()
             if self.sharedVariables[var] is not None:
                 QtCore.QObject.disconnect(
                     getattr(self, var), QtCore.SIGNAL("ValueChanged"),
