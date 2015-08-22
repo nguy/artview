@@ -7,6 +7,11 @@ Class to select a Region of interest in Display.
 import numpy as np
 
 from PyQt4 import QtGui, QtCore
+
+#import matplotlib
+#matplotlib.use('Qt4Agg')
+#matplotlib.rcParams['backend.qt4']='PyQt4'
+
 from matplotlib.path import Path
 from matplotlib.lines import Line2D
 import csv

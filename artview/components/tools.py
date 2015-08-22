@@ -13,6 +13,10 @@ import csv
 from . import limits
 from ..core import common
 
+#import matplotlib
+#matplotlib.use('Qt4Agg')
+#matplotlib.rcParams['backend.qt4']='PyQt4'
+
 from matplotlib.lines import Line2D
 from matplotlib.path import Path
 

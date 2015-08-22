@@ -9,7 +9,10 @@ import os
 import pyart
 
 from PyQt4 import QtGui, QtCore
-import matplotlib
+
+#import matplotlib
+#matplotlib.use('Qt4Agg')
+#matplotlib.rcParams['backend.qt4']='PyQt4'
 
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as \
@@ -670,7 +673,6 @@ class RadarDisplay(Component):
     def _set_figure_canvas(self):
         '''Set the figure canvas to draw in window area.'''
         self.canvas = FigureCanvasQTAgg(self.fig)
-        print "hhhhhhhhhhhaaaa",isinstance(self.canvas, QtGui.QWidget)
         # Add the widget to the canvas
         self.layout.addWidget(self.canvas, 1, 0, 7, 6)
 
