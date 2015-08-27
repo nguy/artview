@@ -92,11 +92,11 @@ class Variable(QtCore.QObject):
         strong : bool, optional
             Define if this is a strong, or a weak change. This is a somewhat
             subjective decision: strong is default.
-            
-            A weak change should be used to indicate to the slot that the 
-            change should not trigger any costly computation. 
-            Reasons for this are: When initializing a variable, it is likely 
-            to change again shortly, or another more important variable is 
+
+            A weak change should be used to indicate to the slot that the
+            change should not trigger any costly computation.
+            Reasons for this are: When initializing a variable, it is likely
+            to change again shortly, or another more important variable is
             being changed as well etc.
 
             .. note::
@@ -145,6 +145,9 @@ class ComponentsList(QtCore.QObject):
 
     def __len__(self):
         return len(self.list)
+
+    def __repr__(self):
+        return self.list.__repr__()
 
 componentsList = ComponentsList()
 
