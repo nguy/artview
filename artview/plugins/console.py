@@ -63,7 +63,6 @@ class AccessTerminal(core.Component):
         '''Use :py:func:`code.interact` to acess python terminal'''
         #separe in thread to allow conflict with running Qt Application
         import threading
-        print artview
         banner = ("HELLO: this is an iteractive python console so you can\n" +
                   "acess ARTview from the incide and manipulate the data\n" +
                   "directly. You have acess to two variables:\n" +
@@ -72,16 +71,15 @@ class AccessTerminal(core.Component):
                   "    'artvew': ARM Radar Toolkit Viewer\n" +
                   "To leave and go back to grafical ARTview press ctrl+D\n" +
                   "in unix and OXS or ctrl+Z in Windows.")
-        thread = threading.Thread(
+        self.thread = threading.Thread(
             target=code.interact,
             kwargs={'banner': banner,
                     'readfunc': None,
                     'local': {'components': core.componentsList, 'pyart': pyart,
                               'artview': artview}}
             )
-        thread.start()
-        thread.join()
-
+        self.thread.start()
+        #thread.join()
 
 
 _plugins = [AccessTerminal]
