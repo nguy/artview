@@ -65,7 +65,7 @@ class Variable(QtCore.QObject):
         |           |                   | 'cmap' holding colormap string name|
         +-----------+-------------------+------------------------------------+
         |Vgatefilter| Hold pyart        |:py:class:`pyart.correct.GateFilter`|
-        |           | GateFilter        |instance                            |
+        |           | GateFilter        |instance or None                    |
         +-----------+-------------------+------------------------------------+
 
     .. note::
