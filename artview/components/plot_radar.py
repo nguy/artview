@@ -42,6 +42,7 @@ class RadarDisplay(Component):
     Vtilt = None  # : see :ref:`shared_variable`
     Vlims = None  # : see :ref:`shared_variable`
     Vcmap = None  # : see :ref:`shared_variable`
+    Vgatefilter = None  # : see :ref:`shared_variable`
 
     @classmethod
     def guiStart(self, parent=None):
@@ -50,7 +51,7 @@ class RadarDisplay(Component):
         return self(**args), True
 
     def __init__(self, Vradar, Vfield, Vtilt, Vlims=None, Vcmap=None,
-                 name="RadarDisplay", parent=None):
+                 Vgatefilter=None, name="RadarDisplay", parent=None):
         '''
         Initialize the class to create display.
 
@@ -69,6 +70,9 @@ class RadarDisplay(Component):
         Vcmap : :py:class:`~artview.core.core.Variable` instance
             Colormap signal variable.
             A value of None will instantiate a colormap variable.
+        Vgatefilter : :py:class:`~artview.core.core.Variable` instance
+            Gatefilter signal variable.
+            A value of None will instantiate a empty variable.
         name : string
             Display window name.
         parent : PyQt instance
@@ -100,11 +104,17 @@ class RadarDisplay(Component):
         else:
             self.Vcmap = Vcmap
 
+        if Vgatefilter is None:
+            self.Vgatefilter = Variable(None)
+        else:
+            self.Vgatefilter = Vgatefilter
+
         self.sharedVariables = {"Vradar": self.NewRadar,
                                 "Vfield": self.NewField,
                                 "Vtilt": self.NewTilt,
                                 "Vlims": self.NewLims,
-                                "Vcmap": self.NewCmap, }
+                                "Vcmap": self.NewCmap,
+                                "Vgatefilter": self.NewGatefilter}
 
         # Connect the components
         self.connectAllVariables()
@@ -472,6 +482,18 @@ class RadarDisplay(Component):
         if strong and self.Vradar.value is not None:
             self._update_plot()
 
+    def NewGatefilter(self, variable, value, strong):
+        '''
+        Slot for 'ValueChanged' signal of
+        :py:class:`Vgatefilter <artview.core.core.Variable>`.
+
+        This will:
+
+        * If strong update: update plot
+        '''
+        if strong and self.Vradar.value is not None:
+            self._update_plot()
+
     def NewTilt(self, variable, value, strong):
         '''
         Slot for 'ValueChanged' signal of
@@ -699,6 +721,7 @@ class RadarDisplay(Component):
         title = self.title
         limits = self.Vlims.value
         cmap = self.Vcmap.value
+        gatefilter = self.Vgatefilter.value
 
         if self.plot_type == "radarAirborne":
             self.display = pyart.graph.RadarDisplay_Airborne(self.Vradar.value)
@@ -706,7 +729,7 @@ class RadarDisplay(Component):
             self.plot = self.display.plot_sweep_grid(
                 self.Vfield.value, vmin=cmap['vmin'],
                 vmax=cmap['vmax'], colorbar_flag=False, cmap=cmap['cmap'],
-                ax=self.ax, fig=self.fig, title=title)
+                gatefilter=gatefilter, ax=self.ax, fig=self.fig, title=title)
             self.display.plot_grid_lines()
 
         elif self.plot_type == "radarPpi":
@@ -716,7 +739,7 @@ class RadarDisplay(Component):
                 self.Vfield.value, self.Vtilt.value,
                 vmin=cmap['vmin'], vmax=cmap['vmax'],
                 colorbar_flag=False, cmap=cmap['cmap'],
-                ax=self.ax, fig=self.fig, title=self.title)
+                gatefilter=gatefilter, ax=self.ax, fig=self.fig, title=title)
             # Add range rings
             if self.RngRing:
                 self.display.plot_range_rings(self.RNG_RINGS, ax=self.ax)
@@ -730,7 +753,7 @@ class RadarDisplay(Component):
                 self.Vfield.value, self.Vtilt.value,
                 vmin=cmap['vmin'], vmax=cmap['vmax'],
                 colorbar_flag=False, cmap=cmap['cmap'],
-                ax=self.ax, fig=self.fig, title=self.title)
+                gatefilter=gatefilter, ax=self.ax, fig=self.fig, title=title)
             # Add range rings
             if self.RngRing:
                 self.display.plot_range_rings(self.RNG_RINGS, ax=self.ax)
