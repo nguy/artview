@@ -89,7 +89,7 @@ class GateFilter(core.Component):
 
         self.layout.addLayout(self.generalLayout, 0, 0, 1, 2)
 
-        self.startPlotDisplay()
+        self.AddCorrectedFields()
 
         self.newRadar(None, None, True)
         self.newGateFilter(None, None, True)
@@ -206,15 +206,8 @@ class GateFilter(core.Component):
 
         return groupBox
 
-    def startPlotDisplay(self):
+    def AddCorrectedFields(self):
         '''Launch a display window to show the filter application.'''
-        if self.field is None:
-            import pyart
-            field = pyart.config.get_field_name('reflectivity')
-#            field = _parse_field(self.Vradar.value, field)
-        else:
-            field = self.field
-
         # Add fields for each variable for filters
         for dupfield in self.Vradar.value.fields.keys():
             data = self.Vradar.value.fields[dupfield]['data'][:]
@@ -319,8 +312,8 @@ class GateFilter(core.Component):
         if self.Vradar.value is None:
             common.ShowWarning("Radar is None, can not perform filtering.")
             return
-
-        self.Vgatefilter = pyart.correct.GateFilter(self.Vradar.value, exclude_based=True)
+        print(np.sum(self.Vradar.value.fields['reflectivity']['data'].mask))
+        self.Vgatefilter.value = pyart.correct.GateFilter(self.Vradar.value, exclude_based=True)
 
         # Clear flags from previous filter application or instantiate if first
         args = {}
@@ -365,7 +358,7 @@ class GateFilter(core.Component):
                         if operator == "inside":
                         
                             try:
-                                self.Vgatefilter.exclude_inside(
+                                self.Vgatefilter.value.exclude_inside(
                                  filt, float(val1), float(val2))
                             except:
                                 import traceback
@@ -374,7 +367,7 @@ class GateFilter(core.Component):
                                         error)
                         else:
                             try:
-                                self.Vgatefilter.exclude_outside(
+                                self.Vgatefilter.value.exclude_outside(
                                  filt, float(val1), float(val2))
                             except:
                                 import traceback
@@ -388,7 +381,7 @@ class GateFilter(core.Component):
                     for filt in filt_flds:
                         if operator == "<":
                             try:
-                                self.Vgatefilter.exclude_below(
+                                self.Vgatefilter.value.exclude_below(
                                   filt, float(val1), inclusive=True)
                             except:
                                 import traceback
@@ -397,7 +390,7 @@ class GateFilter(core.Component):
                                         error)
                         elif operator == ">":
                             try:
-                                self.Vgatefilter.exclude_above(
+                                self.Vgatefilter.value.exclude_above(
                                   filt, float(val1), inclusive=True)
                             except:
                                 import traceback
@@ -411,7 +404,7 @@ class GateFilter(core.Component):
                     for filt in filt_flds:
                         if operator == "=":
                             try:
-                                self.Vgatefilter.exclude_equal(
+                                self.Vgatefilter.value.exclude_equal(
                                   filt, float(val1))
                             except:
                                 import traceback
@@ -420,7 +413,7 @@ class GateFilter(core.Component):
                                         error)
                         elif operator == "!=":
                             try:
-                                self.Vgatefilter.exclude_not_equal(
+                                self.Vgatefilter.value.exclude_not_equal(
                                   filt, float(val1))
                             except:
                                 import traceback
@@ -429,7 +422,7 @@ class GateFilter(core.Component):
                                         error)
                         elif operator == "<":
                             try:
-                                self.Vgatefilter.exclude_below(
+                                self.Vgatefilter.value.exclude_below(
                                   filt, float(val1), inclusive=False)
                             except:
                                 import traceback
@@ -438,7 +431,7 @@ class GateFilter(core.Component):
                                         error)
                         elif operator == ">":
                             try:
-                                self.Vgatefilter.exclude_above(
+                                self.Vgatefilter.value.exclude_above(
                                   filt, float(val1), inclusive=False)
                             except:
                                 import traceback
@@ -487,7 +480,8 @@ class GateFilter(core.Component):
 #                 return
 #             else:
 #                 strong_update = True
-
+        print(np.sum(self.Vradar.value.fields['corr_reflectivity']['data'].mask))
+        print(np.sum(self.Vgatefilter.value.gate_excluded))
         # add fields and update
         self.Vgatefilter.change(self.Vgatefilter.value, strong_update)
         self.Vradar.change(self.Vradar.value, strong_update)
