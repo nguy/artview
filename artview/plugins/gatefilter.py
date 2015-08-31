@@ -480,11 +480,11 @@ class GateFilter(core.Component):
 #                 return
 #             else:
 #                 strong_update = True
-        print(np.sum(self.Vradar.value.fields['corr_reflectivity']['data'].mask))
         print(np.sum(self.Vgatefilter.value.gate_excluded))
         # add fields and update
         self.Vgatefilter.change(self.Vgatefilter.value, strong_update)
         self.Vradar.change(self.Vradar.value, strong_update)
+        print(np.sum(self.Vradar.value.fields['corr_reflectivity']['data'].mask))
 #        self.plot._update_plot()
 
     def _clearLayout(self, layout):

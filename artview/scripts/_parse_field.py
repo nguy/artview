@@ -2,7 +2,7 @@ import pyart
 
 Zlike = ['CZ', 'DZ', 'AZ', 'Z',
 'dbz', 'DBZ', 'dBZ', 'DBZ_S', 'DBZ_K',
-'reflectivity_horizontal', 'DBZH',
+'reflectivity_horizontal', 'DBZH', 'corr_reflectivity',
 ]
 
 def _parse_field(container, field):
