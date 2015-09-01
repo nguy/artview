@@ -9,7 +9,7 @@ Class instance to create Variables and establish change signals.
 from PyQt4 import QtGui, QtCore
 import sys
 
-# keet track of all components, this is not fundamental, but may be usefull
+# keep track of all components, this is not fundamental, but may be useful
 # for some control utilities
 
 
@@ -90,7 +90,7 @@ class Variable(QtCore.QObject):
             New Value to be assigned to the variable.
         [Optional]
         strong : bool, optional
-            Define if this is a strong, or a weak change. This is a somewhat
+            Define if this is a strong or weak change. This is a somewhat
             subjective decision: strong is default.
 
             A weak change should be used to indicate to the slot that the
@@ -115,7 +115,7 @@ class Variable(QtCore.QObject):
 class ComponentsList(QtCore.QObject):
     '''
     Keep track of Components in a list and emit signals.
-    Methods append and remove are provided and emit signals,
+    Methods 'append' and 'remove' are provided and emit signals,
     direct acess to the list is allowed with 'ComponentList.list',
     but not recomended.'''
 
@@ -154,7 +154,7 @@ componentsList = ComponentsList()
 
 class Component(QtGui.QMainWindow):
     '''
-    Abstract class for an ART-view component.
+    Abstract class for an ARTview component.
     '''
 
     def __init__(self, name="Component", parent=None, flags=QtCore.Qt.Widget):

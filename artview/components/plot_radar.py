@@ -492,6 +492,7 @@ class RadarDisplay(Component):
         * If strong update: update plot
         '''
         if strong and self.Vradar.value is not None:
+            print("NEWGATEFILTER")
             self._update_plot()
 
     def NewTilt(self, variable, value, strong):

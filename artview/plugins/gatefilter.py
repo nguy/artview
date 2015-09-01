@@ -66,8 +66,8 @@ class GateFilter(core.Component):
         else:
             self.Vgatefilter = Vgatefilter
 
-        self.sharedVariables = {"Vradar": None,
-                                "Vgatefilter": None}
+        self.sharedVariables = {"Vradar": None,#self.newRadar,
+                                "Vgatefilter": None,}#self.newGateFilter}#None}
         self.connectAllVariables()
         self.field = None
 
@@ -89,10 +89,8 @@ class GateFilter(core.Component):
 
         self.layout.addLayout(self.generalLayout, 0, 0, 1, 2)
 
-        self.AddCorrectedFields()
-
-        self.newRadar(None, None, True)
-        self.newGateFilter(None, None, True)
+#        self.newRadar(None, None, True)
+#        self.newGateFilter(None, None, True)
 
         self.show()
 
@@ -206,14 +204,6 @@ class GateFilter(core.Component):
 
         return groupBox
 
-    def AddCorrectedFields(self):
-        '''Launch a display window to show the filter application.'''
-        # Add fields for each variable for filters
-        for dupfield in self.Vradar.value.fields.keys():
-            data = self.Vradar.value.fields[dupfield]['data'][:]
-            self.Vradar.value.add_field_like(dupfield, "corr_" + dupfield,
-                                         data, replace_existing=False)
-
     #########################
     ##  Selection Methods  ##
     #########################
@@ -234,8 +224,12 @@ class GateFilter(core.Component):
 
     def newGateFilter(self, variable, value, strong):
         '''respond to change in radar.'''
+##        if strong and self.Vradar.value is not None:
+            
         if self.Vgatefilter.value is None:
             return
+##        else:
+##            self.Vgatefilter.change(value, strong)
 
     def displayHelp(self):
         '''Display Py-Art's docstring for help.'''
@@ -280,8 +274,11 @@ class GateFilter(core.Component):
         text += "<i>Commands</i>:<br><br>"
         text += "gatefilter = pyart.correct.GateFilter(radar, exclude_based=True)<br>"
 
-        for cmd in self.filterscript:
-            text += cmd + "\n"
+        try:
+            for cmd in self.filterscript:
+                text += cmd + "\n"
+        except:
+            common.ShowWarning("Must apply filter first.")
 
         common.ShowLongText(text)
 
@@ -295,9 +292,18 @@ class GateFilter(core.Component):
         if filename == '' or self.Vradar.value is None:
             return
         else:
-            self.plot.statusbar.showMessage("Saved %s"%(filename))
+            self.AddCorrectedFields()
             pyart.io.write_cfradial(filename, self.Vradar.value)
-        
+            self.plot.statusbar.showMessage("Saved %s"%(filename))
+
+    def AddCorrectedFields(self):
+        '''Launch a display window to show the filter application.'''
+        # Add fields for each variable for filters
+        for dupfield in self.filt_flds:
+            data = self.Vradar.value.fields[dupfield]['data'][:]
+            self.Vradar.value.add_field_like(dupfield, "corr_" + dupfield,
+                                         data, replace_existing=False)
+
     ######################
     ##  Filter Methods  ##
     ######################
@@ -312,7 +318,12 @@ class GateFilter(core.Component):
         if self.Vradar.value is None:
             common.ShowWarning("Radar is None, can not perform filtering.")
             return
-        print(np.sum(self.Vradar.value.fields['reflectivity']['data'].mask))
+##        print(np.sum(self.Vradar.value.fields['reflectivity']['data'].mask))
+        # Retain the original masks
+        self.original_masks = {}
+        for field in self.Vradar.value.fields.keys():
+            self.original_masks[field] = self.Vradar.value.fields[field]['data'].mask
+
         self.Vgatefilter.value = pyart.correct.GateFilter(self.Vradar.value, exclude_based=True)
 
         # Clear flags from previous filter application or instantiate if first
@@ -327,14 +338,16 @@ class GateFilter(core.Component):
         t0 = time.time()
 
         # Get a list of field to apply the filters
-        filt_flds = []
+        self.filt_flds = []
         for index, chk in enumerate(self.fieldfilter["check_apply"]):
             if chk.isChecked():
-                field = "corr_" + str(self.fieldfilter["field"][index].text())
-                filt_flds.append(field)
+#                field = "corr_" + str(self.fieldfilter["field"][index].text())
+                field = str(self.fieldfilter["field"][index].text())
+                self.filt_flds.append(field)
 
         pyarterr = "Py-ART fails with following error\n\n"
-        # Find out which filters to apply
+        # Execute chosen filters
+        print("Applying filters ..")
         NoChecks = True
         for index, chk in enumerate(self.fieldfilter["check_active"]):
             if chk.isChecked():
@@ -354,7 +367,7 @@ class GateFilter(core.Component):
                 if operator in val2Cmds:
                     filtercmd = "gatefilter.%s(%s, %s, %s)"%(
                       self.operators[operator], field, val1, val2)
-                    for filt in filt_flds:
+                    for filt in self.filt_flds:
                         if operator == "inside":
                         
                             try:
@@ -378,7 +391,7 @@ class GateFilter(core.Component):
                 elif operator in valinc:
                     filtercmd = "gatefilter.%s(%s, %s, inclusive=True)"%(
                       self.operators[operator], field, val1)
-                    for filt in filt_flds:
+                    for filt in self.filt_flds:
                         if operator == "<":
                             try:
                                 self.Vgatefilter.value.exclude_below(
@@ -401,7 +414,7 @@ class GateFilter(core.Component):
                 else:
                     filtercmd = "gatefilter.%s(%s, %s, inclusive=False)"%(
                       self.operators[operator], field, val1)
-                    for filt in filt_flds:
+                    for filt in self.filt_flds:
                         if operator == "=":
                             try:
                                 self.Vgatefilter.value.exclude_equal(
@@ -441,15 +454,11 @@ class GateFilter(core.Component):
 
                 self.filterscript.append(filtercmd)
 
+        print(("Filtering took %fs" % (time.time()-t0)))
         # If no filters were applied issue warning  
         if NoChecks:
             common.ShowWarning("Please Activate Filter(s)")
             return
-        # execute
-        print("Applying filters ..")
-
-        t1 = time.time()
-        print(("Filtering took %fs" % (t1-t0)))
 
         # verify field overwriting
 #         if args['spec_at_field'] is None:
@@ -482,10 +491,10 @@ class GateFilter(core.Component):
 #                 strong_update = True
         print(np.sum(self.Vgatefilter.value.gate_excluded))
         # add fields and update
+#        self.newGateFilter(None, self.Vgatefilter.value, True)
         self.Vgatefilter.change(self.Vgatefilter.value, strong_update)
-        self.Vradar.change(self.Vradar.value, strong_update)
-        print(np.sum(self.Vradar.value.fields['corr_reflectivity']['data'].mask))
-#        self.plot._update_plot()
+#        self.Vradar.change(self.Vradar.value, strong_update)
+        print(np.sum(self.Vradar.value.fields['reflectivity']['data'].mask))
 
     def _clearLayout(self, layout):
         '''recursively remove items from layout.'''
@@ -498,76 +507,3 @@ class GateFilter(core.Component):
                 self._clearLayout(item.layout())
 
 _plugins = [GateFilter]
-
-# class _GateFilterStart(QtGui.QDialog):
-#     '''
-#     Dialog Class for graphical start of GateFilter, to be used in guiStart.
-#     '''
-# 
-#     def __init__(self):
-#         '''Initialize the class to create the interface.'''
-#         super(_GateFilterStart, self).__init__()
-#         self.result = {"Vradar": None}
-#         self.layout = QtGui.QGridLayout(self)
-#         # set window as modal
-#         self.setWindowModality(QtCore.Qt.ApplicationModal)
-# 
-#         self.setupUi()
-# 
-#     def setupUi(self):
-# 
-# #        self.varCombo = QtGui.QComboBox()
-# #        self.layout.addWidget(QtGui.QLabel("Select Variable"), 0, 0)
-# #        self.layout.addWidget(self.varCombo, 0, 1, 1, 3)
-# #        self.fillCombo()
-# 
-#         self.name = QtGui.QLineEdit("GateFilter")
-#         self.layout.addWidget(QtGui.QLabel("Plugin Name"), 1, 0)
-#         self.layout.addWidget(self.name, 1, 1, 1, 3)
-# 
-#         self.independent = QtGui.QCheckBox("Independent Window")
-#         self.independent.setChecked(True)
-#         self.layout.addWidget(self.independent, 2, 1, 1, 1)
-# 
-#         self.closeButton = QtGui.QPushButton("Launch Plugin")
-#         self.closeButton.clicked.connect(self.closeDialog)
-#         self.layout.addWidget(self.closeButton, 3, 0, 1, 5)
-# 
-#     def fillCombo(self):
-#         self.vars = []
-# 
-#         self.components = core.componentsList
-#         for component in self.components:
-#             if self._isDisplay(component):
-#                 for var in component.sharedVariables.keys():
-#                     self.varCombo.addItem(component.name +' ' + var)
-#                     self.vars.append(component.sharedVariables[var])
-#         self.varCombo.setCurrentIndex(0)
-# 
-#     def _isDisplay(self, comp):
-#         ''' Test if a component is a valid display to be used. '''
-#         if (hasattr(comp, 'getPlotAxis') and
-#             hasattr(comp, 'getStatusBar') and
-#             hasattr(comp, 'getField') and
-#             hasattr(comp, 'getPathInteriorValues')
-#             ):
-#             return True
-#         else:
-#             return False
-# 
-#     def closeDialog(self):
-#         self.done(QtGui.QDialog.Accepted)
-# 
-#     def startDisplay(self):
-#         self.exec_()
-# 
-#         self.result['name'] = str(self.name.text())
-# 
-#         selection = self.varCombo.currentIndex()
-#         variable = str(self.varCombo.currentText()).split()[1]
-#         component = str(self.varCombo.currentText()).split()[0]
-#         self.result["Vradar"] = getattr(self.components[selection], str(variable))
-# 
-#         print((self.result['name']))
-# 
-#         return self.result, self.independent.isChecked()
