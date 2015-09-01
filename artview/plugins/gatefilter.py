@@ -124,7 +124,7 @@ class GateFilter(core.Component):
                     self.DispChoiceList.append(component)
         self.dispCombo.setCurrentIndex(0)
 
-        self.chooseRadar()
+        self.chooseDisplay()
         groupBox.setLayout(gBox_layout)
 
         return groupBox
@@ -211,7 +211,7 @@ class GateFilter(core.Component):
     ##  Selection Methods  ##
     #########################
 
-    def chooseRadar(self):
+    def chooseDisplay(self):
         '''Get Radar with :py:class:`~artview.core.VariableChoose`.'''
         selection = self.dispCombo.currentIndex()
 #        variable = str(self.radarCombo.currentText()).split()[1]
