@@ -492,7 +492,6 @@ class RadarDisplay(Component):
         * If strong update: update plot
         '''
         if strong and self.Vradar.value is not None:
-            print("NEWGATEFILTER")
             self._update_plot()
 
     def NewTilt(self, variable, value, strong):
@@ -730,7 +729,7 @@ class RadarDisplay(Component):
             self.plot = self.display.plot_sweep_grid(
                 self.Vfield.value, vmin=cmap['vmin'],
                 vmax=cmap['vmax'], colorbar_flag=False, cmap=cmap['cmap'],
-                gatefilter=gatefilter, ax=self.ax, fig=self.fig, title=title)
+                ax=self.ax, fig=self.fig, title=title)
             self.display.plot_grid_lines()
 
         elif self.plot_type == "radarPpi":

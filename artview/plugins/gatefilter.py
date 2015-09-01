@@ -28,7 +28,6 @@ class GateFilter(core.Component):
         '''Graphical interface for starting this class.'''
         kwargs, independent = \
             common._SimplePluginStart("GateFilter").startDisplay()
-#        kwargs, independent = _GateFilterStart().startDisplay()
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
@@ -56,6 +55,8 @@ class GateFilter(core.Component):
         self.setCentralWidget(self.central_widget)
         self.layout = QtGui.QGridLayout(self.central_widget)
 
+        # Set up signal, so that DISPLAY can react to
+        # changes in radar or gatefilter shared variables
         if Vradar is None:
             self.Vradar = core.Variable(None)
         else:
@@ -66,8 +67,9 @@ class GateFilter(core.Component):
         else:
             self.Vgatefilter = Vgatefilter
 
-        self.sharedVariables = {"Vradar": None,#self.newRadar,
-                                "Vgatefilter": None,}#self.newGateFilter}#None}
+        self.sharedVariables = {"Vradar": None,
+                                "Vgatefilter": None,}
+        # Connect the components
         self.connectAllVariables()
         self.field = None
 
@@ -89,9 +91,6 @@ class GateFilter(core.Component):
 
         self.layout.addLayout(self.generalLayout, 0, 0, 1, 2)
 
-#        self.newRadar(None, None, True)
-#        self.newGateFilter(None, None, True)
-
         self.show()
 
     ######################
@@ -99,27 +98,31 @@ class GateFilter(core.Component):
     ######################
 
     def createVarUI(self):
-        '''Mount the Variable layout.'''
+        '''
+        Mount the Variable layout.
+        User may select another Display '''
         groupBox = QtGui.QGroupBox("Variable Input")
         gBox_layout = QtGui.QGridLayout()
 
-#        self.radarButton = QtGui.QPushButton("Find Variable")
-#        self.radarButton.clicked.connect(self.chooseRadar)
-#        gBox_layout.addWidget(QtGui.QLabel("Radar"), 0, 0, 1, 1)
-#        gBox_layout.addWidget(self.radarButton, 0, 1, 1 ,1)
+        self.dispCombo = QtGui.QComboBox()
+#        gBox_layout.addWidget(QtGui.QLabel("Select Radar Variable"), 0, 0)
+        gBox_layout.addWidget(QtGui.QLabel("Select Display Link"), 0, 0)
+        gBox_layout.addWidget(self.dispCombo, 0, 1, 1, 1)
 
-        self.radarCombo = QtGui.QComboBox()
-        gBox_layout.addWidget(QtGui.QLabel("Select Radar Variable"), 0, 0)
-        gBox_layout.addWidget(self.radarCombo, 0, 1, 1, 1)
-
-        self.radarvars = []
+        self.DispChoiceList = []
         self.components = core.componentsList
+#        for component in self.components:
+#            for var in component.sharedVariables.keys():
+#                if var == "Vradar":
+#                    self.radarCombo.addItem(component.name +' ' + var)
+#                    self.radarvars.append(component.sharedVariables[var])
+#        self.radarCombo.setCurrentIndex(0)
         for component in self.components:
-            for var in component.sharedVariables.keys():
-                if var == "Vradar":
-                    self.radarCombo.addItem(component.name +' ' + var)
-                    self.radarvars.append(component.sharedVariables[var])
-        self.radarCombo.setCurrentIndex(0)
+            if "Vradar" in component.sharedVariables.keys():
+                if "Vgatefilter" in component.sharedVariables.keys():
+                    self.dispCombo.addItem(component.name)
+                    self.DispChoiceList.append(component)
+        self.dispCombo.setCurrentIndex(0)
 
         self.chooseRadar()
         groupBox.setLayout(gBox_layout)
@@ -210,26 +213,17 @@ class GateFilter(core.Component):
 
     def chooseRadar(self):
         '''Get Radar with :py:class:`~artview.core.VariableChoose`.'''
-        selection = self.radarCombo.currentIndex()
-        variable = str(self.radarCombo.currentText()).split()[1]
-        component = str(self.radarCombo.currentText()).split()[0]
-        Vradar = getattr(self.components[selection], str(variable))
+        selection = self.dispCombo.currentIndex()
+#        variable = str(self.radarCombo.currentText()).split()[1]
+#        component = str(self.radarCombo.currentText()).split()[0]
+#        Vradar = getattr(self.components[selection], str(variable))
+        Vradar = getattr(self.DispChoiceList[selection], str("Vradar"))
+        Vgatefilter = getattr(self.DispChoiceList[selection], str("Vgatefilter"))
+        
+        self.dispCombo.setCurrentIndex(selection)
         
         self.Vradar = Vradar
-    
-    def newRadar(self, variable, value, strong):
-        '''respond to change in radar.'''
-        if self.Vradar.value is None:
-            return
-
-    def newGateFilter(self, variable, value, strong):
-        '''respond to change in radar.'''
-##        if strong and self.Vradar.value is not None:
-            
-        if self.Vgatefilter.value is None:
-            return
-##        else:
-##            self.Vgatefilter.change(value, strong)
+        self.Vgatefilter = Vgatefilter
 
     def displayHelp(self):
         '''Display Py-Art's docstring for help.'''
@@ -324,7 +318,7 @@ class GateFilter(core.Component):
         for field in self.Vradar.value.fields.keys():
             self.original_masks[field] = self.Vradar.value.fields[field]['data'].mask
 
-        self.Vgatefilter.value = pyart.correct.GateFilter(self.Vradar.value, exclude_based=True)
+        gatefilter = pyart.correct.GateFilter(self.Vradar.value, exclude_based=True)
 
         # Clear flags from previous filter application or instantiate if first
         args = {}
@@ -371,7 +365,7 @@ class GateFilter(core.Component):
                         if operator == "inside":
                         
                             try:
-                                self.Vgatefilter.value.exclude_inside(
+                                gatefilter.exclude_inside(
                                  filt, float(val1), float(val2))
                             except:
                                 import traceback
@@ -380,7 +374,7 @@ class GateFilter(core.Component):
                                         error)
                         else:
                             try:
-                                self.Vgatefilter.value.exclude_outside(
+                                gatefilter.exclude_outside(
                                  filt, float(val1), float(val2))
                             except:
                                 import traceback
@@ -394,7 +388,7 @@ class GateFilter(core.Component):
                     for filt in self.filt_flds:
                         if operator == "<":
                             try:
-                                self.Vgatefilter.value.exclude_below(
+                                gatefilter.exclude_below(
                                   filt, float(val1), inclusive=True)
                             except:
                                 import traceback
@@ -403,7 +397,7 @@ class GateFilter(core.Component):
                                         error)
                         elif operator == ">":
                             try:
-                                self.Vgatefilter.value.exclude_above(
+                                gatefilter.exclude_above(
                                   filt, float(val1), inclusive=True)
                             except:
                                 import traceback
@@ -417,7 +411,7 @@ class GateFilter(core.Component):
                     for filt in self.filt_flds:
                         if operator == "=":
                             try:
-                                self.Vgatefilter.value.exclude_equal(
+                                gatefilter.exclude_equal(
                                   filt, float(val1))
                             except:
                                 import traceback
@@ -426,7 +420,7 @@ class GateFilter(core.Component):
                                         error)
                         elif operator == "!=":
                             try:
-                                self.Vgatefilter.value.exclude_not_equal(
+                                gatefilter.exclude_not_equal(
                                   filt, float(val1))
                             except:
                                 import traceback
@@ -435,7 +429,7 @@ class GateFilter(core.Component):
                                         error)
                         elif operator == "<":
                             try:
-                                self.Vgatefilter.value.exclude_below(
+                                gatefilter.exclude_below(
                                   filt, float(val1), inclusive=False)
                             except:
                                 import traceback
@@ -444,7 +438,7 @@ class GateFilter(core.Component):
                                         error)
                         elif operator == ">":
                             try:
-                                self.Vgatefilter.value.exclude_above(
+                                gatefilter.exclude_above(
                                   filt, float(val1), inclusive=False)
                             except:
                                 import traceback
@@ -489,10 +483,9 @@ class GateFilter(core.Component):
 #                 return
 #             else:
 #                 strong_update = True
-        print(np.sum(self.Vgatefilter.value.gate_excluded))
+        print(np.sum(gatefilter.gate_excluded))
         # add fields and update
-#        self.newGateFilter(None, self.Vgatefilter.value, True)
-        self.Vgatefilter.change(self.Vgatefilter.value, strong_update)
+        self.Vgatefilter.change(gatefilter, strong_update)
 #        self.Vradar.change(self.Vradar.value, strong_update)
         print(np.sum(self.Vradar.value.fields['reflectivity']['data'].mask))
 
