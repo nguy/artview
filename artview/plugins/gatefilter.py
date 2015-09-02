@@ -100,23 +100,17 @@ class GateFilter(core.Component):
     def createVarUI(self):
         '''
         Mount the Variable layout.
-        User may select another Display '''
+        User may select another Display
+        '''
         groupBox = QtGui.QGroupBox("Variable Input")
         gBox_layout = QtGui.QGridLayout()
 
         self.dispCombo = QtGui.QComboBox()
-#        gBox_layout.addWidget(QtGui.QLabel("Select Radar Variable"), 0, 0)
         gBox_layout.addWidget(QtGui.QLabel("Select Display Link"), 0, 0)
         gBox_layout.addWidget(self.dispCombo, 0, 1, 1, 1)
 
         self.DispChoiceList = []
         self.components = core.componentsList
-#        for component in self.components:
-#            for var in component.sharedVariables.keys():
-#                if var == "Vradar":
-#                    self.radarCombo.addItem(component.name +' ' + var)
-#                    self.radarvars.append(component.sharedVariables[var])
-#        self.radarCombo.setCurrentIndex(0)
         for component in self.components:
             if "Vradar" in component.sharedVariables.keys():
                 if "Vgatefilter" in component.sharedVariables.keys():
@@ -170,7 +164,6 @@ class GateFilter(core.Component):
         operator = []
         loval = []
         hival =[]
-        chkapply = []
 
         groupBox = QtGui.QGroupBox("Filter Design - Exclude via the following statements")
 		#groupBox.setFlat(True)
@@ -180,8 +173,7 @@ class GateFilter(core.Component):
         gBox_layout.addWidget(QtGui.QLabel("Variable"), 0, 1, 1, 1)
         gBox_layout.addWidget(QtGui.QLabel("Operation"), 0, 2, 1, 1)
         gBox_layout.addWidget(QtGui.QLabel("Value 1"), 0, 3, 1, 1)
-        gBox_layout.addWidget(QtGui.QLabel("Value 2"), 0, 4, 1, 1)
-        gBox_layout.addWidget(QtGui.QLabel("Filter\nField"), 0, 5, 1, 1)
+        gBox_layout.addWidget(QtGui.QLabel("Value 2\nFor outside/inside"), 0, 4, 1, 1)
 
         self.fieldfilter = {}
 
@@ -191,7 +183,6 @@ class GateFilter(core.Component):
             fldlab.append(QtGui.QLabel(field))
             loval.append(QtGui.QLineEdit(""))
             hival.append(QtGui.QLineEdit(""))
-            chkapply.append(QtGui.QCheckBox())
             operator.append(self.set_operator_menu())
 
             gBox_layout.addWidget(chkactive[nn], nn+1, 0, 1, 1)
@@ -199,7 +190,6 @@ class GateFilter(core.Component):
             gBox_layout.addWidget(operator[nn], nn+1, 2, 1, 1)
             gBox_layout.addWidget(loval[nn], nn+1, 3, 1, 1)
             gBox_layout.addWidget(hival[nn], nn+1, 4, 1, 1)
-            gBox_layout.addWidget(chkapply[nn], nn+1, 5, 1, 1)
 
         groupBox.setLayout(gBox_layout)
 
@@ -208,8 +198,14 @@ class GateFilter(core.Component):
         self.fieldfilter["operator"] = operator
         self.fieldfilter["low_value"] = loval
         self.fieldfilter["high_value"] = hival
-        self.fieldfilter["check_apply"] = chkapply
 
+#         for index, chk in enumerate(self.fieldfilter["check_active"]):
+#             if chk.isChecked():
+#                 if (self.fieldfilter["operator"] == 'outside' or 
+#                    self.fieldfilter["operator"] == 'inside'):
+#                     self.fieldfilter["high_value"].setText(' ')
+#                     self.fieldfilter["high_value"].setReadOnly(True)
+            
         return groupBox
 
     #########################
@@ -219,9 +215,6 @@ class GateFilter(core.Component):
     def chooseDisplay(self):
         '''Get Radar with :py:class:`~artview.core.VariableChoose`.'''
         selection = self.dispCombo.currentIndex()
-#        variable = str(self.radarCombo.currentText()).split()[1]
-#        component = str(self.radarCombo.currentText()).split()[0]
-#        Vradar = getattr(self.components[selection], str(variable))
         Vradar = getattr(self.DispChoiceList[selection], str("Vradar"))
         Vgatefilter = getattr(self.DispChoiceList[selection], str("Vgatefilter"))
         
@@ -232,13 +225,14 @@ class GateFilter(core.Component):
 
     def displayHelp(self):
         '''Display Py-Art's docstring for help.'''
-        text = "**Using this window**\n"
+        text = "**Using the GateFilter window**\n"
         text += "Choose a filter:\n"
         text += "  1. Select an operation and value(s) to exclude.\n"
+        text += "       Notes: 'outside' masks values less than 'Value 1' and greater than 'Value 2.'\n"
+        text += "              'inside' masks values greater than 'Value 1' and less than 'Value 2.'\n"
+        text += "              For other operations only 'Value 1 is used.\n"
         text += "  2. Check the 'Activate Filter' box to apply the filter.\n"
-        text += "  3. Check the 'Filter this Field' box to apply filter\n"
-        text += "     to this variable."
-        text += "  4. Click the 'Filter' button.\n\n"
+        text += "  3. Click the 'Filter' button.\n\n"
         text += "Change Radar variables:\n"
         text += "  Click the 'Find Variable', select variable.\n\n"
         text += "Show Python script for batching:\n"
@@ -283,7 +277,6 @@ class GateFilter(core.Component):
 
     def saveRadar(self):
         '''Open a dialog box to save radar file.'''
-
         dirIn, fname = os.path.split(self.Vradar.value.filename)
         filename = QtGui.QFileDialog.getSaveFileName(
                 self, 'Save Radar File', dirIn)
@@ -291,7 +284,7 @@ class GateFilter(core.Component):
         if filename == '' or self.Vradar.value is None:
             return
         else:
-            self.AddCorrectedFields()
+#            self.AddCorrectedFields()
             for field in self.Vradar.value.fields.keys():
                 self.Vradar.value.fields[field]['data'].mask = self.Vgatefilter.value._gate_excluded
             pyart.io.write_cfradial(filename, self.Vradar.value)
@@ -299,11 +292,10 @@ class GateFilter(core.Component):
 
     def restoreRadar(self):
         '''Remove applied filters by restoring original mask'''
-        for field in self.filt_flds:
+        for field in self.Vradar.value.fields.keys():
             self.Vradar.value.fields[field]['data'].mask = self.original_masks[field]
         self.Vgatefilter.value._gate_excluded = self.original_masks[field]
         self.NewGateFilter(self.Vgatefilter.value, True)
-        
 
     def AddCorrectedFields(self):
         '''Launch a display window to show the filter application.'''
@@ -334,7 +326,7 @@ class GateFilter(core.Component):
         if self.Vradar.value is None:
             common.ShowWarning("Radar is None, can not perform filtering.")
             return
-##        print(np.sum(self.Vradar.value.fields['reflectivity']['data'].mask))
+
         # Retain the original masks
         self.original_masks = {}
         for field in self.Vradar.value.fields.keys():
@@ -355,11 +347,6 @@ class GateFilter(core.Component):
 
         # Get a list of field to apply the filters
         self.filt_flds = []
-        for index, chk in enumerate(self.fieldfilter["check_apply"]):
-            if chk.isChecked():
-#                field = "corr_" + str(self.fieldfilter["field"][index].text())
-                field = str(self.fieldfilter["field"][index].text())
-                self.filt_flds.append(field)
 
         pyarterr = "Py-ART fails with following error\n\n"
         # Execute chosen filters
@@ -383,132 +370,90 @@ class GateFilter(core.Component):
                 if operator in val2Cmds:
                     filtercmd = "gatefilter.%s(%s, %s, %s)"%(
                       self.operators[operator], field, val1, val2)
-                    for filt in self.filt_flds:
-                        if operator == "inside":
-                        
-                            try:
-                                gatefilter.exclude_inside(
-                                 filt, float(val1), float(val2))
-                            except:
-                                import traceback
-                                error = traceback.format_exc()
-                                common.ShowLongText(pyarterr +
-                                        error)
-                        else:
-                            try:
-                                gatefilter.exclude_outside(
-                                 filt, float(val1), float(val2))
-                            except:
-                                import traceback
-                                error = traceback.format_exc()
-                                common.ShowLongText(pyarterr +
-                                        error)
+                    if operator == "inside":
+                        try:
+                            gatefilter.exclude_inside(
+                             field, float(val1), float(val2))
+                        except:
+                            import traceback
+                            error = traceback.format_exc()
+                            common.ShowLongText(pyarterr + error)
+                    else:
+                        try:
+                            gatefilter.exclude_outside(
+                             field, float(val1), float(val2))
+                        except:
+                            import traceback
+                            error = traceback.format_exc()
+                            common.ShowLongText(pyarterr + error)
                 # If the operators are inclusive of val1
                 elif operator in valinc:
                     filtercmd = "gatefilter.%s(%s, %s, inclusive=True)"%(
                       self.operators[operator], field, val1)
-                    for filt in self.filt_flds:
-                        if operator == "<=":
-                            try:
-                                gatefilter.exclude_below(
-                                  filt, float(val1), inclusive=True)
-                            except:
-                                import traceback
-                                error = traceback.format_exc()
-                                common.ShowLongText(pyarterr +
-                                        error)
-                        elif operator == ">=":
-                            try:
-                                gatefilter.exclude_above(
-                                  filt, float(val1), inclusive=True)
-                            except:
-                                import traceback
-                                error = traceback.format_exc()
-                                common.ShowLongText(pyarterr +
-                                        error)
+                    if operator == "<=":
+                        try:
+                            gatefilter.exclude_below(
+                              field, float(val1), inclusive=True)
+                        except:
+                            import traceback
+                            error = traceback.format_exc()
+                            common.ShowLongText(pyarterr + error)
+                    elif operator == ">=":
+                        try:
+                            gatefilter.exclude_above(
+                              field, float(val1), inclusive=True)
+                        except:
+                            import traceback
+                            error = traceback.format_exc()
+                            common.ShowLongText(pyarterr + error)
                 # If the operators are exclusive of val1
                 else:
                     filtercmd = "gatefilter.%s(%s, %s, inclusive=False)"%(
                       self.operators[operator], field, val1)
-                    for filt in self.filt_flds:
-                        if operator == "=":
-                            try:
-                                gatefilter.exclude_equal(
-                                  filt, float(val1))
-                            except:
-                                import traceback
-                                error = traceback.format_exc()
-                                common.ShowLongText(pyarterr +
-                                        error)
-                        elif operator == "!=":
-                            try:
-                                gatefilter.exclude_not_equal(
-                                  filt, float(val1))
-                            except:
-                                import traceback
-                                error = traceback.format_exc()
-                                common.ShowLongText(pyarterr +
-                                        error)
-                        elif operator == "<":
-                            try:
-                                gatefilter.exclude_below(
-                                  filt, float(val1), inclusive=False)
-                            except:
-                                import traceback
-                                error = traceback.format_exc()
-                                common.ShowLongText(pyarterr +
-                                        error)
-                        elif operator == ">":
-                            try:
-                                gatefilter.exclude_above(
-                                  filt, float(val1), inclusive=False)
-                            except:
-                                import traceback
-                                error = traceback.format_exc()
-                                common.ShowLongText(pyarterr +
-                                        error)
+                    if operator == "=":
+                        try:
+                            gatefilter.exclude_equal(
+                              field, float(val1))
+                        except:
+                            import traceback
+                            error = traceback.format_exc()
+                            common.ShowLongText(pyarterr + error)
+                    elif operator == "!=":
+                        try:
+                            gatefilter.exclude_not_equal(
+                              field, float(val1))
+                        except:
+                            import traceback
+                            error = traceback.format_exc()
+                            common.ShowLongText(pyarterr + error)
+                    elif operator == "<":
+                        try:
+                            gatefilter.exclude_below(
+                              field, float(val1), inclusive=False)
+                        except:
+                            import traceback
+                            error = traceback.format_exc()
+                            common.ShowLongText(pyarterr + error)
+                    elif operator == ">":
+                        try:
+                            gatefilter.exclude_above(
+                              field, float(val1), inclusive=False)
+                        except:
+                            import traceback
+                            error = traceback.format_exc()
+                            common.ShowLongText(pyarterr + error)
 
                 self.filterscript.append(filtercmd)
 
         print(("Filtering took %fs" % (time.time()-t0)))
-        # If no filters were applied issue warning  
+        # If no filters were applied issue warning
         if NoChecks:
             common.ShowWarning("Please Activate Filter(s)")
             return
 
-        # verify field overwriting
-#         if args['spec_at_field'] is None:
-#             spec_at_field_name = "specific_attenuation"
-#         else:
-#             spec_at_field_name = args['spec_at_field']
-# 
-#         if args['corr_refl_field'] is None:
-#             corr_refl_field_name = "corrected_reflectivity"
-#         else:
-#             corr_refl_field_name = args['corr_refl_field']
-
-        strong_update = True  # insertion is weak, overwrite strong
-#         if spec_at_field_name in self.Vradar.value.fields.keys():
-#             resp = common.ShowQuestion(
-#                 "Field %s already exists! Do you want to over write it?" %
-#                 spec_at_field_name)
-#             if resp != QtGui.QMessageBox.Ok:
-#                 return
-#             else:
-#                 strong_update = True
-# 
-#         if corr_refl_field_name in self.Vradar.value.fields.keys():
-#             resp = common.ShowQuestion(
-#                 "Field %s already exists! Do you want to over write it?" %
-#                 corr_refl_field_name)
-#             if resp != QtGui.QMessageBox.Ok:
-#                 return
-#             else:
-#                 strong_update = True
-        print(np.sum(gatefilter.gate_excluded))
+        strong_update = True
         # add fields and update
         self.NewGateFilter(gatefilter, strong_update)
-        print(np.sum(self.Vradar.value.fields['reflectivity']['data'].mask))
 
     def _clearLayout(self, layout):
         '''recursively remove items from layout.'''
@@ -521,3 +466,23 @@ class GateFilter(core.Component):
                 self._clearLayout(item.layout())
 
 _plugins = [GateFilter]
+
+
+class MyQCheckBox(QtGui.QCheckBox):
+
+    def __init__(self, *args, **kwargs):
+        QtGui.QCheckBox.__init__(self, *args, **kwargs)        
+        self.is_modifiable = True
+        self.clicked.connect( self.value_change_slot )
+
+    def value_change_slot(self): 
+        if self.isChecked():
+            self.setChecked(self.is_modifiable)
+        else:
+            self.setChecked(not self.is_modifiable)            
+
+    def setModifiable(self, flag):
+        self.is_modifiable = flag            
+
+    def isModifiable(self):
+        return self.is_modifiable
