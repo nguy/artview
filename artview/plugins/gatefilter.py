@@ -147,11 +147,16 @@ class GateFilter(core.Component):
         self.scriptButton.clicked.connect(self.saveRadar)
         self.scriptButton.setToolTip('Save cfRadial data file')
         gBox_layout.addWidget(self.scriptButton, 0, 2, 1, 1)
+        
+        self.restoreButton = QtGui.QPushButton("Restore to Original")
+        self.restoreButton.clicked.connect(self.restoreRadar)
+        self.restoreButton.setToolTip('Remove applied filters')
+        gBox_layout.addWidget(self.restoreButton, 0, 3, 1, 1)
 
         self.filterButton = QtGui.QPushButton("Filter")
         self.filterButton.clicked.connect(self.apply_filters)
         self.filterButton.setToolTip('Execute pyart.correct.GateFilter')
-        gBox_layout.addWidget(self.filterButton, 0, 3, 1, 1)
+        gBox_layout.addWidget(self.filterButton, 0, 4, 1, 1)
 
         groupBox.setLayout(gBox_layout)
 
@@ -287,8 +292,18 @@ class GateFilter(core.Component):
             return
         else:
             self.AddCorrectedFields()
+            for field in self.Vradar.value.fields.keys():
+                self.Vradar.value.fields[field]['data'].mask = self.Vgatefilter.value._gate_excluded
             pyart.io.write_cfradial(filename, self.Vradar.value)
-            self.plot.statusbar.showMessage("Saved %s"%(filename))
+            print("Saved %s"%(filename))
+
+    def restoreRadar(self):
+        '''Remove applied filters by restoring original mask'''
+        for field in self.filt_flds:
+            self.Vradar.value.fields[field]['data'].mask = self.original_masks[field]
+        self.Vgatefilter.value._gate_excluded = self.original_masks[field]
+        self.NewGateFilter(self.Vgatefilter.value, True)
+        
 
     def AddCorrectedFields(self):
         '''Launch a display window to show the filter application.'''
@@ -301,6 +316,13 @@ class GateFilter(core.Component):
     ######################
     ##  Filter Methods  ##
     ######################
+
+    def NewGateFilter(self, value, strong):
+        '''
+        Slot for value change of
+        :py:class:`Vgatefilter <artview.core.core.Variable>`.
+        '''
+        self.Vgatefilter.change(value, strong)
 
     def apply_filters(self):
         '''Mount Options and execute
@@ -386,7 +408,7 @@ class GateFilter(core.Component):
                     filtercmd = "gatefilter.%s(%s, %s, inclusive=True)"%(
                       self.operators[operator], field, val1)
                     for filt in self.filt_flds:
-                        if operator == "<":
+                        if operator == "<=":
                             try:
                                 gatefilter.exclude_below(
                                   filt, float(val1), inclusive=True)
@@ -395,7 +417,7 @@ class GateFilter(core.Component):
                                 error = traceback.format_exc()
                                 common.ShowLongText(pyarterr +
                                         error)
-                        elif operator == ">":
+                        elif operator == ">=":
                             try:
                                 gatefilter.exclude_above(
                                   filt, float(val1), inclusive=True)
@@ -485,8 +507,7 @@ class GateFilter(core.Component):
 #                 strong_update = True
         print(np.sum(gatefilter.gate_excluded))
         # add fields and update
-        self.Vgatefilter.change(gatefilter, strong_update)
-#        self.Vradar.change(self.Vradar.value, strong_update)
+        self.NewGateFilter(gatefilter, strong_update)
         print(np.sum(self.Vradar.value.fields['reflectivity']['data'].mask))
 
     def _clearLayout(self, layout):
