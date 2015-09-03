@@ -204,6 +204,8 @@ class RadarDisplay(Component):
         self._add_toolsBoxUI()
         # Create the Informational label at top
         self._add_infolabel()
+        # Create the check toggle for gatefilter data mask
+        self._add_gatefilter_toggle()
 
     def setUILayout(self):
         '''Setup the button/display UI layout.'''
@@ -212,6 +214,7 @@ class RadarDisplay(Component):
         self.layout.addWidget(self.dispButton, 0, 2)
         self.layout.addWidget(self.toolsButton, 0, 3)
         self.layout.addWidget(self.infolabel, 0, 4)
+        self.layout.addWidget(self.gatefilterToggle, 1, 0)
 
     #############################
     # Functionality methods #
@@ -397,6 +400,13 @@ class RadarDisplay(Component):
         if hasattr(self.Vradar.value, 'filename'):
             self.infolabel.setToolTip(self.Vradar.value.filename)
 
+    def _add_gatefilter_toggle(self):
+        '''Create the GateFilter Selection Checkbox'''
+        self.gatefilterToggle = QtGui.QCheckBox("Use data mask")
+        self.gatefilterToggle.setChecked(False)
+        self.gatefilterToggle.toggle()
+        self.gatefilterToggle.stateChanged.connect(self.gatefilter_toggle)
+
     ########################
     # Selectionion methods #
     ########################
@@ -509,6 +519,19 @@ class RadarDisplay(Component):
         if strong and self.Vradar.value is not None:
             self._update_plot()
             self._update_infolabel()
+
+    def gatefilter_toggle(self, state):
+        '''
+        Captures the gatefilter toggle, trigger update
+        '''
+        if state == QtCore.Qt.Checked:#self.gatefilterToggle.isChecked():
+            print("CHECKED")
+            self.gatefilterToggle.setChecked(True)
+        else:
+            print("NOT CHECKED")
+            self.gatefilterToggle.setChecked(False)
+            
+        self._update_plot()
 
     def TiltSelectCmd(self, ntilt):
         '''
@@ -696,7 +719,7 @@ class RadarDisplay(Component):
         '''Set the figure canvas to draw in window area.'''
         self.canvas = FigureCanvasQTAgg(self.fig)
         # Add the widget to the canvas
-        self.layout.addWidget(self.canvas, 1, 0, 7, 6)
+        self.layout.addWidget(self.canvas, 2, 0, 7, 6)
 
     def _update_plot(self):
         '''Draw/Redraw the plot.'''
@@ -721,7 +744,10 @@ class RadarDisplay(Component):
         title = self.title
         limits = self.Vlims.value
         cmap = self.Vcmap.value
-        gatefilter = self.Vgatefilter.value
+        if self.gatefilterToggle.isChecked():
+            gatefilter = self.Vgatefilter.value
+        else:
+            gatefilter = None
 
         if self.plot_type == "radarAirborne":
             self.display = pyart.graph.RadarDisplay_Airborne(self.Vradar.value)
