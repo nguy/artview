@@ -139,6 +139,9 @@ class RadarDisplay(Component):
         # Create tool dictionary
         self.tools = {}
 
+        # Initialize to not use GateFilter data mask
+        self.gatefilterToggle = False
+
         # Set up Default limits and cmap
         if Vlims is None:
             self._set_default_limits(strong=False)
@@ -192,6 +195,7 @@ class RadarDisplay(Component):
     ##################################
     # User display interface methods #
     ##################################
+
     def addButtons(self):
         '''Add a series of buttons for user control over display.'''
         # Create the Display controls
@@ -294,19 +298,13 @@ class RadarDisplay(Component):
 
     def _add_filter_on_off_to_button(self):
         '''Add a menu to display on/off filter switch.'''
-#         self.filteractionON = self.dispfiltermenu.addAction("ON")
-#         self.filteractionON.setCheckable(True)
-#         self.filteractionON.setStatusTip("Turn Data mask (GateFilter) ON")
-#         self.filteractionON.triggered[()].connect(self._gatefilter_toggle_on)
-#         self.filteractionOFF = self.dispfiltermenu.addAction("OFF")
-#         self.filteractionOFF.setCheckable(True)
-#         self.filteractionOFF.setChecked(True)
-#         self.filteractionOFF.setStatusTip("Turn Data mask (GateFilter) OFF")
-#         self.filteractionOFF.triggered[()].connect(self._gatefilter_toggle_off)
-#         self.dispfilter.setMenu(self.dispfiltermenu)
-
-        self.filteractionON = self.dispfiltergroup.addAction(QtGui.QAction('ON', self.dispfiltermenu, checkable=True, triggered=self._gatefilter_toggle_on))
-        self.filteractionOFF = self.dispfiltergroup.addAction(QtGui.QAction('OFF', self.dispfiltermenu, checkable=True, triggered=self._gatefilter_toggle_off))
+        self.filteractionON = self.dispfiltergroup.addAction(
+          QtGui.QAction('ON', self.dispfiltermenu, checkable=True,
+          triggered=self._gatefilter_toggle_on))
+        self.filteractionON.setStatusTip("Turn Data mask (GateFilter) ON")
+        self.filteractionOFF = self.dispfiltergroup.addAction(
+          QtGui.QAction('OFF', self.dispfiltermenu, checkable=True,
+          triggered=self._gatefilter_toggle_off))
         self.filteractionOFF.setChecked(True)
         self.filteractionOFF.setStatusTip("Turn Data mask (GateFilter) OFF")
         self.dispfiltermenu.addAction(self.filteractionON)
@@ -339,11 +337,10 @@ class RadarDisplay(Component):
         dispmenu = QtGui.QMenu(self)
         dispLimits = dispmenu.addAction("Adjust Display Limits")
         dispLimits.setToolTip("Set data, X, and Y range limits")
-        self.dispfilter = dispmenu.addAction("Toggle Data mask")
-        self.dispfiltermenu = QtGui.QMenu("Toggle Data mask")
+        self.dispfilter = dispmenu.addAction("Toggle GateFilter")
+        self.dispfiltermenu = QtGui.QMenu("Toggle GateFilter")
         self.dispfiltermenu.setFocusPolicy(QtCore.Qt.NoFocus)
         self.dispfiltergroup = QtGui.QActionGroup(self, exclusive=True)
-        self.gatefilterToggle = False
 ##        self.gatefilterToggle.toggle()
 ##        self.gatefilterToggle.setChecked(False)
         dispTitle = dispmenu.addAction("Change Title")
@@ -430,12 +427,12 @@ class RadarDisplay(Component):
         if hasattr(self.Vradar.value, 'filename'):
             self.infolabel.setToolTip(self.Vradar.value.filename)
 
-    def _add_gatefilter_toggle(self):
-        '''Create the GateFilter Selection Checkbox'''
-        self.gatefilterToggle = QtGui.QCheckBox("Use data mask")
-        self.gatefilterToggle.setChecked(False)
-        self.gatefilterToggle.toggle()
-        self.gatefilterToggle.stateChanged.connect(self.gatefilter_toggle)
+##    def _add_gatefilter_toggle(self):
+##        '''Create the GateFilter Selection Checkbox'''
+##        self.gatefilterToggle = QtGui.QCheckBox("Use data mask")
+##        self.gatefilterToggle.setChecked(False)
+##        self.gatefilterToggle.toggle()
+##        self.gatefilterToggle.stateChanged.connect(self.gatefilter_toggle)
 
     ########################
     # Selectionion methods #
@@ -550,34 +547,30 @@ class RadarDisplay(Component):
             self._update_plot()
             self._update_infolabel()
 
-    def gatefilter_toggle(self, state):
-        '''
-        Captures the gatefilter toggle, trigger update
-        '''
-        if state == QtCore.Qt.Checked:#self.gatefilterToggle.isChecked():
-            print("CHECKED")
-            self.gatefilterToggle.setChecked(True)
-        else:
-            print("NOT CHECKED")
-            self.gatefilterToggle.setChecked(False)
-            
-        self._update_plot()
+##     def gatefilter_toggle(self, state):
+##         '''
+##         Captures the gatefilter toggle, trigger update
+##         '''
+##         if state == QtCore.Qt.Checked:#self.gatefilterToggle.isChecked():
+##             print("CHECKED")
+##             self.gatefilterToggle.setChecked(True)
+##         else:
+##             print("NOT CHECKED")
+##             self.gatefilterToggle.setChecked(False)
+##            
+##        self._update_plot()
 
     def _gatefilter_toggle_on(self):
-        '''
-        Captures the gatefilter toggle, trigger update
-        '''
-        print("TOGGLE ON")
+        '''Captures the gatefilter toggle ON, trigger update.'''
+        print("GateFilter turned ON")
         self.filteractionON.setChecked(True)
         self.filteractionOFF.setChecked(False)
         self.gatefilterToggle = True
         self._update_plot()
 
     def _gatefilter_toggle_off(self):
-        '''
-        Captures the gatefilter toggle, trigger update
-        '''
-        print("TOGGLE OFF")
+        '''Captures the gatefilter toggle OFF, trigger update.'''
+        print("GateFilter turned OFF")
         self.filteractionON.setChecked(False)
         self.filteractionOFF.setChecked(True)
         self.gatefilterToggle = False
@@ -795,7 +788,6 @@ class RadarDisplay(Component):
         limits = self.Vlims.value
         cmap = self.Vcmap.value
 #        if self.gatefilterToggle.isChecked():
-        print self.gatefilterToggle
         if self.gatefilterToggle:
             gatefilter = self.Vgatefilter.value
         else:
