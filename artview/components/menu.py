@@ -517,7 +517,7 @@ https://rawgit.com/nguy/artview/master/docs/build/html/index.html"""
                     import traceback
                     print(traceback.format_exc())
                     radar_warning = True
-        elif self.mode in ("grid", "all"):
+        if self.mode in ("grid", "all"):
             try:
                 grid = pyart.io.read_grid(
                     self.filename, delay_field_loading=True)

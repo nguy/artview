@@ -1,5 +1,5 @@
 """
-map_to_grid.py
+corrections.py
 
 Driver function that creates ARTView display.
 """
@@ -8,12 +8,15 @@ from PyQt4 import QtGui, QtCore
 import sys
 
 from ..core import Variable
-from ..components import RadarDisplay, GridDisplay, Menu
+from ..components import RadarDisplay, Menu
 from ._common import _add_all_advanced_tools, _parse_dir, _parse_field
+from ..plugins import DealiasRegionBased, DealiasUnwrapPhase, PhaseProcLp, CalculateAttenuation
+
+corrections = [DealiasRegionBased, DealiasUnwrapPhase, PhaseProcLp, CalculateAttenuation]
 
 def run(DirIn=None, filename=None, field=None):
     """
-    artview execution for mapping radar data to grid
+    artview execution for radar corrections
     """
     DirIn = _parse_dir(DirIn)
 
@@ -26,22 +29,19 @@ def run(DirIn=None, filename=None, field=None):
     field = _parse_field(Vradar.value, field)
 
     # start Displays
-    plot1 = RadarDisplay(Vradar, Variable(field), Variable(0),
-                         name="Radar", parent=menu)
-    plot2 = GridDisplay(Variable(None), Variable(field), Variable(0),
-                        name="Grid", parent=menu)
-
-    # start Mapper
-    from ..plugins import Mapper
-    mapper = Mapper(plot1.Vradar, plot2.Vgrid, name="Mapper",
-                            parent=menu)
-
-    menu.addLayoutWidget(mapper)
+    Vtilt = Variable(0)
+    plot1 = RadarDisplay(Vradar, Variable(field), Vtilt, name="Display",
+                         parent=menu)
 
     # add grafical starts
     _add_all_advanced_tools(menu)
 
-    menu.setGeometry(0, 0, 600, 600)
+    menu.setGeometry(0, 0, 700, 700)
+
+    for correction in corrections:
+        c = correction(Vradar=Vradar, parent=menu)
+        menu.addLayoutWidget(c)
+        c.show()
 
     # start program
     app.exec_()
