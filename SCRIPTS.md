@@ -1,7 +1,7 @@
 SCRIPTS
 =======
 
-Here is a list of the predefined scripts that are accesible with the -s comand line option.
+Here is a list of the predefined scripts that are accessible with the -s command line option.
 
 ## radar
 
@@ -15,7 +15,7 @@ Open a grid file and visualize it.
 
 ## radar_and_grid
 
-Open a radar and/or a grid file for visulization.
+Open a radar and/or a grid file for visualization.
 ![radar_and_grid](examples/radar_and_grid.png)
 
 ## compare_fields
@@ -30,12 +30,12 @@ Open a radar file and map it to a grid object.
 
 ## select_region
 
-Select a region on a radar display and get statitics over it.
+Select a region on a radar display and get statistics over it.
 ![select_region](examples/select_region.png)
 
 ## corrections
 
-Perform corrections andf other calculation in a radar file.
+Perform corrections and other calculation in a radar file.
 ![corrections](examples/corrections.png)
 
 ## gatefilter

@@ -53,7 +53,7 @@ there and we appreciate your help in finding and addressing them.
 
 The single stream, original version is still available in the scripts directory. It is 
 much more limited in scope than the full version.
-The other code should not have any effect on it's useage.
+The other code should not have any effect on it's usage.
 
 ## Installation
 ```python
@@ -88,7 +88,7 @@ A specific field (e.g. reflectivity) can be loaded:
 artview -f 'reflectivity'
 ```
 
-Use a diferent startup script with -s
+Use a different start-up script with -s
 ```python
 artview -s radar
 ```
