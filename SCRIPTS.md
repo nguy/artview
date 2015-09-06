@@ -36,7 +36,7 @@ Select a region on a radar display and get statitics over it.
 ## corrections
 
 Perform corrections andf other calculation in a radar file.
-![corrections](exampless/corrections.png)
+![corrections](examples/corrections.png)
 
 ## gatefilter
 
