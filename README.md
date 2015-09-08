@@ -53,7 +53,7 @@ there and we appreciate your help in finding and addressing them.
 
 The single stream, original version is still available in the scripts directory. It is 
 much more limited in scope than the full version.
-The other code should not have any effect on it's useage.
+The other code should not have any effect on it's usage.
 
 ## Installation
 ```python
@@ -88,7 +88,14 @@ A specific field (e.g. reflectivity) can be loaded:
 artview -f 'reflectivity'
 ```
 
-To see the command line options:
+Use a different start-up script with -s
+```python
+artview -s radar
+```
+There are several [predefined scripts](SCRIPTS.md) that you can use, but you
+can also [write your own](https://rawgit.com/nguy/artview/master/docs/build/html/script_tutorial.html).
+
+To see other command line options:
 ```python
 artview -h
 ```
@@ -98,6 +105,7 @@ ARTview should be able to recognize and correctly handle PPI, RHI and airborne f
 The default startup uses radar reflectivity and checks for a few common names.
 If you find a file with a field that does not load, let us know and we can add it
 to the list.
+
 
 ## Dependencies
 [Py-Art](https://github.com/ARM-DOE/pyart) >= 1.5

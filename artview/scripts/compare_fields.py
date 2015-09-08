@@ -1,5 +1,5 @@
 """
-map_to_grid.py
+compare_fields.py
 
 Driver function that creates ARTView display.
 """
@@ -8,12 +8,12 @@ from PyQt4 import QtGui, QtCore
 import sys
 
 from ..core import Variable
-from ..components import RadarDisplay, GridDisplay, Menu
+from ..components import RadarDisplay, Menu, LinkPlugins
 from ._common import _add_all_advanced_tools, _parse_dir, _parse_field
 
 def run(DirIn=None, filename=None, field=None):
     """
-    artview execution for mapping radar data to grid
+    artview execution for comparing fields in radar display
     """
     DirIn = _parse_dir(DirIn)
 
@@ -26,22 +26,20 @@ def run(DirIn=None, filename=None, field=None):
     field = _parse_field(Vradar.value, field)
 
     # start Displays
-    plot1 = RadarDisplay(Vradar, Variable(field), Variable(0),
-                         name="Radar", parent=menu)
-    plot2 = GridDisplay(Variable(None), Variable(field), Variable(0),
-                        name="Grid", parent=menu)
+    Vtilt = Variable(0)
+    plot1 = RadarDisplay(Vradar, Variable(field), Vtilt, name="Display1",
+                         parent=menu)
+    plot2 = RadarDisplay(Vradar, Variable(field), Vtilt, name="Display2",
+                         parent=menu)
 
-    # start Mapper
-    from ..plugins import Mapper
-    mapper = Mapper(plot1.Vradar, plot2.Vgrid, name="Mapper",
-                            parent=menu)
+    # start ComponentsControl
+    control = LinkPlugins()
 
-    menu.addLayoutWidget(mapper)
+    # add control to Menu
+    menu.addLayoutWidget(control)
 
     # add grafical starts
     _add_all_advanced_tools(menu)
-
-    menu.setGeometry(0, 0, 600, 600)
 
     # start program
     app.exec_()
