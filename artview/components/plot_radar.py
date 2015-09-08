@@ -799,7 +799,8 @@ class RadarDisplay(Component):
             self.plot = self.display.plot_sweep_grid(
                 self.Vfield.value, vmin=cmap['vmin'],
                 vmax=cmap['vmax'], colorbar_flag=False, cmap=cmap['cmap'],
-                ax=self.ax, fig=self.fig, title=title)
+                mask_outside=True,
+                gatefilter=gatefilter, ax=self.ax, fig=self.fig, title=title)
             self.display.plot_grid_lines()
 
         elif self.plot_type == "radarPpi":
@@ -808,7 +809,7 @@ class RadarDisplay(Component):
             self.plot = self.display.plot_ppi(
                 self.Vfield.value, self.Vtilt.value,
                 vmin=cmap['vmin'], vmax=cmap['vmax'],
-                colorbar_flag=False, cmap=cmap['cmap'],
+                colorbar_flag=False, cmap=cmap['cmap'], mask_outside=True,
                 gatefilter=gatefilter, ax=self.ax, fig=self.fig, title=title)
             # Add range rings
             if self.RngRing:
@@ -822,7 +823,7 @@ class RadarDisplay(Component):
             self.plot = self.display.plot_rhi(
                 self.Vfield.value, self.Vtilt.value,
                 vmin=cmap['vmin'], vmax=cmap['vmax'],
-                colorbar_flag=False, cmap=cmap['cmap'],
+                colorbar_flag=False, cmap=cmap['cmap'], mask_outside=True,
                 gatefilter=gatefilter, ax=self.ax, fig=self.fig, title=title)
             # Add range rings
             if self.RngRing:
