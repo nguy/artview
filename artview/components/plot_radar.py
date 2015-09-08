@@ -762,7 +762,7 @@ class RadarDisplay(Component):
         '''Set the figure canvas to draw in window area.'''
         self.canvas = FigureCanvasQTAgg(self.fig)
         # Add the widget to the canvas
-        self.layout.addWidget(self.canvas, 2, 0, 7, 6)
+        self.layout.addWidget(self.canvas, 1, 0, 7, 6)
 
     def _update_plot(self):
         '''Draw/Redraw the plot.'''

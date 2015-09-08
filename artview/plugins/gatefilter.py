@@ -287,6 +287,18 @@ class GateFilter(core.Component):
 #            self.AddCorrectedFields()
             for field in self.Vradar.value.fields.keys():
                 self.Vradar.value.fields[field]['data'].mask = self.Vgatefilter.value._gate_excluded
+
+                # **This section is a potential replacement for merging
+                # if problems are found in mask later **
+#                # combine the masks  (noting two Falses is a good point)
+#                combine = np.ma.mask_or(self.Vradar.value.fields[field]['data'].mask, 
+#                                        self.Vgatefilter.value._gate_excluded)
+#                self.Vradar.value.fields[field]['data'].mask = np.ma.mask_or(combine, 
+#                     self.Vradar.value.fields[field]['data'].mask)
+#                self.Vradar.value.fields[field].data[:]=np.where(combine,
+#                      self.Vradar.value.fields[field]['_FillValue'],
+#                      self.Vradar.value.fields[field]['data'].data)
+
             pyart.io.write_cfradial(filename, self.Vradar.value)
             print("Saved %s"%(filename))
 
@@ -331,6 +343,8 @@ class GateFilter(core.Component):
         self.original_masks = {}
         for field in self.Vradar.value.fields.keys():
             self.original_masks[field] = self.Vradar.value.fields[field]['data'].mask
+            print(field)
+            print(np.sum(self.original_masks[field]))
 
         gatefilter = pyart.correct.GateFilter(self.Vradar.value, exclude_based=True)
 
