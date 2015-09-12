@@ -6,10 +6,9 @@ Class instance for finding and choosing shared variable
 """
 
 # Load the needed packages
-from PyQt4 import QtGui, QtCore
 from functools import partial
 
-from . import core
+from .core import componentsList, QtGui, QtCore
 from . import common
 
 
@@ -37,7 +36,7 @@ class VariableChoose(QtGui.QDialog):
         self.setWindowModality(QtCore.Qt.ApplicationModal)
 
         if components is None:
-            self.components = core.componentsList[:]
+            self.components = componentsList[:]
 #            QtCore.QObject.connect(
 #                self.components, QtCore.SIGNAL("ComponentAppended"),
 #                self._updateComponentList)

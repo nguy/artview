@@ -174,5 +174,17 @@ def setup_package():
         scripts=SCRIPTS,
     )
 
+def pre_instalation_tests():
+    # make tests before installing
+    # to avoid risking breaking instalation do it in a try
+    try:
+        from tests.qt import test_matplotlib_qt_backend
+        ans = test_matplotlib_qt_backend()
+        if ans is False:
+            exit(-1)
+    except:
+        pass
+
 if __name__ == '__main__':
+    pre_instalation_tests()
     setup_package()

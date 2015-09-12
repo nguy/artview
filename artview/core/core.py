@@ -6,6 +6,7 @@ Class instance to create Variables and establish change signals.
 """
 
 # Load the needed packages
+# this should the only place with reference to PyQt4
 from PyQt4 import QtGui, QtCore
 import sys
 

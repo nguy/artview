@@ -5,17 +5,12 @@ Routines and class instances to create tools for the ToolBox in Display.
 """
 
 # Load the needed packages
-from PyQt4 import QtGui, QtCore
 import numpy as np
 import warnings
 import csv
 
 from . import limits
-from ..core import common
-
-#import matplotlib
-#matplotlib.use('Qt4Agg')
-#matplotlib.rcParams['backend.qt4']='PyQt4'
+from ..core import common, QtGui, QtCore
 
 from matplotlib.lines import Line2D
 from matplotlib.path import Path

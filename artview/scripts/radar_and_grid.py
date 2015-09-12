@@ -4,10 +4,9 @@ radar_and_grid.py
 Driver function that creates ARTView display.
 """
 import os
-from PyQt4 import QtGui, QtCore
 import sys
 
-from ..core import Variable
+from ..core import Variable, QtGui, QtCore
 from ..components import RadarDisplay, GridDisplay, Menu
 from ._common import _add_all_advanced_tools, _parse_dir, _parse_field
 

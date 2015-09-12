@@ -5,7 +5,7 @@ Common routines run throughout ARTView.
 """
 
 # Load the needed packages
-from PyQt4 import QtGui, QtCore
+from .core import QtGui, QtCore
 import numpy as np
 
 ########################

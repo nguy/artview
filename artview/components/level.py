@@ -5,10 +5,9 @@ Class instance used for modifying level via Display window.
 """
 
 # Load the needed packages
-from PyQt4 import QtGui, QtCore
 from functools import partial
 
-from ..core import Variable, Component
+from ..core import Variable, Component, QtGui, QtCore
 
 
 class LevelButtonWindow(Component):

@@ -114,9 +114,11 @@ to the list.
 
 [Basemap](http://matplotlib.org/basemap) >= 0.99
 
-[PyQt](http://www.riverbankcomputing.co.uk/software/pyqt/intro) >= 4.6
+[PyQt4](http://www.riverbankcomputing.co.uk/software/pyqt/intro) >= 4.6
 
-For a more smooth user experience we recomend to [configure pyart](http://arm-doe.github.io/pyart-docs-travis/user_reference/generated/pyart.load_config.html#pyart.load_config)
+Make sure that `matplotlib` is loading `PyQt4` as backend, for testing that execute `python test/qt.py`.
+
+Also for a more smooth user experience we recomend to [configure pyart](http://arm-doe.github.io/pyart-docs-travis/user_reference/generated/pyart.load_config.html#pyart.load_config)
 to match the kind of files used as well as persornal preferences.
 
 An old unsupported and limited version can be found in the scripts directory and uses

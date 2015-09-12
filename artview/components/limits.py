@@ -5,7 +5,7 @@ Routines used for modifying limits via Display window.
 """
 
 # Load the needed packages
-from PyQt4 import QtGui, QtCore
+from ..core import QtGui, QtCore
 import pyart
 
 def _default_limits(field, plot_type):

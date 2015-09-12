@@ -18,9 +18,8 @@ Utilities easily running ARTview from shell.
 
 import os
 import pyart
-from PyQt4 import QtGui, QtCore
 
-from .core import Variable
+from .core import Variable, QtGui, QtCore
 from .components import (
     RadarDisplay, GridDisplay, Menu, LinkPlugins, SelectRegion)
 

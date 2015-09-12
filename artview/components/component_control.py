@@ -5,14 +5,12 @@ Class instance for control variables shared between components.
 """
 
 # Load the needed packages
-from PyQt4 import QtGui, QtCore
 from functools import partial
 
-from .. import core
-common = core.common
+from ..core import Variable, Component, QtGui, QtCore, common, componentsList
 
 
-class LinkPlugins(core.Component):
+class LinkPlugins(Component):
     '''
     Class instance for control variables shared between components.
     
@@ -52,7 +50,7 @@ class LinkPlugins(core.Component):
         self.layout = QtGui.QGridLayout(self.central_widget)
 
         if components is None:
-            self.components = core.componentsList
+            self.components = componentsList
             QtCore.QObject.connect(
                 self.components, QtCore.SIGNAL("ComponentAppended"),
                 self._updateComponentList)
@@ -178,7 +176,7 @@ class LinkPlugins(core.Component):
         # Disconect old Variable
         self.comp1.disconnectSharedVariable(var)
         # comp1.var = Variable()
-        setattr(self.comp1, var, core.Variable())
+        setattr(self.comp1, var, Variable())
         # Connect new Variable
         self.comp1.connectSharedVariable(var)
         # comp1.var.change(comp0.var.value)

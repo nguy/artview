@@ -19,10 +19,9 @@ The Basics
     .. code-block:: python
 
         import artview
-        from PyQt4 import QtGui
 
         # start pyqt
-        app = QtGui.QApplication([])
+        app = artview.core.QtGui.QApplication([])
 
         ###########################
         #     do something        #
@@ -39,10 +38,9 @@ The Basics
     .. code-block:: python
 
         import artview
-        from PyQt4 import QtGui
 
         # start pyqt
-        app = QtGui.QApplication([])
+        app = artview.core.QtGui.QApplication([])
 
         # start Menu
         menu = artview.components.Menu(DirIn="/", name="Menu")
@@ -61,10 +59,9 @@ The Basics
     .. code-block:: python
 
         import artview
-        from PyQt4 import QtGui
 
         # start pyqt
-        app = QtGui.QApplication([])
+        app = artview.core.QtGui.QApplication([])
 
         # get example radar from pyart
         import pyart
@@ -110,10 +107,9 @@ Shared Variables
     .. code-block:: python
 
         import artview
-        from PyQt4 import QtGui
 
         # start pyqt
-        app = QtGui.QApplication([])
+        app = artview.core.QtGui.QApplication([])
 
         # start Menu
         menu = artview.components.Menu(DirIn="/", name="Menu")
@@ -143,10 +139,9 @@ Shared Variables
     .. code-block:: python
 
         import artview
-        from PyQt4 import QtGui
 
         # start pyqt
-        app = QtGui.QApplication([])
+        app = artview.core.QtGui.QApplication([])
 
         # start Menu
         menu = artview.components.Menu(DirIn="/", name="Menu")
@@ -199,10 +194,9 @@ Shared Variables
         :emphasize-lines: 32-34
 
         import artview
-        from PyQt4 import QtGui
 
         # start pyqt
-        app = QtGui.QApplication([])
+        app = artview.core.QtGui.QApplication([])
 
         # start Menu
         menu = artview.components.Menu(DirIn="/", name="Menu")

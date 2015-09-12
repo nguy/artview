@@ -6,9 +6,7 @@ Class to pick a value with the mouse.
 # Load the needed packages
 import numpy as np
 
-from PyQt4 import QtGui, QtCore
-
-from ..core import Variable, Component, common, VariableChoose
+from ..core import Variable, Component, common, VariableChoose, QtGui, QtCore
 
 
 class ValueClick(Component):

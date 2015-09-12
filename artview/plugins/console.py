@@ -3,8 +3,6 @@ console.py
 """
 
 # Load the needed packages
-from PyQt4 import QtGui, QtCore
-
 import code
 import pyart
 
@@ -17,11 +15,10 @@ sys.path.insert(0, path)
 
 import artview
 
-from .. import core
-common = core.common
+from ..core import Component, Variable, common, QtGui, QtCore, componentsList
 
 
-class AccessTerminal(core.Component):
+class AccessTerminal(Component):
     '''
     Open an interactive python console so the direct manipulation
     '''
@@ -75,7 +72,7 @@ class AccessTerminal(core.Component):
             target=code.interact,
             kwargs={'banner': banner,
                     'readfunc': None,
-                    'local': {'components': core.componentsList, 'pyart': pyart,
+                    'local': {'components': componentsList, 'pyart': pyart,
                               'artview': artview}}
             )
         self.thread.start()

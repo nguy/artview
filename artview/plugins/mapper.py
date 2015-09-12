@@ -3,17 +3,15 @@
 """
 
 # Load the needed packages
-from PyQt4 import QtGui, QtCore
 from functools import partial
 
 import pyart
 import time
 
-from .. import core
-common = core.common
+from ..core import Component, Variable, common, QtGui, QtCore, VariableChoose
 
 
-class Mapper(core.Component):
+class Mapper(Component):
     '''
     Interface for executing :py:func:`pyart.map.grid_from_radars`
     '''
@@ -53,12 +51,12 @@ class Mapper(core.Component):
         self.layout = QtGui.QVBoxLayout(self.central_widget)
 
         if Vradar is None:
-            self.Vradar = core.Variable(None)
+            self.Vradar = Variable(None)
         else:
             self.Vradar = Vradar
 
         if Vgrid is None:
-            self.Vgrid = core.Variable(None)
+            self.Vgrid = Variable(None)
         else:
             self.Vgrid = Vgrid
         self.sharedVariables = {"Vradar": self.newRadar,

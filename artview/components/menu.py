@@ -7,9 +7,8 @@ import numpy as np
 import pyart
 
 import os, sys
-from PyQt4 import QtGui, QtCore
 
-from ..core import Variable, Component, common
+from ..core import Variable, Component, common, QtGui, QtCore
 
 
 class Menu(Component):

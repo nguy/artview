@@ -3,19 +3,17 @@ gatefilter.py
 """
 
 # Load the needed packages
-from PyQt4 import QtGui, QtCore
 from functools import partial
 import os
 import numpy as np
 import pyart
 import time
 
-from .. import core
+from ..core import Component, Variable, common, QtGui, QtCore, componentsList
 from ..components import RadarDisplay
-common = core.common
 
 
-class GateFilter(core.Component):
+class GateFilter(Component):
     '''
     Interface for executing :py:func:`pyart.correct.GateFilter`.
     '''
@@ -58,12 +56,12 @@ class GateFilter(core.Component):
         # Set up signal, so that DISPLAY can react to
         # changes in radar or gatefilter shared variables
         if Vradar is None:
-            self.Vradar = core.Variable(None)
+            self.Vradar = Variable(None)
         else:
             self.Vradar = Vradar
 
         if Vgatefilter is None:
-            self.Vgatefilter = core.Variable(None)
+            self.Vgatefilter = Variable(None)
         else:
             self.Vgatefilter = Vgatefilter
 
@@ -110,7 +108,7 @@ class GateFilter(core.Component):
         gBox_layout.addWidget(self.dispCombo, 0, 1, 1, 1)
 
         self.DispChoiceList = []
-        self.components = core.componentsList
+        self.components = componentsList
         for component in self.components:
             if "Vradar" in component.sharedVariables.keys():
                 if "Vgatefilter" in component.sharedVariables.keys():
@@ -213,7 +211,7 @@ class GateFilter(core.Component):
     #########################
 
     def chooseDisplay(self):
-        '''Get Radar with :py:class:`~artview.core.VariableChoose`.'''
+        '''Get Display.'''
         selection = self.dispCombo.currentIndex()
         Vradar = getattr(self.DispChoiceList[selection], str("Vradar"))
         Vgatefilter = getattr(self.DispChoiceList[selection], str("Vgatefilter"))

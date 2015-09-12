@@ -8,12 +8,6 @@ import numpy as np
 import os
 import pyart
 
-from PyQt4 import QtGui, QtCore
-
-#import matplotlib
-#matplotlib.use('Qt4Agg')
-#matplotlib.rcParams['backend.qt4']='PyQt4'
-
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as \
     NavigationToolbar
@@ -22,7 +16,7 @@ from matplotlib.colors import Normalize as mlabNormalize
 from matplotlib.colorbar import ColorbarBase as mlabColorbarBase
 from matplotlib.pyplot import cm
 
-from ..core import Variable, Component, common, VariableChoose
+from ..core import Variable, Component, common, VariableChoose, QtGui, QtCore
 
 # Save image file type and DPI (resolution)
 IMAGE_EXT = 'png'
