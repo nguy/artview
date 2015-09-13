@@ -121,9 +121,6 @@ Make sure that `matplotlib` is loading `PyQt4` as backend, for testing that exec
 Also for a more smooth user experience we recomend to [configure pyart](http://arm-doe.github.io/pyart-docs-travis/user_reference/generated/pyart.load_config.html#pyart.load_config)
 to match the kind of files used as well as persornal preferences.
 
-An old unsupported and limited version can be found in the scripts directory and uses
-[TkInter](https://wiki.python.org/moin/TkInter) .
-
 Developed on Python 2.7.7 and 2.7.9 :: Anaconda 2.0.1 and 2.1.0
 
 ARTView has been tested on:
