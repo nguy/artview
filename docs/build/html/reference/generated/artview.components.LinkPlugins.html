@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>artview.components.LinkPlugins &mdash; ARTview 0.2.2 documentation</title>
+    <title>artview.components.LinkPlugins &mdash; ARTview 1.1.1.dev+cd00646 documentation</title>
     
     <link rel="stylesheet" href="../../_static/scipy.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.2.2',
+        VERSION:     '1.1.1.dev+cd00646',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="ARTview 0.2.2 documentation" href="../../index.html" />
+    <link rel="top" title="ARTview 1.1.1.dev+cd00646 documentation" href="../../index.html" />
     <link rel="up" title="Main Components (artview.components)" href="../components.html" />
     <link rel="next" title="artview.components.LinkPlugins.connectVar" href="artview.components.LinkPlugins.connectVar.html" />
     <link rel="prev" title="artview.components.FieldButtonWindow.SetFieldRadioButtons" href="artview.components.FieldButtonWindow.SetFieldRadioButtons.html" /> 
@@ -48,7 +48,7 @@
         <li class="right" >
           <a href="artview.components.FieldButtonWindow.SetFieldRadioButtons.html" title="artview.components.FieldButtonWindow.SetFieldRadioButtons"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">ARTview 0.2.2 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">ARTview 1.1.1.dev+cd00646 documentation</a> &raquo;</li>
           <li><a href="../index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li>
           <li><a href="../components.html" accesskey="U">Main Components (<tt class="docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
       </ul>
@@ -63,16 +63,16 @@
 <h1>artview.components.LinkPlugins<a class="headerlink" href="#artview-components-linkplugins" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="artview.components.LinkPlugins">
-<em class="property">class </em><tt class="descclassname">artview.components.</tt><tt class="descname">LinkPlugins</tt><big>(</big><em>components=None</em>, <em>name='LinkPlugins'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/component_control.py#L15"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.LinkPlugins" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">artview.components.</tt><tt class="descname">LinkPlugins</tt><big>(</big><em>components=None</em>, <em>name='LinkPlugins'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/component_control.py#L13"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.LinkPlugins" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><tt class="xref py py-class docutils literal"><span class="pre">artview.core.core.Component</span></tt></a></p>
 <p>Class instance for control variables shared between components.</p>
-<p>The user may select two components from a list. A radio menu is 
+<p>The user may select two components from a list. A radio menu is
 added for every common sharable variable. Each variable may be unlinked
 from similar instance in the other component.</p>
 <p>This is a powerful Component, multiple instances may conflict.</p>
 <dl class="method">
 <dt id="artview.components.LinkPlugins.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>components=None</em>, <em>name='LinkPlugins'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/component_control.py#L33"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.LinkPlugins.__init__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__init__</tt><big>(</big><em>components=None</em>, <em>name='LinkPlugins'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/component_control.py#L31"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.LinkPlugins.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize the class to create the interface.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -91,7 +91,8 @@ artview.core.core.componentsList</p>
 <p><strong>parent</strong> : PyQt instance</p>
 <blockquote class="last">
 <div><p>Parent instance to associate to this class.
-If None, then Qt owns, otherwise associated w/ parent PyQt instance.</p>
+If None, then Qt owns, otherwise associated with parent PyQt
+instance.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -176,14 +177,14 @@ If None, then Qt owns, otherwise associated w/ parent PyQt instance.</p>
         <li class="right" >
           <a href="artview.components.FieldButtonWindow.SetFieldRadioButtons.html" title="artview.components.FieldButtonWindow.SetFieldRadioButtons"
              >previous</a> |</li>
-        <li><a href="../../index.html">ARTview 0.2.2 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">ARTview 1.1.1.dev+cd00646 documentation</a> &raquo;</li>
           <li><a href="../index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li>
           <li><a href="../components.html" >Main Components (<tt class="docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Aug 11, 2015.
+      Last updated on Sep 13, 2015.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>

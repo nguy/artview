@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Plugins (artview.plugins) &mdash; ARTview 0.2.2 documentation</title>
+    <title>Plugins (artview.plugins) &mdash; ARTview 1.1.1.dev+cd00646 documentation</title>
     
     <link rel="stylesheet" href="../_static/scipy.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.2',
+        VERSION:     '1.1.1.dev+cd00646',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,9 +24,9 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="ARTview 0.2.2 documentation" href="../index.html" />
+    <link rel="top" title="ARTview 1.1.1.dev+cd00646 documentation" href="../index.html" />
     <link rel="up" title="ARTview (artview)" href="index.html" />
-    <link rel="next" title="artview.plugins.CalculateAttenuation" href="generated/artview.plugins.CalculateAttenuation.html" />
+    <link rel="next" title="artview.plugins.GateFilter" href="generated/artview.plugins.GateFilter.html" />
     <link rel="prev" title="artview.components.PlotDisplay.setUILayout" href="generated/artview.components.PlotDisplay.setUILayout.html" /> 
   </head>
   <body>
@@ -43,12 +43,12 @@
           <a href="../np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="generated/artview.plugins.CalculateAttenuation.html" title="artview.plugins.CalculateAttenuation"
+          <a href="generated/artview.plugins.GateFilter.html" title="artview.plugins.GateFilter"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="generated/artview.components.PlotDisplay.setUILayout.html" title="artview.components.PlotDisplay.setUILayout"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">ARTview 0.2.2 documentation</a> &raquo;</li>
+        <li><a href="../index.html">ARTview 1.1.1.dev+cd00646 documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li> 
       </ul>
     </div>  
@@ -67,20 +67,26 @@
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/artview.plugins.CalculateAttenuation.html#artview.plugins.CalculateAttenuation" title="artview.plugins.CalculateAttenuation"><tt class="xref py py-obj docutils literal"><span class="pre">CalculateAttenuation</span></tt></a>([Vradar,&nbsp;name,&nbsp;parent])</td>
-<td>Interface for executing <a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.correct.calculate_attenuation.html#pyart.correct.calculate_attenuation" title="(in Py-ART v1.4)"><tt class="xref py py-func docutils literal"><span class="pre">pyart.correct.calculate_attenuation</span></tt></a></td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/artview.plugins.DealiasRegionBased.html#artview.plugins.DealiasRegionBased" title="artview.plugins.DealiasRegionBased"><tt class="xref py py-obj docutils literal"><span class="pre">DealiasRegionBased</span></tt></a>([Vradar,&nbsp;name,&nbsp;parent])</td>
-<td>Interface for executing <a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.correct.dealias_region_based.html#pyart.correct.dealias_region_based" title="(in Py-ART v1.4)"><tt class="xref py py-func docutils literal"><span class="pre">pyart.correct.dealias_region_based</span></tt></a></td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/artview.plugins.DealiasUnwrapPhase.html#artview.plugins.DealiasUnwrapPhase" title="artview.plugins.DealiasUnwrapPhase"><tt class="xref py py-obj docutils literal"><span class="pre">DealiasUnwrapPhase</span></tt></a>([Vradar,&nbsp;name,&nbsp;parent])</td>
-<td>Interface for executing <a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.correct.dealias_unwrap_phase.html#pyart.correct.dealias_unwrap_phase" title="(in Py-ART v1.4)"><tt class="xref py py-func docutils literal"><span class="pre">pyart.correct.dealias_unwrap_phase</span></tt></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/artview.plugins.GateFilter.html#artview.plugins.GateFilter" title="artview.plugins.GateFilter"><tt class="xref py py-obj docutils literal"><span class="pre">GateFilter</span></tt></a>([Vradar,&nbsp;Vgatefilter,&nbsp;name,&nbsp;parent])</td>
+<td>Interface for executing <a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.filters.GateFilter.html#pyart.filters.GateFilter" title="(in Py-ART v1.5)"><tt class="xref py py-class docutils literal"><span class="pre">pyart.filters.GateFilter</span></tt></a>.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/artview.plugins.Mapper.html#artview.plugins.Mapper" title="artview.plugins.Mapper"><tt class="xref py py-obj docutils literal"><span class="pre">Mapper</span></tt></a>([Vradar,&nbsp;Vgrid,&nbsp;name,&nbsp;parent])</td>
-<td>Interface for executing <a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.map.grid_from_radars.html#pyart.map.grid_from_radars" title="(in Py-ART v1.4)"><tt class="xref py py-func docutils literal"><span class="pre">pyart.map.grid_from_radars</span></tt></a></td>
+<td>Interface for executing <a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.map.grid_from_radars.html#pyart.map.grid_from_radars" title="(in Py-ART v1.5)"><tt class="xref py py-func docutils literal"><span class="pre">pyart.map.grid_from_radars</span></tt></a></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/artview.plugins.CalculateAttenuation.html#artview.plugins.CalculateAttenuation" title="artview.plugins.CalculateAttenuation"><tt class="xref py py-obj docutils literal"><span class="pre">CalculateAttenuation</span></tt></a>([Vradar,&nbsp;name,&nbsp;parent])</td>
+<td>Interface for executing <a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.correct.calculate_attenuation.html#pyart.correct.calculate_attenuation" title="(in Py-ART v1.5)"><tt class="xref py py-func docutils literal"><span class="pre">pyart.correct.calculate_attenuation</span></tt></a></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/artview.plugins.DealiasRegionBased.html#artview.plugins.DealiasRegionBased" title="artview.plugins.DealiasRegionBased"><tt class="xref py py-obj docutils literal"><span class="pre">DealiasRegionBased</span></tt></a>([Vradar,&nbsp;name,&nbsp;parent])</td>
+<td>Interface for executing <a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.correct.dealias_region_based.html#pyart.correct.dealias_region_based" title="(in Py-ART v1.5)"><tt class="xref py py-func docutils literal"><span class="pre">pyart.correct.dealias_region_based</span></tt></a></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/artview.plugins.AccessTerminal.html#artview.plugins.AccessTerminal" title="artview.plugins.AccessTerminal"><tt class="xref py py-obj docutils literal"><span class="pre">AccessTerminal</span></tt></a>([name,&nbsp;parent])</td>
+<td>Open an interactive python console so the direct manipulation</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/artview.plugins.DealiasUnwrapPhase.html#artview.plugins.DealiasUnwrapPhase" title="artview.plugins.DealiasUnwrapPhase"><tt class="xref py py-obj docutils literal"><span class="pre">DealiasUnwrapPhase</span></tt></a>([Vradar,&nbsp;name,&nbsp;parent])</td>
+<td>Interface for executing <a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.correct.dealias_unwrap_phase.html#pyart.correct.dealias_unwrap_phase" title="(in Py-ART v1.5)"><tt class="xref py py-func docutils literal"><span class="pre">pyart.correct.dealias_unwrap_phase</span></tt></a></td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/artview.plugins.PhaseProcLp.html#artview.plugins.PhaseProcLp" title="artview.plugins.PhaseProcLp"><tt class="xref py py-obj docutils literal"><span class="pre">PhaseProcLp</span></tt></a>([Vradar,&nbsp;name,&nbsp;parent])</td>
-<td>Interface for executing <a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.correct.phase_proc_lp.html#pyart.correct.phase_proc_lp" title="(in Py-ART v1.4)"><tt class="xref py py-func docutils literal"><span class="pre">pyart.correct.phase_proc_lp</span></tt></a></td>
+<td>Interface for executing <a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.correct.phase_proc_lp.html#pyart.correct.phase_proc_lp" title="(in Py-ART v1.5)"><tt class="xref py py-func docutils literal"><span class="pre">pyart.correct.phase_proc_lp</span></tt></a></td>
 </tr>
 </tbody>
 </table>
@@ -96,8 +102,8 @@
   <p class="topless"><a href="generated/artview.components.PlotDisplay.setUILayout.html"
                         title="previous chapter">artview.components.PlotDisplay.setUILayout</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="generated/artview.plugins.CalculateAttenuation.html"
-                        title="next chapter">artview.plugins.CalculateAttenuation</a></p>
+  <p class="topless"><a href="generated/artview.plugins.GateFilter.html"
+                        title="next chapter">artview.plugins.GateFilter</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/reference/plugins.txt"
@@ -133,18 +139,18 @@
           <a href="../np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="generated/artview.plugins.CalculateAttenuation.html" title="artview.plugins.CalculateAttenuation"
+          <a href="generated/artview.plugins.GateFilter.html" title="artview.plugins.GateFilter"
              >next</a> |</li>
         <li class="right" >
           <a href="generated/artview.components.PlotDisplay.setUILayout.html" title="artview.components.PlotDisplay.setUILayout"
              >previous</a> |</li>
-        <li><a href="../index.html">ARTview 0.2.2 documentation</a> &raquo;</li>
+        <li><a href="../index.html">ARTview 1.1.1.dev+cd00646 documentation</a> &raquo;</li>
           <li><a href="index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Aug 11, 2015.
+      Last updated on Sep 13, 2015.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>

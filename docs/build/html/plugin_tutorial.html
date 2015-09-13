@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Tutorial: Writing your own Plugin &mdash; ARTview 0.2.2 documentation</title>
+    <title>Tutorial: Writing your own Plugin &mdash; ARTview 1.1.1.dev+cd00646 documentation</title>
     
     <link rel="stylesheet" href="_static/scipy.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.2',
+        VERSION:     '1.1.1.dev+cd00646',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="ARTview 0.2.2 documentation" href="index.html" />
+    <link rel="top" title="ARTview 1.1.1.dev+cd00646 documentation" href="index.html" />
     <link rel="prev" title="Tutorial: Writing your own Script" href="script_tutorial.html" /> 
   </head>
   <body>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="script_tutorial.html" title="Tutorial: Writing your own Script"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">ARTview 0.2.2 documentation</a> &raquo;</li> 
+        <li><a href="index.html">ARTview 1.1.1.dev+cd00646 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -97,6 +97,10 @@ of <a class="reference internal" href="reference/generated/artview.core.core.Com
     <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="o">...</span><span class="p">),</span> <span class="bp">True</span><span class="o">/</span><span class="bp">False</span>
 </pre></div>
 </div>
+</li>
+<li><p class="first">Last in order to avoid future problems get <tt class="xref py py-mod docutils literal"><span class="pre">QtCore</span></tt> and <tt class="xref py py-mod docutils literal"><span class="pre">QtGui</span></tt> modules
+from <a class="reference internal" href="reference/core.html#module-artview.core" title="artview.core"><tt class="xref py py-mod docutils literal"><span class="pre">artview.core</span></tt></a> and not directly for <tt class="xref py py-mod docutils literal"><span class="pre">PyQt4</span></tt>, even if this is still
+only an alias.</p>
 </li>
 </ul>
 <p>Next we&#8217;ll discuss how these are used in creating a plug-in.</p>
@@ -168,7 +172,7 @@ your mind:</p>
 <li>the function it will perform</li>
 <li>the type of value it will hold</li>
 </ol>
-<p>Examples of  shared variable are present in the <a class="reference internal" href="reference/generated/artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a>.
+<p>Examples of shared variable are present in the <a class="reference internal" href="reference/generated/artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a>.
 If your variable is already present in that list, use the same name.</p>
 <p>For every shared variable a component uses, you must define the response
 if the value is changed. An important point to understand here
@@ -369,12 +373,12 @@ allowing the selection of one instance.</li>
         <li class="right" >
           <a href="script_tutorial.html" title="Tutorial: Writing your own Script"
              >previous</a> |</li>
-        <li><a href="index.html">ARTview 0.2.2 documentation</a> &raquo;</li> 
+        <li><a href="index.html">ARTview 1.1.1.dev+cd00646 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Aug 11, 2015.
+      Last updated on Sep 13, 2015.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>

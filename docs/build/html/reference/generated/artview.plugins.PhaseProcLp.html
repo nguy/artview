@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>artview.plugins.PhaseProcLp &mdash; ARTview 0.2.2 documentation</title>
+    <title>artview.plugins.PhaseProcLp &mdash; ARTview 1.1.1.dev+cd00646 documentation</title>
     
     <link rel="stylesheet" href="../../_static/scipy.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.2.2',
+        VERSION:     '1.1.1.dev+cd00646',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,10 +24,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="ARTview 0.2.2 documentation" href="../../index.html" />
+    <link rel="top" title="ARTview 1.1.1.dev+cd00646 documentation" href="../../index.html" />
     <link rel="up" title="Plugins (artview.plugins)" href="../plugins.html" />
     <link rel="next" title="artview.plugins.PhaseProcLp.addGeneralOptions" href="artview.plugins.PhaseProcLp.addGeneralOptions.html" />
-    <link rel="prev" title="artview.plugins.Mapper.newRadar" href="artview.plugins.Mapper.newRadar.html" /> 
+    <link rel="prev" title="artview.plugins.DealiasUnwrapPhase.newRadar" href="artview.plugins.DealiasUnwrapPhase.newRadar.html" /> 
   </head>
   <body>
     <div class="related">
@@ -46,9 +46,9 @@
           <a href="artview.plugins.PhaseProcLp.addGeneralOptions.html" title="artview.plugins.PhaseProcLp.addGeneralOptions"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="artview.plugins.Mapper.newRadar.html" title="artview.plugins.Mapper.newRadar"
+          <a href="artview.plugins.DealiasUnwrapPhase.newRadar.html" title="artview.plugins.DealiasUnwrapPhase.newRadar"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">ARTview 0.2.2 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">ARTview 1.1.1.dev+cd00646 documentation</a> &raquo;</li>
           <li><a href="../index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li>
           <li><a href="../plugins.html" accesskey="U">Plugins (<tt class="docutils literal"><span class="pre">artview.plugins</span></tt>)</a> &raquo;</li> 
       </ul>
@@ -63,12 +63,12 @@
 <h1>artview.plugins.PhaseProcLp<a class="headerlink" href="#artview-plugins-phaseproclp" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="artview.plugins.PhaseProcLp">
-<em class="property">class </em><tt class="descclassname">artview.plugins.</tt><tt class="descname">PhaseProcLp</tt><big>(</big><em>Vradar=None</em>, <em>name='PhaseProcLp'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/plugins/phase_proc_lp.py#L16"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.plugins.PhaseProcLp" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">artview.plugins.</tt><tt class="descname">PhaseProcLp</tt><big>(</big><em>Vradar=None</em>, <em>name='PhaseProcLp'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/plugins/phase_proc_lp.py#L14"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.plugins.PhaseProcLp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><tt class="xref py py-class docutils literal"><span class="pre">artview.core.core.Component</span></tt></a></p>
-<p>Interface for executing <a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.correct.phase_proc_lp.html#pyart.correct.phase_proc_lp" title="(in Py-ART v1.4)"><tt class="xref py py-func docutils literal"><span class="pre">pyart.correct.phase_proc_lp</span></tt></a></p>
+<p>Interface for executing <a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.correct.phase_proc_lp.html#pyart.correct.phase_proc_lp" title="(in Py-ART v1.5)"><tt class="xref py py-func docutils literal"><span class="pre">pyart.correct.phase_proc_lp</span></tt></a></p>
 <dl class="method">
 <dt id="artview.plugins.PhaseProcLp.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>Vradar=None</em>, <em>name='PhaseProcLp'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/plugins/phase_proc_lp.py#L31"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.plugins.PhaseProcLp.__init__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__init__</tt><big>(</big><em>Vradar=None</em>, <em>name='PhaseProcLp'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/plugins/phase_proc_lp.py#L29"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.plugins.PhaseProcLp.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize the class to create the interface.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -115,7 +115,7 @@ If None, then Qt owns, otherwise associated w/ parent PyQt instance</p>
 <td>Graphical interface for starting this class.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="artview.plugins.PhaseProcLp.phase_proc_lp.html#artview.plugins.PhaseProcLp.phase_proc_lp" title="artview.plugins.PhaseProcLp.phase_proc_lp"><tt class="xref py py-obj docutils literal"><span class="pre">PhaseProcLp.phase_proc_lp</span></tt></a>()</td>
-<td>Mount Options and execute <a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.correct.phase_proc_lp.html#pyart.correct.phase_proc_lp" title="(in Py-ART v1.4)"><tt class="xref py py-func docutils literal"><span class="pre">phase_proc_lp</span></tt></a>.</td>
+<td>Mount Options and execute <a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.correct.phase_proc_lp.html#pyart.correct.phase_proc_lp" title="(in Py-ART v1.5)"><tt class="xref py py-func docutils literal"><span class="pre">phase_proc_lp</span></tt></a>.</td>
 </tr>
 </tbody>
 </table>
@@ -137,8 +137,8 @@ If None, then Qt owns, otherwise associated w/ parent PyQt instance</p>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="artview.plugins.Mapper.newRadar.html"
-                        title="previous chapter">artview.plugins.Mapper.newRadar</a></p>
+  <p class="topless"><a href="artview.plugins.DealiasUnwrapPhase.newRadar.html"
+                        title="previous chapter">artview.plugins.DealiasUnwrapPhase.newRadar</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="artview.plugins.PhaseProcLp.addGeneralOptions.html"
                         title="next chapter">artview.plugins.PhaseProcLp.addGeneralOptions</a></p>
@@ -180,16 +180,16 @@ If None, then Qt owns, otherwise associated w/ parent PyQt instance</p>
           <a href="artview.plugins.PhaseProcLp.addGeneralOptions.html" title="artview.plugins.PhaseProcLp.addGeneralOptions"
              >next</a> |</li>
         <li class="right" >
-          <a href="artview.plugins.Mapper.newRadar.html" title="artview.plugins.Mapper.newRadar"
+          <a href="artview.plugins.DealiasUnwrapPhase.newRadar.html" title="artview.plugins.DealiasUnwrapPhase.newRadar"
              >previous</a> |</li>
-        <li><a href="../../index.html">ARTview 0.2.2 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">ARTview 1.1.1.dev+cd00646 documentation</a> &raquo;</li>
           <li><a href="../index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li>
           <li><a href="../plugins.html" >Plugins (<tt class="docutils literal"><span class="pre">artview.plugins</span></tt>)</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Aug 11, 2015.
+      Last updated on Sep 13, 2015.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>

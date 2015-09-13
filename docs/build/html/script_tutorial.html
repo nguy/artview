@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Tutorial: Writing your own Script &mdash; ARTview 0.2.2 documentation</title>
+    <title>Tutorial: Writing your own Script &mdash; ARTview 1.1.1.dev+cd00646 documentation</title>
     
     <link rel="stylesheet" href="_static/scipy.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.2',
+        VERSION:     '1.1.1.dev+cd00646',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="ARTview 0.2.2 documentation" href="index.html" />
+    <link rel="top" title="ARTview 1.1.1.dev+cd00646 documentation" href="index.html" />
     <link rel="next" title="Tutorial: Writing your own Plugin" href="plugin_tutorial.html" />
     <link rel="prev" title="artview.view.addGrid" href="reference/generated/artview.view.addGrid.html" /> 
   </head>
@@ -47,7 +47,7 @@
         <li class="right" >
           <a href="reference/generated/artview.view.addGrid.html" title="artview.view.addGrid"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">ARTview 0.2.2 documentation</a> &raquo;</li> 
+        <li><a href="index.html">ARTview 1.1.1.dev+cd00646 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -66,15 +66,14 @@ interact with each other.</div></blockquote>
 <div class="section" id="the-basics">
 <h2>The Basics<a class="headerlink" href="#the-basics" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><p>Artview runs with PyQt, therefore before using any component you need to
-start a PyQt application. After defining what you want, you need to get it
+<div><p>Artview runs with PyQt4, therefore before using any component you need to
+start a Qt application, but do that with artview, not directly in PyQt4. After defining what you want, you need to get it
 to run, otherwise windows will not respond. Your basic script will look like
 this:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">artview</span>
-<span class="kn">from</span> <span class="nn">PyQt4</span> <span class="kn">import</span> <span class="n">QtGui</span>
 
 <span class="c"># start pyqt</span>
-<span class="n">app</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QApplication</span><span class="p">([])</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QApplication</span><span class="p">([])</span>
 
 <span class="c">###########################</span>
 <span class="c">#     do something        #</span>
@@ -89,10 +88,9 @@ The simplest thing you can do is start a single instance
 <a class="reference internal" href="reference/generated/artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><tt class="xref py py-class docutils literal"><span class="pre">Component</span></tt></a> (or plugin), for instance
 <a class="reference internal" href="reference/generated/artview.components.Menu.html#artview.components.Menu" title="artview.components.Menu"><tt class="xref py py-class docutils literal"><span class="pre">Menu</span></tt></a>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">artview</span>
-<span class="kn">from</span> <span class="nn">PyQt4</span> <span class="kn">import</span> <span class="n">QtGui</span>
 
 <span class="c"># start pyqt</span>
-<span class="n">app</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QApplication</span><span class="p">([])</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QApplication</span><span class="p">([])</span>
 
 <span class="c"># start Menu</span>
 <span class="n">menu</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="n">DirIn</span><span class="o">=</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;Menu&quot;</span><span class="p">)</span>
@@ -105,13 +103,12 @@ The simplest thing you can do is start a single instance
 instance a different name is important for identifying them afterward.</p>
 <p>A slightly more useful component is a
 <a class="reference internal" href="reference/generated/artview.components.RadarDisplay.html#artview.components.RadarDisplay" title="artview.components.RadarDisplay"><tt class="xref py py-class docutils literal"><span class="pre">RadarDisplay</span></tt></a>, but this needs a
-<a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.core.Radar.html#pyart.core.Radar" title="(in Py-ART v1.4)"><tt class="xref py py-class docutils literal"><span class="pre">pyart.core.Radar</span></tt></a> instance. Luckily Py-ART has examples we
+<a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.core.Radar.html#pyart.core.Radar" title="(in Py-ART v1.5)"><tt class="xref py py-class docutils literal"><span class="pre">pyart.core.Radar</span></tt></a> instance. Luckily Py-ART has examples we
 can use:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">artview</span>
-<span class="kn">from</span> <span class="nn">PyQt4</span> <span class="kn">import</span> <span class="n">QtGui</span>
 
 <span class="c"># start pyqt</span>
-<span class="n">app</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QApplication</span><span class="p">([])</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QApplication</span><span class="p">([])</span>
 
 <span class="c"># get example radar from pyart</span>
 <span class="kn">import</span> <span class="nn">pyart</span>
@@ -153,10 +150,9 @@ package we want to plot this files.</p>
 <a class="reference internal" href="reference/generated/artview.components.Menu.html#artview.components.Menu" title="artview.components.Menu"><tt class="xref py py-class docutils literal"><span class="pre">Menu</span></tt></a> and pass it to
 <a class="reference internal" href="reference/generated/artview.components.RadarDisplay.html#artview.components.RadarDisplay" title="artview.components.RadarDisplay"><tt class="xref py py-class docutils literal"><span class="pre">RadarDisplay</span></tt></a>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">artview</span>
-<span class="kn">from</span> <span class="nn">PyQt4</span> <span class="kn">import</span> <span class="n">QtGui</span>
 
 <span class="c"># start pyqt</span>
-<span class="n">app</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QApplication</span><span class="p">([])</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QApplication</span><span class="p">([])</span>
 
 <span class="c"># start Menu</span>
 <span class="n">menu</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="n">DirIn</span><span class="o">=</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;Menu&quot;</span><span class="p">)</span>
@@ -182,10 +178,9 @@ package we want to plot this files.</p>
 Suppose you want to compare two fields of the same radar
 side-by-side. Simply add another display:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">artview</span>
-<span class="kn">from</span> <span class="nn">PyQt4</span> <span class="kn">import</span> <span class="n">QtGui</span>
 
 <span class="c"># start pyqt</span>
-<span class="n">app</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QApplication</span><span class="p">([])</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QApplication</span><span class="p">([])</span>
 
 <span class="c"># start Menu</span>
 <span class="n">menu</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="n">DirIn</span><span class="o">=</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;Menu&quot;</span><span class="p">)</span>
@@ -233,10 +228,9 @@ the second. We&#8217;d like them to change together.</p>
 creating a new Vtilt <a class="reference internal" href="reference/generated/artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a>,
 use the old one:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">artview</span>
-<span class="kn">from</span> <span class="nn">PyQt4</span> <span class="kn">import</span> <span class="n">QtGui</span>
 
 <span class="c"># start pyqt</span>
-<span class="n">app</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QApplication</span><span class="p">([])</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QApplication</span><span class="p">([])</span>
 
 <span class="c"># start Menu</span>
 <span class="n">menu</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="n">DirIn</span><span class="o">=</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;Menu&quot;</span><span class="p">)</span>
@@ -263,11 +257,11 @@ use the old one:</p>
 
 <span class="c"># start the other shared variables</span>
 <span class="n">Vfield2</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="s">&#39;radial_velocity&#39;</span><span class="p">)</span>
-<span class="hll"><span class="c"># wrong: Vtilt2 = artview.core.Variable(0)</span>
-</span><span class="hll"><span class="c"># correct:</span>
+<span class="c"># wrong: Vtilt2 = artview.core.Variable(0)</span>
+<span class="hll"><span class="c"># correct:</span>
 </span><span class="hll"><span class="n">Vtilt2</span> <span class="o">=</span> <span class="n">Vtilt1</span>
-</span>
-<span class="c"># start display</span>
+</span><span class="hll">
+</span><span class="c"># start display</span>
 <span class="n">display2</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">RadarDisplay</span><span class="p">(</span><span class="n">Vradar2</span><span class="p">,</span> <span class="n">Vfield2</span><span class="p">,</span> <span class="n">Vtilt2</span><span class="p">,</span>
                                 <span class="n">name</span><span class="o">=</span><span class="s">&quot;DisplayRadar&quot;</span><span class="p">)</span>
 
@@ -449,12 +443,12 @@ of your modified code.</p>
         <li class="right" >
           <a href="reference/generated/artview.view.addGrid.html" title="artview.view.addGrid"
              >previous</a> |</li>
-        <li><a href="index.html">ARTview 0.2.2 documentation</a> &raquo;</li> 
+        <li><a href="index.html">ARTview 1.1.1.dev+cd00646 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Aug 11, 2015.
+      Last updated on Sep 13, 2015.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>

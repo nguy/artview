@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>artview.core.core.Variable &mdash; ARTview 0.2.2 documentation</title>
+    <title>artview.core.core.Variable &mdash; ARTview 1.1.1.dev+cd00646 documentation</title>
     
     <link rel="stylesheet" href="../../_static/scipy.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.2.2',
+        VERSION:     '1.1.1.dev+cd00646',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="ARTview 0.2.2 documentation" href="../../index.html" /> 
+    <link rel="top" title="ARTview 1.1.1.dev+cd00646 documentation" href="../../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="../../np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">ARTview 0.2.2 documentation</a> &raquo;</li> 
+        <li><a href="../../index.html">ARTview 1.1.1.dev+cd00646 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -52,7 +52,7 @@
 <h1>artview.core.core.Variable<a class="headerlink" href="#artview-core-core-variable" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="artview.core.core.Variable">
-<em class="property">class </em><tt class="descclassname">artview.core.core.</tt><tt class="descname">Variable</tt><big>(</big><em>value=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/core/core.py#L16"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.core.core.Variable" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">artview.core.core.</tt><tt class="descname">Variable</tt><big>(</big><em>value=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/core/core.py#L23"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.core.core.Variable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtCore.QObject</span></tt></p>
 <p>Class that holds a value, using change() emits a signal.</p>
 <p>There is no mandatory naming for instances of this Class, however ARTview
@@ -75,14 +75,14 @@ recommended:</p>
 <tr class="row-even"><td>Vradar</td>
 <td>Hold radar open
 with pyart</td>
-<td><a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.core.Radar.html#pyart.core.Radar" title="(in Py-ART v1.4)"><tt class="xref py py-class docutils literal"><span class="pre">pyart.core.Radar</span></tt></a>
+<td><a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.core.Radar.html#pyart.core.Radar" title="(in Py-ART v1.5)"><tt class="xref py py-class docutils literal"><span class="pre">pyart.core.Radar</span></tt></a>
 instance</td>
 </tr>
 <tr class="row-odd"><td>Vgrid</td>
 <td>Hold grid open or
 generated with
 pyart</td>
-<td><a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.core.Grid.html#pyart.core.Grid" title="(in Py-ART v1.4)"><tt class="xref py py-class docutils literal"><span class="pre">pyart.core.Grid</span></tt></a>
+<td><a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.core.Grid.html#pyart.core.Grid" title="(in Py-ART v1.5)"><tt class="xref py py-class docutils literal"><span class="pre">pyart.core.Grid</span></tt></a>
 instance</td>
 </tr>
 <tr class="row-even"><td>Vcontainer</td>
@@ -140,22 +140,14 @@ float values</td>
 <tr class="row-odd"><td>Vgatefilter</td>
 <td>Hold pyart
 GateFilter</td>
-<td><a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.correct.GateFilter.html#pyart.correct.GateFilter" title="(in Py-ART v1.4)"><tt class="xref py py-class docutils literal"><span class="pre">pyart.correct.GateFilter</span></tt></a>
-instance</td>
+<td><a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.filters.GateFilter.html#pyart.filters.GateFilter" title="(in Py-ART v1.5)"><tt class="xref py py-class docutils literal"><span class="pre">pyart.filters.GateFilter</span></tt></a>
+instance or None</td>
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<ul class="last simple">
-<li>we want to make None a valid value for Vradar, but this need some
-changes in <tt class="file docutils literal"><span class="pre">artview/components/plot_radar.py</span></tt></li>
-<li>Vlims is deprecated in favor of a not shared variable</li>
-</ul>
-</div>
 <dl class="method">
 <dt id="artview.core.core.Variable.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>value=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/core/core.py#L79"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.core.core.Variable.__init__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__init__</tt><big>(</big><em>value=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/core/core.py#L82"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.core.core.Variable.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p class="rubric">Methods</p>
@@ -167,6 +159,9 @@ changes in <tt class="file docutils literal"><span class="pre">artview/component
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="artview.core.core.Variable.change.html#artview.core.core.Variable.change" title="artview.core.core.Variable.change"><tt class="xref py py-obj docutils literal"><span class="pre">Variable.change</span></tt></a>(value[,&nbsp;strong])</td>
 <td>Change the Variable value and emit &#8216;ValueChanged&#8217; signal.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="artview.core.core.Variable.update.html#artview.core.core.Variable.update" title="artview.core.core.Variable.update"><tt class="xref py py-obj docutils literal"><span class="pre">Variable.update</span></tt></a>(strong)</td>
+<td>Emits the &#8216;ValueChanged&#8217; signal without changings value. This is</td>
 </tr>
 </tbody>
 </table>
@@ -221,12 +216,12 @@ changes in <tt class="file docutils literal"><span class="pre">artview/component
         <li class="right" >
           <a href="../../np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">ARTview 0.2.2 documentation</a> &raquo;</li> 
+        <li><a href="../../index.html">ARTview 1.1.1.dev+cd00646 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Aug 11, 2015.
+      Last updated on Sep 13, 2015.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
