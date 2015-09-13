@@ -242,10 +242,10 @@ class GateFilter(Component):
             "Show Python script for batching:\n"
             "  Click the 'Show Script' button.\n\n"
             "The following information is from the PyArt documentation.\n\n"
-            "**GateFilter**\n"
-            pyart.correct.GateFilter.__doc__
+            "**GateFilter**\n" +
+            pyart.correct.GateFilter.__doc__ +
             "\n\n"
-            "**GateFilter.exclude_below**\n"
+            "**GateFilter.exclude_below**\n" +
             pyart.correct.GateFilter.exclude_below.__doc__)
         common.ShowLongText(text)
 

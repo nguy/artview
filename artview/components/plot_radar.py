@@ -294,16 +294,16 @@ class RadarDisplay(Component):
         '''Add a menu to display on/off filter switch.'''
         self.filteractionON = self.dispfiltergroup.addAction(
             QtGui.QAction('ON', self.dispfiltermenu, checkable=True,
-                          triggered=self._gatefilter_toggle_on))
+                          triggered=lambda :self._gatefilter_toggle(True)))
         self.filteractionON.setStatusTip("Turn Data mask (GateFilter) ON")
         self.filteractionOFF = self.dispfiltergroup.addAction(
             QtGui.QAction('OFF', self.dispfiltermenu, checkable=True,
-                          triggered=self._gatefilter_toggle_off))
+                          triggered=lambda :self._gatefilter_toggle(False)))
         self.filteractionOFF.setChecked(True)
         self.filteractionOFF.setStatusTip("Turn Data mask (GateFilter) OFF")
         self.dispfiltermenu.addAction(self.filteractionON)
         self.dispfiltermenu.addAction(self.filteractionOFF)
-        self.dispfilter.setMenu(self.dispfiltermenu)
+        # self.dispfilter.setMenu(self.dispfiltermenu)
 
     def _add_RngRing_to_button(self):
         '''Add a menu to display range rings on plot.'''
@@ -331,9 +331,10 @@ class RadarDisplay(Component):
         dispmenu = QtGui.QMenu(self)
         dispLimits = dispmenu.addAction("Adjust Display Limits")
         dispLimits.setToolTip("Set data, X, and Y range limits")
-        self.dispfilter = dispmenu.addAction("Toggle GateFilter")
+        #self.dispfilter = dispmenu.addAction("Toggle GateFilter")
         self.dispfiltermenu = QtGui.QMenu("Toggle GateFilter")
         self.dispfiltermenu.setFocusPolicy(QtCore.Qt.NoFocus)
+        dispmenu.addMenu(self.dispfiltermenu)
         self.dispfiltergroup = QtGui.QActionGroup(self, exclusive=True)
         # self.gatefilterToggle.toggle()
         # self.gatefilterToggle.setChecked(False)
@@ -541,10 +542,13 @@ class RadarDisplay(Component):
             self._update_plot()
             self._update_infolabel()
 
-#     def gatefilter_toggle(self, state):
-#         '''
-#         Captures the gatefilter toggle, trigger update
-#         '''
+    def _gatefilter_toggle(self, state):
+        '''
+        Captures the gatefilter toggle, trigger update
+        '''
+        self.gatefilterToggle = state
+        self._update_plot()
+
 #         if state == QtCore.Qt.Checked:#self.gatefilterToggle.isChecked():
 #             print("CHECKED")
 #             self.gatefilterToggle.setChecked(True)
@@ -552,21 +556,21 @@ class RadarDisplay(Component):
 #             print("NOT CHECKED")
 #             self.gatefilterToggle.setChecked(False)
 #
-#        self._update_plot()
+#         self._update_plot()
 
     def _gatefilter_toggle_on(self):
         '''Captures the gatefilter toggle ON, trigger update.'''
         print("GateFilter turned ON")
-        self.filteractionON.setChecked(True)
-        self.filteractionOFF.setChecked(False)
+        #self.filteractionON.setChecked(True)
+        #self.filteractionOFF.setChecked(False)
         self.gatefilterToggle = True
         self._update_plot()
 
     def _gatefilter_toggle_off(self):
         '''Captures the gatefilter toggle OFF, trigger update.'''
         print("GateFilter turned OFF")
-        self.filteractionON.setChecked(False)
-        self.filteractionOFF.setChecked(True)
+        #self.filteractionON.setChecked(False)
+        #self.filteractionOFF.setChecked(True)
         self.gatefilterToggle = False
         self._update_plot()
 
