@@ -11,8 +11,8 @@ Tutorial: Writing your own Script
 The Basics
 ----------
 
-    Artview runs with PyQt, therefore before using any component you need to
-    start a PyQt application. After defining what you want, you need to get it
+    Artview runs with PyQt4, therefore before using any component you need to
+    start a Qt application, but do that with artview, not directly in PyQt4. After defining what you want, you need to get it
     to run, otherwise windows will not respond. Your basic script will look like
     this:
 

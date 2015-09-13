@@ -54,11 +54,12 @@ class SelectRegion(Component):
         display - ARTView Display
             Display instance to associate SelectRegion.
             Must have following elements:
-                * getPlotAxis() - Matplotlib axis instance
-                * getStatusBar() - QtGui.QStatusBar
-                * getField() - string
-                * getPathInteriorValues(Path) - see
-                  :py:func:`~artview.components.RadarDisplay.getPathInteriorValues`
+
+              * getPlotAxis() - Matplotlib axis instance
+              * getStatusBar() - QtGui.QStatusBar
+              * getField() - string
+              * getPathInteriorValues(Path) - see
+                :py:func:`~artview.components.RadarDisplay.getPathInteriorValues`
 
         [Optional]
         name - string

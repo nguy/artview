@@ -13,8 +13,8 @@ ARTview is based in the abstract Component class and shared Variables.
 
     ~core.Variable
     ~core.Component
-    ~core.QtCore
-    ~core.QtGui
+    ~PyQt4.QtCore
+    ~PyQt4.QtGui
 
 """
 

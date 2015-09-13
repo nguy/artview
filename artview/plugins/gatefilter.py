@@ -15,7 +15,7 @@ from ..components import RadarDisplay
 
 class GateFilter(Component):
     '''
-    Interface for executing :py:func:`pyart.correct.GateFilter`.
+    Interface for executing :py:class:`pyart.filters.GateFilter`.
     '''
 
     Vradar = None  #: see :ref:`shared_variable`
@@ -147,7 +147,7 @@ class GateFilter(Component):
 
         self.filterButton = QtGui.QPushButton("Filter")
         self.filterButton.clicked.connect(self.apply_filters)
-        self.filterButton.setToolTip('Execute pyart.correct.GateFilter')
+        self.filterButton.setToolTip('Make Filter')
         gBox_layout.addWidget(self.filterButton, 0, 4, 1, 1)
 
         groupBox.setLayout(gBox_layout)
@@ -243,10 +243,10 @@ class GateFilter(Component):
             "  Click the 'Show Script' button.\n\n"
             "The following information is from the PyArt documentation.\n\n"
             "**GateFilter**\n" +
-            pyart.correct.GateFilter.__doc__ +
+            pyart.filters.GateFilter.__doc__ +
             "\n\n"
             "**GateFilter.exclude_below**\n" +
-            pyart.correct.GateFilter.exclude_below.__doc__)
+            pyart.filters.GateFilter.exclude_below.__doc__)
         common.ShowLongText(text)
 
     def set_operator_menu(self):
@@ -271,7 +271,7 @@ class GateFilter(Component):
             "<br><br>"
             "Just copy and paste the below commands into your script.<br><br>"
             "<i>Commands</i>:<br><br>"
-            "gatefilter = pyart.correct.GateFilter(radar, exclude_based=True)"
+            "gatefilter = pyart.filters.GateFilter(radar, exclude_based=True)"
             "<br>")
 
         try:
@@ -341,7 +341,7 @@ class GateFilter(Component):
 
     def apply_filters(self):
         '''Mount Options and execute
-        :py:func:`~pyart.correct.GateFilter`.
+        :py:func:`~pyart.filters.GateFilter`.
         The resulting fields are added to Vradar.
         Vradar is updated, strong or weak depending on overwriting old fields.
         '''
@@ -358,7 +358,7 @@ class GateFilter(Component):
             print(field)
             print(np.sum(self.original_masks[field]))
 
-        gatefilter = pyart.correct.GateFilter(self.Vradar.value,
+        gatefilter = pyart.filters.GateFilter(self.Vradar.value,
                                               exclude_based=True)
 
         # Clear flags from previous filter application or instantiate if first

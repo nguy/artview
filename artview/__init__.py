@@ -9,7 +9,7 @@ ARTview (:mod:`artview`)
 Reference Manual
 ################
 
-:Release: |version|
+:Release: |release|
 :Date: |today|
 
 This guide provides details on all public functions, modules and classes

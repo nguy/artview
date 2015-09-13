@@ -51,8 +51,8 @@ The Basics
               ################################
               return self(...), True/False
 
-    * Last in order to avoid future problems get `QtCore` and `QtGui` modules
-      from `artview.core` and not directly for `PyQt4`, even if this is still
+    * Last in order to avoid future problems get :py:mod:`~PyQt4.QtCore` and :py:mod:`~PyQt4.QtGui` modules
+      from :py:mod:`artview.core` and not directly for :py:mod:`PyQt4`, even if this is still
       only an alias.
 
     Next we'll discuss how these are used in creating a plug-in.
