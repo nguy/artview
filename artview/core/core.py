@@ -10,6 +10,12 @@ Class instance to create Variables and establish change signals.
 from PyQt4 import QtGui, QtCore
 import sys
 
+# lets add some magic for the documentation
+QtCore.__doc__ = ("Qt backend to be used all over ARTview, now it is an "
+                  "alias to :py:mod:`PyQt4.QtCore`")
+QtGui.__doc__ = ("Qt backend to be used all over ARTview, now it is an "
+                  "alias to :py:mod:`PyQt4.QtGui`")
+
 # keep track of all components, this is not fundamental, but may be useful
 # for some control utilities
 
@@ -112,6 +118,17 @@ class Variable(QtCore.QObject):
         self.value = value
         self.emit(QtCore.SIGNAL("ValueChanged"), self, value, strong)
 
+    def update(self, strong):
+        '''
+        Emits the 'ValueChanged' signal without changings value. This is
+        usefull when value is changed inplace.
+
+        Parameters
+        ----------
+        strong : bool, optional
+            Define if this is a strong or weak change.
+        '''
+        self.emit(QtCore.SIGNAL("ValueChanged"), self, self.value, strong)
 
 class ComponentsList(QtCore.QObject):
     '''
