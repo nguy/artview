@@ -30,15 +30,15 @@ class GridDisplay(Component):
     Class to create a display plot, using a Grid structure.
     '''
 
-    Vgrid = None #: see :ref:`shared_variable`
-    Vfield = None #: see :ref:`shared_variable`
+    Vgrid = None  #: see :ref:`shared_variable`
+    Vfield = None  #: see :ref:`shared_variable`
     VlevelZ = None \
-    #: see :ref:`shared_variable`, only used if plot_type="gridZ"
+        #: see :ref:`shared_variable`, only used if plot_type="gridZ"
     VlevelY = None \
-    #: see :ref:`shared_variable`, only used if plot_type="gridY"
+        #: see :ref:`shared_variable`, only used if plot_type="gridY"
     VlevelX = None \
-    #: see :ref:`shared_variable`, only used if plot_type="gridX"
-    Vcmap = None #: see :ref:`shared_variable`
+        #: see :ref:`shared_variable`, only used if plot_type="gridX"
+    Vcmap = None  #: see :ref:`shared_variable`
 
     @classmethod
     def guiStart(self, parent=None):
@@ -123,7 +123,7 @@ class GridDisplay(Component):
         self.sharedVariables = {"Vgrid": self.Newgrid,
                                 "Vfield": self.NewField,
                                 "Vlims": self.NewLims,
-                                "Vcmap": self.NewCmap,}
+                                "Vcmap": self.NewCmap, }
 
         self.change_plot_type(plot_type)
 
@@ -212,7 +212,6 @@ class GridDisplay(Component):
         # Create the Informational label at top
         self._add_infolabel()
 
-
     def setUILayout(self):
         '''Setup the button/display UI layout.'''
         self.layout.addWidget(self.levelBox, 0, 0)
@@ -228,7 +227,8 @@ class GridDisplay(Component):
     def _open_LimsDialog(self):
         '''Open a dialog box to change display limits.'''
         from .limits import limits_dialog
-        limits, cmap, change = limits_dialog(self.Vlims.value, self.Vcmap.value, self.name)
+        limits, cmap, change = limits_dialog(self.Vlims.value,
+                                             self.Vcmap.value, self.name)
         if change == 1:
             self.Vcmap.change(cmap, False)
             self.Vlims.change(limits)
@@ -246,7 +246,7 @@ class GridDisplay(Component):
             levels = self.Vgrid.value.axes['x_disp']['data']
 
         for nlevel in range(len(levels)):
-            btntxt = "%2.1f m (level %d)"%(levels[nlevel], nlevel+1)
+            btntxt = "%2.1f m (level %d)" % (levels[nlevel], nlevel+1)
             self.levelBox.addItem(btntxt)
 
     def _fillFieldBox(self):
@@ -354,9 +354,10 @@ class GridDisplay(Component):
         '''Create the Level Selection ComboBox.'''
         self.levelBox = QtGui.QComboBox()
         self.levelBox.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.levelBox.setToolTip("Select level slice to display.\n"
-                                "'Level Window' will launch popup.\n"
-                                "Up/Down arrow keys Increase/Decrease level.")
+        self.levelBox.setToolTip(
+            "Select level slice to display.\n"
+            "'Level Window' will launch popup.\n"
+            "Up/Down arrow keys Increase/Decrease level.")
 
         self.levelBox.activated[str].connect(self._levelAction)
 
@@ -395,11 +396,12 @@ class GridDisplay(Component):
         self.infolabel.setToolTip("Filename not loaded")
 
     def _update_infolabel(self):
-        self.infolabel.setText("Grid: %s\n"
-                               "Field: %s\n"
-                               "Level: %d" % (self.Vgrid.value.metadata['instrument_name'],
-                                            self.Vfield.value,
-                                            self.Vlevel.value+1))
+        self.infolabel.setText(
+            "Grid: %s\n"
+            "Field: %s\n"
+            "Level: %d" % (self.Vgrid.value.metadata['instrument_name'],
+                           self.Vfield.value,
+                           self.Vlevel.value+1))
         if hasattr(self.Vgrid.value, 'filename'):
             self.infolabel.setToolTip(self.Vgrid.value.filename)
 
@@ -486,7 +488,6 @@ class GridDisplay(Component):
         if strong and self.Vgrid.value is not None:
             self._update_plot()
 
-
     def NewLevel(self, variable, value, strong):
         '''
         Slot for 'ValueChanged' signal of
@@ -545,7 +546,8 @@ class GridDisplay(Component):
     def toolSelectRegionCmd(self):
         '''Creates and connects to Region of Interest instance.'''
         from .select_region import SelectRegion
-        self.tools['select_region'] = SelectRegion(self, name=self.name + " SelectRegion", parent=self)
+        self.tools['select_region'] = SelectRegion(
+            self, name=self.name + " SelectRegion", parent=self)
 
     def toolResetCmd(self):
         '''Reset tools via disconnect.'''
@@ -627,18 +629,18 @@ class GridDisplay(Component):
             z_idx, y_idx, x_idx]
 
         x_idx = {'data': x_idx,
-                   'long_name': 'index in nx dimension'}
+                 'long_name': 'index in nx dimension'}
         y_idx = {'data': y_idx,
-                   'long_name': 'index in ny dimension'}
+                 'long_name': 'index in ny dimension'}
         z_idx = {'data': z_idx,
-                   'long_name': 'index in nz dimension'}
+                 'long_name': 'index in nz dimension'}
 
-        axes = {'x_disp':xaxis,
-                'y_disp':yaxis,
-                'z_disp':zaxis,
-                'x_index':x_idx,
-                'y_index':y_idx,
-                'z_index':z_idx,}
+        axes = {'x_disp': xaxis,
+                'y_disp': yaxis,
+                'z_disp': zaxis,
+                'x_index': x_idx,
+                'y_index': y_idx,
+                'z_index': z_idx, }
 
         fields = {self.Vfield.value: field}
 
@@ -686,9 +688,9 @@ class GridDisplay(Component):
             idx = nearest_point_grid(
                 grid, self.basemap, ydata * 1000., xdata * 1000.,
                 self.levels[self.VlevelX.value])
-        aux = (grid.axes['x_disp']['data'][idx[:,2]],
-               grid.axes['y_disp']['data'][idx[:,1]],
-               grid.axes['z_disp']['data'][idx[:,0]],
+        aux = (grid.axes['x_disp']['data'][idx[:, 2]],
+               grid.axes['y_disp']['data'][idx[:, 1]],
+               grid.axes['z_disp']['data'][idx[:, 0]],
                grid.fields[self.Vfield.value]['data'][idx[:, 0], idx[:, 1],
                                                       idx[:, 2]],
                idx[:, 2], idx[:, 1], idx[:, 0])
@@ -705,7 +707,7 @@ class GridDisplay(Component):
         self.fig = Figure(figsize=(self.XSIZE, self.YSIZE))
         self.ax = self.fig.add_axes([0.2, 0.2, 0.7, 0.7])
         self.cax = self.fig.add_axes([0.2, 0.10, 0.7, 0.02])
-        #self._update_axes()
+        # self._update_axes()
 
     def _update_fig_ax(self):
         '''Set the figure and axis to plot.'''
@@ -737,7 +739,7 @@ class GridDisplay(Component):
             self.statusbar.setStyleSheet("QStatusBar{padding-left:8px;" +
                                          "background:rgba(255,0,0,255);" +
                                          "color:black;font-weight:bold;}")
-            self.statusbar.showMessage("Field not Found in Radar", msecs= 5000)
+            self.statusbar.showMessage("Field not Found in Radar", msecs=5000)
             return
         else:
             self.statusbar.setStyleSheet("QStatusBar{padding-left:8px;" +
@@ -756,21 +758,21 @@ class GridDisplay(Component):
                 self.lat_lines, self.lon_lines, ax=self.ax)
             self.basemap = self.display.get_basemap()
             self.plot = self.display.plot_grid(
-                    self.Vfield.value, self.VlevelZ.value, vmin=cmap['vmin'],
-                    vmax=cmap['vmax'],cmap=cmap['cmap'], colorbar_flag=False,
-                    title=title, ax=self.ax, fig=self.fig)
+                self.Vfield.value, self.VlevelZ.value, vmin=cmap['vmin'],
+                vmax=cmap['vmax'], cmap=cmap['cmap'], colorbar_flag=False,
+                title=title, ax=self.ax, fig=self.fig)
         elif self.plot_type == "gridY":
             self.basemap = None
             self.plot = self.display.plot_latitudinal_level(
-                    self.Vfield.value, self.VlevelY.value, vmin=cmap['vmin'],
-                    vmax=cmap['vmax'], cmap=cmap['cmap'], colorbar_flag=False,
-                    title=title, ax=self.ax, fig=self.fig)
+                self.Vfield.value, self.VlevelY.value, vmin=cmap['vmin'],
+                vmax=cmap['vmax'], cmap=cmap['cmap'], colorbar_flag=False,
+                title=title, ax=self.ax, fig=self.fig)
         elif self.plot_type == "gridX":
             self.basemap = None
             self.plot = self.display.plot_longitudinal_level(
-                    self.Vfield.value, self.VlevelX.value, vmin=cmap['vmin'],
-                    vmax=cmap['vmax'], cmap=cmap['cmap'], colorbar_flag=False,
-                    title=title, ax=self.ax, fig=self.fig)
+                self.Vfield.value, self.VlevelX.value, vmin=cmap['vmin'],
+                vmax=cmap['vmax'], cmap=cmap['cmap'], colorbar_flag=False,
+                title=title, ax=self.ax, fig=self.fig)
 
         limits = self.Vlims.value
         x = self.ax.get_xlim()
@@ -837,18 +839,18 @@ class GridDisplay(Component):
             limits['xmax'] = (self.Vgrid.value.axes['x_disp']['data'][-1] /
                               1000.)
             limits['ymin'] = (self.Vgrid.value.axes['z_disp']['data'][0] /
-                                1000.)
+                              1000.)
             limits['ymax'] = (self.Vgrid.value.axes['z_disp']['data'][-1] /
-                                1000.)
+                              1000.)
         elif self.plot_type == "gridX":
             limits['xmin'] = (self.Vgrid.value.axes['y_disp']['data'][0] /
                               1000.)
             limits['xmax'] = (self.Vgrid.value.axes['y_disp']['data'][-1] /
                               1000.)
             limits['ymin'] = (self.Vgrid.value.axes['z_disp']['data'][0] /
-                                1000.)
+                              1000.)
             limits['ymax'] = (self.Vgrid.value.axes['z_disp']['data'][-1] /
-                                1000.)
+                              1000.)
         self.Vlims.change(limits, strong)
 
     def _set_default_cmap(self, strong=True):
@@ -868,7 +870,8 @@ class GridDisplay(Component):
 
     def _get_default_title(self):
         '''Get default title from pyart.'''
-        if (self.Vgrid.value is None or
+        if (
+            self.Vgrid.value is None or
             self.Vfield.value not in self.Vgrid.value.fields):
             return ''
         if self.plot_type == "gridZ":
@@ -894,13 +897,13 @@ class GridDisplay(Component):
 
     def _check_file_type(self):
         '''Check file to see if the file type.'''
-        #self._update_fig_ax()
+        # self._update_fig_ax()
         return
 
     def change_plot_type(self, plot_type):
         '''Change plot type.'''
         # remove shared variables
-        for key in ("VlevelZ","VlevelY","VlevelX"):
+        for key in ("VlevelZ", "VlevelY", "VlevelX"):
             if key in self.sharedVariables.keys():
                 del self.sharedVariables[key]
         if plot_type == "gridZ":
@@ -911,7 +914,8 @@ class GridDisplay(Component):
             self.sharedVariables["VlevelX"] = self.NewLevel
         else:
             import warnings
-            warnings.warn('Invalid Plot type %s, reseting to gridZ'%plot_type)
+            warnings.warn('Invalid Plot type %s, reseting to gridZ' %
+                          plot_type)
             self.sharedVariables["VlevelZ"] = self.NewLevel
             plot_type = "gridZ"
         self.plot_type = plot_type
@@ -924,8 +928,10 @@ class GridDisplay(Component):
         '''Save the current display via PyArt interface.'''
         imagename = self.display.generate_filename(
             self.Vfield.value, self.Vlevel.value, ext=IMAGE_EXT)
-        self.canvas.print_figure(os.path.join(os.getcwd(), imagename), dpi=DPI)
-        self.statusbar.showMessage('Saved to %s' % os.path.join(os.getcwd(), imagename))
+        self.canvas.print_figure(os.path.join(os.getcwd(), imagename),
+                                 dpi=DPI)
+        self.statusbar.showMessage('Saved to %s' % os.path.join(os.getcwd(),
+                                                                imagename))
 
     def _savefile(self, PTYPE=IMAGE_EXT):
         '''Save the current display using PyQt dialog interface.'''

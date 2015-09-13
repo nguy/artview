@@ -27,7 +27,7 @@ class DealiasRegionBased(Component):
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
-    def __init__(self, Vradar=None,# Vgatefilter=None,
+    def __init__(self, Vradar=None,  # Vgatefilter=None,
                  name="DealiasRegionBased", parent=None):
         '''Initialize the class to create the interface.
 
@@ -64,7 +64,7 @@ class DealiasRegionBased(Component):
 #        else:
 #            self.Vgatefilter = Vgatefilter
 
-        self.sharedVariables = {"Vradar": self.newRadar,}
+        self.sharedVariables = {"Vradar": self.newRadar, }
 #                                "Vgatefilter": None}
         self.connectAllVariables()
 
@@ -192,7 +192,7 @@ class DealiasRegionBased(Component):
             'nyquist_velocity': [i if i >= 0 else None for i in (
                 self.nyquistVelocity.value(),)][0],
             'check_nyquist_uniform': self.checkNyquistUniform.isChecked(),
-#            'gatefilter': False,
+            # 'gatefilter': False,
             'rays_wrap_around': self.raysWrapAround.isChecked(),
             'keep_original': self.keepOriginal.isChecked(),
             'vel_field': [None if a == "" else a for a in (

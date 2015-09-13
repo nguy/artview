@@ -20,18 +20,17 @@ class LevelButtonWindow(Component):
     Vradar = None  #: see :ref:`shared_variable`
     Vgrid = None  #: see :ref:`shared_variable`
     Vtilt = None  \
-    #: see :ref:`shared_variable`, only used if plot_type starts with "Radar"
+        #: see :ref:`shared_variable`, only used if plot_type starts with "Radar"
     VlevelZ = None \
-    #: see :ref:`shared_variable`, only used if plot_type="gridZ"
+        #: see :ref:`shared_variable`, only used if plot_type="gridZ"
     VlevelY = None \
-    #: see :ref:`shared_variable`, only used if plot_type="gridY"
+        #: see :ref:`shared_variable`, only used if plot_type="gridY"
     VlevelX = None \
-    #: see :ref:`shared_variable`, only used if plot_type="gridX"
-    Vcmap = None #: see :ref:`shared_variable`
+        #: see :ref:`shared_variable`, only used if plot_type="gridX"
+    Vcmap = None  #: see :ref:`shared_variable`
 
-
-    def __init__(self, Vlevel, plot_type, Vcontainer=None, controlType="radio",
-                 name="LevelButtons", parent=None):
+    def __init__(self, Vlevel, plot_type, Vcontainer=None,
+                 controlType="radio", name="LevelButtons", parent=None):
         '''Initialize the class to create the Level Selection interface.
 
         Parameters
@@ -40,9 +39,9 @@ class LevelButtonWindow(Component):
             Level signal variable.
         plot_type : string
             One of "radarPpi", "radarRhi", "radarAirborne", "gridZ", "gridY"
-            or "gridX". If starting with "radar" Vlevel will be passed to Vtilt,
-            otherwise to VlevelZ, VlevelY or VlevelX respectively. This can't
-            be changed afterwards.
+            or "gridX". If starting with "radar" Vlevel will be passed to
+            Vtilt, otherwise to VlevelZ, VlevelY or VlevelX respectively. This
+            can't be changed afterwards.
         Vcontainer : :py:class:`~artview.core.core.Variable` instance
             Radar/Grid signal variable. None will create empty variable.
             Will be passed to Vradar or Vgrid according with plot_type.
@@ -53,7 +52,8 @@ class LevelButtonWindow(Component):
             Level Radiobutton window name.
         parent : PyQt instance
             Parent instance to associate to LevelButtonWindow window.
-            If None, then Qt owns, otherwise associated w/ parent PyQt instance.
+            If None, then Qt owns, otherwise associated with parent PyQt
+            instance.
 
         Notes
         -----
@@ -139,7 +139,8 @@ class LevelButtonWindow(Component):
         self.elevs = elevs
 
         if self.controlType == "radio":
-            # Loop thru & create each level button & connect value when selected
+            # Loop through, create each level button and connect value when
+            # selected
             for nlevel in self.Vradar.value.sweep_number['data'][:]:
                 btntxt = "%2.1f deg (Tilt %d)" % (elevs[nlevel], nlevel+1)
                 button = QtGui.QRadioButton(btntxt, self.radioBox)
@@ -177,7 +178,8 @@ class LevelButtonWindow(Component):
         self.elevs = elevs
 
         if self.controlType == "radio":
-            # Loop thru & create each level button & connect value when selected
+            # Loop through, create each level button and connect value when
+            # selected
             for nlevel in range(len(elevs)):
                 btntxt = "%2.1f m (level %d)" % (elevs[nlevel], nlevel+1)
                 button = QtGui.QRadioButton(btntxt, self.radioBox)
@@ -196,7 +198,6 @@ class LevelButtonWindow(Component):
             self.rBox_layout.addWidget(self.slider)
             self.label = QtGui.QLabel("")
             self.rBox_layout.addWidget(self.label)
-
 
         # setChecked the current level
         self.NewLevel(self.Vlevel, self.Vlevel.value, True)
@@ -266,4 +267,3 @@ class LevelButtonWindow(Component):
             return self.VlevelX
         else:
             return None
-

@@ -28,6 +28,7 @@ displays = []
 MainMenu = None
 reflectivity = pyart.config.get_field_name('reflectivity')
 
+
 def view(containers, field=reflectivity):
     '''
     Launch ARTview from shell.
@@ -58,11 +59,12 @@ def view(containers, field=reflectivity):
 
     execute()
 
+
 def start():
     ''' Start Qt Application and :py:class:`~artview.components.Menu` '''
     global app
     if app is None:
-        app = QtGui.QApplication([ ])
+        app = QtGui.QApplication([])
 
     global MainMenu
     MainMenu = Menu(os.getcwd(), filename=False, mode="All")
@@ -86,10 +88,12 @@ def start():
 
     MainMenu.setGeometry(0, 0, menu_width, menu_height)
 
+
 def execute():
     ''' Execute Application '''
     global app
     app.exec_()
+
 
 def close():
     ''' Delet all references to allow Garbage Colletion. '''
@@ -101,6 +105,7 @@ def close():
 
     global app
     app = None
+
 
 def addRadar(radar, field=reflectivity):
     '''
@@ -117,6 +122,7 @@ def addRadar(radar, field=reflectivity):
     displays.append(RadarDisplay(
         Variable(radar), Variable(field), Variable(0), name="Display%i" % i,
         parent=MainMenu))
+
 
 def addGrid(grid, field=reflectivity):
     '''

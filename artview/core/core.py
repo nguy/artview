@@ -171,7 +171,7 @@ class Component(QtGui.QMainWindow):
             Parent instance to associate to Component. If None, then Qt owns,
             otherwise associated with parent PyQt instance.
         '''
-        if sys.version_info<(2,7,0):
+        if sys.version_info < (2, 7, 0):
             super(Component, self).__init__()
         else:
             super(Component, self).__init__(parent=parent, flags=flags)

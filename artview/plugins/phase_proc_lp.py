@@ -26,7 +26,7 @@ class PhaseProcLp(Component):
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
-    def __init__(self, Vradar=None,# Vgatefilter=None,
+    def __init__(self, Vradar=None,  # Vgatefilter=None,
                  name="PhaseProcLp", parent=None):
         '''Initialize the class to create the interface.
 

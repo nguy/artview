@@ -11,6 +11,7 @@ from ..components import RadarDisplay, Menu
 from ._common import _add_all_advanced_tools, _parse_dir, _parse_field
 from ..plugins import GateFilter
 
+
 def run(DirIn=None, filename=None, field=None):
     """
     artview execution for filtering gates radar display
@@ -30,9 +31,9 @@ def run(DirIn=None, filename=None, field=None):
     plot1 = RadarDisplay(Vradar, Variable(field), Vtilt, name="Display",
                          parent=menu)
     filt = GateFilter(Vradar=Vradar, Vgatefilter=plot1.Vgatefilter,
-                 name="GateFilter", parent=None)
+                      name="GateFilter", parent=None)
     plot1._gatefilter_toggle_on()
-    
+
     menu.addLayoutWidget(filt)
 
     # add grafical starts

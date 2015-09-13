@@ -38,7 +38,7 @@ class SelectRegion(Component):
     https://www.mail-archive.com/matplotlib-users@lists.sourceforge.net/msg00661.html
     '''
 
-    VSelectRegion = None #: see :ref:`shared_variable`
+    VSelectRegion = None  #: see :ref:`shared_variable`
 
     @classmethod
     def guiStart(self, parent=None):
@@ -52,7 +52,8 @@ class SelectRegion(Component):
         Parameters
         ----------
         display - ARTView Display
-            Display instance to associate SelectRegion. Must have following elements:
+            Display instance to associate SelectRegion.
+            Must have following elements:
                 * getPlotAxis() - Matplotlib axis instance
                 * getStatusBar() - QtGui.QStatusBar
                 * getField() - string
@@ -180,8 +181,7 @@ class SelectRegion(Component):
         Open and Save Table methods borrowed from:
         http://stackoverflow.com/questions/12608835/writing-a-qtablewidget-to-a-csv-or-xls
         '''
-        self.SelectRegionbox = QtGui.QGroupBox("Region of Interest Selection")#,
-#                                      parent=self)
+        self.SelectRegionbox = QtGui.QGroupBox("Region of Interest Selection")
         self.rBox_layout = QtGui.QVBoxLayout(self.SelectRegionbox)
         self.SelectRegionbox.setLayout(self.rBox_layout)
         self.setCentralWidget(self.SelectRegionbox)
@@ -221,15 +221,16 @@ class SelectRegion(Component):
 
     def displayHelp(self):
 
-        text = "<b>Using the Region of Interest (SelectRegion) Tool</b><br><br>"
-        text += "<i>Purpose</i>:<br>"
-        text += "Draw a path in the display window using the Mouse.<br><br>"
-        text += "<i>Functions</i>:<br>"
-        text += " Primary Mouse Button (e.g. left button)- add vertex<br>"
-        text += " Hold button to draw free-hand path<br>"
-        text += " Secondary Button (e.g. right button)- close path<br><br>"
-        text += "A message 'Closed Region' appears in status bar when "
-        text += "boundary is properly closed."
+        text = (
+            "<b>Using the Region of Interest (SelectRegion) Tool</b><br><br>"
+            "<i>Purpose</i>:<br>"
+            "Draw a path in the display window using the Mouse.<br><br>"
+            "<i>Functions</i>:<br>"
+            " Primary Mouse Button (e.g. left button)- add vertex<br>"
+            " Hold button to draw free-hand path<br>"
+            " Secondary Button (e.g. right button)- close path<br><br>"
+            "A message 'Closed Region' appears in status bar when "
+            "boundary is properly closed.")
 
         common.ShowLongText(text)
 
@@ -249,11 +250,11 @@ class SelectRegion(Component):
         '''Save a Table of SelectRegion points to a CSV file.'''
         points = self.Vpoints.value
         if points is not None:
-            fsuggest = 'SelectRegion_' + self.getField() + '_' + \
-                str(points.axes['x_disp']['data'][:].mean()) + '_' + \
-                str(points.axes['y_disp']['data'][:].mean())+'.csv'
+            fsuggest = ('SelectRegion_' + self.getField() + '_' +
+                str(points.axes['x_disp']['data'][:].mean()) + '_' +
+                str(points.axes['y_disp']['data'][:].mean())+'.csv')
             path = QtGui.QFileDialog.getSaveFileName(
-                    self, 'Save CSV Table File', fsuggest, 'CSV(*.csv)')
+                self, 'Save CSV Table File', fsuggest, 'CSV(*.csv)')
             if not path.isEmpty():
                 write_points_csv(path, points)
         else:
@@ -262,7 +263,7 @@ class SelectRegion(Component):
     def openTable(self):
         '''Open a saved table of SelectRegion points from a CSV file.'''
         path = QtGui.QFileDialog.getOpenFileName(
-                self, 'Open File', '', 'CSV(*.csv)')
+            self, 'Open File', '', 'CSV(*.csv)')
         if path == '':
             return
         points = read_points_csv(path)
@@ -299,7 +300,8 @@ class SelectRegion(Component):
                 points.fields[field]['data'])
             text = "<b>Basic statistics for the selected Region</b><br><br>"
             for stat in SelectRegionstats:
-                text += "<i>%s</i>: %5.2f<br>"%(stat, SelectRegionstats[stat])
+                text += ("<i>%s</i>: %5.2f<br>" %
+                         (stat, SelectRegionstats[stat]))
             self.statdialog, self.stattext = common.ShowLongText(text,
                                                                  modal=False)
 
@@ -314,6 +316,7 @@ class SelectRegion(Component):
             plot = PlotDisplay(
                 points.fields[field]['data'], plot_type="hist",
                 name="Select Region Histogram")
+
 
 class _SelectRegionStart(QtGui.QDialog):
     '''
@@ -385,7 +388,7 @@ class _SelectRegionStart(QtGui.QDialog):
 
         self.result['name'] = str(self.name.text())
         self.result["display"] = self.displays[
-                                         self.displayCombo.currentIndex()]
+            self.displayCombo.currentIndex()]
         print((self.result['name']))
 
         return self.result, self.independent.isChecked()

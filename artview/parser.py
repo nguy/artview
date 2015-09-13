@@ -34,7 +34,7 @@ def parse(argv):
     Returns directory and field for initialization.
     '''
     parser = argparse.ArgumentParser(
-              description="Start ARTview - the ARM Radar Toolkit Viewer.")
+        description="Start ARTview - the ARM Radar Toolkit Viewer.")
 
     parser.add_argument('-v', '--version', action='version',
                         version='ARTview version %s' % (VERSION))

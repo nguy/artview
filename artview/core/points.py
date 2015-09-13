@@ -29,7 +29,8 @@ class Points:
         * heading, roll, pitch, drift, rotation, tilt: localization variables
           for radar in moving platform, according to CfRadia convention,
           shape: (npoints,).
-        * x_index, y_index, z_index: indexes in a Grid object, shape: (npoints,).
+        * x_index, y_index, z_index: indexes in a Grid object,
+          shape: (npoints,).
         * ray_index, range_index: indexes in a Radar object, shape: (npoints,).
     * metadata: dictionary of global attributes
 
@@ -80,7 +81,6 @@ class Points:
             raise KeyError('Field not available: ' + field_name)
         return
 
-
     def add_field(self, field_name, dic, replace_existing=False):
         '''
         Add a field to the object.
@@ -102,7 +102,7 @@ class Points:
         if 'data' not in dic:
             raise KeyError("dic must contain a 'data' key")
         if dic['data'].shape != (self.npoints,):
-            t =  (self.npoits,)
+            t = (self.npoits,)
             err = "'data' has invalid shape, should be (%i, %i)" % t
             raise ValueError(err)
         # add the field
@@ -139,6 +139,7 @@ class Points:
                               replace_existing=replace_existing)
 
 import csv
+
 
 def write_points_csv(filename, points):
     '''
@@ -184,6 +185,7 @@ def write_points_csv(filename, points):
                 else:
                     rowdata.append('')
             writer.writerow(rowdata)
+
 
 def read_points_csv(filename):
     '''

@@ -108,6 +108,7 @@ def string_dialog(stringIn, title, msg):
 
     return stringOut, entry
 
+
 def string_dialog_with_reset(stringIn, title, msg, reset=None):
     '''
     Show a Dialog box.
@@ -124,8 +125,8 @@ def string_dialog_with_reset(stringIn, title, msg, reset=None):
 
     Notes::
     -----
-    This box displays an initial value that can be changed.
-    The value that is then entered is returned via the stringOut and entry variables.
+    This box displays an initial value that can be changed. The value that is
+    then entered is returned via the stringOut and entry variables.
     '''
     if stringIn is None:
         old_val = ''
@@ -182,7 +183,7 @@ def string_dialog_with_reset(stringIn, title, msg, reset=None):
 
 class _SimplePluginStart(QtGui.QDialog):
     '''
-    Dialog Class for graphical Start of Display, 
+    Dialog Class for graphical Start of Display,
     to be used in guiStart.
     '''
 
@@ -260,11 +261,11 @@ class CreateTable(QtGui.QTableWidget):
             # Set each cell to be a QTableWidgetItem from _process_row method
             for j, name in enumerate(colnames):
                 if name in self.points.axes:
-                    item = QtGui.QTableWidgetItem("%8.3f" %
-                        self.points.axes[name]['data'][i])
+                    item = QtGui.QTableWidgetItem(
+                        "%8.3f" % self.points.axes[name]['data'][i])
                 else:
-                    item = QtGui.QTableWidgetItem("%8.3f" %
-                        self.points.fields[name]['data'][i])
+                    item = QtGui.QTableWidgetItem(
+                        "%8.3f" % self.points.fields[name]['data'][i])
 
                 item.setBackgroundColor = QtGui.QColor(self.bgcolor)
                 item.setTextColor = QtGui.QColor(self.textcolor)
@@ -279,6 +280,7 @@ class CreateTable(QtGui.QTableWidget):
 #  Arithmetic methods  #
 ########################
 
+
 def _array_stats(data):
     """Return a dictionary of statistics from a Numpy array"""
     statdict = {}
@@ -288,5 +290,5 @@ def _array_stats(data):
     statdict['Median'] = np.ma.median(data)
     statdict['Standard_Deviation'] = np.ma.std(data)
     statdict['Variance'] = np.ma.var(data)
-        
+
     return statdict

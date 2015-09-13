@@ -45,7 +45,7 @@ else:
 
     import matplotlib
     matplotlib.use('Qt4Agg')
-    matplotlib.rcParams['backend.qt4']='PyQt4'
+    matplotlib.rcParams['backend.qt4'] = 'PyQt4'
 
     # import subpackages
     from . import core

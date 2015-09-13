@@ -8,6 +8,7 @@ Routines used for modifying limits via Display window.
 from ..core import QtGui, QtCore
 import pyart
 
+
 def _default_limits(field, plot_type):
     '''
     Initialize limits to default program values.
@@ -36,7 +37,7 @@ def _default_limits(field, plot_type):
     SW_LIMS = (-1., 10.)
     TP_LIMS = (-200., 100.)
     SNR_LIMS = (0., 65.)
-    RR_LIMS = (0., 150.)#Rrait12
+    RR_LIMS = (0., 150.)  # Rrait12
 
     # X, Y range and size for airborne file typesAIR_XRNG = (-150., 150.)
     AIR_XRNG = (-50., 50.)
@@ -117,6 +118,7 @@ def _default_limits(field, plot_type):
 ###############################
 # Limits Dialog Class Methods #
 ###############################
+
 
 def limits_dialog(limits, cmap, name):
     '''Function to instantiate a Display Limits Window.

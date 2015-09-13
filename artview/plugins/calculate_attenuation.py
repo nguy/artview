@@ -26,7 +26,7 @@ class CalculateAttenuation(Component):
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
-    def __init__(self, Vradar=None,# Vgatefilter=None,
+    def __init__(self, Vradar=None,  # Vgatefilter=None,
                  name="CalculateAttenuation", parent=None):
         '''Initialize the class to create the interface.
 

@@ -10,6 +10,7 @@ from ..core import Variable, QtGui, QtCore
 from ..components import RadarDisplay, Menu, LinkPlugins
 from ._common import _add_all_advanced_tools, _parse_dir, _parse_field
 
+
 def run(DirIn=None, filename=None, field=None):
     """
     artview execution for comparing fields in radar display

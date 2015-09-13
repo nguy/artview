@@ -23,12 +23,13 @@ IMAGE_EXT = 'png'
 DPI = 200
 # ========================================================================
 
+
 class PlotDisplay(Component):
     '''
     Class to create a display plot, using data and a key for plot type.
     '''
 
-    def __init__(self, data, ydata=None, plot_type=None, 
+    def __init__(self, data, ydata=None, plot_type=None,
                  title=None, xlabel=None, ylabel=None,
                  name="PlotDisplay", parent=None):
         '''
@@ -79,7 +80,7 @@ class PlotDisplay(Component):
 
         # Create the plot
         self._update_plot()
-##        self.NewRadar(None, None, True)
+#        self.NewRadar(None, None, True)
 
         self.show()
 
@@ -187,14 +188,17 @@ class PlotDisplay(Component):
         self.dispButton.setMenu(dispmenu)
 
     def displayHelp(self):
-        text = "<b>Using the Simple Plot Feature</b><br><br>"
-        text += "<i>Purpose</i>:<br>"
-        text += "Display a plot.<br><br>"
-        text += "The limits dialog is a common format that allows the user change:<br>"
-        text += "<i>X and Y limits<br>"
-        text += "Data limits</i><br>"
-        text += "However, not all plots take each argument.<br>"
-        text += "For example, a simple line plot has no data min/max data value.<br>"
+        text = (
+            "<b>Using the Simple Plot Feature</b><br><br>"
+            "<i>Purpose</i>:<br>"
+            "Display a plot.<br><br>"
+            "The limits dialog is a common format that allows the user "
+            "change:<br>"
+            "<i>X and Y limits<br>"
+            "Data limits</i><br>"
+            "However, not all plots take each argument.<br>"
+            "For example, a simple line plot has no data min/max data "
+            "value.<br>")
 
         common.ShowLongText(text)
 
@@ -211,19 +215,19 @@ class PlotDisplay(Component):
 #             self.fieldBox.clear()
 #             self.tiltBox.clear()
 #             return
-# 
+#
 #         # Get the tilt angles
 #         self.rTilts = self.Vradar.value.sweep_number['data'][:]
 #         # Get field names
 #         self.fieldnames = self.Vradar.value.fields.keys()
-# 
+#
 #         # Check the file type and initialize limts
 #         self._check_file_type()
-# 
+#
 #         # Update field and tilt MenuBox
 #         self._fillTiltBox()
 #         self._fillFieldBox()
-# 
+#
 #         self.units = None
 #         if strong:
 #             self._update_plot()
@@ -232,9 +236,9 @@ class PlotDisplay(Component):
 #         '''
 #         Slot for 'ValueChanged' signal of
 #         :py:class:`Vlims <artview.core.core.Variable>`.
-# 
+#
 #         This will:
-# 
+#
 #         * If strong update: update axes
 #         '''
 #         if strong:
@@ -244,9 +248,9 @@ class PlotDisplay(Component):
 #         '''
 #         Slot for 'ValueChanged' signal of
 #         :py:class:`Vcmap <artview.core.core.Variable>`.
-# 
+#
 #         This will:
-# 
+#
 #         * If strong update: update plot
 #         '''
 #         if strong and self.Vradar.value is not None:
@@ -308,14 +312,15 @@ class PlotDisplay(Component):
         else:
             title = self.title
 
-        colorbar_flag=False
+        colorbar_flag = False
 
         self.cmap = {'vmin': self.data.min(), 'vmax': self.data.max(),
                      'cmap': 'pyart_RefDiff'}
 
         if self.plot_type == "hist":
-            self.plot = self.ax.hist(self.data, bins=25,
-                range = (self.cmap['vmin'], self.cmap['vmax']),
+            self.plot = self.ax.hist(
+                self.data, bins=25,
+                range=(self.cmap['vmin'], self.cmap['vmax']),
                 figure=self.fig)
             self.ax.set_ylabel("Counts")
             if self.xlabel:
@@ -326,21 +331,20 @@ class PlotDisplay(Component):
             if self.ydata:
                 y = self.ydata
             # Create Plot
-            self.plot = self.ax.hist2d(self.data, y,
-                bins=[25, 20],
-                range=[[self.cmap['vmin'], self.cmap['vmax']],
-                       [y.min(), y.max()]],
+            self.plot = self.ax.hist2d(
+                self.data, y, bins=[25, 20],
+                range=([self.cmap['vmin'], self.cmap['vmax']],
+                       [y.min(), y.max()]),
                 cmap=self.cm_name,
                 figure=self.fig)
-            colorbar_flag=True
+            colorbar_flag = True
 
         elif self.plot_type == "plot":
             # Check that y data was provided
             if self.ydata:
                 y = self.ydata
             # Create Plot
-            self.plot = self.ax.plot(self.data, y,
-                figure=self.fig)
+            self.plot = self.ax.plot(self.data, y, figure=self.fig)
 
         # Set the axis labels if arguments passed
         if self.xlabel:

@@ -293,12 +293,12 @@ class RadarDisplay(Component):
     def _add_filter_on_off_to_button(self):
         '''Add a menu to display on/off filter switch.'''
         self.filteractionON = self.dispfiltergroup.addAction(
-          QtGui.QAction('ON', self.dispfiltermenu, checkable=True,
-          triggered=self._gatefilter_toggle_on))
+            QtGui.QAction('ON', self.dispfiltermenu, checkable=True,
+                          triggered=self._gatefilter_toggle_on))
         self.filteractionON.setStatusTip("Turn Data mask (GateFilter) ON")
         self.filteractionOFF = self.dispfiltergroup.addAction(
-          QtGui.QAction('OFF', self.dispfiltermenu, checkable=True,
-          triggered=self._gatefilter_toggle_off))
+            QtGui.QAction('OFF', self.dispfiltermenu, checkable=True,
+                          triggered=self._gatefilter_toggle_off))
         self.filteractionOFF.setChecked(True)
         self.filteractionOFF.setStatusTip("Turn Data mask (GateFilter) OFF")
         self.dispfiltermenu.addAction(self.filteractionON)
@@ -335,8 +335,8 @@ class RadarDisplay(Component):
         self.dispfiltermenu = QtGui.QMenu("Toggle GateFilter")
         self.dispfiltermenu.setFocusPolicy(QtCore.Qt.NoFocus)
         self.dispfiltergroup = QtGui.QActionGroup(self, exclusive=True)
-##        self.gatefilterToggle.toggle()
-##        self.gatefilterToggle.setChecked(False)
+        # self.gatefilterToggle.toggle()
+        # self.gatefilterToggle.setChecked(False)
         dispTitle = dispmenu.addAction("Change Title")
         dispTitle.setToolTip("Change plot title")
         dispUnit = dispmenu.addAction("Change Units")
@@ -356,7 +356,7 @@ class RadarDisplay(Component):
         dispSaveFile.setStatusTip("Save Image using dialog")
 
         dispLimits.triggered[()].connect(self._open_LimsDialog)
-##        self.gatefilterToggle.triggered[()].connect(self._gatefilter_toggle)
+#        self.gatefilterToggle.triggered[()].connect(self._gatefilter_toggle)
         dispTitle.triggered[()].connect(self._title_input)
         dispUnit.triggered[()].connect(self._units_input)
         dispQuickSave.triggered[()].connect(self._quick_savefile)
@@ -421,12 +421,12 @@ class RadarDisplay(Component):
         if hasattr(self.Vradar.value, 'filename'):
             self.infolabel.setToolTip(self.Vradar.value.filename)
 
-##    def _add_gatefilter_toggle(self):
-##        '''Create the GateFilter Selection Checkbox'''
-##        self.gatefilterToggle = QtGui.QCheckBox("Use data mask")
-##        self.gatefilterToggle.setChecked(False)
-##        self.gatefilterToggle.toggle()
-##        self.gatefilterToggle.stateChanged.connect(self.gatefilter_toggle)
+#    def _add_gatefilter_toggle(self):
+#        '''Create the GateFilter Selection Checkbox'''
+#        self.gatefilterToggle = QtGui.QCheckBox("Use data mask")
+#        self.gatefilterToggle.setChecked(False)
+#        self.gatefilterToggle.toggle()
+#        self.gatefilterToggle.stateChanged.connect(self.gatefilter_toggle)
 
     ########################
     # Selectionion methods #
@@ -541,18 +541,18 @@ class RadarDisplay(Component):
             self._update_plot()
             self._update_infolabel()
 
-##     def gatefilter_toggle(self, state):
-##         '''
-##         Captures the gatefilter toggle, trigger update
-##         '''
-##         if state == QtCore.Qt.Checked:#self.gatefilterToggle.isChecked():
-##             print("CHECKED")
-##             self.gatefilterToggle.setChecked(True)
-##         else:
-##             print("NOT CHECKED")
-##             self.gatefilterToggle.setChecked(False)
-##
-##        self._update_plot()
+#     def gatefilter_toggle(self, state):
+#         '''
+#         Captures the gatefilter toggle, trigger update
+#         '''
+#         if state == QtCore.Qt.Checked:#self.gatefilterToggle.isChecked():
+#             print("CHECKED")
+#             self.gatefilterToggle.setChecked(True)
+#         else:
+#             print("NOT CHECKED")
+#             self.gatefilterToggle.setChecked(False)
+#
+#        self._update_plot()
 
     def _gatefilter_toggle_on(self):
         '''Captures the gatefilter toggle ON, trigger update.'''
@@ -714,12 +714,12 @@ class RadarDisplay(Component):
         rng_idx = {'data': idx[:, 1],
                    'long_name': 'index in range dimension'}
 
-        axes = {'x_disp':xaxis,
-                'y_disp':yaxis,
-                'ray_index':ray_idx,
-                'range_index':rng_idx,
-                'azimuth':azi,
-                'range':rng}
+        axes = {'x_disp': xaxis,
+                'y_disp': yaxis,
+                'ray_index': ray_idx,
+                'range_index': rng_idx,
+                'azimuth': azi,
+                'range': rng}
 
         fields = {self.Vfield.value: field}
 

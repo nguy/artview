@@ -25,7 +25,7 @@ for module in os.listdir(os.path.dirname(__file__)):
         tmp = __import__(module[:-3], locals(), globals())
     else:
         import importlib
-        tmp = importlib.import_module('.'+module[:-3], __package__) 
+        tmp = importlib.import_module('.'+module[:-3], __package__)
     for plugin in tmp._plugins:
         setattr(thismodule, plugin.__name__, plugin)
         _plugins.append(plugin)

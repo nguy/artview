@@ -27,17 +27,16 @@ def parse(argv):
     Returns directory and field for initialization.
     '''
     parser = argparse.ArgumentParser(
-              description="Start ARTview - the ARM Radar Toolkit Viewer.")
+        description="Start ARTview - the ARM Radar Toolkit Viewer.")
 
     igroup = parser.add_argument_group(
-             title="Set input platform, optional",
-             description=(""
-                          "Ingest method for various platfoms can be chosen. "
-                          "If not chosen, an assumption of a ground-based "
-                          "platform is made. "
-                          "The following flags may be used to display"
-                          "RHI or airborne sweep data."
-                          " "))
+        title="Set input platform, optional",
+        description=("Ingest method for various platfoms can be chosen. "
+                     "If not chosen, an assumption of a ground-based "
+                     "platform is made. "
+                     "The following flags may be used to display"
+                     "RHI or airborne sweep data."
+                     ))
 
     igroup.add_argument('--airborne', action='store_true',
                         help='Airborne radar file')

@@ -10,6 +10,7 @@ from ..core import Variable,  QtGui, QtCore
 from ..components import RadarDisplay, GridDisplay, Menu
 from ._common import _add_all_advanced_tools, _parse_dir, _parse_field
 
+
 def run(DirIn=None, filename=None, field=None):
     """
     artview execution for mapping radar data to grid
@@ -33,7 +34,7 @@ def run(DirIn=None, filename=None, field=None):
     # start Mapper
     from ..plugins import Mapper
     mapper = Mapper(plot1.Vradar, plot2.Vgrid, name="Mapper",
-                            parent=menu)
+                    parent=menu)
 
     menu.addLayoutWidget(mapper)
 

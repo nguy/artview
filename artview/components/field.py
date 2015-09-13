@@ -9,6 +9,7 @@ from functools import partial
 
 from ..core import Variable, Component, QtGui, QtCore
 
+
 class FieldButtonWindow(Component):
     '''Class to display a Window with Field name radio buttons.'''
 
@@ -30,7 +31,7 @@ class FieldButtonWindow(Component):
             Field Radiobutton window name.
         parent : PyQt instance
             Parent instance to associate to FieldButtonWindow.
-            If None, then Qt owns, otherwise associated with parent PyQt 
+            If None, then Qt owns, otherwise associated with parent PyQt
             instance.
 
         Notes
@@ -98,7 +99,7 @@ class FieldButtonWindow(Component):
         * Update radio check
         '''
         if (self.Vradar.value is not None and
-            value in self.Vradar.value.fields):
+                value in self.Vradar.value.fields):
             self.fieldbutton[value].setChecked(True)
 
     def NewRadar(self, variable, value, strong):

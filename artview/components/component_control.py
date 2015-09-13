@@ -13,8 +13,8 @@ from ..core import Variable, Component, QtGui, QtCore, common, componentsList
 class LinkPlugins(Component):
     '''
     Class instance for control variables shared between components.
-    
-    The user may select two components from a list. A radio menu is 
+
+    The user may select two components from a list. A radio menu is
     added for every common sharable variable. Each variable may be unlinked
     from similar instance in the other component.
 
@@ -41,7 +41,8 @@ class LinkPlugins(Component):
             Field Radiobutton window name.
         parent : PyQt instance
             Parent instance to associate to this class.
-            If None, then Qt owns, otherwise associated w/ parent PyQt instance.
+            If None, then Qt owns, otherwise associated with parent PyQt
+            instance.
 
         '''
         super(LinkPlugins, self).__init__(name=name, parent=parent)

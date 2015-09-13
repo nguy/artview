@@ -6,6 +6,7 @@ auxiliar functions for scripts
 import pyart
 from ..components import RadarDisplay, LinkPlugins, SelectRegion
 
+
 def _add_all_advanced_tools(menu):
 
     # add grafical starts
@@ -22,15 +23,16 @@ def _add_all_advanced_tools(menu):
         import warnings
         warnings.warn("Loading Plugins Fail")
 
+
 def _parse_dir(DirIn):
     if DirIn is None:  # avoid reference to path while building documentation
         DirIn = os.getcwd()
     return DirIn
 
 Zlike = ['CZ', 'DZ', 'AZ', 'Z',
-'dbz', 'DBZ', 'dBZ', 'DBZ_S', 'DBZ_K',
-'reflectivity_horizontal', 'DBZH', 'corr_reflectivity',
-]
+         'dbz', 'DBZ', 'dBZ', 'DBZ_S', 'DBZ_K',
+         'reflectivity_horizontal', 'DBZH', 'corr_reflectivity']
+
 
 def _parse_field(container, field):
     '''
@@ -49,8 +51,7 @@ def _parse_field(container, field):
         fieldnames = container.fields.keys()
         Zinfile = set(fieldnames).intersection(Zlike)
 
-        if field not in fieldnames and len(Zinfile)>0:
+        if field not in fieldnames and len(Zinfile) > 0:
             field = Zinfile.pop()
 
     return field
-

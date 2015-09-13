@@ -18,7 +18,7 @@ class ValueClick(Component):
         Parameters::
         ----------
         display - ARTview Display
-            Display instance to associate ValueClick. 
+            Display instance to associate ValueClick.
             Must have following elements:
                 * getPlotAxis() - Matplotlib axis instance
                 * getStatusBar() - QtGui.QStatusBar
