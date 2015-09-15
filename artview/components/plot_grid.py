@@ -396,6 +396,8 @@ class GridDisplay(Component):
         self.infolabel.setToolTip("Filename not loaded")
 
     def _update_infolabel(self):
+        if self.Vgrid.value is None:
+            return
         self.infolabel.setText(
             "Grid: %s\n"
             "Field: %s\n"
@@ -460,7 +462,7 @@ class GridDisplay(Component):
         self.title = self._get_default_title()
         idx = self.fieldBox.findText(value)
         self.fieldBox.setCurrentIndex(idx)
-        if strong and self.Vgrid.value is not None:
+        if strong:
             self._update_plot()
             self._update_infolabel()
 
@@ -485,7 +487,7 @@ class GridDisplay(Component):
 
         * If strong update: update plot
         '''
-        if strong and self.Vgrid.value is not None:
+        if strong:
             self._update_plot()
 
     def NewLevel(self, variable, value, strong):
@@ -500,7 +502,7 @@ class GridDisplay(Component):
         '''
         # +1 since the first one is "Level Window"
         self.levelBox.setCurrentIndex(value+1)
-        if strong and self.Vgrid.value is not None:
+        if strong:
             self._update_plot()
             self._update_infolabel()
 
@@ -729,6 +731,9 @@ class GridDisplay(Component):
 
     def _update_plot(self):
         '''Draw/Redraw the plot.'''
+
+        if self.Vgrid.value is None:
+            return
 
         # Create the plot with PyArt GridMapDisplay
         self.ax.cla()  # Clear the plot axes
