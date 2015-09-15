@@ -301,7 +301,7 @@ http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-
         self.Vlims.value['xmax'] = xdata + new_width * (relx)
         self.Vlims.value['ymin'] = ydata - new_height * (1-rely)
         self.Vlims.value['ymax'] = ydata + new_height * (rely)
-        self.Vlims.change(self.Vlims.value)
+        self.Vlims.update()
 
     def onPress(self, event):
         '''Get the current event parameters.'''

@@ -114,7 +114,7 @@ class Variable(QtCore.QObject):
         self.value = value
         self.emit(QtCore.SIGNAL("ValueChanged"), self, value, strong)
 
-    def update(self, strong):
+    def update(self, strong=True):
         '''
         Emits the 'ValueChanged' signal without changings value. This is
         usefull when value is changed inplace.

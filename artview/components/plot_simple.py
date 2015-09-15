@@ -260,7 +260,7 @@ class PlotDisplay(Component):
         '''Captures colormap selection and redraws.'''
         self.cmap['cmap'] = cm_name
 #        self.Vcmap.value['cmap'] = cm_name
-#        self.Vcmap.change(self.Vcmap.value)
+#        self.Vcmap.update()
 
 #    def toolZoomPanCmd(self):
 #        '''Creates and connects to a Zoom/Pan instance.'''

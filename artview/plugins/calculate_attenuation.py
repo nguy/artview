@@ -242,7 +242,7 @@ class CalculateAttenuation(Component):
         # add fields and update
         self.Vradar.value.add_field(spec_at_field_name, spec_at, True)
         self.Vradar.value.add_field(corr_refl_field_name, cor_z, True)
-        self.Vradar.change(self.Vradar.value, strong_update)
+        self.Vradar.update(strong_update)
         print("Correction took %fs" % (t1-t0))
 
     def _clearLayout(self, layout):
