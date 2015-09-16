@@ -15,6 +15,7 @@ artview.core.core.Variable
       :toctree:
    
          Variable.change
+         Variable.update
    
    
 

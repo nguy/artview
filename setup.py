@@ -3,7 +3,7 @@
 ARTview - the ARM Radar Toolkit Viewer.
 
 ARTview, is an open source Python module that
-allows access to Py-ART functions within a PyQt graphical interface and 
+allows access to Py-ART functions within a PyQt graphical interface and
 provides visualization of weather radar data.
 
 """
@@ -53,7 +53,7 @@ CLASSIFIERS = filter(None, CLASSIFIERS.split('\n'))
 PLATFORMS = ["Linux", "Mac OS-X", "Unix"]
 MAJOR = 1
 MINOR = 1
-MICRO = 0
+MICRO = 1
 ISRELEASED = False
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 SCRIPTS = glob.glob('scripts/*') + ['scripts/artview']
@@ -174,5 +174,18 @@ def setup_package():
         scripts=SCRIPTS,
     )
 
+
+def pre_instalation_tests():
+    # make tests before installing
+    # to avoid risking breaking instalation do it in a try
+    try:
+        from tests.qt import test_matplotlib_qt_backend
+        ans = test_matplotlib_qt_backend()
+        if ans is False:
+            exit(-1)
+    except:
+        pass
+
 if __name__ == '__main__':
+    pre_instalation_tests()
     setup_package()

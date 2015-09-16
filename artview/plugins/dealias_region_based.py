@@ -3,17 +3,15 @@
 """
 
 # Load the needed packages
-from PyQt4 import QtGui, QtCore
 from functools import partial
 
 import pyart
 import time
 
-from .. import core
-common = core.common
+from ..core import Component, Variable, common, QtGui, QtCore, VariableChoose
 
 
-class DealiasRegionBased(core.Component):
+class DealiasRegionBased(Component):
     '''
     Interface for executing :py:func:`pyart.correct.dealias_region_based`
     '''
@@ -29,7 +27,7 @@ class DealiasRegionBased(core.Component):
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
-    def __init__(self, Vradar=None,# Vgatefilter=None,
+    def __init__(self, Vradar=None,  # Vgatefilter=None,
                  name="DealiasRegionBased", parent=None):
         '''Initialize the class to create the interface.
 
@@ -57,16 +55,16 @@ class DealiasRegionBased(core.Component):
         self.layout = QtGui.QGridLayout(self.central_widget)
 
         if Vradar is None:
-            self.Vradar = core.Variable(None)
+            self.Vradar = Variable(None)
         else:
             self.Vradar = Vradar
 
 #        if Vgatefilter is None:
-#            self.Vgatefilter = core.Variable(None)
+#            self.Vgatefilter = Variable(None)
 #        else:
 #            self.Vgatefilter = Vgatefilter
 
-        self.sharedVariables = {"Vradar": self.newRadar,}
+        self.sharedVariables = {"Vradar": self.newRadar, }
 #                                "Vgatefilter": None}
         self.connectAllVariables()
 
@@ -152,7 +150,7 @@ class DealiasRegionBased(core.Component):
 
     def chooseRadar(self):
         '''Get Radar with :py:class:`~artview.core.VariableChoose`'''
-        item = core.VariableChoose().chooseVariable()
+        item = VariableChoose().chooseVariable()
         if item is None:
             return
         else:
@@ -194,7 +192,7 @@ class DealiasRegionBased(core.Component):
             'nyquist_velocity': [i if i >= 0 else None for i in (
                 self.nyquistVelocity.value(),)][0],
             'check_nyquist_uniform': self.checkNyquistUniform.isChecked(),
-#            'gatefilter': False,
+            # 'gatefilter': False,
             'rays_wrap_around': self.raysWrapAround.isChecked(),
             'keep_original': self.keepOriginal.isChecked(),
             'vel_field': [None if a == "" else a for a in (
@@ -235,7 +233,7 @@ class DealiasRegionBased(core.Component):
 
         # add fields and update
         self.Vradar.value.add_field(name, field, True)
-        self.Vradar.change(self.Vradar.value, strong_update)
+        self.Vradar.update(strong_update)
         print("Correction took %fs" % (t1-t0))
 
     def _clearLayout(self, layout):

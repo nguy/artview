@@ -5,18 +5,16 @@ Class instance for control variables shared between components.
 """
 
 # Load the needed packages
-from PyQt4 import QtGui, QtCore
 from functools import partial
 
-from .. import core
-common = core.common
+from ..core import Variable, Component, QtGui, QtCore, common, componentsList
 
 
-class LinkPlugins(core.Component):
+class LinkPlugins(Component):
     '''
     Class instance for control variables shared between components.
-    
-    The user may select two components from a list. A radio menu is 
+
+    The user may select two components from a list. A radio menu is
     added for every common sharable variable. Each variable may be unlinked
     from similar instance in the other component.
 
@@ -43,7 +41,8 @@ class LinkPlugins(core.Component):
             Field Radiobutton window name.
         parent : PyQt instance
             Parent instance to associate to this class.
-            If None, then Qt owns, otherwise associated w/ parent PyQt instance.
+            If None, then Qt owns, otherwise associated with parent PyQt
+            instance.
 
         '''
         super(LinkPlugins, self).__init__(name=name, parent=parent)
@@ -52,7 +51,7 @@ class LinkPlugins(core.Component):
         self.layout = QtGui.QGridLayout(self.central_widget)
 
         if components is None:
-            self.components = core.componentsList
+            self.components = componentsList
             QtCore.QObject.connect(
                 self.components, QtCore.SIGNAL("ComponentAppended"),
                 self._updateComponentList)
@@ -178,7 +177,7 @@ class LinkPlugins(core.Component):
         # Disconect old Variable
         self.comp1.disconnectSharedVariable(var)
         # comp1.var = Variable()
-        setattr(self.comp1, var, core.Variable())
+        setattr(self.comp1, var, Variable())
         # Connect new Variable
         self.comp1.connectSharedVariable(var)
         # comp1.var.change(comp0.var.value)

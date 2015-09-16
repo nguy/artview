@@ -6,8 +6,15 @@ Class instance to create Variables and establish change signals.
 """
 
 # Load the needed packages
+# this should the only place with reference to PyQt4
 from PyQt4 import QtGui, QtCore
 import sys
+
+# lets add some magic for the documentation
+QtCore.__doc__ = ("Qt backend to be used all over ARTview, now it is an "
+                  "alias to :py:mod:`PyQt4.QtCore`")
+QtGui.__doc__ = ("Qt backend to be used all over ARTview, now it is an "
+                  "alias to :py:mod:`PyQt4.QtGui`")
 
 # keep track of all components, this is not fundamental, but may be useful
 # for some control utilities
@@ -64,14 +71,10 @@ class Variable(QtCore.QObject):
         |           |                   | 'vmax' holding float values and key|
         |           |                   | 'cmap' holding colormap string name|
         +-----------+-------------------+------------------------------------+
-        |Vgatefilter| Hold pyart        |:py:class:`pyart.correct.GateFilter`|
+        |Vgatefilter| Hold pyart        |:py:class:`pyart.filters.GateFilter`|
         |           | GateFilter        |instance or None                    |
         +-----------+-------------------+------------------------------------+
 
-    .. note::
-        *  we want to make None a valid value for Vradar, but this need some
-           changes in :file:`artview/components/plot_radar.py`
-        *  Vlims is deprecated in favor of a not shared variable
     '''
 
     value = None  #: Value of the Variable
@@ -111,6 +114,17 @@ class Variable(QtCore.QObject):
         self.value = value
         self.emit(QtCore.SIGNAL("ValueChanged"), self, value, strong)
 
+    def update(self, strong=True):
+        '''
+        Emits the 'ValueChanged' signal without changings value. This is
+        usefull when value is changed inplace.
+
+        Parameters
+        ----------
+        strong : bool, optional
+            Define if this is a strong or weak change.
+        '''
+        self.emit(QtCore.SIGNAL("ValueChanged"), self, self.value, strong)
 
 class ComponentsList(QtCore.QObject):
     '''
@@ -170,7 +184,7 @@ class Component(QtGui.QMainWindow):
             Parent instance to associate to Component. If None, then Qt owns,
             otherwise associated with parent PyQt instance.
         '''
-        if sys.version_info<(2,7,0):
+        if sys.version_info < (2, 7, 0):
             super(Component, self).__init__()
         else:
             super(Component, self).__init__(parent=parent, flags=flags)

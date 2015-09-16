@@ -6,10 +6,10 @@ Class instance used to create menu for ARTview app.
 import numpy as np
 import pyart
 
-import os, sys
-from PyQt4 import QtGui, QtCore
+import os
+import sys
 
-from ..core import Variable, Component, common
+from ..core import Variable, Component, common, QtGui, QtCore
 
 
 class Menu(Component):
@@ -106,7 +106,7 @@ class Menu(Component):
         self.CreateMenu()
 
         # Create layout
-        if sys.version_info<(2,7,0):
+        if sys.version_info < (2, 7, 0):
             self.central_widget = QtGui.QWidget()
             self.setCentralWidget(self.central_widget)
             self.centralLayout = QtGui.QVBoxLayout(self.central_widget)
@@ -135,7 +135,7 @@ class Menu(Component):
         '''Open a dialog box to save radar file.'''
 
         filename = QtGui.QFileDialog.getSaveFileName(
-                self, 'Save Radar File', self.dirIn)
+            self, 'Save Radar File', self.dirIn)
         filename = str(filename)
         if filename == '' or self.Vradar.value is None:
             return
@@ -146,7 +146,7 @@ class Menu(Component):
         '''Open a dialog box to save grid file.'''
 
         filename = QtGui.QFileDialog.getSaveFileName(
-                self, 'Save grid File', self.dirIn)
+            self, 'Save grid File', self.dirIn)
         filename = str(filename)
         if filename == '' or self.Vgrid.value is None:
             return
@@ -158,7 +158,7 @@ class Menu(Component):
         Add a widget to central layout.
         This function is to be called both internal and external.
         '''
-        if sys.version_info<(2,7,0):
+        if sys.version_info < (2, 7, 0):
             frame = QtGui.QFrame()
             frame.setFrameShape(QtGui.QFrame.Box)
             layout = QtGui.QVBoxLayout(frame)
@@ -244,7 +244,7 @@ class Menu(Component):
         self.RadarLong = QtGui.QAction('Print Long Radar Info', self)
         self.RadarLong.setStatusTip('Print Long Radar Structure Info')
         self.RadarLong.triggered.connect(self._get_RadarLongInfo)
-        
+
         self.PluginHelp = QtGui.QAction('Plugin Help', self)
         self.PluginHelp.triggered.connect(self._get_pluginhelp)
 
@@ -301,7 +301,7 @@ class Menu(Component):
 
     def addFileAdvanceMenu(self):
         '''
-        Add menu to advance to next or previous file. 
+        Add menu to advance to next or previous file.
         Or to go to the first or last file in the selected directory.'''
         self.advancemenu = self.menubar.addMenu("Change file")
         nextAction = self.advancemenu.addAction("Next")
@@ -327,15 +327,16 @@ class Menu(Component):
 
     def _about(self):
         # Add a more extensive about eventually
-        txOut = """ARTview is a visualization package that leverages the
-DoE PyArt python software to view individual weather
-radar data files or to browse a directory of data.
-                 
-If you hover over butttons and menus with the mouse,
-more instructions and information are available.
-                 
-More complete documentation can be found at:
-https://rawgit.com/nguy/artview/master/docs/build/html/index.html"""
+        txOut = ("ARTview is a visualization package that leverages the\n"
+                 "DoE PyArt python software to view individual weather\n"
+                 "radar data files or to browse a directory of data.\n\n"
+
+                 "If you hover over butttons and menus with the mouse,\n"
+                 "more instructions and information are available.\n\n"
+
+                 "More complete documentation can be found at:\n"
+                 "https://rawgit.com/nguy/artview/master/docs/build"
+                 "/html/index.html\n")
         QtGui.QMessageBox.about(self, "About ARTview", txOut)
 
     def _get_RadarLongInfo(self):
@@ -351,7 +352,7 @@ https://rawgit.com/nguy/artview/master/docs/build/html/index.html"""
         '''Print out some basic info about the radar.'''
         # For any missing data
         infoNA = "Info not available"
-        
+
         try:
             rname = self.Vradar.value.metadata['instrument_name']
         except:
@@ -435,22 +436,26 @@ https://rawgit.com/nguy/artview/master/docs/build/html/index.html"""
                  ('Number of sweeps: %s\n' % nsweeps))
 
         QtGui.QMessageBox.information(self, "Short Radar Info", txOut)
-        
+
     def _get_pluginhelp(self):
         '''Print out a short help text box regarding plugins.'''
 
-        text = "<b>Existing Plugins</b><br><br>"
-        text += "Current plugins can be found under the <i>Advanced Tools</i> menu.<br>"
-        text += "Most plugins have a help button for useage information.<br>"
-        text += "<br><br>"
-        text += "<b>Creating a Custom Plugin</b><br><br>"
-        text += "ARTview allows the creation of custom user plugins.<br><br>"
-        text += "Instructions and examples can be found at:<br>"
-        text += "https://rawgit.com/nguy/artview/master/docs/build/html/plugin_tutorial.html<br><br>"
-        text += "Please consider submitting your plugin for inclusion in ARTview<br>"
-        text += "  Submit a pull request if you forked the repo on Github or"
-        text += "  Post the code in an Issue:<br>"
-        text += "https://github.com/nguy/artview/issues<br><br>"
+        text = (
+            "<b>Existing Plugins</b><br><br>"
+            "Current plugins can be found under the <i>Advanced Tools</i> "
+            "menu.<br>"
+            "Most plugins have a help button for useage information.<br>"
+            "<br><br>"
+            "<b>Creating a Custom Plugin</b><br><br>"
+            "ARTview allows the creation of custom user plugins.<br><br>"
+            "Instructions and examples can be found at:<br>"
+            "https://rawgit.com/nguy/artview/master/docs/build/html/"
+            "plugin_tutorial.html<br><br>"
+            "Please consider submitting your plugin for inclusion in "
+            "ARTview<br>"
+            "  Submit a pull request if you forked the repo on Github or"
+            "  Post the code in an Issue:<br>"
+            "https://github.com/nguy/artview/issues<br><br>")
 
         common.ShowLongText(text)
 
@@ -502,14 +507,14 @@ https://rawgit.com/nguy/artview/master/docs/build/html/index.html"""
         if self.mode in ("radar", "all"):
             try:
                 radar = pyart.io.read(self.filename, delay_field_loading=True)
-                #Add the filename for Display
+                # Add the filename for Display
                 radar.filename = self.filename
                 self.Vradar.change(radar)
                 return
             except:
                 try:
                     radar = pyart.io.read(self.filename)
-                    #Add the filename for Display
+                    # Add the filename for Display
                     radar.filename = self.filename
                     self.Vradar.change(radar)
                     return

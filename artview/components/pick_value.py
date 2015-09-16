@@ -6,9 +6,7 @@ Class to pick a value with the mouse.
 # Load the needed packages
 import numpy as np
 
-from PyQt4 import QtGui, QtCore
-
-from ..core import Variable, Component, common, VariableChoose
+from ..core import Variable, Component, common, VariableChoose, QtGui, QtCore
 
 
 class ValueClick(Component):
@@ -20,7 +18,7 @@ class ValueClick(Component):
         Parameters::
         ----------
         display - ARTview Display
-            Display instance to associate ValueClick. 
+            Display instance to associate ValueClick.
             Must have following elements:
                 * getPlotAxis() - Matplotlib axis instance
                 * getStatusBar() - QtGui.QStatusBar

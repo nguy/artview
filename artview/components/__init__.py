@@ -5,7 +5,7 @@ Main Components (:mod:`artview.components`)
 
 .. currentmodule:: artview.components
 
-ARTview offers some basic Components for visualization 
+ARTview offers some basic Components for visualization
 of weather radar data using Py-ART and
 ARTview functions.
 

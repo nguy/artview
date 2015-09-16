@@ -9,7 +9,7 @@ ARTview (:mod:`artview`)
 Reference Manual
 ################
 
-:Release: |version|
+:Release: |release|
 :Date: |today|
 
 This guide provides details on all public functions, modules and classes
@@ -45,7 +45,7 @@ else:
 
     import matplotlib
     matplotlib.use('Qt4Agg')
-    matplotlib.rcParams['backend.qt4']='PyQt4'
+    matplotlib.rcParams['backend.qt4'] = 'PyQt4'
 
     # import subpackages
     from . import core

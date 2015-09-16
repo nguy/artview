@@ -8,12 +8,6 @@ import numpy as np
 import os
 import pyart
 
-from PyQt4 import QtGui, QtCore
-
-#import matplotlib
-#matplotlib.use('Qt4Agg')
-#matplotlib.rcParams['backend.qt4']='PyQt4'
-
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as \
     NavigationToolbar
@@ -22,7 +16,7 @@ from matplotlib.colors import Normalize as mlabNormalize
 from matplotlib.colorbar import ColorbarBase as mlabColorbarBase
 from matplotlib.pyplot import cm
 
-from ..core import Variable, Component, common, VariableChoose
+from ..core import Variable, Component, common, VariableChoose, QtGui, QtCore
 from ..core.points import Points
 
 # Save image file type and DPI (resolution)
@@ -37,12 +31,12 @@ class RadarDisplay(Component):
     from the PyArt pyart.graph package.
     '''
 
-    Vradar = None  # : see :ref:`shared_variable`
-    Vfield = None  # : see :ref:`shared_variable`
-    Vtilt = None  # : see :ref:`shared_variable`
-    Vlims = None  # : see :ref:`shared_variable`
-    Vcmap = None  # : see :ref:`shared_variable`
-    Vgatefilter = None  # : see :ref:`shared_variable`
+    Vradar = None  #: see :ref:`shared_variable`
+    Vfield = None  #: see :ref:`shared_variable`
+    Vtilt = None  #: see :ref:`shared_variable`
+    Vlims = None  #: see :ref:`shared_variable`
+    Vcmap = None  #: see :ref:`shared_variable`
+    Vgatefilter = None  #: see :ref:`shared_variable`
 
     @classmethod
     def guiStart(self, parent=None):
@@ -139,9 +133,6 @@ class RadarDisplay(Component):
         # Create tool dictionary
         self.tools = {}
 
-        # Initialize to not use GateFilter data mask
-        self.gatefilterToggle = False
-
         # Set up Default limits and cmap
         if Vlims is None:
             self._set_default_limits(strong=False)
@@ -208,8 +199,6 @@ class RadarDisplay(Component):
         self._add_toolsBoxUI()
         # Create the Informational label at top
         self._add_infolabel()
-        # Create the check toggle for gatefilter data mask
-#        self._add_gatefilter_toggle()
 
     def setUILayout(self):
         '''Setup the button/display UI layout.'''
@@ -218,7 +207,6 @@ class RadarDisplay(Component):
         self.layout.addWidget(self.dispButton, 0, 2)
         self.layout.addWidget(self.toolsButton, 0, 3)
         self.layout.addWidget(self.infolabel, 0, 4)
-#        self.layout.addWidget(self.gatefilterToggle, 1, 0)
 
     #############################
     # Functionality methods #
@@ -296,21 +284,6 @@ class RadarDisplay(Component):
             self.Vradar, self.Vfield,
             name=self.name+" Field Selection", parent=self.parent)
 
-    def _add_filter_on_off_to_button(self):
-        '''Add a menu to display on/off filter switch.'''
-        self.filteractionON = self.dispfiltergroup.addAction(
-          QtGui.QAction('ON', self.dispfiltermenu, checkable=True,
-          triggered=self._gatefilter_toggle_on))
-        self.filteractionON.setStatusTip("Turn Data mask (GateFilter) ON")
-        self.filteractionOFF = self.dispfiltergroup.addAction(
-          QtGui.QAction('OFF', self.dispfiltermenu, checkable=True,
-          triggered=self._gatefilter_toggle_off))
-        self.filteractionOFF.setChecked(True)
-        self.filteractionOFF.setStatusTip("Turn Data mask (GateFilter) OFF")
-        self.dispfiltermenu.addAction(self.filteractionON)
-        self.dispfiltermenu.addAction(self.filteractionOFF)
-        self.dispfilter.setMenu(self.dispfiltermenu)
-
     def _add_RngRing_to_button(self):
         '''Add a menu to display range rings on plot.'''
         for RngRing in self.RngRingList:
@@ -337,12 +310,11 @@ class RadarDisplay(Component):
         dispmenu = QtGui.QMenu(self)
         dispLimits = dispmenu.addAction("Adjust Display Limits")
         dispLimits.setToolTip("Set data, X, and Y range limits")
-        self.dispfilter = dispmenu.addAction("Toggle GateFilter")
-        self.dispfiltermenu = QtGui.QMenu("Toggle GateFilter")
-        self.dispfiltermenu.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.dispfiltergroup = QtGui.QActionGroup(self, exclusive=True)
-##        self.gatefilterToggle.toggle()
-##        self.gatefilterToggle.setChecked(False)
+        self.gatefilterToggle = QtGui.QAction(
+            'GateFilter', dispmenu, checkable=True,
+            triggered=self._update_plot)
+        dispmenu.addAction(self.gatefilterToggle)
+        self.gatefilterToggle.setChecked(False)
         dispTitle = dispmenu.addAction("Change Title")
         dispTitle.setToolTip("Change plot title")
         dispUnit = dispmenu.addAction("Change Units")
@@ -362,13 +334,11 @@ class RadarDisplay(Component):
         dispSaveFile.setStatusTip("Save Image using dialog")
 
         dispLimits.triggered[()].connect(self._open_LimsDialog)
-##        self.gatefilterToggle.triggered[()].connect(self._gatefilter_toggle)
         dispTitle.triggered[()].connect(self._title_input)
         dispUnit.triggered[()].connect(self._units_input)
         dispQuickSave.triggered[()].connect(self._quick_savefile)
         dispSaveFile.triggered[()].connect(self._savefile)
 
-        self._add_filter_on_off_to_button()
         self._add_RngRing_to_button()
         self._add_cmaps_to_button()
         self.dispButton.setMenu(dispmenu)
@@ -417,6 +387,8 @@ class RadarDisplay(Component):
         self.infolabel.setToolTip("Filename not loaded")
 
     def _update_infolabel(self):
+        if self.Vradar.value is None:
+            return
         self.infolabel.setText("Radar: %s\n"
                                "Field: %s\n"
                                "Tilt: %d" % (
@@ -426,13 +398,6 @@ class RadarDisplay(Component):
                                    self.Vtilt.value+1))
         if hasattr(self.Vradar.value, 'filename'):
             self.infolabel.setToolTip(self.Vradar.value.filename)
-
-##    def _add_gatefilter_toggle(self):
-##        '''Create the GateFilter Selection Checkbox'''
-##        self.gatefilterToggle = QtGui.QCheckBox("Use data mask")
-##        self.gatefilterToggle.setChecked(False)
-##        self.gatefilterToggle.toggle()
-##        self.gatefilterToggle.stateChanged.connect(self.gatefilter_toggle)
 
     ########################
     # Selectionion methods #
@@ -491,7 +456,7 @@ class RadarDisplay(Component):
         self.title = self._get_default_title()
         idx = self.fieldBox.findText(value)
         self.fieldBox.setCurrentIndex(idx)
-        if strong and self.Vradar.value is not None:
+        if strong:
             self._update_plot()
             self._update_infolabel()
 
@@ -516,7 +481,7 @@ class RadarDisplay(Component):
 
         * If strong update: update plot
         '''
-        if strong and self.Vradar.value is not None:
+        if strong:
             self._update_plot()
 
     def NewGatefilter(self, variable, value, strong):
@@ -528,7 +493,7 @@ class RadarDisplay(Component):
 
         * If strong update: update plot
         '''
-        if strong and self.Vradar.value is not None:
+        if strong:
             self._update_plot()
 
     def NewTilt(self, variable, value, strong):
@@ -543,38 +508,9 @@ class RadarDisplay(Component):
         '''
         # +1 since the first one is "Tilt Window"
         self.tiltBox.setCurrentIndex(value+1)
-        if strong and self.Vradar.value is not None:
+        if strong:
             self._update_plot()
             self._update_infolabel()
-
-##     def gatefilter_toggle(self, state):
-##         '''
-##         Captures the gatefilter toggle, trigger update
-##         '''
-##         if state == QtCore.Qt.Checked:#self.gatefilterToggle.isChecked():
-##             print("CHECKED")
-##             self.gatefilterToggle.setChecked(True)
-##         else:
-##             print("NOT CHECKED")
-##             self.gatefilterToggle.setChecked(False)
-##            
-##        self._update_plot()
-
-    def _gatefilter_toggle_on(self):
-        '''Captures the gatefilter toggle ON, trigger update.'''
-        print("GateFilter turned ON")
-        self.filteractionON.setChecked(True)
-        self.filteractionOFF.setChecked(False)
-        self.gatefilterToggle = True
-        self._update_plot()
-
-    def _gatefilter_toggle_off(self):
-        '''Captures the gatefilter toggle OFF, trigger update.'''
-        print("GateFilter turned OFF")
-        self.filteractionON.setChecked(False)
-        self.filteractionOFF.setChecked(True)
-        self.gatefilterToggle = False
-        self._update_plot()
 
     def TiltSelectCmd(self, ntilt):
         '''
@@ -625,14 +561,13 @@ class RadarDisplay(Component):
             # Calculate an array of range rings
             self.RNG_RINGS = range(ringdel, unrng, ringdel)
 
-        if self.Vradar.value is not None:
-            self._update_plot()
+        self._update_plot()
 
     def cmapSelectCmd(self, cm_name):
         '''Captures colormap selection and redraws.'''
         CMAP = cm_name
         self.Vcmap.value['cmap'] = cm_name
-        self.Vcmap.change(self.Vcmap.value)
+        self.Vcmap.update()
 
     def toolZoomPanCmd(self):
         '''Creates and connects to a Zoom/Pan instance.'''
@@ -720,12 +655,12 @@ class RadarDisplay(Component):
         rng_idx = {'data': idx[:, 1],
                    'long_name': 'index in range dimension'}
 
-        axes = {'x_disp':xaxis,
-                'y_disp':yaxis,
-                'ray_index':ray_idx,
-                'range_index':rng_idx,
-                'azimuth':azi,
-                'range':rng}
+        axes = {'x_disp': xaxis,
+                'y_disp': yaxis,
+                'ray_index': ray_idx,
+                'range_index': rng_idx,
+                'azimuth': azi,
+                'range': rng}
 
         fields = {self.Vfield.value: field}
 
@@ -767,6 +702,9 @@ class RadarDisplay(Component):
     def _update_plot(self):
         '''Draw/Redraw the plot.'''
 
+        if self.Vradar.value is None:
+            return
+
         # Create the plot with PyArt RadarDisplay
         self.ax.cla()  # Clear the plot axes
         self.cax.cla()  # Clear the colorbar axes
@@ -787,8 +725,7 @@ class RadarDisplay(Component):
         title = self.title
         limits = self.Vlims.value
         cmap = self.Vcmap.value
-#        if self.gatefilterToggle.isChecked():
-        if self.gatefilterToggle:
+        if self.gatefilterToggle.isChecked():
             gatefilter = self.Vgatefilter.value
         else:
             gatefilter = None

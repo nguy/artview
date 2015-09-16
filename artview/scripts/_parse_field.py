@@ -1,9 +1,9 @@
 import pyart
 
 Zlike = ['CZ', 'DZ', 'AZ', 'Z',
-'dbz', 'DBZ', 'dBZ', 'DBZ_S', 'DBZ_K',
-'reflectivity_horizontal', 'DBZH', 'corr_reflectivity',
-]
+         'dbz', 'DBZ', 'dBZ', 'DBZ_S', 'DBZ_K',
+         'reflectivity_horizontal', 'DBZH', 'corr_reflectivity']
+
 
 def _parse_field(container, field):
     '''
@@ -20,8 +20,7 @@ def _parse_field(container, field):
     fieldnames = container.fields.keys()
     Zinfile = set(fieldnames).intersection(Zlike)
     if field == pyart.config.get_field_name('reflectivity'):
-        if field not in fieldnames and len(Zinfile)>0:
+        if field not in fieldnames and len(Zinfile) > 0:
             field = Zinfile.pop()
 
     return field
-

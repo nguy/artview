@@ -21,10 +21,9 @@ def run(DirIn=None, filename=None, field=None):
         * :py:class:`~artview.components.LinkPlugins`
         * :py:class:`~artview.components.SelectRegion`
     """
-    from PyQt4 import QtGui, QtCore
     import sys
 
-    from ..core import Variable
+    from ..core import Variable, QtGui, QtCore
     from ..components import RadarDisplay, Menu, LevelButtonWindow, \
         LinkPlugins, SelectRegion
     from ._parse_field import _parse_field

@@ -3,17 +3,15 @@
 """
 
 # Load the needed packages
-from PyQt4 import QtGui, QtCore
 from functools import partial
 
 import pyart
 import time
 
-from .. import core
-common = core.common
+from ..core import Component, Variable, common, QtGui, QtCore, VariableChoose
 
 
-class PhaseProcLp(core.Component):
+class PhaseProcLp(Component):
     '''
     Interface for executing :py:func:`pyart.correct.phase_proc_lp`
     '''
@@ -28,7 +26,7 @@ class PhaseProcLp(core.Component):
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
-    def __init__(self, Vradar=None,# Vgatefilter=None,
+    def __init__(self, Vradar=None,  # Vgatefilter=None,
                  name="PhaseProcLp", parent=None):
         '''Initialize the class to create the interface.
 
@@ -50,7 +48,7 @@ class PhaseProcLp(core.Component):
         self.layout = QtGui.QGridLayout(self.central_widget)
 
         if Vradar is None:
-            self.Vradar = core.Variable(None)
+            self.Vradar = Variable(None)
         else:
             self.Vradar = Vradar
 
@@ -205,7 +203,7 @@ class PhaseProcLp(core.Component):
 
     def chooseRadar(self):
         '''Get Radar with :py:class:`~artview.core.VariableChoose`'''
-        item = core.VariableChoose().chooseVariable()
+        item = VariableChoose().chooseVariable()
         if item is None:
             return
         else:
@@ -298,7 +296,7 @@ class PhaseProcLp(core.Component):
         # add fields and update
         self.Vradar.value.add_field(reproc_phase_name, reproc_phase, True)
         self.Vradar.value.add_field(sob_kdp_name, sob_kdp, True)
-        self.Vradar.change(self.Vradar.value, strong_update)
+        self.Vradar.update(strong_update)
         print("Correction took %fs" % (t1-t0))
 
     def _clearLayout(self, layout):

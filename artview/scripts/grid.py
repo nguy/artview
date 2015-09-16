@@ -4,12 +4,12 @@ grid.py
 Driver function that creates ARTView display.
 """
 import os
-from PyQt4 import QtGui, QtCore
 import sys
 
-from ..core import Variable
+from ..core import Variable, QtGui, QtCore
 from ..components import GridDisplay, Menu
 from ._common import _add_all_advanced_tools, _parse_dir, _parse_field
+
 
 def run(DirIn=None, filename=None, field=None):
     """
@@ -28,7 +28,7 @@ def run(DirIn=None, filename=None, field=None):
     # start Displays
     Vtilt = Variable(0)
     plot1 = GridDisplay(Vgrid, Variable(field), Vtilt, name="Display",
-                         parent=menu)
+                        parent=menu)
 
     menu.addLayoutWidget(plot1)
 

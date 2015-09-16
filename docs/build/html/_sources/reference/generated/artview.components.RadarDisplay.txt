@@ -18,6 +18,7 @@ artview.components.RadarDisplay
          RadarDisplay.LaunchGUI
          RadarDisplay.NewCmap
          RadarDisplay.NewField
+         RadarDisplay.NewGatefilter
          RadarDisplay.NewLims
          RadarDisplay.NewRadar
          RadarDisplay.NewTilt
@@ -48,6 +49,7 @@ artview.components.RadarDisplay
    
    .. autoattribute:: Vcmap
    .. autoattribute:: Vfield
+   .. autoattribute:: Vgatefilter
    .. autoattribute:: Vlims
    .. autoattribute:: Vradar
    .. autoattribute:: Vtilt
