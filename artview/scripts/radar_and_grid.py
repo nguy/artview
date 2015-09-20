@@ -20,7 +20,7 @@ def run(DirIn=None, filename=None, field=None):
     app = QtGui.QApplication(sys.argv)
 
     # start Menu and initiate Vradar
-    menu = Menu(DirIn, filename, mode="All", name="Menu")
+    menu = Menu(DirIn, filename, mode=("Radar", "Grid"), name="Menu")
     Vradar = menu.Vradar
     Vgrid = menu.Vgrid
 
