@@ -254,6 +254,15 @@ class RadarDisplay(Component):
         else:
             self.FieldSelectCmd(str(text))
 
+    def _GateFilterToggleAction(self):
+        '''Define action for GateFilterToggle menu selection.'''
+        if self.gatefilterToggle.isChecked():
+            self.gatefilterToggle.setText("GateFilter On")
+        else:
+            self.gatefilterToggle.setText("GateFilter Off")
+        self._update_plot()
+        
+
     def _title_input(self):
         '''Retrieve new plot title.'''
         val, entry = common.string_dialog_with_reset(
@@ -311,10 +320,10 @@ class RadarDisplay(Component):
         dispLimits = dispmenu.addAction("Adjust Display Limits")
         dispLimits.setToolTip("Set data, X, and Y range limits")
         self.gatefilterToggle = QtGui.QAction(
-            'GateFilter', dispmenu, checkable=True,
-            triggered=self._update_plot)
+            'GateFilter On', dispmenu, checkable=True,
+            triggered=self._GateFilterToggleAction)#_update_plot)
         dispmenu.addAction(self.gatefilterToggle)
-        self.gatefilterToggle.setChecked(False)
+        self.gatefilterToggle.setChecked(True)
         dispTitle = dispmenu.addAction("Change Title")
         dispTitle.setToolTip("Change plot title")
         dispUnit = dispmenu.addAction("Change Units")
@@ -878,20 +887,24 @@ class RadarDisplay(Component):
     ########################
 
     def getPlotAxis(self):
-        ''' get :py:class:`matplotlib.axes.Axes` instance of main plot '''
+        '''Get :py:class:`matplotlib.axes.Axes` instance of main plot.'''
         return self.ax
 
     def getStatusBar(self):
-        ''' get :py:class:`PyQt4.QtGui.QStatusBar` instance'''
+        '''Get :py:class:`PyQt4.QtGui.QStatusBar` instance.'''
         return self.statusbar
 
     def getField(self):
-        ''' get current field '''
+        '''Get current field.'''
         return self.Vfield.value
 
     def getUnits(self):
-        ''' get current units '''
+        '''Get current units.'''
         return self.units
+        
+    def getRadar(self):
+        ''' get current radar '''
+        return self.Vradar.value
 
 
 class _DisplayStart(QtGui.QDialog):

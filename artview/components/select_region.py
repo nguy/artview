@@ -5,6 +5,7 @@ Class to select a Region of interest in Display.
 """
 # Load the needed packages
 import numpy as np
+import os
 
 from matplotlib.path import Path
 from matplotlib.lines import Line2D
@@ -38,7 +39,9 @@ class SelectRegion(Component):
     https://www.mail-archive.com/matplotlib-users@lists.sourceforge.net/msg00661.html
     '''
 
-    VSelectRegion = None  #: see :ref:`shared_variable`
+    Vpoints = None  #: see :ref:`shared_variable`
+    Vgatefilter = None  #: see :ref:`shared_variable`
+    Vradar = None  #: see :ref:`shared_variable`
 
     @classmethod
     def guiStart(self, parent=None):
@@ -58,6 +61,7 @@ class SelectRegion(Component):
               * getPlotAxis() - Matplotlib axis instance
               * getStatusBar() - QtGui.QStatusBar
               * getField() - string
+              * getRadar() - PyART radar instance
               * getPathInteriorValues(Path) - see
                 :py:func:`~artview.components.RadarDisplay.getPathInteriorValues`
 
@@ -74,8 +78,13 @@ class SelectRegion(Component):
         '''
         super(SelectRegion, self).__init__(name=name, parent=parent)
         self.Vpoints = Variable(None)
-        self.sharedVariables = {"Vpoints": None}
 
+        self.Vgatefilter = display.Vgatefilter
+        self.Vradar = display.Vradar
+
+        self.sharedVariables = {"Vpoints": None,
+                                "Vgatefilter": None,
+                                "Vradar": None}
         # Connect the components
         self.connectAllVariables()
 
@@ -87,6 +96,28 @@ class SelectRegion(Component):
         self.columns = ("X", "Y", "Azimuth", "Range", "Value",
                         "Az Index", "R Index")
         self.statusbar.showMessage("Select Region with Mouse")
+
+        # Get the radar instance
+        self.radar = display.getRadar()
+
+        # If a Vgatefilter instance is not present make one
+        if self.Vgatefilter.value is None:
+            import pyart
+            gatefilter = pyart.filters.GateFilter(self.radar,
+                                              exclude_based=True)
+            self.Vgatefilter.change(gatefilter, False)
+        ## NOTE: When PyART gatefilter adds gates operations change this code
+
+        # Retain the original mask
+        try:
+            self.original_mask = self.radar.fields[self.getField()]['data'].mask
+        except:
+#            shape = (self.radar.nrays, self.radar.ngates)
+#            self.original_mask = np.zeros(shape, dtype=np.bool)
+            self.original_mask = gatefilter._gate_excluded
+
+        # Now create a new mask to hold changes
+        self.newmask = np.zeros_like(self.original_mask, dtype=np.bool)
 
         self._initialize_SelectRegion_vars()
         self.CreateSelectRegionWidget()
@@ -198,8 +229,14 @@ class SelectRegion(Component):
         self.buttonStats.setToolTip("Show basic statistics of selected Region")
         self.buttonHist = QtGui.QPushButton('Plot Histogram', self)
         self.buttonHist.setToolTip("Plot histogram of selected Region")
+        self.buttonApplyMask = QtGui.QPushButton('Mask Region', self)
+        self.buttonApplyMask.setToolTip("Apply filter mask to selected Region")
+        self.buttonRestoreMask = QtGui.QPushButton('Restore Mask', self)
+        self.buttonRestoreMask.setToolTip("Restore the original data mask")
         self.buttonResetSelectRegion = QtGui.QPushButton('Reset Region', self)
         self.buttonResetSelectRegion.setToolTip("Clear the Region")
+        self.saveButton = QtGui.QPushButton("Save File", self)
+        self.saveButton.setToolTip("Save modified radar instance to cfradial file") 
         self.buttonHelp = QtGui.QPushButton('Help', self)
         self.buttonHelp.setToolTip("About using SelectRegion")
         self.buttonViewTable.clicked.connect(self.viewTable)
@@ -207,17 +244,22 @@ class SelectRegion(Component):
         self.buttonSaveTable.clicked.connect(self.saveTable)
         self.buttonStats.clicked.connect(self.displayStats)
         self.buttonHist.clicked.connect(self.showHist)
+        self.buttonApplyMask.clicked.connect(self.applyMask)
+        self.buttonRestoreMask.clicked.connect(self.restoreMask)
         self.buttonResetSelectRegion.clicked.connect(self.resetSelectRegion)
+        self.saveButton.clicked.connect(self.saveRadar)
         self.buttonHelp.clicked.connect(self.displayHelp)
 
         # Create functionality buttons
-
         self.rBox_layout.addWidget(self.buttonViewTable)
         self.rBox_layout.addWidget(self.buttonOpenTable)
         self.rBox_layout.addWidget(self.buttonSaveTable)
         self.rBox_layout.addWidget(self.buttonStats)
         self.rBox_layout.addWidget(self.buttonHist)
+        self.rBox_layout.addWidget(self.buttonApplyMask)
+        self.rBox_layout.addWidget(self.buttonRestoreMask)
         self.rBox_layout.addWidget(self.buttonResetSelectRegion)
+        self.rBox_layout.addWidget(self.saveButton)
         self.rBox_layout.addWidget(self.buttonHelp)
 
     def displayHelp(self):
@@ -231,7 +273,10 @@ class SelectRegion(Component):
             " Hold button to draw free-hand path<br>"
             " Secondary Button (e.g. right button)- close path<br><br>"
             "A message 'Closed Region' appears in status bar when "
-            "boundary is properly closed.")
+            "boundary is properly closed.<br><br>"
+            "WARNING: By saving the file, the mask associated with the data "
+            "values may be modfidied. The data itself does not change.<br>"
+            )
 
         common.ShowLongText(text)
 
@@ -272,16 +317,21 @@ class SelectRegion(Component):
 
     def resetSelectRegion(self):
         '''Clear the SelectRegion lines from plot and reset things.'''
-        for i in xrange(len(self.poly)):
-            self.poly[i].remove()
+        if self.poly:
+            for i in xrange(len(self.poly)):
+                try:
+                    self.poly[i].remove()
+                except:
+                    pass
 
-        # Redraw to remove the lines and reinitialize variable
-        self.fig.canvas.draw()
+            # Redraw to remove the lines and reinitialize variable
+            self.fig.canvas.draw()
 
-        # Renew variables, etc.
-        self.Vpoints = Variable(None)
-        self._initialize_SelectRegion_vars()
-        self.statusbar.showMessage("Select Region with Mouse")
+            # Renew region variables, etc.
+            self._initialize_SelectRegion_vars()
+            self.statusbar.showMessage("Select Region with Mouse")
+        else:
+            print("No Region Selection to clear")
 
     def closeEvent(self, QCloseEvent):
         '''Reimplementations to remove from components list.'''
@@ -318,6 +368,50 @@ class SelectRegion(Component):
                 points.fields[field]['data'], plot_type="hist",
                 name="Select Region Histogram")
 
+    def saveRadar(self):
+        '''Open a dialog box to save radar file.'''
+        dirIn, fname = os.path.split(self.Vradar.value.filename)
+        filename = QtGui.QFileDialog.getSaveFileName(
+            self, 'Save Radar File', dirIn)
+        filename = str(filename)
+        if filename == '' or self.Vradar.value is None:
+            return
+        else:
+            for field in self.Vradar.value.fields.keys():
+                self.Vradar.value.fields[field]['data'].mask = (
+                    self.Vgatefilter.value._gate_excluded)
+            import pyart
+            pyart.io.write_cfradial(filename, self.Vradar.value)
+            print("Saved %s" % (filename))
+    ######################
+    #   Filter Methods   #
+    ######################
+
+    def restoreMask(self):
+        '''Remove applied filter by restoring original mask'''
+        self.Vgatefilter.value._gate_excluded = self.original_mask
+        self.Vgatefilter.value.include_all()
+        self.newmask[:] = False
+        self.Vgatefilter.update(True)
+        print(np.sum(self.Vgatefilter.value._gate_excluded))
+
+    def applyMask(self):
+        '''Mount Options and execute
+        :py:func:`~pyart.filters.GateFilter`.
+        Mask the selected points.
+        Vgatefilter is updated, strong or weak depending on overwriting old fields.
+        '''
+        mask_ray = self.Vpoints.value.axes['ray_index']['data'][:]
+        mask_range = self.Vpoints.value.axes['range_index']['data'][:]
+        self.newmask[mask_ray, mask_range] = True
+        self.mask = np.logical_or(self.original_mask, self.newmask)
+        
+        self.Vgatefilter.value._merge(self.mask, 'or', True)
+
+        strong_update = True
+        self.Vgatefilter.update(strong_update)
+        print(np.sum(self.mask))
+        print(np.sum(self.Vgatefilter.value._gate_excluded))
 
 class _SelectRegionStart(QtGui.QDialog):
     '''
@@ -345,7 +439,6 @@ class _SelectRegionStart(QtGui.QDialog):
     def setupUi(self):
 
         self.displayCombo = QtGui.QComboBox()
-#        self.displayCombo.clicked.connect(self.chooseDisplay)
         self.layout.addWidget(QtGui.QLabel("Select display"), 0, 0)
         self.layout.addWidget(self.displayCombo, 0, 1, 1, 3)
         self.fillCombo()
@@ -375,6 +468,7 @@ class _SelectRegionStart(QtGui.QDialog):
         if (hasattr(comp, 'getPlotAxis') and
             hasattr(comp, 'getStatusBar') and
             hasattr(comp, 'getField') and
+            hasattr(comp, 'getRadar') and
             hasattr(comp, 'getPathInteriorValues')
             ):
             return True
