@@ -133,14 +133,18 @@ class Menu(Component):
 
     def saveRadar(self):
         '''Open a dialog box to save radar file.'''
-
-        filename = QtGui.QFileDialog.getSaveFileName(
-            self, 'Save Radar File', self.dirIn)
-        filename = str(filename)
-        if filename == '' or self.Vradar.value is None:
+        try:
+            dirIn, fname = os.path.split(self.Vradar.value.filename)
+        except:
             return
-        else:
-            pyart.io.write_cfradial(filename, self.Vradar.value)
+        filename = QtGui.QFileDialog.getSaveFileName(
+            self, 'Save Radar File', dirIn)
+        filename = str(filename)
+        base, file_extension = os.path.splitext(str(filename))
+        if file_extension == '':
+            filename = base + ".nc"
+        pyart.io.write_cfradial(filename, self.Vradar.value)
+        print("Saving %s" % filename)
 
     def saveGrid(self):
         '''Open a dialog box to save grid file.'''

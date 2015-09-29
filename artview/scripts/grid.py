@@ -1,7 +1,7 @@
 """
 grid.py
 
-Driver function that creates ARTView display.
+Driver function that creates an ARTView display for gridded radar data.
 """
 import os
 import sys

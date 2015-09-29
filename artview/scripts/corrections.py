@@ -1,7 +1,8 @@
 """
 corrections.py
 
-Driver function that creates ARTView display.
+Driver function that creates an ARTView display for 
+work with corrections routines.
 """
 import os
 import sys
@@ -35,7 +36,7 @@ def run(DirIn=None, filename=None, field=None):
     plot1 = RadarDisplay(Vradar, Variable(field), Vtilt, name="Display",
                          parent=menu)
 
-    # add grafical starts
+    # add graphical starts
     _add_all_advanced_tools(menu)
 
     menu.setGeometry(0, 0, 700, 700)

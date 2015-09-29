@@ -1,3 +1,8 @@
+"""
+_parse_field.py
+
+function to parse for a valid reflectivity field
+"""
 import pyart
 
 Zlike = ['CZ', 'DZ', 'AZ', 'Z',
