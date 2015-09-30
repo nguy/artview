@@ -112,13 +112,15 @@ class SelectRegion(Component):
         try:
             self.original_mask = self.radar.fields[self.getField()]['data'].mask
         except:
-#            shape = (self.radar.nrays, self.radar.ngates)
-#            self.original_mask = np.zeros(shape, dtype=np.bool)
             self.original_mask = gatefilter._gate_excluded
 
-        # Now create a new mask to hold changes
+        # Create a new mask to hold changes
         self.newmask = np.zeros_like(self.original_mask, dtype=np.bool)
 
+        # Grab the parent menu from display
+        self.menu = display.parent
+
+        # Initialize the variables and GUI
         self._initialize_SelectRegion_vars()
         self.CreateSelectRegionWidget()
         self.connect()
@@ -247,7 +249,7 @@ class SelectRegion(Component):
         self.buttonApplyMask.clicked.connect(self.applyMask)
         self.buttonRestoreMask.clicked.connect(self.restoreMask)
         self.buttonResetSelectRegion.clicked.connect(self.resetSelectRegion)
-        self.saveButton.clicked.connect(self.saveRadar)
+        self.saveButton.clicked.connect(self.saveFile)
         self.buttonHelp.clicked.connect(self.displayHelp)
 
         # Create functionality buttons
@@ -368,21 +370,19 @@ class SelectRegion(Component):
                 points.fields[field]['data'], plot_type="hist",
                 name="Select Region Histogram")
 
-    def saveRadar(self):
+    def saveFile(self):
         '''Open a dialog box to save radar file.'''
-        dirIn, fname = os.path.split(self.Vradar.value.filename)
-        filename = QtGui.QFileDialog.getSaveFileName(
-            self, 'Save Radar File', dirIn)
-        filename = str(filename)
-        if filename == '' or self.Vradar.value is None:
-            return
+        if self.Vradar.value is None:
+            print("Vradar is None!")
         else:
             for field in self.Vradar.value.fields.keys():
                 self.Vradar.value.fields[field]['data'].mask = (
                     self.Vgatefilter.value._gate_excluded)
-            import pyart
-            pyart.io.write_cfradial(filename, self.Vradar.value)
-            print("Saved %s" % (filename))
+##            import pyart
+##            pyart.io.write_cfradial(filename, self.Vradar.value)
+##            print("Saved %s" % (filename))
+            self.Vradar.update(True)
+            self.menu.saveRadar()
     ######################
     #   Filter Methods   #
     ######################
