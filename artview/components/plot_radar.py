@@ -42,6 +42,7 @@ class RadarDisplay(Component):
     def guiStart(self, parent=None):
         '''Graphical interface for starting this class'''
         args = _DisplayStart().startDisplay()
+        args['parent'] = parent
         return self(**args), True
 
     def __init__(self, Vradar, Vfield, Vtilt, Vlims=None, Vcmap=None,
@@ -965,7 +966,7 @@ class _DisplayStart(QtGui.QDialog):
         self.layout.addWidget(QtGui.QLabel("Vlims"), 3, 0)
         self.layout.addWidget(self.limsButton, 3, 1, 1, 3)
 
-        self.name = QtGui.QLineEdit("Display")
+        self.name = QtGui.QLineEdit("RadarDisplay")
         self.layout.addWidget(QtGui.QLabel("name"), 4, 0)
         self.layout.addWidget(self.name, 4, 1, 1, 3)
 
@@ -981,7 +982,8 @@ class _DisplayStart(QtGui.QDialog):
 
         # if no Vradar abort
         if 'Vradar' not in self.result:
-            common.ShowWarning("Must select a variable for Vradar")
+            self.result['Vradar'] = Variable(None)
+            #common.ShowWarning("Must select a variable for Vradar")
             # I'm allowing this to continue, but this will result in error
 
         # if Vfield, Vtilt, Vlims were not select create new

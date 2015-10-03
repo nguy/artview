@@ -44,6 +44,7 @@ class GridDisplay(Component):
     def guiStart(self, parent=None):
         '''Graphical interface for starting this class'''
         args = _DisplayStart().startDisplay()
+        args['parent'] = parent
         return self(**args), True
 
     def __init__(self, Vgrid, Vfield, VlevelZ=None, VlevelY=None,
@@ -1073,7 +1074,7 @@ class _DisplayStart(QtGui.QDialog):
         self.layout.addWidget(QtGui.QLabel("Vlims"), 4, 0)
         self.layout.addWidget(self.limsButton, 4, 1, 1, 3)
 
-        self.name = QtGui.QLineEdit("Display")
+        self.name = QtGui.QLineEdit("GridDisplay")
         self.layout.addWidget(QtGui.QLabel("name"), 5, 0)
         self.layout.addWidget(self.name, 5, 1, 1, 3)
 
@@ -1089,7 +1090,8 @@ class _DisplayStart(QtGui.QDialog):
 
         # if no Vgrid abort
         if 'Vgrid' not in self.result:
-            common.ShowWarning("Must select a variable for Vgrid.")
+            self.result['Vgrid'] = Variable(None)
+            #common.ShowWarning("Must select a variable for Vgrid.")
             # I'm allowing this to continue, but this will result in error
 
         # if Vfield, Vlevel, Vlims were not select create new

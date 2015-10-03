@@ -259,8 +259,18 @@ class Menu(Component):
         self.layoutmenuItems = {}
 
     def addPluginMenu(self):
-        '''Add Component Menu to menu bar.'''
+        '''Add Advanced Tools Menu to menu bar.'''
         self.pluginmenu = self.menubar.addMenu('&Advanced Tools')
+
+    def addModesMenu(self):
+        '''Add Modes Menu to menu bar.'''
+        from ..modes import modes
+        self.modesmenu = self.menubar.addMenu('Modes')
+        for key in modes.keys():
+            act = QtGui.QAction(key, self)
+            act.triggered.connect(lambda b, key=key:
+                                      self.change_mode(modes[key]))
+            self.modesmenu.addAction(act)
 
     def addLayoutMenuItem(self, widget):
         '''Add widget item to Layout Menu.'''
@@ -298,6 +308,49 @@ class Menu(Component):
         comp, independent = Comp.guiStart(self)
         if not independent:
             self.addLayoutWidget(comp)
+
+
+    def change_mode(new_mode):
+        ''' Open and connect new components to satisfy mode.
+
+        Parameters
+        ----------
+        new_mode: see file artview/modes.py for documentation on modes
+        '''
+        components = new_mode[0][:]
+        links = new_mode[1]
+        # find already running components
+        for i,component in enumerate(components):
+            comp = [comp for comp in componentsList
+                    if isinstance(comp,component)]
+            if comp:
+                components[i] = comp[0]
+            else:
+                # if there is no component open
+                print("starting component: %s" % component.__name__)
+                components[i], independent = components[i].guiStart()
+                if not independent:
+                    self.addLayoutWidget(components[i])
+
+        for link in links:
+            dest = getattr(components[link[0][0]], link[0][1])
+            orin = getattr(components[link[1][0]], link[1][1])
+            if dest is orin:
+                # already linked
+                pass
+            else:
+                # not linked, link
+                print("linking %s.%s to %s.%s" %
+                    (components[link[1][0]].name, link[1][1],
+                    components[link[0][0]].name, link[0][1]))
+                # Disconect old Variable
+                components[link[1][0]].disconnectSharedVariable(link[1][1])
+                # comp1.var = comp0.var
+                setattr(components[link[1][0]], link[1][1], dest)
+                # Connect new Variable
+                components[link[1][0]].connectSharedVariable(link[1][1])
+                # comp1.var.change(comp0.var.value), just to emit signal
+                dest.update()
 
     def addFileAdvanceMenu(self):
         '''

@@ -4,7 +4,7 @@ standard.py
 auxiliar functions for scripts
 """
 import pyart
-from ..components import RadarDisplay, LinkPlugins, SelectRegion
+from ..components import RadarDisplay, GridDisplay, LinkPlugins, SelectRegion
 
 
 def _add_all_advanced_tools(menu):
@@ -12,14 +12,17 @@ def _add_all_advanced_tools(menu):
     # add grafical starts
     menu.addComponent(LinkPlugins)
     menu.addComponent(RadarDisplay)
+    menu.addComponent(GridDisplay)
     menu.addComponent(SelectRegion)
 
     # add all plugins to grafical start
     try:
         from .. import plugins
-        for plugin in plugins._plugins:
+        for plugin in plugins._plugins.values():
             menu.addComponent(plugin)
     except:
+        import traceback
+        print(traceback.format_exc())
         import warnings
         warnings.warn("Loading Plugins Fail")
 

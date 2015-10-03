@@ -64,7 +64,7 @@ def run(DirIn=None, filename=None, field=None):
     # add all plugins to grafical start
     try:
         from .. import plugins
-        for plugin in plugins._plugins:
+        for plugin in plugins._plugins.values():
             MainMenu.addComponent(plugin)
     except:
         import warnings
