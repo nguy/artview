@@ -12,13 +12,18 @@ import sys
 # I have read some posts about it and no one has a real solution.
 # http://stackoverflow.com/questions/16981921/relative-imports-in-python-3
 try:
-    import version
+    try:
+        import version
+    except:
+        from . import version
+
+    VERSION = version.version
 except:
-    from . import version
+    import warnings
+    warnings.warn("No ARTview Version!")
+    VERSION = 'no version'
 
 NAME = 'ARTview'
-VERSION = version.version
-
 
 def parse(argv):
     '''
