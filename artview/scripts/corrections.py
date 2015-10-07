@@ -26,7 +26,7 @@ def run(DirIn=None, filename=None, field=None):
     app = QtGui.QApplication(sys.argv)
 
     # start Menu and initiate Vradar
-    menu = Menu(DirIn, filename, mode="Radar", name="Menu")
+    menu = Menu(DirIn, filename, mode=("Radar",), name="Menu")
     Vradar = menu.Vradar
 
     field = _parse_field(Vradar.value, field)
