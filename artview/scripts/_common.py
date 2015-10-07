@@ -1,7 +1,7 @@
 """
-standard.py
+_common.py
 
-auxiliar functions for scripts
+auxiliary functions for scripts
 """
 import pyart
 from ..components import RadarDisplay, LinkPlugins, SelectRegion

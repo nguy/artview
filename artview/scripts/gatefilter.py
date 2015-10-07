@@ -1,7 +1,7 @@
 """
 gatefilter.py
 
-Driver function that creates ARTView display.
+Driver function that creates an ARTView display and initiates Gatefilter.
 """
 import os
 import sys
@@ -36,7 +36,7 @@ def run(DirIn=None, filename=None, field=None):
 
     menu.addLayoutWidget(filt)
 
-    # add grafical starts
+    # add graphical starts
     _add_all_advanced_tools(menu)
 
     menu.setGeometry(0, 0, 500, 300)

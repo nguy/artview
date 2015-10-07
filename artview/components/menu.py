@@ -132,8 +132,15 @@ class Menu(Component):
             self._openfile()
 
     def saveRadar(self):
-        '''Open a dialog box to save radar file.'''
+        '''
+        Open a dialog box to save radar file.
 
+        Parameters
+        ----------
+        input : Vradar instance
+            Optional parameter to allow access from 
+            other ARTView plugins, etc.
+        '''
         filename = QtGui.QFileDialog.getSaveFileName(
             self, 'Save Radar File', self.dirIn)
         filename = str(filename)
@@ -141,6 +148,7 @@ class Menu(Component):
             return
         else:
             pyart.io.write_cfradial(filename, self.Vradar.value)
+            print("Saved %s" % (filename))
 
     def saveGrid(self):
         '''Open a dialog box to save grid file.'''

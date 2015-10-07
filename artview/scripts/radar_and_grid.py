@@ -1,7 +1,8 @@
 """
 radar_and_grid.py
 
-Driver function that creates ARTView display.
+Driver function that creates two ARTView displays. The first
+a native radar coordinate display, the second a grid display.
 """
 import os
 import sys
@@ -32,7 +33,7 @@ def run(DirIn=None, filename=None, field=None):
     plot2 = GridDisplay(Vgrid, Variable(field), Variable(0),
                         name="Grid", parent=menu)
 
-    # add grafical starts
+    # add graphical starts
     _add_all_advanced_tools(menu)
 
     # start program

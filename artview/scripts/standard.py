@@ -1,7 +1,8 @@
 """
 standard.py
 
-Driver function that creates ARTView display.
+Driver function that creates two ARTView displays.
+This is the default start for ARTView
 """
 import os
 
@@ -56,7 +57,7 @@ def run(DirIn=None, filename=None, field=None):
     # add control to Menu
     MainMenu.addLayoutWidget(control)
 
-    # add grafical starts
+    # add graphical starts
     MainMenu.addComponent(LinkPlugins)
     MainMenu.addComponent(RadarDisplay)
     MainMenu.addComponent(SelectRegion)

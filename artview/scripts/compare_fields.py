@@ -1,7 +1,7 @@
 """
 compare_fields.py
 
-Driver function that creates ARTView display.
+Driver function that creates two ARTView displays for comparison.
 """
 import os
 import sys
@@ -38,7 +38,7 @@ def run(DirIn=None, filename=None, field=None):
     # add control to Menu
     menu.addLayoutWidget(control)
 
-    # add grafical starts
+    # add graphical starts
     _add_all_advanced_tools(menu)
 
     # start program

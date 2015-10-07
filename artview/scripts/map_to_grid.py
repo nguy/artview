@@ -1,7 +1,9 @@
 """
 map_to_grid.py
 
-Driver function that creates ARTView display.
+Driver function that creates two ARTView displays,
+the first for native coordinate radar data and the second for 
+gridded radar data. The Mapper tool is initiated.
 """
 import os
 import sys
@@ -38,7 +40,7 @@ def run(DirIn=None, filename=None, field=None):
 
     menu.addLayoutWidget(mapper)
 
-    # add grafical starts
+    # add graphical starts
     _add_all_advanced_tools(menu)
 
     menu.setGeometry(0, 0, 600, 600)
