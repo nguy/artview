@@ -9,7 +9,7 @@ import pyart
 import os
 import sys
 
-from ..core import Variable, Component, common, QtGui, QtCore
+from ..core import Variable, Component, common, QtGui, QtCore, componentsList
 
 
 class Menu(Component):
@@ -198,6 +198,7 @@ class Menu(Component):
         self.addAboutMenu()
         self.addFileAdvanceMenu()
         self.addPluginMenu()
+        self.addModesMenu()
 
     def addFileMenu(self):
         '''Add the File Menu to menubar.'''
@@ -310,7 +311,7 @@ class Menu(Component):
             self.addLayoutWidget(comp)
 
 
-    def change_mode(new_mode):
+    def change_mode(self, new_mode):
         ''' Open and connect new components to satisfy mode.
 
         Parameters
