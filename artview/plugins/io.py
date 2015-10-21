@@ -30,7 +30,7 @@ open_functions = [
     pyart.aux_io.read_radx]
 
 
-class AdvancedIO(Component):
+class FileList(Component):
     '''
     Open an interactive python console so the direct manipulation
     '''
@@ -41,9 +41,13 @@ class AdvancedIO(Component):
     @classmethod
     def guiStart(self, parent=None):
         '''Graphical interface for starting this class.'''
+        kwargs, independent = \
+            common._SimplePluginStart("FileList").startDisplay()
+        kwargs['parent'] = parent
+        return self(**kwargs), independent
         return self(), False
 
-    def __init__(self, dirIn=None, name="AdvancedIO", parent=None):
+    def __init__(self, dirIn=None, name="FileList", parent=None):
         '''Initialize the class to create the interface.
 
         Parameters
@@ -58,11 +62,28 @@ class AdvancedIO(Component):
             If None, then Qt owns, otherwise associated with parent PyQt
             instance.
         '''
-        super(AdvancedIO, self).__init__(name=name, parent=parent)
-        self.dirView = DirView(dirIn)
-        self.setCentralWidget(self.dirView)
-        self.dirView.opened.connect(self.open)
-        self.dirView.customContextMenuRequested.connect(self.contextMenu)
+        super(FileList, self).__init__(name=name, parent=parent)
+        self.listView = QtGui.QListView()
+
+        # set up listView
+        model = QtGui.QFileSystemModel()
+        model.setFilter(QtCore.QDir.AllEntries |
+                        QtCore.QDir.AllDirs |
+                        QtCore.QDir.NoDot)
+        model.setRootPath(QtCore.QDir.currentPath())
+        self.listView.setModel(model)
+        if dirIn is None:  # avoid reference to path while building doc
+            dirIn = os.getcwd()
+        index = model.index(dirIn)
+        self.listView.setRootIndex(index)
+        # self.clicked.connect(self.test)
+        self.listView.doubleClicked.connect(self.doubleClick)
+        # context (right-click) menu
+        self.listView.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+
+        # setup widget
+        self.setCentralWidget(self.listView)
+        self.listView.customContextMenuRequested.connect(self.contextMenu)
         self.Vradar = Variable(None)
         self.Vgrid = Variable(None)
         self.sharedVariables = {"Vradar": None,
@@ -70,8 +91,20 @@ class AdvancedIO(Component):
         self.connectAllVariables()
         self.show()
 
+    def doubleClick(self, index):
+        '''Open Directory or File on double click.'''
+        model = self.listView.model()
+        indexItem = model.index(index.row(), 0, index.parent())
+        if model.fileName(indexItem) == '..':
+            if index.parent().parent().isValid():
+                self.listView.setRootIndex(index.parent().parent())
+        elif model.isDir(index):
+            self.listView.setRootIndex(index)
+        else:
+            self.open(model.filePath(indexItem))
+
     def open(self, path):
-        ''' Slot of :py:attr:`DirView.opened` '''
+        '''Open file.'''
         # try several open
         print ("open: %s" % path)
         self.filename = str(path)
@@ -116,18 +149,20 @@ class AdvancedIO(Component):
         return
 
     def contextMenu(self, pos):
+        '''Contruct right-click menu.'''
         menu = QtGui.QMenu(self)
-        index = self.dirView.currentIndex()
-        path = str(self.dirView.model().filePath(index))
+        index = self.listView.currentIndex()
+        path = str(self.listView.model().filePath(index))
         for func in open_functions:
             action = QtGui.QAction("Open with: %s" % func.__name__, self)
             # lambda inside loop: problem with variable capturing
             f = lambda boo, func=func: self.open_with(func, path)
             action.triggered.connect(f)
             menu.addAction(action)
-        menu.exec_(self.dirView.mapToGlobal(pos))
+        menu.exec_(self.listView.mapToGlobal(pos))
 
     def open_with(self, func, path):
+        '''Open file using a given function.'''
         try:
             container = func(path, delay_field_loading=True)
             if isinstance(container, pyart.core.Radar):
@@ -146,56 +181,4 @@ class AdvancedIO(Component):
             traceback.format_exc()
 
 
-class DirView(QtGui.QListView):
-    '''
-    adapted from
-    http://stackoverflow.com/questions/23993895/python-pyqt-qtreeview-example-selection
-    '''
-
-    opened = QtCore.pyqtSignal(str)  #: signal that a file should be open
-
-    def __init__(self, dirIn=None):
-        super(DirView, self).__init__()
-        model = QtGui.QFileSystemModel()
-        model.setFilter(QtCore.QDir.AllEntries |
-                        QtCore.QDir.AllDirs |
-                        QtCore.QDir.NoDot)
-        model.setRootPath(QtCore.QDir.currentPath())
-        self.setModel(model)
-        if dirIn is None:  # avoid reference to path while building doc
-            dirIn = os.getcwd()
-        index = model.index(dirIn)
-        self.setRootIndex(index)
-        # self.clicked.connect(self.test)
-        self.doubleClicked.connect(self.doubleClick)
-
-        # context (right-click) menu
-        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-
-    def doubleClick(self, index):
-        indexItem = self.model().index(index.row(), 0, index.parent())
-        if self.model().fileName(indexItem) == '..':
-            if index.parent().parent().isValid():
-                self.setRootIndex(index.parent().parent())
-        elif self.model().isDir(index):
-            print ("dir")
-            self.setRootIndex(index)
-        else:
-            self.opened.emit(self.model().filePath(indexItem))
-
-    def test(self, index):
-        indexItem = self.model().index(index.row(), 0, index.parent())
-
-        # path or filename selected
-        fileName = self.model().fileName(indexItem)
-        print("hello!")
-        print(fileName)
-
-if __name__ == '__main__':
-    import sys
-    app = QtGui.QApplication(sys.argv)
-    w = Main()
-    w.show()
-    sys.exit(app.exec_())
-
-_plugins = [AdvancedIO]
+_plugins = [FileList]
