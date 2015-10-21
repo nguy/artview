@@ -281,10 +281,14 @@ class GateFilter(Component):
 
         try:
             for cmd in self.filterscript:
-                text += cmd + "\n"
+                text += cmd + "<br>"#\n"
         except:
             common.ShowWarning("Must apply filter first.")
 
+        text += ("<br><br>"
+                 "for field in Vradar.value.fields.keys():<br>"
+                 "    Vradar.value.fields[field]['data'].mask = ("
+                 "Vgatefilter.value._gate_excluded)<br>")
         common.ShowLongText(text)
 
     def saveRadar(self):

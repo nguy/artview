@@ -4,10 +4,13 @@ edit_radar.py
 Driver function that creates an ARTView display for editing radar data.
 Starts SelectRegion and Gatefilter.
 """
-import artview
 import os
 import sys
 
+from ..core import Variable, QtGui
+from ..components import RadarDisplay, Menu, SelectRegion
+from ..plugins import GateFilter
+from ._common import _parse_dir, _parse_field
 
 def run(DirIn=None, filename=None, field=None):
     """
@@ -15,27 +18,22 @@ def run(DirIn=None, filename=None, field=None):
     """
     DirIn = _parse_dir(DirIn)
 
-    app = artview.core.QtGui.QApplication(sys.argv)
+    app = QtGui.QApplication(sys.argv)
 
     # start Menu and initiate Vradar
-##menu = artview.components.Menu(os.getcwd(), None, mode="Radar", name="Menu")
-    menu = artview.components.Menu(DirIn, filename, mode="Radar", name="Menu")
+    menu = Menu(DirIn, filename, mode=("Radar",), name="Menu")
     Vradar = menu.Vradar
 
-    # start Displays
-    Vtilt = artview.core.Variable(0)
-##plot1 = artview.components.RadarDisplay(
-##    Vradar, artview.core.Variable("reflectivity"), Vtilt, name="Display",
-##    parent=menu)
-    plot1 = artview.components.RadarDisplay(
-        Vradar, artview.core.Variable(field), Vtilt, name="Display",
-        parent=menu)
-    roi = artview.components.SelectRegion(plot1, 
-                                          name="SelectRegion", parent=menu)
+    field = _parse_field(Vradar.value, field)
 
-    filt =  artview.plugins.GateFilter(Vradar=Vradar, 
-                                       Vgatefilter=plot1.Vgatefilter,
-                                       name="GateFilter", parent=menu)
+    # start Displays
+    Vtilt = Variable(0)
+    plot1 = RadarDisplay(Vradar, Variable(field), Vtilt, name="Display",
+        parent=menu)
+    roi = SelectRegion(plot1, name="SelectRegion", parent=menu)
+
+    filt = GateFilter(Vradar=Vradar, Vgatefilter=plot1.Vgatefilter,
+            name="GateFilter", parent=menu)
     menu.addLayoutWidget(roi)
     menu.addLayoutWidget(filt)
     roi.show()
