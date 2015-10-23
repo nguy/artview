@@ -68,7 +68,7 @@ much more limited in scope than the full version.
 
 ##Tutorials
 Paul Hein has put together a [brief introduction](http://radarmet.atmos.colostate.edu/software/artview/).
-Anderson Gama has made a [video tutorial](https://www.youtube.com/watch?v=iaNoGZTUhg4).
+Anderson Gama has made a [video introduction](https://www.youtube.com/watch?v=iaNoGZTUhg4) to ARTview.
 
 ## Installation
 ```python
