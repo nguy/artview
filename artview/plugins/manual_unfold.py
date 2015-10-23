@@ -99,6 +99,7 @@ class ManualUnfold(Component):
         self.negativeButton.clicked.connect(self.negativeUnfold)
         self.layout.addWidget(self.negativeButton, 4, 1)
 
+        self.newRadar(None,None,True)
         self.show()
 
     def getFieldNames(self):
@@ -170,7 +171,7 @@ class ManualUnfold(Component):
             return
 
         nyquist_vel = self.Vradar.value.get_nyquist_vel(0, True)
-        self.nyquistVelocit.setValue(nyquist_vel)
+        self.nyquistVelocity.setValue(nyquist_vel)
 
 
 _plugins = [ManualUnfold]

@@ -3,10 +3,15 @@ ARTview
 
 ARM Radar Toolkit Viewer
 
-ARTview is an interactive viewing browser that uses the [Py-Art](https://github.com/ARM-DOE/pyart) toolkit.
+ARTview is an interactive GUI viewer that is built on top of the 
+[Py-ART](https://github.com/ARM-DOE/pyart) toolkit.
 It allows one to easily scroll through a directory of weather radar data files 
-and visualize the data.  All file types available in PyArt can be opened with
+and visualize the data.  All file types available in Py-ART can be opened with
 the ARTview browser.
+
+You can interact with data files through "Plugins". Many functions from the Py-ART 
+package can be selected. In addition, ARTview plugins allow querying data by 
+selecting regions or points visually.
 
 ![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.27358.svg)](http://dx.doi.org/10.5281/zenodo.27358)
 
@@ -22,19 +27,23 @@ With ARTview you can:
     Browse a directory by advancing with drop down "Next" and "Previous" menus or 
     by arrow left/right key.
 
-    View ground-based or (some) airborne radar files.
+    View surface-based or (some) airborne radar files.
 
-    View PPI, sector or RHI type file scans.
+    View (and switch between) PPI, sector or RHI type file scans.
 
     Change display parametets such as scaling, title, units labels, colormap,  
     and add range rings.
 
     Save output images from a drop-down menu (Or Ctrl+s on linux, Cmd+S on MacOS)
 
-    A toolbox which allows Zooming/Paning, find point values, select regions,
-    interface with PyArt routines and select a custom tools a user creates.
+    A toolbox which allows Zooming/Panning, find point values, select regions,
+    interface with Py-ART routines and select a custom tools a user creates.
 
     The default two windows can be configured to share parameters or operate independently.
+    
+    Hand-edit data files.
+    
+    Write your own plugins to use.
 
 ## Links
 [Code repository](https://github.com/nguy/artview)
@@ -46,6 +55,9 @@ With ARTview you can:
 [Py-ART](https://github.com/ARM-DOE/pyart)
 
 ## News
+Hand editing of radar data files is possible through the GateFilter and SelectRegion 
+tools. Further functionality coming.
+
 ARTView has become and installable package!
 It is still undergoing further functionality development, so keep an eye out for new
 features.  It has performed well in internal testing, but we're sure there are bugs in
@@ -53,7 +65,10 @@ there and we appreciate your help in finding and addressing them.
 
 The single stream, original version is still available in the scripts directory. It is 
 much more limited in scope than the full version.
-The other code should not have any effect on it's usage.
+
+##Tutorials
+Paul Hein has put together a [brief introduction](http://radarmet.atmos.colostate.edu/software/artview/).
+Anderson Gama has made a [video introduction](https://www.youtube.com/watch?v=iaNoGZTUhg4) to ARTview.
 
 ## Installation
 ```python
@@ -138,7 +153,10 @@ Paul Hein
 
 Timothy Lang
 
-NOTE:: This is open source software.  Contributions are very welcome, though this is not any of our primary project.  In addition it needs to be stated that no responsibility is taken by the author for any adverse effects.
+NOTE:: This is open source software and contributions are very welcome!
+This is not a primary project for any of the contributors, so please be patient
+if you have questions/suggestions.  In addition it needs to be stated that no 
+responsibility is taken by the author for any adverse effects.
 
 ## Caveats
 There has not been extensive testing, but seems reasonably stable.

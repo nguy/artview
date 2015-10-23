@@ -1,7 +1,8 @@
 """
 select_region.py
 
-Driver function that creates ARTView display.
+Driver function that creates an ARTView display and initiates
+the SelectRegion tool.
 """
 import os
 import sys
@@ -20,7 +21,7 @@ def run(DirIn=None, filename=None, field=None):
     app = QtGui.QApplication(sys.argv)
 
     # start Menu and initiate Vradar
-    menu = Menu(DirIn, filename, mode="Radar", name="Menu")
+    menu = Menu(DirIn, filename, mode=("Radar",), name="Menu")
     Vradar = menu.Vradar
 
     field = _parse_field(Vradar.value, field)
@@ -33,7 +34,7 @@ def run(DirIn=None, filename=None, field=None):
 
     menu.addLayoutWidget(roi)
 
-    # add grafical starts
+    # add graphical starts
     _add_all_advanced_tools(menu)
 
     menu.setGeometry(0, 0, 300, 300)

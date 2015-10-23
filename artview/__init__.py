@@ -38,10 +38,13 @@ if __ARTVIEW_SETUP__:
     _sys.stderr.write("Running from ARTview source directory.\n")
     del _sys
 else:
-
-    # versioning
-    from .version import git_revision as __git_revision__
-    from .version import version as __version__
+    try:
+        # versioning
+        from .version import git_revision as __git_revision__
+        from .version import version as __version__
+    except:
+        import warnings
+        warnings.warn("No ARTview Version!")
 
     import matplotlib
     matplotlib.use('Qt4Agg')

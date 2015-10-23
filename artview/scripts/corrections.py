@@ -1,7 +1,8 @@
 """
 corrections.py
 
-Driver function that creates ARTView display.
+Driver function that creates an ARTView display for 
+work with corrections routines.
 """
 import os
 import sys
@@ -25,7 +26,7 @@ def run(DirIn=None, filename=None, field=None):
     app = QtGui.QApplication(sys.argv)
 
     # start Menu and initiate Vradar
-    menu = Menu(DirIn, filename, mode="Radar", name="Menu")
+    menu = Menu(DirIn, filename, mode=("Radar",), name="Menu")
     Vradar = menu.Vradar
 
     field = _parse_field(Vradar.value, field)
@@ -35,7 +36,7 @@ def run(DirIn=None, filename=None, field=None):
     plot1 = RadarDisplay(Vradar, Variable(field), Vtilt, name="Display",
                          parent=menu)
 
-    # add grafical starts
+    # add graphical starts
     _add_all_advanced_tools(menu)
 
     menu.setGeometry(0, 0, 700, 700)

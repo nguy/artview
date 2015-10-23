@@ -1,16 +1,16 @@
 """
-gatefilter.py
+edit_radar.py
 
-Driver function that creates an ARTView display and initiates Gatefilter.
+Driver function that creates an ARTView display for editing radar data.
+Starts SelectRegion and Gatefilter.
 """
 import os
 import sys
 
-from ..core import Variable, QtGui, QtCore
-from ..components import RadarDisplay, Menu
-from ._common import _add_all_advanced_tools, _parse_dir, _parse_field
+from ..core import Variable, QtGui
+from ..components import RadarDisplay, Menu, SelectRegion
 from ..plugins import GateFilter
-
+from ._common import _parse_dir, _parse_field
 
 def run(DirIn=None, filename=None, field=None):
     """
@@ -29,17 +29,17 @@ def run(DirIn=None, filename=None, field=None):
     # start Displays
     Vtilt = Variable(0)
     plot1 = RadarDisplay(Vradar, Variable(field), Vtilt, name="Display",
-                         parent=menu)
+        parent=menu)
+    roi = SelectRegion(plot1, name="SelectRegion", parent=menu)
+
     filt = GateFilter(Vradar=Vradar, Vgatefilter=plot1.Vgatefilter,
-                      name="GateFilter", parent=None)
-    plot1._gatefilter_toggle_on()
-
+            name="GateFilter", parent=menu)
+    menu.addLayoutWidget(roi)
     menu.addLayoutWidget(filt)
+    roi.show()
+    filt.show()
 
-    # add graphical starts
-    _add_all_advanced_tools(menu)
-
-    menu.setGeometry(0, 0, 500, 300)
+    menu.setGeometry(0, 0, 300, 300)
 
     # start program
     app.exec_()

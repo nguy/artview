@@ -1,7 +1,7 @@
 """
 compare_fields.py
 
-Driver function that creates ARTView display.
+Driver function that creates two ARTView displays for comparison.
 """
 import os
 import sys
@@ -20,7 +20,7 @@ def run(DirIn=None, filename=None, field=None):
     app = QtGui.QApplication(sys.argv)
 
     # start Menu and initiate Vradar
-    menu = Menu(DirIn, filename, mode="Radar", name="Menu")
+    menu = Menu(DirIn, filename, mode=("Radar",), name="Menu")
     Vradar = menu.Vradar
 
     field = _parse_field(Vradar.value, field)
@@ -38,7 +38,7 @@ def run(DirIn=None, filename=None, field=None):
     # add control to Menu
     menu.addLayoutWidget(control)
 
-    # add grafical starts
+    # add graphical starts
     _add_all_advanced_tools(menu)
 
     # start program
