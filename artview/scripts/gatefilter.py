@@ -32,7 +32,7 @@ def run(DirIn=None, filename=None, field=None):
                          parent=menu)
     filt = GateFilter(Vradar=Vradar, Vgatefilter=plot1.Vgatefilter,
                       name="GateFilter", parent=None)
-    plot1._gatefilter_toggle_on()
+    #plot1._gatefilter_toggle_on()
 
     menu.addLayoutWidget(filt)
 

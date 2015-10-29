@@ -4,8 +4,9 @@ standard.py
 auxiliar functions for scripts
 """
 import pyart
-from ..components import RadarDisplay, GridDisplay, LinkPlugins, SelectRegion
-
+from ..components import (Menu, RadarDisplay, GridDisplay, LinkPlugins,
+                          SelectRegion)
+from ..core import QtGui, QtCore
 
 def _add_all_advanced_tools(menu):
 
@@ -58,3 +59,35 @@ def _parse_field(container, field):
             field = Zinfile.pop()
 
     return field
+
+
+def startMainMenu(DirIn=None, filename=None):
+
+    MainMenu = Menu(DirIn,  filename, mode="All")
+
+    for comp in [LinkPlugins, RadarDisplay, GridDisplay, SelectRegion]:
+        action = QtGui.QAction(comp.__name__, MainMenu)
+        action.triggered[()].connect(
+            lambda comp=comp: MainMenu.startComponent(comp))
+        MainMenu.addMenuAction(("Advanced Tools",), action)
+
+    try:
+        from .. import plugins
+        for plugin in plugins._plugins.values():
+            action = QtGui.QAction(plugin.__name__, MainMenu)
+            action.triggered[()].connect(
+                lambda comp=comp: MainMenu.startComponent(plugin))
+            if plugin.__name__ != 'FileList':
+                MainMenu.addMenuAction(("Advanced Tools",), action)
+            else:
+                MainMenu.addMenuAction(("File",), action)
+    except:
+        import warnings
+        warnings.warn("Loading Plugins Fail")
+
+    return MainMenu
+    # resize menu
+    menu_width = 300
+    menu_height = 180
+
+    MainMenu.setGeometry(0, 0, menu_width, menu_height)

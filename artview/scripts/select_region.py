@@ -29,7 +29,10 @@ def run(DirIn=None, filename=None, field=None):
     Vtilt = Variable(0)
     plot1 = RadarDisplay(Vradar, Variable(field), Vtilt, name="Display",
                          parent=menu)
-    roi = SelectRegion(plot1, name="SelectRegion", parent=menu)
+    roi = SelectRegion(VplotAxes=plot1.VplotAxes,
+                       VpathInteriorFunc=plot1.VpathInteriorFunc,
+                       Vfield=plot1.Vfield,
+                       name="SelectRegion", parent=menu)
 
     menu.addLayoutWidget(roi)
 

@@ -16,17 +16,18 @@ class FieldButtonWindow(Component):
     Vradar = None  #: see :ref:`shared_variable`
     Vfield = None  #: see :ref:`shared_variable`
 
-    def __init__(self, Vradar, Vfield, name="FieldButtons", parent=None):
+    def __init__(self, Vradar=None, Vfield=None, name="FieldButtons",
+                 parent=None):
         '''
         Initialize the class to create the interface.
 
         Parameters
         ----------
-        Vradar : :py:class:`~artview.core.core.Variable` instance
-            Radar signal variable.
-        Vfield : :py:class:`~artview.core.core.Variable` instance
-            Field signal variable.
         [Optional]
+        Vradar : :py:class:`~artview.core.core.Variable` instance
+            Radar signal variable. If None start new one with None
+        Vfield : :py:class:`~artview.core.core.Variable` instance
+            Field signal variable. If None start new one empty string
         name : string
             Field Radiobutton window name.
         parent : PyQt instance
@@ -44,8 +45,14 @@ class FieldButtonWindow(Component):
         # Set up signal, so that DISPLAY can react to external
         # (or internal) changes in field (Core.Variable instances expected)
         # The change is sent through Vfield
-        self.Vradar = Vradar
-        self.Vfield = Vfield
+        if Vradar is None:
+            self.Vradar = Variable(None)
+        else:
+            self.Vradar = Vradar
+        if Vfield is None:
+            self.Vfield = Variable('')
+        else:
+            self.Vfield = Vfield
         self.sharedVariables = {"Vradar": self.NewRadar,
                                 "Vfield": self.NewField}
         self.connectAllVariables()

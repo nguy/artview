@@ -11,7 +11,7 @@ from ..core import Variable, Component, common, VariableChoose, QtGui, QtCore
 
 class ValueClick(Component):
 
-    def __init__(self, display, name="ValueClick", parent=None):
+    def __init__(self, display, name="ValueClick", parent=None): # XXX make display optional
         '''
         Initialize the class to pick value from display.
 

@@ -44,8 +44,9 @@ class Variable(QtCore.QObject):
         | Vcontainer| Alias to Vradar or| Radar, Grid or None                |
         |           | Vgrid             |                                    |
         +-----------+-------------------+------------------------------------+
-        | Vfield    | Name of a Field   |string in radar.fields.keys()       |
-        |           | in radar file     |                                    |
+        | Vfield    | Name of a Field   | string, preferencialy in           |
+        |           | in radar file     | radar.fields.keys(), but there is  |
+        |           |                   | no garanty                         |
         +-----------+-------------------+------------------------------------+
         | Vtilt     | Tilt (sweep) of   | int between 0 and                  |
         |           | a radar file      | (number of sweeps) - 1             |
@@ -73,6 +74,13 @@ class Variable(QtCore.QObject):
         +-----------+-------------------+------------------------------------+
         |Vgatefilter| Hold pyart        |:py:class:`pyart.filters.GateFilter`|
         |           | GateFilter        |instance or None                    |
+        +-----------+-------------------+------------------------------------+
+        |VplotAxes  | Hold axes of      |:py:class:`matplotlib.axes.Axes`    |
+        |           | Matplotlib figure |instance or None                    |
+        +-----------+-------------------+------------------------------------+
+        |VPathInte\ | Hold auxiliar     |function like :py:func:`~artview.\  |
+        |riorFunc   | function          |components.RadarDisplay.\           |
+        |           |                   |getPathInteriorValues` or None      |
         +-----------+-------------------+------------------------------------+
 
     '''
@@ -164,6 +172,17 @@ class ComponentsList(QtCore.QObject):
         return self.list.__repr__()
 
 componentsList = ComponentsList()
+
+def sugestName(comp):
+    '''Sugest a unambiguous name for component.'''
+    compName = comp.__name__
+    name = compName
+    i = 0
+    names = [c.name for c in componentsList]
+    while name in names and i < 1000:
+        name = compName + '%i' % i
+        i = i + 1
+    return name
 
 
 class Component(QtGui.QMainWindow):

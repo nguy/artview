@@ -38,33 +38,33 @@ class SelectRegion(Component):
     https://www.mail-archive.com/matplotlib-users@lists.sourceforge.net/msg00661.html
     '''
 
-    VSelectRegion = None  #: see :ref:`shared_variable`
+    Vpoints = None  #: see :ref:`shared_variable`
+    VplotAxes = None  #: see :ref:`shared_variable`
+    VpathInteriorFunc = None  #: see :ref:`shared_variable`
+    Vfield = None  #: see :ref:`shared_variable`
 
     @classmethod
     def guiStart(self, parent=None):
         args, independent = _SelectRegionStart().startDisplay()
         return self(**args), independent
 
-    def __init__(self, display, name="SelectRegion", parent=None):
+    def __init__(self, VplotAxes=None, VpathInteriorFunc=None, Vfield=None,
+                 name="SelectRegion", parent=None):
         '''
         Initialize the class to select an Region of Interest on display.
 
         Parameters
         ----------
-        display - ARTView Display
-            Display instance to associate SelectRegion.
-            Must have following elements:
-
-              * getPlotAxis() - Matplotlib axis instance
-              * getStatusBar() - QtGui.QStatusBar
-              * getField() - string
-              * getPathInteriorValues(Path) - see
-                :py:func:`~artview.components.RadarDisplay.getPathInteriorValues`
-
-        [Optional]
-        name - string
+        VplotAxes : :py:class:`~artview.core.core.Variable` instance
+            Plot axes signal variable. If None start new one with None.
+        VpathInteriorFunc : :py:class:`~artview.core.core.Variable` instance
+            py:func:`~artview.components.RadarDisplay.getPathInteriorValues`
+            signal variable. If None start new one with None.
+        Vfield : :py:class:`~artview.core.core.Variable` instance
+            Field signal variable. If None start new one with empty string.
+        name : string
             Window name.
-        parent - PyQt instance
+        parent : PyQt instance
             Parent instance to associate to SelectRegion instance.
             If None, then Qt owns, otherwise associated with parent PyQt
             instance.
@@ -74,23 +74,40 @@ class SelectRegion(Component):
         '''
         super(SelectRegion, self).__init__(name=name, parent=parent)
         self.Vpoints = Variable(None)
-        self.sharedVariables = {"Vpoints": None}
+        if VplotAxes is None:
+            self.VplotAxes = Variable(None)
+        else:
+            self.VplotAxes = VplotAxes
+        self.fig = None
+        if VpathInteriorFunc is None:
+            self.VpathInteriorFunc = Variable(None)
+        else:
+            self.VpathInteriorFunc = VpathInteriorFunc
+        if Vfield is None:
+            self.Vfield = Variable("")
+        else:
+            self.Vfield = Vfield
+        self.sharedVariables = {
+            "VplotAxes": self.newPlotAxes,
+            "VpathInteriorFunc": None,
+            "Vfield": None,
+            "Vpoints": None}
 
         # Connect the components
         self.connectAllVariables()
 
-        self.ax = display.getPlotAxis()
-        self.statusbar = display.getStatusBar()
-        self.fig = self.ax.get_figure()
-        self.getPathInteriorValues = display.getPathInteriorValues
-        self.getField = display.getField
+#        self.ax = display.getPlotAxis()
+#        self.statusbar = display.getStatusBar()
+#        self.fig = self.ax.get_figure()
+#        self.getPathInteriorValues = display.getPathInteriorValues
+#        self.getField = display.getField
         self.columns = ("X", "Y", "Azimuth", "Range", "Value",
                         "Az Index", "R Index")
-        self.statusbar.showMessage("Select Region with Mouse")
+#        self.statusbar.showMessage("Select Region with Mouse")
 
         self._initialize_SelectRegion_vars()
         self.CreateSelectRegionWidget()
-        self.connect()
+        self.newPlotAxes(None, None, False)
         self.show()
 
     def _initialize_SelectRegion_vars(self):
@@ -158,24 +175,28 @@ class SelectRegion(Component):
                 path = Path(self.verts)
 
                 # Inform via status bar
-                self.statusbar.showMessage("Closed Region")
+                #self.statusbar.showMessage("Closed Region")
 
                 # Create Points object
-                points = self.getPathInteriorValues(path)
-                if points is not None:
-                    self.Vpoints.change(points)
+                func = self.VpathInteriorFunc.value
+                if func is not None:
+                    points = func(path)
+                    if points is not None:
+                        self.Vpoints.change(points)
 
     def connect(self):
         '''Connect the SelectRegion instance.'''
-        self.motionID = self.fig.canvas.mpl_connect(
-            'motion_notify_event', self.motion_notify_callback)
-        self.buttonID = self.fig.canvas.mpl_connect(
-            'button_press_event', self.button_press_callback)
+        if self.fig is not None:
+            self.motionID = self.fig.canvas.mpl_connect(
+                'motion_notify_event', self.motion_notify_callback)
+            self.buttonID = self.fig.canvas.mpl_connect(
+                'button_press_event', self.button_press_callback)
 
     def disconnect(self):
         '''Disconnect the SelectRegion instance.'''
-        self.fig.canvas.mpl_disconnect(self.motionID)
-        self.fig.canvas.mpl_disconnect(self.buttonID)
+        if self.fig is not None:
+            self.fig.canvas.mpl_disconnect(self.motionID)
+            self.fig.canvas.mpl_disconnect(self.buttonID)
 
     def CreateSelectRegionWidget(self):
         '''Create a widget to access SelectRegion tools.
@@ -251,7 +272,7 @@ class SelectRegion(Component):
         '''Save a Table of SelectRegion points to a CSV file.'''
         points = self.Vpoints.value
         if points is not None:
-            fsuggest = ('SelectRegion_' + self.getField() + '_' +
+            fsuggest = ('SelectRegion_' + self.Vfield.value + '_' +
                 str(points.axes['x_disp']['data'][:].mean()) + '_' +
                 str(points.axes['y_disp']['data'][:].mean())+'.csv')
             path = QtGui.QFileDialog.getSaveFileName(
@@ -259,7 +280,7 @@ class SelectRegion(Component):
             if not path.isEmpty():
                 write_points_csv(path, points)
         else:
-            common.ShowWarning("Points is None, no data to save!")
+            common.ShowWarning("No gate selected, no data to save!")
 
     def openTable(self):
         '''Open a saved table of SelectRegion points from a CSV file.'''
@@ -279,13 +300,20 @@ class SelectRegion(Component):
         self.fig.canvas.draw()
 
         # Renew variables, etc.
-        self.Vpoints = Variable(None)
+        self.Vpoints.change(None)
         self._initialize_SelectRegion_vars()
-        self.statusbar.showMessage("Select Region with Mouse")
+        #self.statusbar.showMessage("Select Region with Mouse")
 
     def closeEvent(self, QCloseEvent):
         '''Reimplementations to remove from components list.'''
-        self.resetSelectRegion()
+        try:
+            self.resetSelectRegion()
+        except:
+            import warnings
+            import traceback
+            error = traceback.format_exc()
+            warnings.warn(
+                "Reseting SelectRegion fails with following error\n" + error)
         self.disconnect()
         super(SelectRegion, self).closeEvent(QCloseEvent)
 
@@ -293,7 +321,7 @@ class SelectRegion(Component):
         '''Calculate basic statistics of the SelectRegion list.'''
         from ..core import common
         if self.Vpoints.value is None:
-            common.ShowWarning("Please select SelectRegion first")
+            common.ShowWarning("Please select Region first")
         else:
             points = self.Vpoints.value
             field = list(points.fields.keys())[0]
@@ -310,7 +338,7 @@ class SelectRegion(Component):
         '''Show a histogram plot of the SelectRegion list.'''
         from ..components.plot_simple import PlotDisplay
         if self.Vpoints.value is None:
-            common.ShowWarning("Please select SelectRegion first")
+            common.ShowWarning("Please select Region first")
         else:
             points = self.Vpoints.value
             field = list(points.fields.keys())[0]
@@ -318,6 +346,11 @@ class SelectRegion(Component):
                 points.fields[field]['data'], plot_type="hist",
                 name="Select Region Histogram")
 
+    def newPlotAxes(self, variable, value, strong):
+        self.disconnect()
+        if self.VplotAxes.value is not None:
+            self.fig = self.VplotAxes.value.get_figure()
+        self.connect()
 
 class _SelectRegionStart(QtGui.QDialog):
     '''

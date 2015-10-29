@@ -39,6 +39,8 @@ class GridDisplay(Component):
     VlevelX = None \
         #: see :ref:`shared_variable`, only used if plot_type="gridX"
     Vcmap = None  #: see :ref:`shared_variable`
+    VplotAxes = None  #: see :ref:`shared_variable` (no internal use)
+    VpathInteriorFunc = None  #: see :ref:`shared_variable` (no internal use)
 
     @classmethod
     def guiStart(self, parent=None):
@@ -47,7 +49,7 @@ class GridDisplay(Component):
         args['parent'] = parent
         return self(**args), True
 
-    def __init__(self, Vgrid, Vfield, VlevelZ=None, VlevelY=None,
+    def __init__(self, Vgrid=None, Vfield=None, VlevelZ=None, VlevelY=None,
                  VlevelX=None, Vlims=None, Vcmap=None, plot_type="gridZ",
                  name="Display", parent=None):
         '''
@@ -55,11 +57,11 @@ class GridDisplay(Component):
 
         Parameters
         ----------
-        Vgrid : :py:class:`~artview.core.core.Variable` instance
-            grid signal variable.
-        Vfield : :py:class:`~artview.core.core.Variable` instance
-            Field signal variable.
         [Optional]
+        Vgrid : :py:class:`~artview.core.core.Variable` instance
+            grid signal variable. If None start new one with None.
+        Vfield : :py:class:`~artview.core.core.Variable` instance
+            Field signal variable. If None start new one with empty string.
         VlevelZ : :py:class:`~artview.core.core.Variable` instance
             Signal variable for vertical level, only used if
             plot_type="gridZ". If None start with value zero.
@@ -97,8 +99,15 @@ class GridDisplay(Component):
         # external (or internal) changes in grid, field,
         # lims and level (expected to be Core.Variable instances)
         # The capital V so people remember using ".value"
-        self.Vgrid = Vgrid
-        self.Vfield = Vfield
+        if Vgrid is None:
+            self.Vgrid = Variable(None)
+        else:
+            self.Vgrid = Vgrid
+        if Vfield is None:
+            self.Vfield = Variable('')
+        else:
+            self.Vfield = Vfield
+
         if VlevelZ is None:
             self.VlevelZ = Variable(0)
         else:
@@ -121,10 +130,15 @@ class GridDisplay(Component):
         else:
             self.Vcmap = Vcmap
 
+        self.VpathInteriorFunc = Variable(self.getPathInteriorValues)
+        self.VplotAxes = Variable(None)
+
         self.sharedVariables = {"Vgrid": self.Newgrid,
                                 "Vfield": self.NewField,
                                 "Vlims": self.NewLims,
-                                "Vcmap": self.NewCmap, }
+                                "Vcmap": self.NewCmap,
+                                "VpathInteriorFunc": None,
+                                "VplotAxes": None}
 
         self.change_plot_type(plot_type)
 
@@ -569,11 +583,12 @@ class GridDisplay(Component):
 
         Parameters
         ----------
-        path : Matplotlib Path instance
+        path : :py:class:`matplotlib.path.Path` instance
 
         Returns
         -------
-        points: Points
+        points : :py:class`artview.core.points.Points`
+
             Points object containing all bins of the current grid
             and level inside path. Axes : 'x_disp', 'y_disp', 'x_disp',
             'x_index', 'y_index', 'z_index'. Fields: just current field
@@ -710,6 +725,7 @@ class GridDisplay(Component):
         self.fig = Figure(figsize=(self.XSIZE, self.YSIZE))
         self.ax = self.fig.add_axes([0.2, 0.2, 0.7, 0.7])
         self.cax = self.fig.add_axes([0.2, 0.10, 0.7, 0.02])
+        self.VplotAxes.change(self.ax)
         # self._update_axes()
 
     def _update_fig_ax(self):
