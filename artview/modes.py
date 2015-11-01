@@ -86,6 +86,8 @@ select_region_mode = (
         ((1,'VplotAxes'),(2,'VplotAxes')),
         ((1,'Vfield'),(2,'Vfield')),
         ((1,'VpathInteriorFunc'),(2,'VpathInteriorFunc')),
+        ((1,'Vgatefilter'),(2,'Vgatefilter')),
+        ((1,'Vradar'),(2,'Vradar')),
         ]
     )
 

@@ -189,7 +189,6 @@ class Menu(Component):
             widget.show()
         else:
             self.tabWidget.addTab(widget, widget.name)
-            widget.show()
 
     def removeLayoutWidget(self, widget):
         '''Remove widget from central layout.'''

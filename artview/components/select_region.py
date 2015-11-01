@@ -5,6 +5,7 @@ Class to select a Region of interest in Display.
 """
 # Load the needed packages
 import numpy as np
+import pyart
 import os
 
 from matplotlib.path import Path
@@ -48,8 +49,9 @@ class SelectRegion(Component):
 
     @classmethod
     def guiStart(self, parent=None):
-        args, independent = _SelectRegionStart().startDisplay()
-        return self(**args), independent
+        #args, independent = _SelectRegionStart().startDisplay()
+        # XXX _SelectRegionStart need updating
+        return self(parent=parent), False
 
     def __init__(self, VplotAxes=None, VpathInteriorFunc=None, Vfield=None,
                  name="SelectRegion", parent=None):
@@ -77,6 +79,8 @@ class SelectRegion(Component):
         '''
         super(SelectRegion, self).__init__(name=name, parent=parent)
         self.Vpoints = Variable(None)
+        self.Vgatefilter = Variable(None)
+        self.Vradar = Variable(None)
         if VplotAxes is None:
             self.VplotAxes = Variable(None)
         else:
@@ -92,16 +96,11 @@ class SelectRegion(Component):
             self.Vfield = Vfield
         self.sharedVariables = {
             "VplotAxes": self.newPlotAxes,
+            "Vgatefilter": None,
+            "Vradar": None,
             "VpathInteriorFunc": None,
             "Vfield": None,
             "Vpoints": None}
-
-        self.Vgatefilter = display.Vgatefilter
-        self.Vradar = display.Vradar
-
-        self.sharedVariables = {"Vpoints": None,
-                                "Vgatefilter": None,
-                                "Vradar": None}
         # Connect the components
         self.connectAllVariables()
 
@@ -113,26 +112,6 @@ class SelectRegion(Component):
         self.columns = ("X", "Y", "Azimuth", "Range", "Value",
                         "Az Index", "R Index")
 #        self.statusbar.showMessage("Select Region with Mouse")
-
-        # Get the radar instance
-        self.radar = display.getRadar()
-
-        # If a Vgatefilter instance is not present make one
-        if self.Vgatefilter.value is None:
-            import pyart
-            gatefilter = pyart.filters.GateFilter(self.radar,
-                                              exclude_based=True)
-            self.Vgatefilter.change(gatefilter, False)
-        ## NOTE: When PyART gatefilter adds gates operations change this code
-
-        # Retain the original mask
-        try:
-            self.original_mask = self.radar.fields[self.getField()]['data'].mask
-        except:
-            self.original_mask = gatefilter._gate_excluded
-
-        # Create a new mask to hold changes
-        self.newmask = np.zeros_like(self.original_mask, dtype=np.bool)
 
         # Initialize the variables and GUI
         self._initialize_SelectRegion_vars()
@@ -352,6 +331,7 @@ class SelectRegion(Component):
         #self.statusbar.showMessage("Select Region with Mouse")
         else:
             print("No Region Selection to clear")
+        self.Vpoints.change(None)
 
     def closeEvent(self, QCloseEvent):
         '''Reimplementations to remove from components list.'''
@@ -410,24 +390,27 @@ class SelectRegion(Component):
         if filename == '' or self.Vradar.value is None:
             print("Vradar is None!")
         else:
-            for field in self.Vradar.value.fields.keys():
-                self.Vradar.value.fields[field]['data'].mask = (
-                    self.Vgatefilter.value._gate_excluded)
+            radar = self.Vradar.value
+            if self.Vgatefilter.value is not None:
+                radar = radar.extract_sweeps(range(radar.nsweeps))
+                for field in radar.fields.keys():
+                    radar.fields[field]['data'].mask = np.logical_or(
+                        self.Vgatefilter.value._gate_excluded,
+                        radar.fields[field]['data'].mask)
             #self.Vradar.update(True)
-            import pyart
-            pyart.io.write_cfradial(filename, self.Vradar.value)
+            pyart.io.write_cfradial(filename, radar)
             print("Saved %s" % (filename))
+
     ######################
     #   Filter Methods   #
     ######################
 
     def restoreMask(self):
         '''Remove applied filter by restoring original mask'''
-        self.Vgatefilter.value._gate_excluded = self.original_mask
-        self.Vgatefilter.value.include_all()
-        self.newmask[:] = False
-        self.Vgatefilter.update(True)
-        print(np.sum(self.Vgatefilter.value._gate_excluded))
+        if self.Vgatefilter.value is not None:
+            self.Vgatefilter.value.include_all()
+            self.Vgatefilter.update(True)
+            print(np.sum(self.Vgatefilter.value._gate_excluded))
 
     def applyMask(self):
         '''Mount Options and execute
@@ -437,14 +420,23 @@ class SelectRegion(Component):
         '''
         mask_ray = self.Vpoints.value.axes['ray_index']['data'][:]
         mask_range = self.Vpoints.value.axes['range_index']['data'][:]
-        self.newmask[mask_ray, mask_range] = True
-        self.mask = np.logical_or(self.original_mask, self.newmask)
-        
-        self.Vgatefilter.value._merge(self.mask, 'or', True)
 
-        strong_update = True
-        self.Vgatefilter.update(strong_update)
-        print(np.sum(self.mask))
+        if self.Vgatefilter.value is None:
+            if self.Vradar.value is None:
+                print("Error can not creat mask from none radar")
+                return
+            gatefilter = pyart.filters.GateFilter(self.Vradar.value)
+            mask = gatefilter.gate_excluded
+            mask[mask_ray, mask_range] = True
+            gatefilter._merge(mask, 'or', True)
+            self.Vgatefilter.change(gatefilter)
+        else:
+            mask = self.Vgatefilter.value.gate_excluded
+            mask[mask_ray, mask_range] = True
+            self.Vgatefilter.value._merge(mask, 'or', True)
+            self.Vgatefilter.update()
+
+        print(np.sum(mask))
         print(np.sum(self.Vgatefilter.value._gate_excluded))
 
 class _SelectRegionStart(QtGui.QDialog):

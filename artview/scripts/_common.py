@@ -63,7 +63,7 @@ def _parse_field(container, field):
 
 def startMainMenu(DirIn=None, filename=None):
 
-    MainMenu = Menu(DirIn,  filename, mode="All")
+    MainMenu = Menu(DirIn,  filename, mode=("Radar","Grid"))
 
     for comp in [LinkPlugins, RadarDisplay, GridDisplay, SelectRegion]:
         action = QtGui.QAction(comp.__name__, MainMenu)
