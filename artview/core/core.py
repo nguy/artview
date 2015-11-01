@@ -125,7 +125,7 @@ class Variable(QtCore.QObject):
     def update(self, strong=True):
         '''
         Emits the 'ValueChanged' signal without changings value. This is
-        usefull when value is changed inplace.
+        useful when value is changed in place.
 
         Parameters
         ----------
@@ -139,7 +139,7 @@ class ComponentsList(QtCore.QObject):
     Keep track of Components in a list and emit signals.
     Methods 'append' and 'remove' are provided and emit signals,
     direct acess to the list is allowed with 'ComponentList.list',
-    but not recomended.'''
+    but not recommended.'''
 
     def __init__(self):
         super(ComponentsList, self).__init__()
@@ -192,7 +192,7 @@ class Component(QtGui.QMainWindow):
 
     def __init__(self, name="Component", parent=None, flags=QtCore.Qt.Widget):
         '''
-        Initialize the class
+        Initialize the class.
 
         Parameters
         ----------

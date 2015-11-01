@@ -135,10 +135,10 @@ class GateFilter(Component):
         self.scriptButton.setToolTip('Display relevant python script')
         gBox_layout.addWidget(self.scriptButton, 0, 1, 1, 1)
 
-        self.scriptButton = QtGui.QPushButton("Save File")
-        self.scriptButton.clicked.connect(self.saveRadar)
-        self.scriptButton.setToolTip('Save cfRadial data file')
-        gBox_layout.addWidget(self.scriptButton, 0, 2, 1, 1)
+        self.saveButton = QtGui.QPushButton("Save File")
+        self.saveButton.clicked.connect(self.saveRadar)
+        self.saveButton.setToolTip('Save cfRadial data file')
+        gBox_layout.addWidget(self.saveButton, 0, 2, 1, 1)
 
         self.restoreButton = QtGui.QPushButton("Restore to Original")
         self.restoreButton.clicked.connect(self.restoreRadar)
@@ -163,8 +163,8 @@ class GateFilter(Component):
         loval = []
         hival = []
 
-        groupBox = QtGui.QGroupBox("Filter Design - Exclude via the "
-                                   "following statements")
+        groupBox = QtGui.QGroupBox("Filter Design - Exclude gates "
+                                   "via the following statements")
         # groupBox.setFlat(True)
         gBox_layout = QtGui.QGridLayout()
 
@@ -239,12 +239,17 @@ class GateFilter(Component):
             "less than 'Value 2.'\n"
             "              For other operations only 'Value 1 is used.\n"
             "  2. Check the 'Activate Filter' box to apply the filter.\n"
-            "  3. Click the 'Filter' button.\n\n"
+            "  3. Click the 'Filter' button.\n"
+            "  4. GateFilter needs to be activated in the Display to see the "
+            "results. It is turned on by default. To check see 'Display Options "
+            "dropdown menu on the Display of interest.\n\n"
             "Change Radar variables:\n"
             "  Click the 'Find Variable', select variable.\n\n"
             "Show Python script for batching:\n"
             "  Click the 'Show Script' button.\n\n"
             "The following information is from the PyArt documentation.\n\n"
+            "WARNING: By saving the file, the mask associated with the data "
+            "values may be modfidied. The data itself does not change.\n\n"
             "**GateFilter**\n" +
             pyart.filters.GateFilter.__doc__ +
             "\n\n"
@@ -279,10 +284,14 @@ class GateFilter(Component):
 
         try:
             for cmd in self.filterscript:
-                text += cmd + "\n"
+                text += cmd + "<br>"#\n"
         except:
             common.ShowWarning("Must apply filter first.")
 
+        text += ("<br><br>"
+                 "for field in Vradar.value.fields.keys():<br>"
+                 "    Vradar.value.fields[field]['data'].mask = ("
+                 "Vgatefilter.value._gate_excluded)<br>")
         common.ShowLongText(text)
 
     def saveRadar(self):
@@ -294,7 +303,6 @@ class GateFilter(Component):
         if filename == '' or self.Vradar.value is None:
             return
         else:
-            # self.AddCorrectedFields()
             for field in self.Vradar.value.fields.keys():
                 self.Vradar.value.fields[field]['data'].mask = (
                     self.Vgatefilter.value._gate_excluded)
@@ -321,15 +329,7 @@ class GateFilter(Component):
             self.Vradar.value.fields[field]['data'].mask = (
                 self.original_masks[field])
         self.Vgatefilter.value._gate_excluded = self.original_masks[field]
-        self.Vgatefilter.update()
-
-    def AddCorrectedFields(self):
-        '''Launch a display window to show the filter application.'''
-        # Add fields for each variable for filters
-        for dupfield in self.filt_flds:
-            data = self.Vradar.value.fields[dupfield]['data'][:]
-            self.Vradar.value.add_field_like(dupfield, "corr_" + dupfield,
-                                             data, replace_existing=False)
+        self.Vgatefilter.update(True)
 
     ######################
     #   Filter Methods   #
@@ -352,7 +352,6 @@ class GateFilter(Component):
             self.original_masks[field] = (
                 self.Vradar.value.fields[field]['data'].mask)
             print(field)
-            print(np.sum(self.original_masks[field]))
 
         gatefilter = pyart.filters.GateFilter(self.Vradar.value,
                                               exclude_based=True)
@@ -476,7 +475,7 @@ class GateFilter(Component):
             return
 
         # add fields and update
-        self.Vgatefilter.change(gatefilter)
+        self.Vgatefilter.change(gatefilter, True)
 
     def _clearLayout(self, layout):
         '''recursively remove items from layout.'''

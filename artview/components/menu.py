@@ -19,7 +19,7 @@ class Menu(Component):
     Vgrid = None  #: see :ref:`shared_variable`
 
     def __init__(self, pathDir=None, filename=None, Vradar=None, Vgrid=None,
-                 mode="Radar", name="Menu", parent=None):
+                 mode=["Radar"], name="Menu", parent=None):
         '''
         Initialize the class to create the interface.
 
@@ -37,8 +37,9 @@ class Menu(Component):
         Vgrid : :py:class:`~artview.core.core.Variable` instance
             Grid signal variable.
             A value of None initializes an empty Variable.
-        mode : "Radar", "Grid" or "All"
-            Determine which type of files will be open
+        mode : list
+            List with strings "Radar" or "Grid". Determine which type of files
+            will be open
         name : string
             Menu name.
         parent : PyQt instance
@@ -59,7 +60,9 @@ class Menu(Component):
         self.dirIn = pathDir
         self.fileindex = 0
         self.filelist = []
-        self.mode = mode.lower()
+        self.mode = []
+        for m in mode:
+            self.mode.append(m.lower())
         self.Vradar = Vradar
         self.Vgrid = Vgrid
         self.sharedVariables = {"Vradar": None,
@@ -71,7 +74,7 @@ class Menu(Component):
             self.Vradar = Variable(None)
         if self.Vgrid is None:
             self.Vgrid = Variable(None)
-        if Vradar is None and Vgrid is None:
+        if Vradar is None and Vgrid is None and self.mode:
             if filename is None:
                 self.showFileDialog()
             elif filename is False:
@@ -141,8 +144,15 @@ class Menu(Component):
             self._openfile()
 
     def saveRadar(self):
-        '''Open a dialog box to save radar file.'''
+        '''
+        Open a dialog box to save radar file.
 
+        Parameters
+        ----------
+        input : Vradar instance
+            Optional parameter to allow access from 
+            other ARTView plugins, etc.
+        '''
         filename = QtGui.QFileDialog.getSaveFileName(
             self, 'Save Radar File', self.dirIn)
         filename = str(filename)
@@ -150,6 +160,7 @@ class Menu(Component):
             return
         else:
             pyart.io.write_cfradial(filename, self.Vradar.value)
+            print("Saved %s" % (filename))
 
     def saveGrid(self):
         '''Open a dialog box to save grid file.'''
@@ -178,6 +189,7 @@ class Menu(Component):
             widget.show()
         else:
             self.tabWidget.addTab(widget, widget.name)
+            widget.show()
 
     def removeLayoutWidget(self, widget):
         '''Remove widget from central layout.'''
@@ -236,30 +248,28 @@ class Menu(Component):
         '''Add the File Menu to menubar.'''
         self.filemenu = self.menubar.addMenu('File')
 
-        openFile = QtGui.QAction('Open', self)
-        openFile.setShortcut('Ctrl+O')
-        openFile.setStatusTip('Open new File')
-        openFile.triggered.connect(self.showFileDialog)
+        if self.mode:
+            openFile = QtGui.QAction('Open', self)
+            openFile.setShortcut('Ctrl+O')
+            openFile.setStatusTip('Open new File')
+            openFile.triggered.connect(self.showFileDialog)
+            self.filemenu.addAction(openFile)
 
-        if self.mode in ("radar", "all"):
+        if "radar" in self.mode:
             saveRadar = QtGui.QAction('Save Radar', self)
             saveRadar.setStatusTip('Save Radar to Cf/Radial NetCDF')
             saveRadar.triggered.connect(self.saveRadar)
-        if self.mode in ("grid", "all"):
+            self.filemenu.addAction(saveRadar)
+        if "grid" in self.mode:
             saveGrid = QtGui.QAction('Save Grid', self)
             saveGrid.setStatusTip('Save Grid NetCDF')
             saveGrid.triggered.connect(self.saveGrid)
+            self.filemenu.addAction(saveGrid)
 
         exitApp = QtGui.QAction('Close', self)
         exitApp.setShortcut('Ctrl+Q')
         exitApp.setStatusTip('Exit ARTview')
         exitApp.triggered.connect(self.close)
-
-        self.filemenu.addAction(openFile)
-        if self.mode in ("radar", "all"):
-            self.filemenu.addAction(saveRadar)
-        if self.mode in ("grid", "all"):
-            self.filemenu.addAction(saveGrid)
         self.filemenu.addAction(exitApp)
 
     def addAboutMenu(self):
@@ -594,7 +604,7 @@ class Menu(Component):
         # Read the data from file
         radar_warning = False
         grid_warning = False
-        if self.mode in ("radar", "all"):
+        if "radar" in self.mode:
             try:
                 radar = pyart.io.read(self.filename, delay_field_loading=True)
                 # Add the filename for Display
@@ -612,7 +622,7 @@ class Menu(Component):
                     import traceback
                     print(traceback.format_exc())
                     radar_warning = True
-        if self.mode in ("grid", "all"):
+        if "grid" in self.mode:
             try:
                 grid = pyart.io.read_grid(
                     self.filename, delay_field_loading=True)
