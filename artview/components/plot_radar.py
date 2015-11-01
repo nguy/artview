@@ -37,27 +37,30 @@ class RadarDisplay(Component):
     Vlims = None  #: see :ref:`shared_variable`
     Vcmap = None  #: see :ref:`shared_variable`
     Vgatefilter = None  #: see :ref:`shared_variable`
+    VplotAxes = None  #: see :ref:`shared_variable` (no internal use)
+    VpathInteriorFunc = None  #: see :ref:`shared_variable` (no internal use)
 
     @classmethod
     def guiStart(self, parent=None):
         '''Graphical interface for starting this class'''
         args = _DisplayStart().startDisplay()
+        args['parent'] = parent
         return self(**args), True
 
-    def __init__(self, Vradar, Vfield, Vtilt, Vlims=None, Vcmap=None,
+    def __init__(self, Vradar=None, Vfield=None, Vtilt=None, Vlims=None, Vcmap=None,
                  Vgatefilter=None, name="RadarDisplay", parent=None):
         '''
         Initialize the class to create display.
 
         Parameters
         ----------
-        Vradar : :py:class:`~artview.core.core.Variable` instance
-            Radar signal variable.
-        Vfield : :py:class:`~artview.core.core.Variable` instance
-            Field signal variable.
-        Vtilt : :py:class:`~artview.core.core.Variable` instance
-            Tilt signal variable.
         [Optional]
+        Vradar : :py:class:`~artview.core.core.Variable` instance
+            Radar signal variable. If None start new one with None.
+        Vfield : :py:class:`~artview.core.core.Variable` instance
+            Field signal variable. If None start new one with empty string.
+        Vtilt : :py:class:`~artview.core.core.Variable` instance
+            Tilt signal variable. If None start new one with 0.
         Vlims : :py:class:`~artview.core.core.Variable` instance
             Limits signal variable.
             A value of None will instantiate a limits variable.
@@ -85,9 +88,18 @@ class RadarDisplay(Component):
         # external (or internal) changes in radar, field,
         # lims and tilt (expected to be Core.Variable instances)
         # The capital V so people remember using ".value"
-        self.Vradar = Vradar
-        self.Vfield = Vfield
-        self.Vtilt = Vtilt
+        if Vradar is None:
+            self.Vradar = Variable(None)
+        else:
+            self.Vradar = Vradar
+        if Vfield is None:
+            self.Vfield = Variable('')
+        else:
+            self.Vfield = Vfield
+        if Vtilt is None:
+            self.Vtilt = Variable(0)
+        else:
+            self.Vtilt = Vtilt
         if Vlims is None:
             self.Vlims = Variable(None)
         else:
@@ -103,12 +115,17 @@ class RadarDisplay(Component):
         else:
             self.Vgatefilter = Vgatefilter
 
+        self.VpathInteriorFunc = Variable(self.getPathInteriorValues)
+        self.VplotAxes = Variable(None)
+
         self.sharedVariables = {"Vradar": self.NewRadar,
                                 "Vfield": self.NewField,
                                 "Vtilt": self.NewTilt,
                                 "Vlims": self.NewLims,
                                 "Vcmap": self.NewCmap,
-                                "Vgatefilter": self.NewGatefilter}
+                                "Vgatefilter": self.NewGatefilter,
+                                "VpathInteriorFunc": None,
+                                "VplotAxes": None}
 
         # Connect the components
         self.connectAllVariables()
@@ -620,11 +637,11 @@ class RadarDisplay(Component):
 
         Parameters
         ----------
-        path : Matplotlib Path instance
+        path : :py:class:`matplotlib.path.Path` instance
 
         Returns
         -------
-        points: Points
+        points : :py:class`artview.core.points.Points`
             Points object containing all bins of the current radar
             and tilt inside path. Axes : 'x_disp', 'y_disp', 'ray_index',
             'range_index', 'azimuth', 'range'. Fields: just current field
@@ -688,6 +705,7 @@ class RadarDisplay(Component):
         self.fig = Figure(figsize=(self.XSIZE, self.YSIZE))
         self.ax = self.fig.add_axes([0.2, 0.2, 0.7, 0.7])
         self.cax = self.fig.add_axes([0.2, 0.10, 0.7, 0.02])
+        self.VplotAxes.change(self.ax)
         # self._update_axes()
 
     def _update_fig_ax(self):
@@ -978,7 +996,7 @@ class _DisplayStart(QtGui.QDialog):
         self.layout.addWidget(QtGui.QLabel("Vlims"), 3, 0)
         self.layout.addWidget(self.limsButton, 3, 1, 1, 3)
 
-        self.name = QtGui.QLineEdit("Display")
+        self.name = QtGui.QLineEdit("RadarDisplay")
         self.layout.addWidget(QtGui.QLabel("name"), 4, 0)
         self.layout.addWidget(self.name, 4, 1, 1, 3)
 
@@ -994,7 +1012,8 @@ class _DisplayStart(QtGui.QDialog):
 
         # if no Vradar abort
         if 'Vradar' not in self.result:
-            common.ShowWarning("Must select a variable for Vradar")
+            self.result['Vradar'] = Variable(None)
+            #common.ShowWarning("Must select a variable for Vradar")
             # I'm allowing this to continue, but this will result in error
 
         # if Vfield, Vtilt, Vlims were not select create new

@@ -5,6 +5,7 @@ Class to select a Region of interest in Display.
 """
 # Load the needed packages
 import numpy as np
+import pyart
 import os
 
 from matplotlib.path import Path
@@ -40,35 +41,35 @@ class SelectRegion(Component):
     '''
 
     Vpoints = None  #: see :ref:`shared_variable`
+    VplotAxes = None  #: see :ref:`shared_variable`
+    VpathInteriorFunc = None  #: see :ref:`shared_variable`
     Vgatefilter = None  #: see :ref:`shared_variable`
     Vradar = None  #: see :ref:`shared_variable`
+    Vfield = None  #: see :ref:`shared_variable`
 
     @classmethod
     def guiStart(self, parent=None):
-        args, independent = _SelectRegionStart().startDisplay()
-        return self(**args), independent
+        #args, independent = _SelectRegionStart().startDisplay()
+        # XXX _SelectRegionStart need updating
+        return self(parent=parent), False
 
-    def __init__(self, display, name="SelectRegion", parent=None):
+    def __init__(self, VplotAxes=None, VpathInteriorFunc=None, Vfield=None,
+                 name="SelectRegion", parent=None):
         '''
         Initialize the class to select an Region of Interest on display.
 
         Parameters
         ----------
-        display - ARTView Display
-            Display instance to associate SelectRegion.
-            Must have following elements:
-
-              * getPlotAxis() - Matplotlib axis instance
-              * getStatusBar() - QtGui.QStatusBar
-              * getField() - string
-              * getRadar() - PyART radar instance
-              * getPathInteriorValues(Path) - see
-                :py:func:`~artview.components.RadarDisplay.getPathInteriorValues`
-
-        [Optional]
-        name - string
+        VplotAxes : :py:class:`~artview.core.core.Variable` instance
+            Plot axes signal variable. If None start new one with None.
+        VpathInteriorFunc : :py:class:`~artview.core.core.Variable` instance
+            py:func:`~artview.components.RadarDisplay.getPathInteriorValues`
+            signal variable. If None start new one with None.
+        Vfield : :py:class:`~artview.core.core.Variable` instance
+            Field signal variable. If None start new one with empty string.
+        name : string
             Window name.
-        parent - PyQt instance
+        parent : PyQt instance
             Parent instance to associate to SelectRegion instance.
             If None, then Qt owns, otherwise associated with parent PyQt
             instance.
@@ -78,49 +79,44 @@ class SelectRegion(Component):
         '''
         super(SelectRegion, self).__init__(name=name, parent=parent)
         self.Vpoints = Variable(None)
-
-        self.Vgatefilter = display.Vgatefilter
-        self.Vradar = display.Vradar
-
-        self.sharedVariables = {"Vpoints": None,
-                                "Vgatefilter": None,
-                                "Vradar": None}
+        self.Vgatefilter = Variable(None)
+        self.Vradar = Variable(None)
+        if VplotAxes is None:
+            self.VplotAxes = Variable(None)
+        else:
+            self.VplotAxes = VplotAxes
+        self.fig = None
+        if VpathInteriorFunc is None:
+            self.VpathInteriorFunc = Variable(None)
+        else:
+            self.VpathInteriorFunc = VpathInteriorFunc
+        if Vfield is None:
+            self.Vfield = Variable("")
+        else:
+            self.Vfield = Vfield
+        self.sharedVariables = {
+            "VplotAxes": self.newPlotAxes,
+            "Vgatefilter": None,
+            "Vradar": None,
+            "VpathInteriorFunc": None,
+            "Vfield": None,
+            "Vpoints": None}
         # Connect the components
         self.connectAllVariables()
 
-        self.ax = display.getPlotAxis()
-        self.statusbar = display.getStatusBar()
-        self.fig = self.ax.get_figure()
-        self.getPathInteriorValues = display.getPathInteriorValues
-        self.getField = display.getField
+#        self.ax = display.getPlotAxis()
+#        self.statusbar = display.getStatusBar()
+#        self.fig = self.ax.get_figure()
+#        self.getPathInteriorValues = display.getPathInteriorValues
+#        self.getField = display.getField
         self.columns = ("X", "Y", "Azimuth", "Range", "Value",
                         "Az Index", "R Index")
-        self.statusbar.showMessage("Select Region with Mouse")
-
-        # Get the radar instance
-        self.radar = display.getRadar()
-
-        # If a Vgatefilter instance is not present make one
-        if self.Vgatefilter.value is None:
-            import pyart
-            gatefilter = pyart.filters.GateFilter(self.radar,
-                                              exclude_based=True)
-            self.Vgatefilter.change(gatefilter, False)
-        ## NOTE: When PyART gatefilter adds gates operations change this code
-
-        # Retain the original mask
-        try:
-            self.original_mask = self.radar.fields[self.getField()]['data'].mask
-        except:
-            self.original_mask = gatefilter._gate_excluded
-
-        # Create a new mask to hold changes
-        self.newmask = np.zeros_like(self.original_mask, dtype=np.bool)
+#        self.statusbar.showMessage("Select Region with Mouse")
 
         # Initialize the variables and GUI
         self._initialize_SelectRegion_vars()
         self.CreateSelectRegionWidget()
-        self.connect()
+        self.newPlotAxes(None, None, False)
         self.show()
 
     def _initialize_SelectRegion_vars(self):
@@ -188,24 +184,28 @@ class SelectRegion(Component):
                 path = Path(self.verts)
 
                 # Inform via status bar
-                self.statusbar.showMessage("Closed Region")
+                #self.statusbar.showMessage("Closed Region")
 
                 # Create Points object
-                points = self.getPathInteriorValues(path)
-                if points is not None:
-                    self.Vpoints.change(points)
+                func = self.VpathInteriorFunc.value
+                if func is not None:
+                    points = func(path)
+                    if points is not None:
+                        self.Vpoints.change(points)
 
     def connect(self):
         '''Connect the SelectRegion instance.'''
-        self.motionID = self.fig.canvas.mpl_connect(
-            'motion_notify_event', self.motion_notify_callback)
-        self.buttonID = self.fig.canvas.mpl_connect(
-            'button_press_event', self.button_press_callback)
+        if self.fig is not None:
+            self.motionID = self.fig.canvas.mpl_connect(
+                'motion_notify_event', self.motion_notify_callback)
+            self.buttonID = self.fig.canvas.mpl_connect(
+                'button_press_event', self.button_press_callback)
 
     def disconnect(self):
         '''Disconnect the SelectRegion instance.'''
-        self.fig.canvas.mpl_disconnect(self.motionID)
-        self.fig.canvas.mpl_disconnect(self.buttonID)
+        if self.fig is not None:
+            self.fig.canvas.mpl_disconnect(self.motionID)
+            self.fig.canvas.mpl_disconnect(self.buttonID)
 
     def CreateSelectRegionWidget(self):
         '''Create a widget to access SelectRegion tools.
@@ -295,7 +295,7 @@ class SelectRegion(Component):
         '''Save a Table of SelectRegion points to a CSV file.'''
         points = self.Vpoints.value
         if points is not None:
-            fsuggest = ('SelectRegion_' + self.getField() + '_' +
+            fsuggest = ('SelectRegion_' + self.Vfield.value + '_' +
                 str(points.axes['x_disp']['data'][:].mean()) + '_' +
                 str(points.axes['y_disp']['data'][:].mean())+'.csv')
             path = QtGui.QFileDialog.getSaveFileName(
@@ -303,7 +303,7 @@ class SelectRegion(Component):
             if not path.isEmpty():
                 write_points_csv(path, points)
         else:
-            common.ShowWarning("Points is None, no data to save!")
+            common.ShowWarning("No gate selected, no data to save!")
 
     def openTable(self):
         '''Open a saved table of SelectRegion points from a CSV file.'''
@@ -328,13 +328,21 @@ class SelectRegion(Component):
 
             # Renew region variables, etc.
             self._initialize_SelectRegion_vars()
-            self.statusbar.showMessage("Select Region with Mouse")
+        #self.statusbar.showMessage("Select Region with Mouse")
         else:
             print("No Region Selection to clear")
+        self.Vpoints.change(None)
 
     def closeEvent(self, QCloseEvent):
         '''Reimplementations to remove from components list.'''
-        self.resetSelectRegion()
+        try:
+            self.resetSelectRegion()
+        except:
+            import warnings
+            import traceback
+            error = traceback.format_exc()
+            warnings.warn(
+                "Reseting SelectRegion fails with following error\n" + error)
         self.disconnect()
         super(SelectRegion, self).closeEvent(QCloseEvent)
 
@@ -342,7 +350,7 @@ class SelectRegion(Component):
         '''Calculate basic statistics of the SelectRegion list.'''
         from ..core import common
         if self.Vpoints.value is None:
-            common.ShowWarning("Please select SelectRegion first")
+            common.ShowWarning("Please select Region first")
         else:
             points = self.Vpoints.value
             field = list(points.fields.keys())[0]
@@ -359,13 +367,19 @@ class SelectRegion(Component):
         '''Show a histogram plot of the SelectRegion list.'''
         from ..components.plot_simple import PlotDisplay
         if self.Vpoints.value is None:
-            common.ShowWarning("Please select SelectRegion first")
+            common.ShowWarning("Please select Region first")
         else:
             points = self.Vpoints.value
             field = list(points.fields.keys())[0]
             plot = PlotDisplay(
                 points.fields[field]['data'], plot_type="hist",
                 name="Select Region Histogram")
+
+    def newPlotAxes(self, variable, value, strong):
+        self.disconnect()
+        if self.VplotAxes.value is not None:
+            self.fig = self.VplotAxes.value.get_figure()
+        self.connect()
 
     def saveRadar(self):
         '''Open a dialog box to save radar file.'''
@@ -376,24 +390,27 @@ class SelectRegion(Component):
         if filename == '' or self.Vradar.value is None:
             print("Vradar is None!")
         else:
-            for field in self.Vradar.value.fields.keys():
-                self.Vradar.value.fields[field]['data'].mask = (
-                    self.Vgatefilter.value._gate_excluded)
+            radar = self.Vradar.value
+            if self.Vgatefilter.value is not None:
+                radar = radar.extract_sweeps(range(radar.nsweeps))
+                for field in radar.fields.keys():
+                    radar.fields[field]['data'].mask = np.logical_or(
+                        self.Vgatefilter.value._gate_excluded,
+                        radar.fields[field]['data'].mask)
             #self.Vradar.update(True)
-            import pyart
-            pyart.io.write_cfradial(filename, self.Vradar.value)
+            pyart.io.write_cfradial(filename, radar)
             print("Saved %s" % (filename))
+
     ######################
     #   Filter Methods   #
     ######################
 
     def restoreMask(self):
         '''Remove applied filter by restoring original mask'''
-        self.Vgatefilter.value._gate_excluded = self.original_mask
-        self.Vgatefilter.value.include_all()
-        self.newmask[:] = False
-        self.Vgatefilter.update(True)
-        print(np.sum(self.Vgatefilter.value._gate_excluded))
+        if self.Vgatefilter.value is not None:
+            self.Vgatefilter.value.include_all()
+            self.Vgatefilter.update(True)
+            print(np.sum(self.Vgatefilter.value._gate_excluded))
 
     def applyMask(self):
         '''Mount Options and execute
@@ -403,14 +420,23 @@ class SelectRegion(Component):
         '''
         mask_ray = self.Vpoints.value.axes['ray_index']['data'][:]
         mask_range = self.Vpoints.value.axes['range_index']['data'][:]
-        self.newmask[mask_ray, mask_range] = True
-        self.mask = np.logical_or(self.original_mask, self.newmask)
-        
-        self.Vgatefilter.value._merge(self.mask, 'or', True)
 
-        strong_update = True
-        self.Vgatefilter.update(strong_update)
-        print(np.sum(self.mask))
+        if self.Vgatefilter.value is None:
+            if self.Vradar.value is None:
+                print("Error can not creat mask from none radar")
+                return
+            gatefilter = pyart.filters.GateFilter(self.Vradar.value)
+            mask = gatefilter.gate_excluded
+            mask[mask_ray, mask_range] = True
+            gatefilter._merge(mask, 'or', True)
+            self.Vgatefilter.change(gatefilter)
+        else:
+            mask = self.Vgatefilter.value.gate_excluded
+            mask[mask_ray, mask_range] = True
+            self.Vgatefilter.value._merge(mask, 'or', True)
+            self.Vgatefilter.update()
+
+        print(np.sum(mask))
         print(np.sum(self.Vgatefilter.value._gate_excluded))
 
 class _SelectRegionStart(QtGui.QDialog):

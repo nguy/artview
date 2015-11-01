@@ -259,7 +259,7 @@ class Mapper(Component):
         elif item == 'dist_beam':
             self.distBeamRoiOptions()
 
-    def _constantRoiOptions(self):
+    def constantRoiOptions(self):
         '''Mount Options Layout for constant radius of influence.'''
         self.constantRoi = QtGui.QDoubleSpinBox()
         self.constantRoi.setRange(0, 30000)

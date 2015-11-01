@@ -28,11 +28,12 @@ def run(DirIn=None, filename=None, field=None):
     from ..components import RadarDisplay, Menu, LevelButtonWindow, \
         LinkPlugins, SelectRegion
     from ._parse_field import _parse_field
+    from ._common import startMainMenu
 
     app = QtGui.QApplication(sys.argv)
 
     # start Menu and initiate Vradar
-    MainMenu = Menu(DirIn, filename, name="Menu")
+    MainMenu = startMainMenu(DirIn, filename)
     Vradar = MainMenu.Vradar
 
     # handle input
@@ -57,27 +58,13 @@ def run(DirIn=None, filename=None, field=None):
     # add control to Menu
     MainMenu.addLayoutWidget(control)
 
-    # add graphical starts
-    MainMenu.addComponent(LinkPlugins)
-    MainMenu.addComponent(RadarDisplay)
-    MainMenu.addComponent(SelectRegion)
-
-    # add all plugins to grafical start
-    try:
-        from .. import plugins
-        for plugin in plugins._plugins:
-            MainMenu.addComponent(plugin)
-    except:
-        import warnings
-        warnings.warn("Loading Plugins Fail")
-
     # Replace in Screen
     desktop_rect = QtGui.QDesktopWidget().screenGeometry()
 
     height = desktop_rect.height()
     width = desktop_rect.width()
 
-    menu_width = 300
+    menu_width = 500
     menu_height = 180
 
     MainMenu.setGeometry(0, 0, menu_width, menu_height)

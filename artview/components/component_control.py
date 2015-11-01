@@ -167,8 +167,8 @@ class LinkPlugins(Component):
         setattr(self.comp1, var, getattr(self.comp0, var))
         # Connect new Variable
         self.comp1.connectSharedVariable(var)
-        # comp1.var.change(comp0.var.value), just to emit signal
-        getattr(self.comp1, var).change(getattr(self.comp0, var).value)
+        # emit signal
+        getattr(self.comp1, var).update()
         print("connect var %s of %s from %s" % (
             var, self.comp1.name, self.comp0.name))
 
@@ -180,8 +180,8 @@ class LinkPlugins(Component):
         setattr(self.comp1, var, Variable())
         # Connect new Variable
         self.comp1.connectSharedVariable(var)
-        # comp1.var.change(comp0.var.value)
-        getattr(self.comp1, var).change(getattr(self.comp0, var).value)
+        # emit signal
+        getattr(self.comp1, var).update()
         print("disconnect var %s of %s from %s" % (
             var, self.comp1.name, self.comp0.name))
 

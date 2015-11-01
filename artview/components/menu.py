@@ -9,7 +9,7 @@ import pyart
 import os
 import sys
 
-from ..core import Variable, Component, common, QtGui, QtCore
+from ..core import Variable, Component, common, QtGui, QtCore, componentsList
 
 
 class Menu(Component):
@@ -18,16 +18,16 @@ class Menu(Component):
     Vradar = None  #: see :ref:`shared_variable`
     Vgrid = None  #: see :ref:`shared_variable`
 
-    def __init__(self, pathDir, filename=None, Vradar=None, Vgrid=None,
+    def __init__(self, pathDir=None, filename=None, Vradar=None, Vgrid=None,
                  mode=["Radar"], name="Menu", parent=None):
         '''
         Initialize the class to create the interface.
 
         Parameters
         ----------
-        pathDir : string
-            Input directory path to open.
         [Optional]
+        pathDir : string
+            Input directory path to open. If None user current directory
         filename : string, False or None
             File to open as first. None will open file dialog. False will
             open no file.
@@ -55,6 +55,8 @@ class Menu(Component):
         super(Menu, self).__init__(name=name, parent=parent)
 
         # Set some parameters
+        if pathDir is None:
+            pathDir = os.getcwd()
         self.dirIn = pathDir
         self.fileindex = 0
         self.filelist = []
@@ -117,10 +119,17 @@ class Menu(Component):
             self.frames = {}
             self.addLayoutMenu()
         else:
-            self.mdiArea = QtGui.QMdiArea()
-            self.setCentralWidget(self.mdiArea)
-            self.mdiArea.setViewMode(1)
-            self.mdiArea.setTabsClosable(True)
+            self.tabWidget = QtGui.QTabWidget()
+            self.setCentralWidget(self.tabWidget)
+#            self.tabWidget.setAcceptDrops(True)
+            self.tabWidget.setTabsClosable(True)
+            self.tabWidget.tabCloseRequested.connect(self.removeTab)
+            self.tabWidget.tabBar().setMovable(True)
+
+    def removeTab(self, idx):
+        widget = self.tabWidget.widget(idx)
+        self.tabWidget.removeTab(idx)
+        widget.close()
 
     def showFileDialog(self):
         '''Open a dialog box to choose file.'''
@@ -177,9 +186,9 @@ class Menu(Component):
             self.frames[widget.__repr__()] = widget
             self.centralLayout.addWidget(widget)
             self.addLayoutMenuItem(widget)
-        else:
-            self.mdiArea.addSubWindow(widget)
             widget.show()
+        else:
+            self.tabWidget.addTab(widget, widget.name)
 
     def removeLayoutWidget(self, widget):
         '''Remove widget from central layout.'''
@@ -202,6 +211,28 @@ class Menu(Component):
     # Menu build methods #
     ######################
 
+    def menus(self):
+        return (self.menubar, self.subMenus(self.menubar))
+
+    def subMenus(self, menu):
+        ''' get submenu list of menu as dictionary. '''
+        if menu is None:
+            return None
+        menus = {}
+        for act in menu.actions():
+            menus[str(act.text())] = (act.menu(), self.subMenus(act.menu()))
+        return menus
+
+    def addMenuAction(self, position, *args):
+        menu, menus = self.menus()
+        for key in position:
+            if key in menus:
+                menu, menus = menus[key]
+            else:
+                menu = menu.addMenu(key)
+                menus = {}
+        return menu.addAction(*args)
+
     def CreateMenu(self):
         '''Create the main menubar.'''
         self.menubar = self.menuBar()
@@ -210,10 +241,11 @@ class Menu(Component):
         self.addAboutMenu()
         self.addFileAdvanceMenu()
         self.addPluginMenu()
+        self.addModesMenu()
 
     def addFileMenu(self):
         '''Add the File Menu to menubar.'''
-        self.filemenu = self.menubar.addMenu('&File')
+        self.filemenu = self.menubar.addMenu('File')
 
         if self.mode:
             openFile = QtGui.QAction('Open', self)
@@ -269,8 +301,18 @@ class Menu(Component):
         self.layoutmenuItems = {}
 
     def addPluginMenu(self):
-        '''Add Component Menu to menu bar.'''
-        self.pluginmenu = self.menubar.addMenu('&Advanced Tools')
+        '''Add Advanced Tools Menu to menu bar.'''
+        self.pluginmenu = self.menubar.addMenu('Advanced Tools')
+
+    def addModesMenu(self):
+        '''Add Modes Menu to menu bar.'''
+        from ..modes import modes
+        self.modesmenu = self.menubar.addMenu('Modes')
+        for key in modes.keys():
+            act = QtGui.QAction(key, self)
+            act.triggered.connect(lambda b, key=key:
+                                      self.change_mode(modes[key]))
+            self.modesmenu.addAction(act)
 
     def addLayoutMenuItem(self, widget):
         '''Add widget item to Layout Menu.'''
@@ -308,6 +350,53 @@ class Menu(Component):
         comp, independent = Comp.guiStart(self)
         if not independent:
             self.addLayoutWidget(comp)
+
+
+    def change_mode(self, new_mode):
+        ''' Open and connect new components to satisfy mode.
+
+        Parameters
+        ----------
+        new_mode: see file artview/modes.py for documentation on modes
+        '''
+        components = new_mode[0][:]
+        links = new_mode[1]
+        static_comp_list = componentsList[:]
+        # find already running components
+        for i,component in enumerate(components):
+            flag = False
+            for j,comp in enumerate(static_comp_list):
+                if isinstance(comp,component):
+                    components[i] = static_comp_list.pop(j)
+                    flag = True
+                    break
+            if not flag:
+                # if there is no component open
+                print("starting component: %s" % component.__name__)
+                from ..core.core import sugestName
+                name = sugestName(components[i])
+                components[i] = components[i](name=name, parent=self)
+                self.addLayoutWidget(components[i])
+
+        for link in links:
+            dest = getattr(components[link[0][0]], link[0][1])
+            orin = getattr(components[link[1][0]], link[1][1])
+            if dest is orin:
+                # already linked
+                pass
+            else:
+                # not linked, link
+                print("linking %s.%s to %s.%s" %
+                    (components[link[1][0]].name, link[1][1],
+                    components[link[0][0]].name, link[0][1]))
+                # Disconect old Variable
+                components[link[1][0]].disconnectSharedVariable(link[1][1])
+                # comp1.var = comp0.var
+                setattr(components[link[1][0]], link[1][1], dest)
+                # Connect new Variable
+                components[link[1][0]].connectSharedVariable(link[1][1])
+                # Emit change signal
+                dest.update()
 
     def addFileAdvanceMenu(self):
         '''
