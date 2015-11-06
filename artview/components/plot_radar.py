@@ -278,7 +278,6 @@ class RadarDisplay(Component):
         else:
             self.gatefilterToggle.setText("GateFilter Off")
         self._update_plot()
-        
 
     def _title_input(self):
         '''Retrieve new plot title.'''
@@ -631,13 +630,13 @@ class RadarDisplay(Component):
         self.Vcmap.change(cmap)
         self.Vlims.change(limits)
 
-    def getPathInteriorValues(self, path):
+    def getPathInteriorValues(self, paths):
         '''
         Return the bins values path.
 
         Parameters
         ----------
-        path : :py:class:`matplotlib.path.Path` instance
+        paths : list of :py:class:`matplotlib.path.Path` instances
 
         Returns
         -------
@@ -655,7 +654,19 @@ class RadarDisplay(Component):
         if radar is None:
             return None
 
-        xy, idx = interior_radar(path, radar, self.Vtilt.value)
+        try:
+            iter(paths)
+        except:
+            paths = [paths]
+
+        xy = np.empty((0,2))
+        idx = np.empty((0,2), dtype=np.int)
+
+        for path in paths:
+            _xy, _idx = interior_radar(path, radar, self.Vtilt.value)
+            xy = np.concatenate((xy, _xy))
+            idx = np.concatenate((idx, _idx))
+
         xaxis = {'data':  xy[:, 0] * 1000.,
                  'long_name': 'X-coordinate in Cartesian system',
                  'axis': 'X',
@@ -735,6 +746,8 @@ class RadarDisplay(Component):
         # Create the plot with PyArt RadarDisplay
         self.ax.cla()  # Clear the plot axes
         self.cax.cla()  # Clear the colorbar axes
+
+        self.VplotAxes.update()
 
         if self.Vfield.value not in self.Vradar.value.fields.keys():
             self.canvas.draw()
@@ -857,6 +870,13 @@ class RadarDisplay(Component):
         else:
             d['vmin'] = -10
             d['vmax'] = 65
+
+        # HACK while pyart don't implemt it self
+        if 'valid_min' in self.Vradar.value.fields[self.Vfield.value]:
+            d['vmin'] = self.Vradar.value.fields[self.Vfield.value]['valid_min']
+        if 'valid_max' in self.Vradar.value.fields[self.Vfield.value]:
+            d['vmax'] = self.Vradar.value.fields[self.Vfield.value]['valid_max']
+
         self.Vcmap.change(d, strong)
 
     def _get_default_title(self):
@@ -919,7 +939,7 @@ class RadarDisplay(Component):
     def getUnits(self):
         '''Get current units.'''
         return self.units
-        
+
     def getRadar(self):
         ''' get current radar '''
         return self.Vradar.value

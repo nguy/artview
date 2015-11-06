@@ -577,13 +577,13 @@ class GridDisplay(Component):
         self._set_default_limits()
         self._set_default_cmap()
 
-    def getPathInteriorValues(self, path):
+    def getPathInteriorValues(self, paths):
         '''
         Return the bins values path.
 
         Parameters
         ----------
-        path : :py:class:`matplotlib.path.Path` instance
+        paths : list of :py:class:`matplotlib.path.Path` instances
 
         Returns
         -------
@@ -602,8 +602,19 @@ class GridDisplay(Component):
         if grid is None:
             return None
 
-        xy, idx = interior_grid(path, grid, self.basemap, self.Vlevel.value,
-                                self.plot_type)
+        try:
+            iter(paths)
+        except:
+            paths = [paths]
+
+        xy = np.empty((0,2))
+        idx = np.empty((0,2), dtype=np.int)
+
+        for path in paths:
+            _xy, _idx = interior_grid(path, grid, self.basemap,
+                                      self.Vlevel.value, self.plot_type)
+            xy = np.concatenate((xy, _xy))
+            idx = np.concatenate((idx, _idx))
 
         if self.plot_type == "gridZ":
             x = xy[:, 0]

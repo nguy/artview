@@ -102,6 +102,19 @@ map_to_grid_mode = (
         ]
     )
 
+manual_unfold_mode = (
+    [Menu, RadarDisplay, SelectRegion, ManualUnfold],
+    [
+        ((0,'Vradar'),(1,'Vradar')),
+        ((1,'VplotAxes'),(2,'VplotAxes')),
+        ((1,'Vfield'),(2,'Vfield')),
+        ((1,'VpathInteriorFunc'),(2,'VpathInteriorFunc')),
+        ((1,'Vgatefilter'),(2,'Vgatefilter')),
+        ((1,'Vradar'),(2,'Vradar')),
+        ((1,'Vradar'),(3,'Vradar')),
+        ((2,'Vpoints'),(3,'Vpoints')),
+        ]
+    )
 
 modes ={
     'radar': radar_mode,
@@ -111,4 +124,5 @@ modes ={
     'compare_fields': compare_fields_mode,
     'corrections': corrections_mode,
     'gatefilter': gatefilter_mode,
-    'select_region': select_region_mode,}
+    'select_region': select_region_mode,
+    'manual_unfold': manual_unfold_mode,}

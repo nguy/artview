@@ -141,28 +141,32 @@ class ManualUnfold(Component):
             return
 
         vel, corrVel = self.getFieldNames()
-        data = radar.fields[vel]['data'].copy()
+        original_data = radar.fields[vel]['data'].copy()
+        if corrVel in self.Vradar.value.fields.keys():
+            data = radar.fields[corrVel]['data'].copy()
+        else:
+            data = original_data
         ray = points.axes['ray_index']['data']
         rng = points.axes['range_index']['data']
         nyquist = self.nyquistVelocity.value()
         if side == 'positive':
-            data[ray,rng] = np.where(data[ray,rng]>0,
-                                     -2*nyquist+data[ray,rng], data[ray,rng])
+            data[ray,rng] = np.where(
+                original_data[ray,rng] > 0,
+                -2 * nyquist + original_data[ray,rng], data[ray,rng])
         elif side == 'negative':
-            data[ray,rng] = np.where(data[ray,rng]<0,
-                                     2*nyquist+data[ray,rng], data[ray,rng])
+            data[ray,rng] = np.where(
+                original_data[ray,rng] < 0,
+                2 * nyquist + original_data[ray,rng], data[ray,rng])
 
         strong_update = False  # insertion is weak, overwrite strong
         if corrVel in self.Vradar.value.fields.keys():
-            resp = common.ShowQuestion(
-                "Field %s already exists! Do you want to over write it?" %
-                corrVel)
-            if resp != QtGui.QMessageBox.Ok:
-                return
-            else:
-                strong_update = True
+            strong_update = True
 
         radar.add_field_like(vel, corrVel, data, replace_existing=True)
+        if 'valid_min' not in radar.fields[corrVel]:
+                radar.fields[corrVel]['valid_min'] = - 2 * nyquist
+        if 'valid_max' not in radar.fields[corrVel]:
+                radar.fields[corrVel]['valid_max'] = 2 * nyquist
         self.Vradar.update(strong_update)
 
     def newRadar(self, variable, value, strong):
@@ -170,8 +174,9 @@ class ManualUnfold(Component):
         if self.Vradar.value is None:
             return
 
-        nyquist_vel = self.Vradar.value.get_nyquist_vel(0, True)
-        self.nyquistVelocity.setValue(nyquist_vel)
+        if strong:
+            nyquist_vel = self.Vradar.value.get_nyquist_vel(0, True)
+            self.nyquistVelocity.setValue(nyquist_vel)
 
 
 _plugins = [ManualUnfold]
