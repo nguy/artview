@@ -9,6 +9,7 @@ import pyart
 import sys
 import os
 import numpy as np
+import collections
 
 path = os.path.dirname(sys.modules[__name__].__file__)
 path = os.path.join(path, '...')
@@ -99,6 +100,12 @@ class ManualUnfold(Component):
         self.negativeButton.clicked.connect(self.negativeUnfold)
         self.layout.addWidget(self.negativeButton, 4, 1)
 
+        # list for undoing: (unfold matriz, nyquist_vel)
+        self.unfoldList = collections.deque(maxlen=30)
+        self.foldButton = QtGui.QPushButton("Fold Back")
+        self.foldButton.clicked.connect(self.foldBack)
+        self.layout.addWidget(self.foldButton, 5, 1)
+
         self.newRadar(None,None,True)
         self.show()
 
@@ -141,11 +148,11 @@ class ManualUnfold(Component):
             return
 
         vel, corrVel = self.getFieldNames()
-        original_data = radar.fields[vel]['data'].copy()
+        original_data = radar.fields[vel]['data']
         if corrVel in self.Vradar.value.fields.keys():
             data = radar.fields[corrVel]['data'].copy()
         else:
-            data = original_data
+            data = original_data.copy()
         ray = points.axes['ray_index']['data']
         rng = points.axes['range_index']['data']
         nyquist = self.nyquistVelocity.value()
@@ -164,10 +171,33 @@ class ManualUnfold(Component):
 
         radar.add_field_like(vel, corrVel, data, replace_existing=True)
         if 'valid_min' not in radar.fields[corrVel]:
-                radar.fields[corrVel]['valid_min'] = - 2 * nyquist
+            radar.fields[corrVel]['valid_min'] = - 1.5 * nyquist
         if 'valid_max' not in radar.fields[corrVel]:
-                radar.fields[corrVel]['valid_max'] = 2 * nyquist
+            radar.fields[corrVel]['valid_max'] = 1.5 * nyquist
         self.Vradar.update(strong_update)
+
+        # save for undoing
+        unfold = np.zeros_like(original_data, dtype=np.int8)
+        if side == 'positive':
+            unfold[ray,rng] = np.where(original_data[ray,rng] > 0, -1, 0)
+        elif side == 'negative':
+            unfold[ray,rng] = np.where(original_data[ray,rng] < 0, 1, 0)
+
+        self.unfoldList.append((unfold, nyquist))
+
+    def foldBack(self):
+        '''Undo last unfolding.'''
+        vel, corrVel = self.getFieldNames()
+        radar = self.Vradar.value
+        if len(self.unfoldList)==0 or corrVel not in radar.fields.keys():
+            common.ShowWarning("No folding to be undone")
+            return
+
+        unfold, nyquist = self.unfoldList.pop()
+        data = radar.fields[corrVel]['data']
+        data = data - 2 * unfold * nyquist
+        radar.fields[corrVel]['data'] = data
+        self.Vradar.update()
 
     def newRadar(self, variable, value, strong):
         '''respond to change in radar.'''

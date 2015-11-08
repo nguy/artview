@@ -283,12 +283,13 @@ class SelectRegion(Component):
 
     def resetSelectRegion(self):
         '''Clear the SelectRegion lines from plot and reset things.'''
-        if self.poly:
-            for i in xrange(len(self.poly)):
-                try:
-                    self.poly[i].remove()
-                except:
-                    pass
+        if self.polys:
+            for poly in self.polys:
+                for i in xrange(len(poly)):
+                    try:
+                        poly[i].remove()
+                    except:
+                        pass
 
             # Redraw to remove the lines and reinitialize variable
             self.fig.canvas.draw()
@@ -299,7 +300,6 @@ class SelectRegion(Component):
         else:
             print("No Region Selection to clear")
         self.Vpoints.change(None)
-        self._initialize_SelectRegion_vars()
 
     def closeEvent(self, QCloseEvent):
         '''Reimplementations to remove from components list.'''
