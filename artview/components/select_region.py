@@ -51,7 +51,7 @@ class SelectRegion(Component):
     def guiStart(self, parent=None):
         #args, independent = _SelectRegionStart().startDisplay()
         kwargs, independent = \
-            common._SimplePluginStart("AccessTerminal").startDisplay()
+            common._SimplePluginStart("SelectRegion").startDisplay()
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
@@ -124,7 +124,7 @@ class SelectRegion(Component):
         self.start_point = []
         self.end_point = []
         self.line = None
-        self.verts = []
+        self.verts = [[]]
         self.polys = [[]]
         self.paths = []
 
@@ -138,12 +138,12 @@ class SelectRegion(Component):
                 self.line.set_data([self.previous_point[0], x],
                                    [self.previous_point[1], y])
                 self.fig.canvas.draw()
-            elif event.button == 1:  # Free Hand Drawing
+            elif event.button == 1 and False:  # Free Hand Drawing
                 line = Line2D([self.previous_point[0], x],
                               [self.previous_point[1], y])
                 self.polys[-1].append(ax.add_line(line))
                 self.previous_point = [x, y]
-                self.verts.append([x, y])
+                self.verts[-1].append([x, y])
                 self.fig.canvas.draw()
 
     def button_press_callback(self, event):
@@ -162,7 +162,7 @@ class SelectRegion(Component):
                     self.line = Line2D([x, x], [y, y], marker='o')
                     self.start_point = [x, y]
                     self.previous_point = self.start_point
-                    self.verts.append([x, y])
+                    self.verts[-1].append([x, y])
                     self.polys[-1].append(ax.add_line(self.line))
                     self.fig.canvas.draw()
                 # add a segment
@@ -171,7 +171,7 @@ class SelectRegion(Component):
                                        [self.previous_point[1], y],
                                        marker='o')
                     self.previous_point = [x, y]
-                    self.verts.append([x, y])
+                    self.verts[-1].append([x, y])
                     self.polys[-1].append(event.inaxes.add_line(self.line))
                     self.fig.canvas.draw()
 
@@ -183,12 +183,12 @@ class SelectRegion(Component):
                 self.line.set_data(
                     [self.previous_point[0], self.start_point[0]],
                     [self.previous_point[1], self.start_point[1]])
-                self.polys[-1].append(ax.add_line(self.line))
+                self.verts[-1].append(self.start_point)
                 self.fig.canvas.draw()
                 self.line = None
-                path = Path(self.verts)
+                path = Path(self.verts[-1])
                 self.paths.append(path)
-                self.verts = []
+                self.verts.append([])
                 self.polys.append([])
 
                 # Inform via status bar
@@ -234,16 +234,20 @@ class SelectRegion(Component):
         self.buttonResetSelectRegion.setToolTip("Clear the Region")
         self.buttonHelp = QtGui.QPushButton('Help', self)
         self.buttonHelp.setToolTip("About using SelectRegion")
-        self.buttonBack = QtGui.QPushButton('Back', self)
-        self.buttonBack.setToolTip("Remove last Polygon")
+        self.buttonRemovePoly = QtGui.QPushButton('Remove Polygon', self)
+        self.buttonRemovePoly.setToolTip("Remove last Polygon")
+        self.buttonRemoveVertex = QtGui.QPushButton('Remove Vertex', self)
+        self.buttonRemoveVertex.setToolTip("Remove last Vertex")
         self.buttonResetSelectRegion.clicked.connect(self.resetSelectRegion)
         self.buttonHelp.clicked.connect(self.displayHelp)
-        self.buttonBack.clicked.connect(self.removePolygon)
+        self.buttonRemovePoly.clicked.connect(self.removePolygon)
+        self.buttonRemoveVertex.clicked.connect(self.removeVertex)
 
         # Create functionality buttons
         self.rBox_layout.addWidget(self.buttonResetSelectRegion)
         self.rBox_layout.addWidget(self.buttonHelp)
-        self.rBox_layout.addWidget(self.buttonBack)
+        self.rBox_layout.addWidget(self.buttonRemovePoly)
+        self.rBox_layout.addWidget(self.buttonRemoveVertex)
 
     def removePolygon(self):
         '''remove last polygon from the list if not drawing. if drawing
@@ -252,16 +256,39 @@ class SelectRegion(Component):
             if self.paths:
                 self.paths.pop()
             poly = self.polys.pop(-2)
+            self.verts.pop(-2)
             for line in poly:
                 line.remove()
         else:
             self.line = None
-            self.verts = []
+            self.verts[-1] = []
             poly = self.polys.pop()
             for line in poly:
                 line.remove()
             self.polys.append([])
 
+        self.fig.canvas.draw()
+        self.update_points()
+
+    def removeVertex(self):
+        '''remove last vertex from the list.'''
+        if self.line is None:
+            if self.paths:
+                self.paths.pop()
+                self.polys.pop()
+                self.verts.pop()
+                self.verts[-1].pop()
+                self.line = self.polys[-1][-1]
+                self.previous_point = self.verts[-1][-1]
+                self.start_point = self.verts[-1][0]
+        else:
+            self.verts[-1].pop()
+            self.polys[-1].pop().remove()
+            if self.polys[-1]:
+                self.line = self.polys[-1][-1]
+                self.previous_point = self.verts[-1][-1]
+            else:
+                self.removePolygon()
         self.fig.canvas.draw()
         self.update_points()
 

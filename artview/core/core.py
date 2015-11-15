@@ -173,8 +173,8 @@ class ComponentsList(QtCore.QObject):
 
 componentsList = ComponentsList()
 
-def sugestName(comp):
-    '''Sugest a unambiguous name for component.'''
+def suggestName(comp):
+    '''Suggest a unambiguous name for component.'''
     compName = comp.__name__
     name = compName
     i = 0

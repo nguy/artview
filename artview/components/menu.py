@@ -373,8 +373,8 @@ class Menu(Component):
             if not flag:
                 # if there is no component open
                 print("starting component: %s" % component.__name__)
-                from ..core.core import sugestName
-                name = sugestName(components[i])
+                from ..core.core import suggestName
+                name = suggestName(components[i])
                 components[i] = components[i](name=name, parent=self)
                 self.addLayoutWidget(components[i])
 

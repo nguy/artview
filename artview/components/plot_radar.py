@@ -613,10 +613,10 @@ class RadarDisplay(Component):
 
     def toolSelectRegionCmd(self):
         '''Creates and connects to Region of Interest instance'''
-        from .select_region import SelectRegion
+        from .select_region_old import SelectRegion
         self.tools['select_region'] = SelectRegion(
-            self, name=self.name + " SelectRegion", parent=self)
-
+            self.VplotAxes, self.VpathInteriorFunc, self.Vfield,
+            name=self.name + " SelectRegion", parent=self)
     def toolResetCmd(self):
         '''Reset tools via disconnect.'''
         from . import tools
@@ -872,10 +872,11 @@ class RadarDisplay(Component):
             d['vmax'] = 65
 
         # HACK while pyart don't implemt it self
-        if 'valid_min' in self.Vradar.value.fields[self.Vfield.value]:
-            d['vmin'] = self.Vradar.value.fields[self.Vfield.value]['valid_min']
-        if 'valid_max' in self.Vradar.value.fields[self.Vfield.value]:
-            d['vmax'] = self.Vradar.value.fields[self.Vfield.value]['valid_max']
+        if self.Vradar.value is not None:
+            if 'valid_min' in self.Vradar.value.fields[self.Vfield.value]:
+                d['vmin'] = self.Vradar.value.fields[self.Vfield.value]['valid_min']
+            if 'valid_max' in self.Vradar.value.fields[self.Vfield.value]:
+                d['vmax'] = self.Vradar.value.fields[self.Vfield.value]['valid_max']
 
         self.Vcmap.change(d, strong)
 

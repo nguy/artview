@@ -76,7 +76,7 @@ def startMainMenu(DirIn=None, filename=None):
         for plugin in plugins._plugins.values():
             action = QtGui.QAction(plugin.__name__, MainMenu)
             action.triggered[()].connect(
-                lambda comp=comp: MainMenu.startComponent(plugin))
+                lambda plugin=plugin: MainMenu.startComponent(plugin))
             if plugin.__name__ != 'FileList':
                 MainMenu.addMenuAction(("Advanced Tools",), action)
             else:

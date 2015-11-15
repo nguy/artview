@@ -103,7 +103,7 @@ map_to_grid_mode = (
     )
 
 manual_unfold_mode = (
-    [Menu, RadarDisplay, SelectRegion, ManualUnfold],
+    [Menu, RadarDisplay, SelectRegion_dev, ManualUnfold],
     [
         ((0,'Vradar'),(1,'Vradar')),
         ((1,'VplotAxes'),(2,'VplotAxes')),

@@ -562,9 +562,10 @@ class GridDisplay(Component):
 
     def toolSelectRegionCmd(self):
         '''Creates and connects to Region of Interest instance.'''
-        from .select_region import SelectRegion
+        from .select_region_old import SelectRegion
         self.tools['select_region'] = SelectRegion(
-            self, name=self.name + " SelectRegion", parent=self)
+            self.VplotAxes, self.VpathInteriorFunc, self.Vfield,
+            name=self.name + " SelectRegion", parent=self)
 
     def toolResetCmd(self):
         '''Reset tools via disconnect.'''
