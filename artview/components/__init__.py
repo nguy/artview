@@ -24,6 +24,7 @@ ARTview functions.
 
 from .plot_radar import RadarDisplay
 from .plot_grid import GridDisplay
+from .plot_points import PointsDisplay
 from .menu import Menu
 from .level import LevelButtonWindow
 from .field import FieldButtonWindow

@@ -5,7 +5,7 @@ auxiliary functions for scripts
 """
 import pyart
 from ..components import (Menu, RadarDisplay, GridDisplay, LinkPlugins,
-                          SelectRegion)
+                          SelectRegion, PointsDisplay)
 from ..core import QtGui, QtCore
 
 def _add_all_advanced_tools(menu):
@@ -15,6 +15,7 @@ def _add_all_advanced_tools(menu):
     menu.addComponent(RadarDisplay)
     menu.addComponent(GridDisplay)
     menu.addComponent(SelectRegion)
+    menu.addComponent(PointsDisplay)
 
     # add all plugins to grafical start
     try:
