@@ -43,7 +43,7 @@ class PointsDisplay(Component):
         return self(**kwargs), independent
 
     def __init__(self, Vpoints=None, Vfield=None, Vlims=None, Vcmap=None,
-                 plot_type="hist", name="PointsDisplay", parent=None):
+                 plot_type="histogram", name="PointsDisplay", parent=None):
         '''
         Initialize the class to create display.
 
@@ -106,8 +106,6 @@ class PointsDisplay(Component):
         # Connect the components
         self.connectAllVariables()
 
-        self.plot_type = plot_type
-
         # Set plot title and colorbar units to defaults
         self.title = self._get_default_title()
         self.units = self._get_default_units()
@@ -124,14 +122,13 @@ class PointsDisplay(Component):
         self.LaunchGUI()
 
         # Set up Default limits and cmap
-#        if Vlims is None:
-#            self._set_default_limits(strong=False)
-#        if Vcmap is None:
-#            self._set_default_cmap(strong=False)
+        if Vcmap is None:
+            self._set_default_cmap(strong=False)
+        if Vlims is None:
+            self._set_default_limits(strong=False)
 
-        # Create the plot
-        self._update_plot()
-#        self.NewRadar(None, None, True)
+        self.plot_type = None
+        self.changePlotType(plot_type)
 
         self.show()
 
@@ -142,8 +139,7 @@ class PointsDisplay(Component):
     def LaunchGUI(self):
         '''Launches a GUI interface.'''
         # Create layout
-        self.layout = QtGui.QGridLayout()
-        self.layout.setSpacing(4)
+        self.layout = QtGui.QVBoxLayout()
 
         # Create the widget
         self.central_widget = QtGui.QWidget()
@@ -152,12 +148,41 @@ class PointsDisplay(Component):
 
         self.central_widget.setLayout(self.layout)
 
-        # Add buttons along display for user control
-        self.addButtons()
-        self.setUILayout()
+        # Add Menu
+        self.addStandardMenu()
 
         # Set the status bar to display messages
         self.statusbar = self.statusBar()
+
+    def addStandardMenu(self):
+        '''Add Standard Menus.'''
+        self.menubar = self.menuBar()
+
+        self.filemenu = self.menubar.addMenu('File')
+
+        openCSV = self.filemenu.addAction('Open Tabular Data')
+        openCSV.setStatusTip('Open a Region Data CSV file')
+        openCSV.triggered.connect(self.openTable)
+
+        saveCSV = self.filemenu.addAction('Save Tabular Data')
+        saveCSV.setStatusTip('Save a Region Data CSV file')
+        saveCSV.triggered.connect(self.saveTable)
+
+        self.plotTypeMenu = self.menubar.addMenu('Plot Type')
+
+        hist = self.plotTypeMenu.addAction('Histogram')
+        hist.setStatusTip('Plot histogram of Data ')
+        hist.triggered.connect(lambda: self.changePlotType('histogram'))
+
+        stats = self.plotTypeMenu.addAction('Statistics')
+        stats.setStatusTip('Show basic statistics of Data')
+        stats.triggered.connect(lambda: self.changePlotType('statistics'))
+
+        table = self.plotTypeMenu.addAction('Table')
+        table.setStatusTip('Show data in a Table')
+        table.triggered.connect(lambda: self.changePlotType('table'))
+
+        self.displayMenu = self.menubar.addMenu('Display')
 
     ##################################
     # User display interface methods #
@@ -175,11 +200,39 @@ class PointsDisplay(Component):
     # Functionality methods #
     #############################
 
+    def changePlotType(self, plot_type):
+
+        if self.plot_type == 'histogram':
+            self.layout.removeWidget(self.canvas)
+            self.canvas.hide()
+        elif self.plot_type == 'statistics':
+            self.layout.removeWidget(self.statistics)
+            self.statistics.close()
+        elif self.plot_type == 'table':
+            self.layout.removeWidget(self.table)
+            self.table.close()
+
+        self.plot_type = plot_type
+        self.displayMenu.clear()
+
+        if plot_type == 'histogram':
+            self._fill_histogram_menu()
+            # Add the widget to the canvas
+            self.layout.addWidget(self.canvas, 0)
+            self.canvas.show()
+        elif plot_type == 'statistics':
+            pass
+        elif plot_type == 'table':
+            pass
+
+        self._update_plot()
+
     def _open_LimsDialog(self):
         '''Open a dialog box to change display limits.'''
         from .limits import limits_dialog
         limits, cmap, change = limits_dialog(
             self.Vlims.value, self.Vcmap.value, self.name)
+
         if change == 1:
             self.Vcmap.change(cmap)
             self.Vlims.change(limits)
@@ -200,45 +253,44 @@ class PointsDisplay(Component):
             self.units = val
             self._update_plot()
 
-    def _add_cmaps_to_button(self):
+#    def _add_cmaps_to_button(self):
         '''Add a menu to change colormap used for plot.'''
-        for cm_name in self.cm_names:
-            cmapAction = self.dispCmapmenu.addAction(cm_name)
-            cmapAction.setStatusTip("Use the %s colormap" % cm_name)
-            cmapAction.triggered[()].connect(
-                lambda cm_name=cm_name: self.cmapSelectCmd(cm_name))
-            self.dispCmap.setMenu(self.dispCmapmenu)
+#        for cm_name in self.cm_names:
+#            cmapAction = self.dispCmapmenu.addAction(cm_name)
+#            cmapAction.setStatusTip("Use the %s colormap" % cm_name)
+#            cmapAction.triggered[()].connect(
+#                lambda cm_name=cm_name: self.cmapSelectCmd(cm_name))
+#            self.dispCmap.setMenu(self.dispCmapmenu)
 
-    def _add_displayBoxUI(self):
+    def _fill_histogram_menu(self):
         '''Create the Display Options Button menu.'''
+
         self.dispButton = QtGui.QPushButton("Display Options")
         self.dispButton.setToolTip("Adjust display properties")
         self.dispButton.setFocusPolicy(QtCore.Qt.NoFocus)
         dispmenu = QtGui.QMenu(self)
-        dispLimits = dispmenu.addAction("Adjust Display Limits")
+        dispLimits = self.displayMenu.addAction("Adjust Display Limits")
         dispLimits.setToolTip("Set data, X, and Y range limits")
-        dispTitle = dispmenu.addAction("Change Title")
-        dispTitle.setToolTip("Change plot title")
-        dispUnit = dispmenu.addAction("Change Units")
-        dispUnit.setToolTip("Change units string")
-#        toolZoomPan = dispmenu.addAction("Zoom/Pan")
-        self.dispCmap = dispmenu.addAction("Change Colormap")
-        self.dispCmapmenu = QtGui.QMenu("Change Cmap")
-        self.dispCmapmenu.setFocusPolicy(QtCore.Qt.NoFocus)
-        dispSaveFile = dispmenu.addAction("Save Image")
+#        dispTitle = dispmenu.addAction("Change Title")
+#        dispTitle.setToolTip("Change plot title")
+#        dispUnit = dispmenu.addAction("Change Units")
+#        dispUnit.setToolTip("Change units string")
+#        self.dispCmap = dispmenu.addAction("Change Colormap")
+#        self.dispCmapmenu = QtGui.QMenu("Change Cmap")
+#        self.dispCmapmenu.setFocusPolicy(QtCore.Qt.NoFocus)
+        dispSaveFile = self.displayMenu.addAction("Save Image")
         dispSaveFile.setShortcut("Ctrl+S")
         dispSaveFile.setStatusTip("Save Image using dialog")
-        self.dispHelp = dispmenu.addAction("Help")
+        dispHelp = self.displayMenu.addAction("Help")
 
-        dispLimits.triggered[()].connect(self._open_LimsDialog)
-        dispTitle.triggered[()].connect(self._title_input)
-        dispUnit.triggered[()].connect(self._units_input)
-#        toolZoomPan.triggered[()].connect(self.toolZoomPanCmd)
-        dispSaveFile.triggered[()].connect(self._savefile)
-        self.dispHelp.triggered[()].connect(self.displayHelp)
+        dispLimits.triggered.connect(self._open_LimsDialog)
+#        dispTitle.triggered.connect(self._title_input)
+#        dispUnit.triggered.connect(self._units_input)
+        dispSaveFile.triggered.connect(self._savefile)
+        dispHelp.triggered.connect(self.displayHelp)
 
-        self._add_cmaps_to_button()
-        self.dispButton.setMenu(dispmenu)
+#        self._add_cmaps_to_button()
+#        self.dispButton.setMenu(dispmenu)
 
     def displayHelp(self):
         text = (
@@ -302,7 +354,7 @@ class PointsDisplay(Component):
 #        self.fieldBox.setCurrentIndex(idx)
         if strong:
             self._update_plot()
-            self._update_infolabel()
+#            self._update_infolabel()
 
     def NewLims(self, variable, value, strong):
         '''
@@ -326,7 +378,8 @@ class PointsDisplay(Component):
         * If strong update: update plot
         '''
         if strong:
-            self._update_plot()
+            pass
+            #self._update_plot()
 
     ########################
     # Selectionion methods #
@@ -424,8 +477,6 @@ class PointsDisplay(Component):
     def _set_figure_canvas(self):
         '''Set the figure canvas to draw in window area.'''
         self.canvas = FigureCanvasQTAgg(self.fig)
-        # Add the widget to the canvas
-        self.layout.addWidget(self.canvas, 1, 0, 4, 3)
 
     def _update_plot(self):
         '''Draw/Redraw the plot.'''
@@ -457,44 +508,80 @@ class PointsDisplay(Component):
                                          "color:black;font-weight:bold;}")
             self.statusbar.clearMessage()
 
-        if self.plot_type == "hist":
+        if self.plot_type == "histogram":
             self.plot = self.ax.hist(
                 points.fields[field]['data'], bins=25,
                 range=(cmap['vmin'], cmap['vmax']),
                 figure=self.fig)
             self.ax.set_ylabel("Counts")
 
-        # If limits exists, update the axes otherwise retrieve
-        #self._update_axes()
+            # If limits exists, update the axes otherwise retrieve
+            #self._update_axes()
+            self._update_limits()
 
-        # If the colorbar flag is thrown, create it
-        if colorbar_flag:
-            # Clear the colorbar axes
-            self.cax.cla()
-            self.cax = self.fig.add_axes([0.2, 0.10, 0.7, 0.02])
-            norm = mlabNormalize(vmin=cmap['vmin'],
-                                 vmax=cmap['vmax'])
-            self.cbar = mlabColorbarBase(self.cax, cmap=self.cm_name,
-                                         norm=norm, orientation='horizontal')
-            # colorbar - use specified units or default depending on
-            # what has or has not been entered
-            self.cbar.set_label(self.units)
+            # If the colorbar flag is thrown, create it
+            if colorbar_flag:
+                # Clear the colorbar axes
+                self.cax.cla()
+                self.cax = self.fig.add_axes([0.2, 0.10, 0.7, 0.02])
+                norm = mlabNormalize(vmin=cmap['vmin'],
+                                    vmax=cmap['vmax'])
+                self.cbar = mlabColorbarBase(self.cax, cmap=self.cm_name,
+                                            norm=norm, orientation='horizontal')
+                # colorbar - use specified units or default depending on
+                # what has or has not been entered
+                self.cbar.set_label(self.units)
 
-        self.canvas.draw()
+            self.canvas.draw()
+
+        elif self.plot_type == 'statistics':
+            if (self.Vpoints.value is None or
+                self.Vfield.value not in self.Vpoints.value.fields):
+                common.ShowWarning("Please select Region and Field first")
+            else:
+                points = self.Vpoints.value
+                field = self.Vfield.value
+                SelectRegionstats = common._array_stats(
+                    points.fields[field]['data'])
+                text = "<b>Basic statistics for the selected Region</b><br><br>"
+                for stat in SelectRegionstats:
+                    text += ("<i>%s</i>: %5.2f<br>" %
+                            (stat, SelectRegionstats[stat]))
+                self.statistics = QtGui.QDialog()
+                layout = QtGui.QGridLayout(self.statistics)
+                self.statistics = QtGui.QTextEdit("")
+                self.statistics.setAcceptRichText(True)
+                self.statistics.setReadOnly(True)
+                self.statistics.setText(text)
+                self.layout.addWidget(self.statistics, 0)
+
+        elif self.plot_type == "table":
+            if self.Vpoints.value is not None:
+                # Instantiate Table
+                self.table = common.CreateTable(self.Vpoints.value)
+                self.layout.addWidget(self.table, 0)
+                self.table.display()
+                # Show the table
+                self.table.show()
+            else:
+                common.ShowWarning("Please select or open Region first")
 
     def _update_axes(self):
         '''Change the Plot Axes.'''
         limits = self.Vlims.value
-        lim = self.ax.get_xlim()
-        limits['xmin'] = lim[0]
-        limits['xmax'] = lim[1]
-        lim = self.ax.get_ylim()
-        limits['ymin'] = lim[0]
-        limits['ymax'] = lim[1]
-        return
         self.ax.set_xlim(limits['xmin'], limits['xmax'])
         self.ax.set_ylim(limits['ymin'], limits['ymax'])
-        self.ax.figure.canvas.draw()
+        self.canvas.draw()
+
+    def _update_limits(self):
+        limits = self.Vlims.value
+        ax = self.ax.get_xlim()
+        limits['xmin'] = ax[0]
+        limits['xmax'] = ax[1]
+        ax = self.ax.get_ylim()
+        limits['ymin'] = ax[0]
+        limits['ymax'] = ax[1]
+        self.Vlims.update()
 
     def _set_default_cmap(self, strong=True):
         ''' Set colormap to pre-defined default.'''
@@ -509,15 +596,27 @@ class PointsDisplay(Component):
         else:
             d['vmin'] = -10
             d['vmax'] = 65
+        self.Vcmap.change(d, False)
+
+    def _set_default_limits(self, strong=True):
+        ''' Set colormap to pre-defined default.'''
+        cmap = self.Vcmap.value
+        d = {}
+        d['xmin'] = cmap['vmin']
+        d['xmax'] = cmap['vmax']
+        d['ymin'] = 0
+        d['ymax'] = 1000
+        self.Vlims.change(d, False)
 
     def _get_default_title(self):
         '''Get default title from pyart.'''
         if (self.Vpoints.value is None or
             self.Vfield.value not in self.Vpoints.value.fields):
             return ''
-        return "Pyart Title" #pyart.graph.common.generate_title(self.Vpoints.value,
-              #                                   self.Vfield.value,
-              #                                   0)
+        return 'Points Plot'
+        #pyart.graph.common.generate_title(self.Vpoints.value,
+        #                                  self.Vfield.value,
+        #                                  0)
 
     def _get_default_units(self):
         '''Get default units for current radar and field.'''
@@ -541,3 +640,9 @@ class PointsDisplay(Component):
         if path:
             self.canvas.print_figure(path, dpi=DPI)
             self.statusbar.showMessage('Saved to %s' % path)
+
+    def openTable(self):
+        pass
+
+    def saveTable(self):
+        pass

@@ -92,6 +92,21 @@ select_region_mode = (
     )
 
 
+extract_points_mode = (
+    [Menu, RadarDisplay, SelectRegion, PointsDisplay],
+    [
+        ((0,'Vradar'),(1,'Vradar')),
+        ((1,'VplotAxes'),(2,'VplotAxes')),
+        ((1,'Vfield'),(2,'Vfield')),
+        ((1,'VpathInteriorFunc'),(2,'VpathInteriorFunc')),
+        ((1,'Vgatefilter'),(2,'Vgatefilter')),
+        ((1,'Vradar'),(2,'Vradar')),
+        ((2,'Vpoints'),(3,'Vpoints')),
+        ((1,'Vfield'),(3,'Vfield')),
+#        ((1,'Vcmap'),(3,'Vcmap')),
+        ]
+    )
+
 map_to_grid_mode = (
     [Menu, RadarDisplay, GridDisplay, Mapper],
     [
@@ -116,6 +131,22 @@ manual_unfold_mode = (
         ]
     )
 
+manual_filter_mode = (
+    [Menu, RadarDisplay, SelectRegion, ManualFilter],
+    [
+        ((0,'Vradar'),(1,'Vradar')),
+        ((1,'VplotAxes'),(2,'VplotAxes')),
+        ((1,'Vfield'),(2,'Vfield')),
+        ((1,'VpathInteriorFunc'),(2,'VpathInteriorFunc')),
+        ((1,'Vgatefilter'),(2,'Vgatefilter')),
+        ((1,'Vradar'),(2,'Vradar')),
+        ((1,'Vradar'),(3,'Vradar')),
+        ((2,'Vpoints'),(3,'Vpoints')),
+        ((1,'Vfield'),(3,'Vfield')),
+        ((1,'Vgatefilter'),(3,'Vgatefilter')),
+        ]
+    )
+
 modes ={
     'radar': radar_mode,
     'map_to_grid': map_to_grid_mode,
@@ -125,4 +156,6 @@ modes ={
     'corrections': corrections_mode,
     'gatefilter': gatefilter_mode,
     'select_region': select_region_mode,
-    'manual_unfold': manual_unfold_mode,}
+    'extract_points': extract_points_mode,
+    'manual_unfold': manual_unfold_mode,
+    'manual_filter': manual_filter_mode,}
