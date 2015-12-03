@@ -150,7 +150,7 @@ class Menu(Component):
         Parameters
         ----------
         input : Vradar instance
-            Optional parameter to allow access from 
+            Optional parameter to allow access from
             other ARTView plugins, etc.
         '''
         filename = QtGui.QFileDialog.getSaveFileName(
@@ -311,7 +311,7 @@ class Menu(Component):
         for key in modes.keys():
             act = QtGui.QAction(key, self)
             act.triggered.connect(lambda b, key=key:
-                                      self.change_mode(modes[key]))
+                                  self.change_mode(modes[key]))
             self.modesmenu.addAction(act)
 
     def addLayoutMenuItem(self, widget):
@@ -351,7 +351,6 @@ class Menu(Component):
         if not independent:
             self.addLayoutWidget(comp)
 
-
     def change_mode(self, new_mode):
         ''' Open and connect new components to satisfy mode.
 
@@ -363,10 +362,10 @@ class Menu(Component):
         links = new_mode[1]
         static_comp_list = componentsList[:]
         # find already running components
-        for i,component in enumerate(components):
+        for i, component in enumerate(components):
             flag = False
-            for j,comp in enumerate(static_comp_list):
-                if isinstance(comp,component):
+            for j, comp in enumerate(static_comp_list):
+                if isinstance(comp, component):
                     components[i] = static_comp_list.pop(j)
                     flag = True
                     break
@@ -387,8 +386,8 @@ class Menu(Component):
             else:
                 # not linked, link
                 print("linking %s.%s to %s.%s" %
-                    (components[link[1][0]].name, link[1][1],
-                    components[link[0][0]].name, link[0][1]))
+                     (components[link[1][0]].name, link[1][1],
+                      components[link[0][0]].name, link[0][1]))
                 # Disconect old Variable
                 components[link[1][0]].disconnectSharedVariable(link[1][1])
                 # comp1.var = comp0.var

@@ -49,12 +49,11 @@ class SelectRegion(Component):
 
     @classmethod
     def guiStart(self, parent=None):
-        #args, independent = _SelectRegionStart().startDisplay()
+        # args, independent = _SelectRegionStart().startDisplay()
         kwargs, independent = \
             common._SimplePluginStart("SelectRegion").startDisplay()
         kwargs['parent'] = parent
         return self(**kwargs), independent
-
 
     def __init__(self, VplotAxes=None, VpathInteriorFunc=None, Vfield=None,
                  name="SelectRegion", parent=None):
@@ -178,7 +177,7 @@ class SelectRegion(Component):
             # Close the loop by double clicking and create a table
             # (or single right click)
             elif ((event.button == 1 and db_support and event.dblclick) or
-                   event.button == 3 and self.line is not None):
+                  event.button == 3 and self.line is not None):
                 # close the loop
                 self.line.set_data(
                     [self.previous_point[0], self.start_point[0]],
@@ -192,7 +191,7 @@ class SelectRegion(Component):
                 self.polys.append([])
 
                 # Inform via status bar
-                #self.statusbar.showMessage("Closed Region")
+                # self.statusbar.showMessage("Closed Region")
 
                 # Create Points object
                 self.update_points()
@@ -323,7 +322,7 @@ class SelectRegion(Component):
 
             # Renew region variables, etc.
             self._initialize_SelectRegion_vars()
-        #self.statusbar.showMessage("Select Region with Mouse")
+        # self.statusbar.showMessage("Select Region with Mouse")
         else:
             print("No Region Selection to clear")
         self.Vpoints.change(None)

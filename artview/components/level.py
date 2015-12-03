@@ -20,13 +20,13 @@ class LevelButtonWindow(Component):
     Vradar = None  #: see :ref:`shared_variable`
     Vgrid = None  #: see :ref:`shared_variable`
     Vtilt = None  \
-        #: see :ref:`shared_variable`, only used if plot_type starts with "Radar"
+        #: see :ref:`shared_variable`, used if plot_type starts with "Radar"
     VlevelZ = None \
-        #: see :ref:`shared_variable`, only used if plot_type="gridZ"
+        #: see :ref:`shared_variable`, used if plot_type="gridZ"
     VlevelY = None \
-        #: see :ref:`shared_variable`, only used if plot_type="gridY"
+        #: see :ref:`shared_variable`, used if plot_type="gridY"
     VlevelX = None \
-        #: see :ref:`shared_variable`, only used if plot_type="gridX"
+        #: see :ref:`shared_variable`, used if plot_type="gridX"
     Vcmap = None  #: see :ref:`shared_variable`
 
     def __init__(self, Vlevel=None, plot_type="Radar", Vcontainer=None,

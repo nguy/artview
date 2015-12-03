@@ -2,7 +2,7 @@
 map_to_grid.py
 
 Driver function that creates two ARTView displays,
-the first for native coordinate radar data and the second for 
+the first for native coordinate radar data and the second for
 gridded radar data. The Mapper tool is initiated.
 """
 import os

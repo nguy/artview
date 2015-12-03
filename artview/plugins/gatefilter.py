@@ -241,8 +241,8 @@ class GateFilter(Component):
             "  2. Check the 'Activate Filter' box to apply the filter.\n"
             "  3. Click the 'Filter' button.\n"
             "  4. GateFilter needs to be activated in the Display to see the "
-            "results. It is turned on by default. To check see 'Display Options "
-            "dropdown menu on the Display of interest.\n\n"
+            "results. It is turned on by default. To check see "
+            "'Display Options' dropdown menu on the Display of interest.\n\n"
             "Change Radar variables:\n"
             "  Click the 'Find Variable', select variable.\n\n"
             "Show Python script for batching:\n"
@@ -284,7 +284,7 @@ class GateFilter(Component):
 
         try:
             for cmd in self.filterscript:
-                text += cmd + "<br>"#\n"
+                text += cmd + "<br>"
         except:
             common.ShowWarning("Must apply filter first.")
 

@@ -1,7 +1,7 @@
 """
 corrections.py
 
-Driver function that creates an ARTView display for 
+Driver function that creates an ARTView display for
 work with corrections routines.
 """
 import os

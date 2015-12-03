@@ -47,8 +47,9 @@ class RadarDisplay(Component):
         args['parent'] = parent
         return self(**args), True
 
-    def __init__(self, Vradar=None, Vfield=None, Vtilt=None, Vlims=None, Vcmap=None,
-                 Vgatefilter=None, name="RadarDisplay", parent=None):
+    def __init__(self, Vradar=None, Vfield=None, Vtilt=None, Vlims=None,
+                 Vcmap=None, Vgatefilter=None, name="RadarDisplay",
+                 parent=None):
         '''
         Initialize the class to create display.
 
@@ -333,7 +334,7 @@ class RadarDisplay(Component):
         dispLimits.setToolTip("Set data, X, and Y range limits")
         self.gatefilterToggle = QtGui.QAction(
             'GateFilter On', dispmenu, checkable=True,
-            triggered=self._GateFilterToggleAction)#_update_plot)
+            triggered=self._GateFilterToggleAction)
         dispmenu.addAction(self.gatefilterToggle)
         self.gatefilterToggle.setChecked(True)
         dispTitle = dispmenu.addAction("Change Title")
@@ -613,6 +614,7 @@ class RadarDisplay(Component):
         self.tools['select_region'] = SelectRegion(
             self.VplotAxes, self.VpathInteriorFunc, self.Vfield,
             name=self.name + " SelectRegion", parent=self)
+
     def toolResetCmd(self):
         '''Reset tools via disconnect.'''
         from . import tools
@@ -870,9 +872,11 @@ class RadarDisplay(Component):
         # HACK while pyart don't implemt it self
         if self.Vradar.value is not None:
             if 'valid_min' in self.Vradar.value.fields[self.Vfield.value]:
-                d['vmin'] = self.Vradar.value.fields[self.Vfield.value]['valid_min']
+                d['vmin'] = self.Vradar.value.fields[self.Vfield.value][
+                    'valid_min']
             if 'valid_max' in self.Vradar.value.fields[self.Vfield.value]:
-                d['vmax'] = self.Vradar.value.fields[self.Vfield.value]['valid_max']
+                d['vmax'] = self.Vradar.value.fields[self.Vfield.value][
+                    'valid_max']
 
         self.Vcmap.change(d, strong)
 
@@ -1030,7 +1034,7 @@ class _DisplayStart(QtGui.QDialog):
         # if no Vradar abort
         if 'Vradar' not in self.result:
             self.result['Vradar'] = Variable(None)
-            #common.ShowWarning("Must select a variable for Vradar")
+            # common.ShowWarning("Must select a variable for Vradar")
             # I'm allowing this to continue, but this will result in error
 
         # if Vfield, Vtilt, Vlims were not select create new

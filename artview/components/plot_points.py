@@ -297,7 +297,7 @@ class PointsDisplay(Component):
         '''
         # test for None
         if self.Vpoints.value is None:
-#            self.fieldBox.clear()
+            # self.fieldBox.clear()
             return
 
         # Get field names
@@ -355,7 +355,7 @@ class PointsDisplay(Component):
         '''
         if strong:
             pass
-            #self._update_plot()
+            # self._update_plot()
 
     ########################
     # Selectionion methods #
@@ -414,7 +414,7 @@ class PointsDisplay(Component):
             self.ax.set_ylabel("Counts")
 
             # If limits exists, update the axes otherwise retrieve
-            #self._update_axes()
+            # self._update_axes()
             self._update_limits()
 
             # If the colorbar flag is thrown, create it
@@ -423,9 +423,10 @@ class PointsDisplay(Component):
                 self.cax.cla()
                 self.cax = self.fig.add_axes([0.2, 0.10, 0.7, 0.02])
                 norm = mlabNormalize(vmin=cmap['vmin'],
-                                    vmax=cmap['vmax'])
+                                     vmax=cmap['vmax'])
                 self.cbar = mlabColorbarBase(self.cax, cmap=self.cm_name,
-                                            norm=norm, orientation='horizontal')
+                                             norm=norm,
+                                             orientation='horizontal')
                 # colorbar - use specified units or default depending on
                 # what has or has not been entered
                 self.cbar.set_label(self.units)
@@ -444,7 +445,7 @@ class PointsDisplay(Component):
                 text = "<b>Basic statistics for the selected Region</b><br><br>"
                 for stat in SelectRegionstats:
                     text += ("<i>%s</i>: %5.2f<br>" %
-                            (stat, SelectRegionstats[stat]))
+                             (stat, SelectRegionstats[stat]))
                 self.statistics = QtGui.QDialog()
                 layout = QtGui.QGridLayout(self.statistics)
                 self.statistics = QtGui.QTextEdit("")
@@ -512,7 +513,7 @@ class PointsDisplay(Component):
             self.Vfield.value not in self.Vpoints.value.fields):
             return ''
         return 'Points Plot'
-        #pyart.graph.common.generate_title(self.Vpoints.value,
+        # pyart.graph.common.generate_title(self.Vpoints.value,
         #                                  self.Vfield.value,
         #                                  0)
 
@@ -553,8 +554,8 @@ class PointsDisplay(Component):
         points = self.Vpoints.value
         if points is not None:
             fsuggest = ('SelectRegion_' + self.Vfield.value + '_' +
-                str(points.axes['x_disp']['data'][:].mean()) + '_' +
-                str(points.axes['y_disp']['data'][:].mean())+'.csv')
+                        str(points.axes['x_disp']['data'][:].mean()) + '_' +
+                        str(points.axes['y_disp']['data'][:].mean())+'.csv')
             path = QtGui.QFileDialog.getSaveFileName(
                 self, 'Save CSV Table File', fsuggest, 'CSV(*.csv)')
             if not path.isEmpty():

@@ -608,8 +608,8 @@ class GridDisplay(Component):
         except:
             paths = [paths]
 
-        xy = np.empty((0,2))
-        idx = np.empty((0,2), dtype=np.int)
+        xy = np.empty((0, 2))
+        idx = np.empty((0, 2), dtype=np.int)
 
         for path in paths:
             _xy, _idx = interior_grid(path, grid, self.basemap,
@@ -904,8 +904,7 @@ class GridDisplay(Component):
 
     def _get_default_title(self):
         '''Get default title from pyart.'''
-        if (
-            self.Vgrid.value is None or
+        if (self.Vgrid.value is None or
             self.Vfield.value not in self.Vgrid.value.fields):
             return ''
         if self.plot_type == "gridZ":
@@ -1119,7 +1118,7 @@ class _DisplayStart(QtGui.QDialog):
         # if no Vgrid abort
         if 'Vgrid' not in self.result:
             self.result['Vgrid'] = Variable(None)
-            #common.ShowWarning("Must select a variable for Vgrid.")
+            # common.ShowWarning("Must select a variable for Vgrid.")
             # I'm allowing this to continue, but this will result in error
 
         # if Vfield, Vlevel, Vlims were not select create new

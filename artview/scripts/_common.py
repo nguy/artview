@@ -8,6 +8,7 @@ from ..components import (Menu, RadarDisplay, GridDisplay, LinkPlugins,
                           SelectRegion, PointsDisplay)
 from ..core import QtGui, QtCore
 
+
 def _add_all_advanced_tools(menu):
 
     # add grafical starts
@@ -64,7 +65,7 @@ def _parse_field(container, field):
 
 def startMainMenu(DirIn=None, filename=None):
 
-    MainMenu = Menu(DirIn,  filename, mode=("Radar","Grid"))
+    MainMenu = Menu(DirIn, filename, mode=("Radar", "Grid"))
 
     for comp in [LinkPlugins, RadarDisplay, GridDisplay, SelectRegion]:
         action = QtGui.QAction(comp.__name__, MainMenu)

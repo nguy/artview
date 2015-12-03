@@ -106,7 +106,7 @@ class ManualUnfold(Component):
         self.foldButton.clicked.connect(self.foldBack)
         self.layout.addWidget(self.foldButton, 5, 1)
 
-        self.newRadar(None,None,True)
+        self.newRadar(None, None, True)
         self.show()
 
     def getFieldNames(self):
@@ -157,13 +157,13 @@ class ManualUnfold(Component):
         rng = points.axes['range_index']['data']
         nyquist = self.nyquistVelocity.value()
         if side == 'positive':
-            data[ray,rng] = np.where(
-                original_data[ray,rng] > 0,
-                -2 * nyquist + original_data[ray,rng], data[ray,rng])
+            data[ray, rng] = np.where(
+                original_data[ray, rng] > 0,
+                -2 * nyquist + original_data[ray, rng], data[ray, rng])
         elif side == 'negative':
-            data[ray,rng] = np.where(
-                original_data[ray,rng] < 0,
-                2 * nyquist + original_data[ray,rng], data[ray,rng])
+            data[ray, rng] = np.where(
+                original_data[ray, rng] < 0,
+                2 * nyquist + original_data[ray, rng], data[ray, rng])
 
         strong_update = False  # insertion is weak, overwrite strong
         if corrVel in self.Vradar.value.fields.keys():
@@ -179,9 +179,9 @@ class ManualUnfold(Component):
         # save for undoing
         unfold = np.zeros_like(original_data, dtype=np.int8)
         if side == 'positive':
-            unfold[ray,rng] = np.where(original_data[ray,rng] > 0, -1, 0)
+            unfold[ray, rng] = np.where(original_data[ray, rng] > 0, -1, 0)
         elif side == 'negative':
-            unfold[ray,rng] = np.where(original_data[ray,rng] < 0, 1, 0)
+            unfold[ray, rng] = np.where(original_data[ray, rng] < 0, 1, 0)
 
         self.unfoldList.append((unfold, nyquist))
 
@@ -189,7 +189,7 @@ class ManualUnfold(Component):
         '''Undo last unfolding.'''
         vel, corrVel = self.getFieldNames()
         radar = self.Vradar.value
-        if len(self.unfoldList)==0 or corrVel not in radar.fields.keys():
+        if len(self.unfoldList) == 0 or corrVel not in radar.fields.keys():
             common.ShowWarning("No folding to be undone")
             return
 

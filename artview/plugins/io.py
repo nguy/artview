@@ -32,6 +32,7 @@ try:
 except:
     open_functions = []
 
+
 class FileList(Component):
     '''
     Open an interactive python console so the direct manipulation

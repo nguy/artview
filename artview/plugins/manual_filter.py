@@ -88,7 +88,7 @@ class ManualFilter(Component):
         self.sharedVariables = {"Vradar": self.NewRadar,
                                 "Vpoints": None,
                                 "Vfield": self.NewField,
-                                "Vgatefilter": None,}
+                                "Vgatefilter": None, }
         self.connectAllVariables()
 
         self.central_widget = QtGui.QWidget()
@@ -107,7 +107,8 @@ class ManualFilter(Component):
         self.filterButton.clicked.connect(self.removeFromFilter)
         self.layout.addWidget(self.filterButton, 1, 1)
 
-        self.fieldButton = QtGui.QPushButton("Filter Gates in the Current Field")
+        self.fieldButton = QtGui.QPushButton(
+            "Filter Gates in the Current Field")
         self.fieldButton.clicked.connect(self.removeFromField)
         self.layout.addWidget(self.fieldButton, 2, 1)
 
