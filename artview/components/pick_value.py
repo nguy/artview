@@ -11,7 +11,7 @@ from ..core import Variable, Component, common, VariableChoose, QtGui, QtCore
 
 class ValueClick(Component):
 
-    def __init__(self, display, name="ValueClick", parent=None): # XXX make display optional
+    def __init__(self, display, name="ValueClick", parent=None):
         '''
         Initialize the class to pick value from display.
 
@@ -34,6 +34,11 @@ class ValueClick(Component):
             Parent instance to associate to ROI instance.
             If None, then Qt owns, otherwise associated with parent PyQt
             instance.
+
+        NOTE
+        ----
+        Since ARTView 1.2 this is not more a valid Component, since it
+        has mandatory arguments and this is no longer allowed
         '''
         super(ValueClick, self).__init__(name=name, parent=parent)
         self.sharedVariables = {}
