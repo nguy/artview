@@ -22,7 +22,7 @@ from ..core import Component, Variable, common, QtGui, QtCore, componentsList
 
 class ManualFilter(Component):
     '''
-    Use of Points to Unfold Velocity in Radar
+    Use of Points to remove data from Radar.
     '''
 
     Vradar = None  #: see :ref:`shared_variable`
@@ -100,41 +100,29 @@ class ManualFilter(Component):
         self.fieldBox.setToolTip("Select variable/field in data file.\n"
                                  "'Field Window' will launch popup.\n")
         self.fieldBox.activated[str].connect(self._fieldAction)
-        self.layout.addWidget(self.fieldBox, 0, 0)
+        self.layout.addWidget(QtGui.QLabel("Current field"), 0, 0)
+        self.layout.addWidget(self.fieldBox, 0, 1)
 
         self.filterButton = QtGui.QPushButton("Filter Gates in the GateFilter")
-        self.filterButton.clicked.connect(self.remoteFromFilter)
-        self.layout.addWidget(self.filterButton, 1, 0)
+        self.filterButton.clicked.connect(self.removeFromFilter)
+        self.layout.addWidget(self.filterButton, 1, 1)
 
         self.fieldButton = QtGui.QPushButton("Filter Gates in the Current Field")
         self.fieldButton.clicked.connect(self.removeFromField)
-        self.layout.addWidget(self.fieldButton, 2, 0)
+        self.layout.addWidget(self.fieldButton, 2, 1)
 
         self.radarButton = QtGui.QPushButton("Filter Gates in the Radar")
         self.radarButton.clicked.connect(self.removeFromRadar)
-        self.layout.addWidget(self.radarButton, 3, 0)
+        self.layout.addWidget(self.radarButton, 3, 1)
 
         self.resetButton = QtGui.QPushButton("Reset GateFilter")
         self.resetButton.clicked.connect(self.reset)
-        self.layout.addWidget(self.resetButton, 4, 0)
+        self.layout.addWidget(self.resetButton, 4, 1)
 
         self.show()
 
-    def getFieldNames(self):
-        vel = str(self.velField.text())
-        if vel == '':
-            vel = pyart.config.get_field_name('velocity')
-        if vel not in self.Vradar.value.fields:
-            common.ShowWarning(
-                "vel_field not in Radar, can not perform correction")
-
-        corrVel = str(self.corrVelField.text())
-        if corrVel == '':
-            corrVel = pyart.config.get_field_name('corrected_velocity')
-
-        return vel, corrVel
-
-    def remoteFromFilter(self):
+    def removeFromFilter(self):
+        '''Filter selected gates.'''
         if self.Vpoints.value is None:
             return
         mask_ray = self.Vpoints.value.axes['ray_index']['data'][:]
@@ -156,6 +144,7 @@ class ManualFilter(Component):
             self.Vgatefilter.update()
 
     def removeFromField(self):
+        '''Remove selected points from current field in Radar.'''
         if (self.Vpoints.value is None or
             self.Vradar.value is None or
             self.Vfield.value not in self.Vradar.value.fields):
@@ -173,6 +162,7 @@ class ManualFilter(Component):
         self.Vradar.update()
 
     def removeFromRadar(self):
+        '''Remove selected points from all fields in Radar.'''
         if (self.Vpoints.value is None or
             self.Vradar.value is None):
             return
@@ -190,6 +180,7 @@ class ManualFilter(Component):
         self.Vradar.update()
 
     def reset(self):
+        '''Reset Getafilter to a empty one.'''
         if self.Vgatefilter.value is not None:
             self.Vgatefilter.value.include_all()
             self.Vgatefilter.update()

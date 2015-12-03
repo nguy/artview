@@ -77,10 +77,6 @@ class RadarDisplay(Component):
             If None, then Qt owns, otherwise associated with parent PyQt
             instance.
 
-        Notes
-        -----
-        This class records the selected button and passes the
-        change value back to variable.
         '''
         super(RadarDisplay, self).__init__(name=name, parent=parent)
         self.setFocusPolicy(QtCore.Qt.ClickFocus)

@@ -76,6 +76,7 @@ def start():
 
     MainMenu.setGeometry(0, 0, menu_width, menu_height)
 
+
 def execute():
     ''' Execute Application '''
     global app

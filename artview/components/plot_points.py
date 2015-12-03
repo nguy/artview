@@ -26,7 +26,7 @@ DPI = 200
 
 class PointsDisplay(Component):
     '''
-    Class to create a display plot, using data and a key for plot type.
+    Class to create a display plot, using data from a Points instance.
     '''
 
     Vpoints = None  #: see :ref:`shared_variable`
@@ -61,7 +61,7 @@ class PointsDisplay(Component):
             Colormap signal variable.
             A value of None will instantiate a colormap variable.
         plot_type : str
-            Type of plot to produce (e.g. plot, barplot, etc).
+            Type of plot to produce (e.g. histogram, statistics, table).
         name : string
             Display window name.
         parent : PyQt instance
@@ -69,10 +69,6 @@ class PointsDisplay(Component):
             If None, then Qt owns, otherwise associated with parent PyQt
             instance.
 
-        Notes
-        -----
-        This class records the selected button and passes the
-        change value back to variable.
         '''
         super(PointsDisplay, self).__init__(name=name, parent=parent)
         self.setFocusPolicy(QtCore.Qt.ClickFocus)
@@ -187,14 +183,6 @@ class PointsDisplay(Component):
     ##################################
     # User display interface methods #
     ##################################
-    def addButtons(self):
-        '''Add a series of buttons for user control over display.'''
-        # Create the Display controls
-        self._add_displayBoxUI()
-
-    def setUILayout(self):
-        '''Setup the button/display UI layout.'''
-        self.layout.addWidget(self.dispButton, 0, 1)
 
     #############################
     # Functionality methods #
@@ -202,15 +190,18 @@ class PointsDisplay(Component):
 
     def changePlotType(self, plot_type):
 
-        if self.plot_type == 'histogram':
-            self.layout.removeWidget(self.canvas)
-            self.canvas.hide()
-        elif self.plot_type == 'statistics':
-            self.layout.removeWidget(self.statistics)
-            self.statistics.close()
-        elif self.plot_type == 'table':
-            self.layout.removeWidget(self.table)
-            self.table.close()
+        try:
+            if self.plot_type == 'histogram':
+                self.layout.removeWidget(self.canvas)
+                self.canvas.hide()
+            elif self.plot_type == 'statistics':
+                self.layout.removeWidget(self.statistics)
+                self.statistics.close()
+            elif self.plot_type == 'table':
+                self.layout.removeWidget(self.table)
+                self.table.close()
+        except:
+            pass
 
         self.plot_type = plot_type
         self.displayMenu.clear()
@@ -253,15 +244,6 @@ class PointsDisplay(Component):
             self.units = val
             self._update_plot()
 
-#    def _add_cmaps_to_button(self):
-        '''Add a menu to change colormap used for plot.'''
-#        for cm_name in self.cm_names:
-#            cmapAction = self.dispCmapmenu.addAction(cm_name)
-#            cmapAction.setStatusTip("Use the %s colormap" % cm_name)
-#            cmapAction.triggered[()].connect(
-#                lambda cm_name=cm_name: self.cmapSelectCmd(cm_name))
-#            self.dispCmap.setMenu(self.dispCmapmenu)
-
     def _fill_histogram_menu(self):
         '''Create the Display Options Button menu.'''
 
@@ -275,22 +257,16 @@ class PointsDisplay(Component):
 #        dispTitle.setToolTip("Change plot title")
 #        dispUnit = dispmenu.addAction("Change Units")
 #        dispUnit.setToolTip("Change units string")
-#        self.dispCmap = dispmenu.addAction("Change Colormap")
-#        self.dispCmapmenu = QtGui.QMenu("Change Cmap")
-#        self.dispCmapmenu.setFocusPolicy(QtCore.Qt.NoFocus)
         dispSaveFile = self.displayMenu.addAction("Save Image")
         dispSaveFile.setShortcut("Ctrl+S")
         dispSaveFile.setStatusTip("Save Image using dialog")
-        dispHelp = self.displayMenu.addAction("Help")
+#        dispHelp = self.displayMenu.addAction("Help")
 
         dispLimits.triggered.connect(self._open_LimsDialog)
 #        dispTitle.triggered.connect(self._title_input)
 #        dispUnit.triggered.connect(self._units_input)
         dispSaveFile.triggered.connect(self._savefile)
-        dispHelp.triggered.connect(self.displayHelp)
-
-#        self._add_cmaps_to_button()
-#        self.dispButton.setMenu(dispmenu)
+#        dispHelp.triggered.connect(self.displayHelp) #XXX help is out dated
 
     def displayHelp(self):
         text = (
@@ -385,72 +361,6 @@ class PointsDisplay(Component):
     # Selectionion methods #
     ########################
 
-
-
-#     def _create_plot(self):
-#         '''
-#         Create a plot
-#         '''
-#         # test for None
-#         if self.Vradar.value is None:
-#             self.fieldBox.clear()
-#             self.tiltBox.clear()
-#             return
-#
-#         # Get the tilt angles
-#         self.rTilts = self.Vradar.value.sweep_number['data'][:]
-#         # Get field names
-#         self.fieldnames = self.Vradar.value.fields.keys()
-#
-#         # Check the file type and initialize limts
-#         self._check_file_type()
-#
-#         # Update field and tilt MenuBox
-#         self._fillTiltBox()
-#         self._fillFieldBox()
-#
-#         self.units = None
-#         if strong:
-#             self._update_plot()
-
-#     def NewLims(self, variable, value, strong):
-#         '''
-#         Slot for 'ValueChanged' signal of
-#         :py:class:`Vlims <artview.core.core.Variable>`.
-#
-#         This will:
-#
-#         * If strong update: update axes
-#         '''
-#         if strong:
-#             self._update_axes()
-
-#     def NewCmap(self, variable, value, strong):
-#         '''
-#         Slot for 'ValueChanged' signal of
-#         :py:class:`Vcmap <artview.core.core.Variable>`.
-#
-#         This will:
-#
-#         * If strong update: update plot
-#         '''
-#         if strong and self.Vradar.value is not None:
-#             self._update_plot()
-
-    def cmapSelectCmd(self, cm_name):
-        '''Captures colormap selection and redraws.'''
-        self.Vcmap.value['cmap'] = cm_name
-        self.Vcmap.update()
-
-#    def toolZoomPanCmd(self):
-#        '''Creates and connects to a Zoom/Pan instance.'''
-#        from .tools import ZoomPan
-#        scale = 1.1
-#        self.tools['zoompan'] = ZoomPan(
-#            self.limits, self.ax,
-#            base_scale=scale, parent=self.parent)
-#        self.tools['zoompan'].connect()
-
     ####################
     # Plotting methods #
     ####################
@@ -461,18 +371,6 @@ class PointsDisplay(Component):
         self.YSIZE = 5
         self.fig = Figure(figsize=(self.XSIZE, self.YSIZE))
         self.ax = self.fig.add_axes([0.2, 0.2, 0.7, 0.7])
-
-#    def _update_fig_ax(self):
-#        '''Set the figure and axis to plot.'''
-#        if self.plot_type in ("radarAirborne", "radarRhi"):
-#            self.YSIZE = 5
-#        else:
-#            self.YSIZE = 8
-#        xwidth = 0.7
-#        yheight = 0.7 * float(self.YSIZE) / float(self.XSIZE)
-#        self.ax.set_position([0.2, 0.55-0.5*yheight, xwidth, yheight])
-#        self.cax.set_position([0.2, 0.10, xwidth, 0.02])
-#        self._update_axes()
 
     def _set_figure_canvas(self):
         '''Set the figure canvas to draw in window area.'''
@@ -500,7 +398,7 @@ class PointsDisplay(Component):
             self.statusbar.setStyleSheet("QStatusBar{padding-left:8px;" +
                                          "background:rgba(255,0,0,255);" +
                                          "color:black;font-weight:bold;}")
-            self.statusbar.showMessage("Field not Found in Radar", msecs=5000)
+            self.statusbar.showMessage("Field not Found", msecs=5000)
             return
         else:
             self.statusbar.setStyleSheet("QStatusBar{padding-left:8px;" +
@@ -599,7 +497,7 @@ class PointsDisplay(Component):
         self.Vcmap.change(d, False)
 
     def _set_default_limits(self, strong=True):
-        ''' Set colormap to pre-defined default.'''
+        ''' Set limits to pre-defined default.'''
         cmap = self.Vcmap.value
         d = {}
         d['xmin'] = cmap['vmin']
@@ -609,7 +507,7 @@ class PointsDisplay(Component):
         self.Vlims.change(d, False)
 
     def _get_default_title(self):
-        '''Get default title from pyart.'''
+        '''Get default title.'''
         if (self.Vpoints.value is None or
             self.Vfield.value not in self.Vpoints.value.fields):
             return ''
@@ -642,7 +540,24 @@ class PointsDisplay(Component):
             self.statusbar.showMessage('Saved to %s' % path)
 
     def openTable(self):
-        pass
+        '''Open a saved table of SelectRegion points from a CSV file.'''
+        path = QtGui.QFileDialog.getOpenFileName(
+            self, 'Open File', '', 'CSV(*.csv)')
+        if path == '':
+            return
+        points = read_points_csv(path)
+        self.Vpoints.change(points)
 
     def saveTable(self):
-        pass
+        '''Save a Table of SelectRegion points to a CSV file.'''
+        points = self.Vpoints.value
+        if points is not None:
+            fsuggest = ('SelectRegion_' + self.Vfield.value + '_' +
+                str(points.axes['x_disp']['data'][:].mean()) + '_' +
+                str(points.axes['y_disp']['data'][:].mean())+'.csv')
+            path = QtGui.QFileDialog.getSaveFileName(
+                self, 'Save CSV Table File', fsuggest, 'CSV(*.csv)')
+            if not path.isEmpty():
+                write_points_csv(path, points)
+        else:
+            common.ShowWarning("No gate selected, no data to save!")
