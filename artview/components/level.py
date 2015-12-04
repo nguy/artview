@@ -20,23 +20,24 @@ class LevelButtonWindow(Component):
     Vradar = None  #: see :ref:`shared_variable`
     Vgrid = None  #: see :ref:`shared_variable`
     Vtilt = None  \
-        #: see :ref:`shared_variable`, only used if plot_type starts with "Radar"
+        #: see :ref:`shared_variable`, used if plot_type starts with "Radar"
     VlevelZ = None \
-        #: see :ref:`shared_variable`, only used if plot_type="gridZ"
+        #: see :ref:`shared_variable`, used if plot_type="gridZ"
     VlevelY = None \
-        #: see :ref:`shared_variable`, only used if plot_type="gridY"
+        #: see :ref:`shared_variable`, used if plot_type="gridY"
     VlevelX = None \
-        #: see :ref:`shared_variable`, only used if plot_type="gridX"
+        #: see :ref:`shared_variable`, used if plot_type="gridX"
     Vcmap = None  #: see :ref:`shared_variable`
 
-    def __init__(self, Vlevel, plot_type, Vcontainer=None,
+    def __init__(self, Vlevel=None, plot_type="Radar", Vcontainer=None,
                  controlType="radio", name="LevelButtons", parent=None):
         '''Initialize the class to create the Level Selection interface.
 
         Parameters
         ----------
+        [Optional]
         Vlevel : :py:class:`~artview.core.core.Variable` instance
-            Level signal variable.
+            Level signal variable. If None start new one with 0.
         plot_type : string
             One of "radarPpi", "radarRhi", "radarAirborne", "gridZ", "gridY"
             or "gridX". If starting with "radar" Vlevel will be passed to
@@ -45,7 +46,6 @@ class LevelButtonWindow(Component):
         Vcontainer : :py:class:`~artview.core.core.Variable` instance
             Radar/Grid signal variable. None will create empty variable.
             Will be passed to Vradar or Vgrid according with plot_type.
-        [Optional]
         controlType : "radio" or "slider"
             Type of control used, radio button or slider bar.
         name : string
@@ -67,6 +67,8 @@ class LevelButtonWindow(Component):
         # The change is sent through Vlevel
         if Vcontainer is None:
             Vcontainer = Variable(None)
+        if Vlevel is None:
+            Vlevel = Variable(0)
 
         self.plot_type = plot_type
         self.controlType = controlType

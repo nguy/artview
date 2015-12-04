@@ -481,6 +481,7 @@ def nearest_point_grid(grid, basemap, zvalue, yvalue, xvalue):
         zvalue = np.array((zvalue,))
 
     if basemap is not None:
+        from mpl_toolkits.basemap import pyproj
         proj = pyproj.Proj(proj='aeqd', datum='NAD83',
                            lat_0=grid.axes['lat']['data'][0],
                            lon_0=grid.axes['lon']['data'][0])

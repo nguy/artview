@@ -4,7 +4,9 @@ _common.py
 auxiliary functions for scripts
 """
 import pyart
-from ..components import RadarDisplay, LinkPlugins, SelectRegion
+from ..components import (Menu, RadarDisplay, GridDisplay, LinkPlugins,
+                          SelectRegion, PointsDisplay)
+from ..core import QtGui, QtCore
 
 
 def _add_all_advanced_tools(menu):
@@ -12,14 +14,18 @@ def _add_all_advanced_tools(menu):
     # add grafical starts
     menu.addComponent(LinkPlugins)
     menu.addComponent(RadarDisplay)
+    menu.addComponent(GridDisplay)
     menu.addComponent(SelectRegion)
+    menu.addComponent(PointsDisplay)
 
     # add all plugins to grafical start
     try:
         from .. import plugins
-        for plugin in plugins._plugins:
+        for plugin in plugins._plugins.values():
             menu.addComponent(plugin)
     except:
+        import traceback
+        print(traceback.format_exc())
         import warnings
         warnings.warn("Loading Plugins Fail")
 
@@ -55,3 +61,35 @@ def _parse_field(container, field):
             field = Zinfile.pop()
 
     return field
+
+
+def startMainMenu(DirIn=None, filename=None):
+
+    MainMenu = Menu(DirIn, filename, mode=("Radar", "Grid"))
+
+    for comp in [LinkPlugins, RadarDisplay, GridDisplay, SelectRegion]:
+        action = QtGui.QAction(comp.__name__, MainMenu)
+        action.triggered[()].connect(
+            lambda comp=comp: MainMenu.startComponent(comp))
+        MainMenu.addMenuAction(("Advanced Tools",), action)
+
+    try:
+        from .. import plugins
+        for plugin in plugins._plugins.values():
+            action = QtGui.QAction(plugin.__name__, MainMenu)
+            action.triggered[()].connect(
+                lambda plugin=plugin: MainMenu.startComponent(plugin))
+            if plugin.__name__ != 'FileList':
+                MainMenu.addMenuAction(("Advanced Tools",), action)
+            else:
+                MainMenu.addMenuAction(("File",), action)
+    except:
+        import warnings
+        warnings.warn("Loading Plugins Fail")
+
+    return MainMenu
+    # resize menu
+    menu_width = 300
+    menu_height = 180
+
+    MainMenu.setGeometry(0, 0, menu_width, menu_height)

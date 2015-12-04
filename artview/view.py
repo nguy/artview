@@ -22,6 +22,7 @@ import pyart
 from .core import Variable, QtGui, QtCore
 from .components import (
     RadarDisplay, GridDisplay, Menu, LinkPlugins, SelectRegion)
+from .scripts._common import startMainMenu
 
 app = None
 displays = []
@@ -67,20 +68,7 @@ def start():
         app = QtGui.QApplication([])
 
     global MainMenu
-    MainMenu = Menu(os.getcwd(), filename=False, mode="All")
-    MainMenu.addComponent(LinkPlugins)
-    MainMenu.addComponent(RadarDisplay)
-    MainMenu.addComponent(GridDisplay)
-    MainMenu.addComponent(SelectRegion)
-
-    # add all plugins to grafical start
-    try:
-        from . import plugins
-        for plugin in plugins._plugins:
-            MainMenu.addComponent(plugin)
-    except:
-        import warnings
-        warnings.warn("Loading Plugins Fail")
+    MainMenu = startMainMenu(os.getcwd(), False)
 
     # resize menu
     menu_width = 300

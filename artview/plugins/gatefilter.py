@@ -175,29 +175,30 @@ class GateFilter(Component):
         gBox_layout.addWidget(QtGui.QLabel("Value 2\nFor outside/inside"),
                               0, 4, 1, 1)
 
-        self.fieldfilter = {}
-
-        for nn, field in enumerate(self.Vradar.value.fields.keys()):
-            chkactive.append(QtGui.QCheckBox())
-            chkactive[nn].setChecked(False)
-            fldlab.append(QtGui.QLabel(field))
-            loval.append(QtGui.QLineEdit(""))
-            hival.append(QtGui.QLineEdit(""))
-            operator.append(self.set_operator_menu())
-
-            gBox_layout.addWidget(chkactive[nn], nn+1, 0, 1, 1)
-            gBox_layout.addWidget(fldlab[nn], nn+1, 1, 1, 1)
-            gBox_layout.addWidget(operator[nn], nn+1, 2, 1, 1)
-            gBox_layout.addWidget(loval[nn], nn+1, 3, 1, 1)
-            gBox_layout.addWidget(hival[nn], nn+1, 4, 1, 1)
-
         groupBox.setLayout(gBox_layout)
 
-        self.fieldfilter["check_active"] = chkactive
-        self.fieldfilter["field"] = fldlab
-        self.fieldfilter["operator"] = operator
-        self.fieldfilter["low_value"] = loval
-        self.fieldfilter["high_value"] = hival
+        self.fieldfilter = {}
+
+        if self.Vradar.value is not None:
+            for nn, field in enumerate(self.Vradar.value.fields.keys()):
+                chkactive.append(QtGui.QCheckBox())
+                chkactive[nn].setChecked(False)
+                fldlab.append(QtGui.QLabel(field))
+                loval.append(QtGui.QLineEdit(""))
+                hival.append(QtGui.QLineEdit(""))
+                operator.append(self.set_operator_menu())
+
+                gBox_layout.addWidget(chkactive[nn], nn+1, 0, 1, 1)
+                gBox_layout.addWidget(fldlab[nn], nn+1, 1, 1, 1)
+                gBox_layout.addWidget(operator[nn], nn+1, 2, 1, 1)
+                gBox_layout.addWidget(loval[nn], nn+1, 3, 1, 1)
+                gBox_layout.addWidget(hival[nn], nn+1, 4, 1, 1)
+
+            self.fieldfilter["check_active"] = chkactive
+            self.fieldfilter["field"] = fldlab
+            self.fieldfilter["operator"] = operator
+            self.fieldfilter["low_value"] = loval
+            self.fieldfilter["high_value"] = hival
 
 #         for index, chk in enumerate(self.fieldfilter["check_active"]):
 #             if chk.isChecked():
@@ -221,8 +222,10 @@ class GateFilter(Component):
 
         self.dispCombo.setCurrentIndex(selection)
 
+        self.disconnectAllVariables()
         self.Vradar = Vradar
         self.Vgatefilter = Vgatefilter
+        self.connectAllVariables()
 
     def displayHelp(self):
         '''Display Py-Art's docstring for help.'''
@@ -238,8 +241,8 @@ class GateFilter(Component):
             "  2. Check the 'Activate Filter' box to apply the filter.\n"
             "  3. Click the 'Filter' button.\n"
             "  4. GateFilter needs to be activated in the Display to see the "
-            "results. It is turned on by default. To check see 'Display Options "
-            "dropdown menu on the Display of interest.\n\n"
+            "results. It is turned on by default. To check see "
+            "'Display Options' dropdown menu on the Display of interest.\n\n"
             "Change Radar variables:\n"
             "  Click the 'Find Variable', select variable.\n\n"
             "Show Python script for batching:\n"
@@ -281,7 +284,7 @@ class GateFilter(Component):
 
         try:
             for cmd in self.filterscript:
-                text += cmd + "<br>"#\n"
+                text += cmd + "<br>"
         except:
             common.ShowWarning("Must apply filter first.")
 
@@ -326,19 +329,11 @@ class GateFilter(Component):
             self.Vradar.value.fields[field]['data'].mask = (
                 self.original_masks[field])
         self.Vgatefilter.value._gate_excluded = self.original_masks[field]
-##        self.NewGateFilter(self.Vgatefilter.value, True)
         self.Vgatefilter.update(True)
 
     ######################
     #   Filter Methods   #
     ######################
-
-    def NewGateFilter(self, value, strong):
-        '''
-        Slot for value change of
-        :py:class:`Vgatefilter <artview.core.core.Variable>`.
-        '''
-        self.Vgatefilter.change(value, strong)
 
     def apply_filters(self):
         '''Mount Options and execute
@@ -479,9 +474,7 @@ class GateFilter(Component):
             common.ShowWarning("Please Activate Filter(s)")
             return
 
-        strong_update = True
         # add fields and update
-##        self.NewGateFilter(gatefilter, strong_update)
         self.Vgatefilter.change(gatefilter, True)
 
     def _clearLayout(self, layout):

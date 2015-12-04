@@ -25,6 +25,7 @@ except:
 
 NAME = 'ARTview'
 
+
 def parse(argv):
     '''
     Parse the input command line.

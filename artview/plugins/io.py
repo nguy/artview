@@ -17,17 +17,20 @@ import artview
 
 from ..core import Component, Variable, common, QtGui, QtCore, componentsList
 
-open_functions = [
-    pyart.io.read,
-    pyart.io.read_grid,
-    pyart.io.read_grid_mdv,
-    pyart.aux_io.read_d3r_gcpex_nc,
-    pyart.aux_io.read_gamic,
-    pyart.aux_io.read_kazr,
-    pyart.aux_io.read_noxp_iphex_nc,
-    pyart.aux_io.read_odim_h5,
-    pyart.aux_io.read_pattern,
-    pyart.aux_io.read_radx]
+try:
+    open_functions = [
+        pyart.io.read,
+        pyart.io.read_grid,
+        pyart.io.read_grid_mdv,
+        pyart.aux_io.read_d3r_gcpex_nc,
+        pyart.aux_io.read_gamic,
+        pyart.aux_io.read_kazr,
+        pyart.aux_io.read_noxp_iphex_nc,
+        pyart.aux_io.read_odim_h5,
+        pyart.aux_io.read_pattern,
+        pyart.aux_io.read_radx]
+except:
+    open_functions = []
 
 
 class FileList(Component):

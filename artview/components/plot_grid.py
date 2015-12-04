@@ -39,14 +39,17 @@ class GridDisplay(Component):
     VlevelX = None \
         #: see :ref:`shared_variable`, only used if plot_type="gridX"
     Vcmap = None  #: see :ref:`shared_variable`
+    VplotAxes = None  #: see :ref:`shared_variable` (no internal use)
+    VpathInteriorFunc = None  #: see :ref:`shared_variable` (no internal use)
 
     @classmethod
     def guiStart(self, parent=None):
         '''Graphical interface for starting this class'''
         args = _DisplayStart().startDisplay()
+        args['parent'] = parent
         return self(**args), True
 
-    def __init__(self, Vgrid, Vfield, VlevelZ=None, VlevelY=None,
+    def __init__(self, Vgrid=None, Vfield=None, VlevelZ=None, VlevelY=None,
                  VlevelX=None, Vlims=None, Vcmap=None, plot_type="gridZ",
                  name="Display", parent=None):
         '''
@@ -54,11 +57,11 @@ class GridDisplay(Component):
 
         Parameters
         ----------
-        Vgrid : :py:class:`~artview.core.core.Variable` instance
-            grid signal variable.
-        Vfield : :py:class:`~artview.core.core.Variable` instance
-            Field signal variable.
         [Optional]
+        Vgrid : :py:class:`~artview.core.core.Variable` instance
+            grid signal variable. If None start new one with None.
+        Vfield : :py:class:`~artview.core.core.Variable` instance
+            Field signal variable. If None start new one with empty string.
         VlevelZ : :py:class:`~artview.core.core.Variable` instance
             Signal variable for vertical level, only used if
             plot_type="gridZ". If None start with value zero.
@@ -96,8 +99,15 @@ class GridDisplay(Component):
         # external (or internal) changes in grid, field,
         # lims and level (expected to be Core.Variable instances)
         # The capital V so people remember using ".value"
-        self.Vgrid = Vgrid
-        self.Vfield = Vfield
+        if Vgrid is None:
+            self.Vgrid = Variable(None)
+        else:
+            self.Vgrid = Vgrid
+        if Vfield is None:
+            self.Vfield = Variable('')
+        else:
+            self.Vfield = Vfield
+
         if VlevelZ is None:
             self.VlevelZ = Variable(0)
         else:
@@ -120,10 +130,15 @@ class GridDisplay(Component):
         else:
             self.Vcmap = Vcmap
 
+        self.VpathInteriorFunc = Variable(self.getPathInteriorValues)
+        self.VplotAxes = Variable(None)
+
         self.sharedVariables = {"Vgrid": self.Newgrid,
                                 "Vfield": self.NewField,
                                 "Vlims": self.NewLims,
-                                "Vcmap": self.NewCmap, }
+                                "Vcmap": self.NewCmap,
+                                "VpathInteriorFunc": None,
+                                "VplotAxes": None}
 
         self.change_plot_type(plot_type)
 
@@ -547,9 +562,10 @@ class GridDisplay(Component):
 
     def toolSelectRegionCmd(self):
         '''Creates and connects to Region of Interest instance.'''
-        from .select_region import SelectRegion
+        from .select_region_old import SelectRegion
         self.tools['select_region'] = SelectRegion(
-            self, name=self.name + " SelectRegion", parent=self)
+            self.VplotAxes, self.VpathInteriorFunc, self.Vfield,
+            name=self.name + " SelectRegion", parent=self)
 
     def toolResetCmd(self):
         '''Reset tools via disconnect.'''
@@ -562,17 +578,18 @@ class GridDisplay(Component):
         self._set_default_limits()
         self._set_default_cmap()
 
-    def getPathInteriorValues(self, path):
+    def getPathInteriorValues(self, paths):
         '''
         Return the bins values path.
 
         Parameters
         ----------
-        path : Matplotlib Path instance
+        paths : list of :py:class:`matplotlib.path.Path` instances
 
         Returns
         -------
-        points: Points
+        points : :py:class`artview.core.points.Points`
+
             Points object containing all bins of the current grid
             and level inside path. Axes : 'x_disp', 'y_disp', 'x_disp',
             'x_index', 'y_index', 'z_index'. Fields: just current field
@@ -586,8 +603,19 @@ class GridDisplay(Component):
         if grid is None:
             return None
 
-        xy, idx = interior_grid(path, grid, self.basemap, self.Vlevel.value,
-                                self.plot_type)
+        try:
+            iter(paths)
+        except:
+            paths = [paths]
+
+        xy = np.empty((0, 2))
+        idx = np.empty((0, 2), dtype=np.int)
+
+        for path in paths:
+            _xy, _idx = interior_grid(path, grid, self.basemap,
+                                      self.Vlevel.value, self.plot_type)
+            xy = np.concatenate((xy, _xy))
+            idx = np.concatenate((idx, _idx))
 
         if self.plot_type == "gridZ":
             x = xy[:, 0]
@@ -709,6 +737,7 @@ class GridDisplay(Component):
         self.fig = Figure(figsize=(self.XSIZE, self.YSIZE))
         self.ax = self.fig.add_axes([0.2, 0.2, 0.7, 0.7])
         self.cax = self.fig.add_axes([0.2, 0.10, 0.7, 0.02])
+        self.VplotAxes.change(self.ax)
         # self._update_axes()
 
     def _update_fig_ax(self):
@@ -875,8 +904,7 @@ class GridDisplay(Component):
 
     def _get_default_title(self):
         '''Get default title from pyart.'''
-        if (
-            self.Vgrid.value is None or
+        if (self.Vgrid.value is None or
             self.Vfield.value not in self.Vgrid.value.fields):
             return ''
         if self.plot_type == "gridZ":
@@ -1073,7 +1101,7 @@ class _DisplayStart(QtGui.QDialog):
         self.layout.addWidget(QtGui.QLabel("Vlims"), 4, 0)
         self.layout.addWidget(self.limsButton, 4, 1, 1, 3)
 
-        self.name = QtGui.QLineEdit("Display")
+        self.name = QtGui.QLineEdit("GridDisplay")
         self.layout.addWidget(QtGui.QLabel("name"), 5, 0)
         self.layout.addWidget(self.name, 5, 1, 1, 3)
 
@@ -1089,7 +1117,8 @@ class _DisplayStart(QtGui.QDialog):
 
         # if no Vgrid abort
         if 'Vgrid' not in self.result:
-            common.ShowWarning("Must select a variable for Vgrid.")
+            self.result['Vgrid'] = Variable(None)
+            # common.ShowWarning("Must select a variable for Vgrid.")
             # I'm allowing this to continue, but this will result in error
 
         # if Vfield, Vlevel, Vlims were not select create new

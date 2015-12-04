@@ -24,9 +24,11 @@ ARTview functions.
 
 from .plot_radar import RadarDisplay
 from .plot_grid import GridDisplay
+from .plot_points import PointsDisplay
 from .menu import Menu
 from .level import LevelButtonWindow
 from .field import FieldButtonWindow
 from .component_control import LinkPlugins
-from .select_region import SelectRegion
+from .select_region import SelectRegion as SelectRegion_dev
+from .select_region_old import SelectRegion
 from .plot_simple import PlotDisplay

@@ -198,7 +198,8 @@ def limits_dialog(limits, cmap, name):
     buttonBox.accepted.connect(LimsDialog.accept)
     buttonBox.rejected.connect(LimsDialog.reject)
     retval = LimsDialog.exec_()
-    print(retval)
+    cmap = cmap.copy()
+    limits = limits.copy()
     if retval == 1:
         cmap['vmin'] = float(ent_dmin.text())
         cmap['vmax'] = float(ent_dmax.text())
@@ -206,5 +207,6 @@ def limits_dialog(limits, cmap, name):
         limits['xmax'] = float(ent_xmax.text())
         limits['ymin'] = float(ent_ymin.text())
         limits['ymax'] = float(ent_ymax.text())
+        print limits
 
     return limits, cmap, retval

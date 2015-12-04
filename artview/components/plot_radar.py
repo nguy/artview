@@ -37,27 +37,31 @@ class RadarDisplay(Component):
     Vlims = None  #: see :ref:`shared_variable`
     Vcmap = None  #: see :ref:`shared_variable`
     Vgatefilter = None  #: see :ref:`shared_variable`
+    VplotAxes = None  #: see :ref:`shared_variable` (no internal use)
+    VpathInteriorFunc = None  #: see :ref:`shared_variable` (no internal use)
 
     @classmethod
     def guiStart(self, parent=None):
         '''Graphical interface for starting this class'''
         args = _DisplayStart().startDisplay()
+        args['parent'] = parent
         return self(**args), True
 
-    def __init__(self, Vradar, Vfield, Vtilt, Vlims=None, Vcmap=None,
-                 Vgatefilter=None, name="RadarDisplay", parent=None):
+    def __init__(self, Vradar=None, Vfield=None, Vtilt=None, Vlims=None,
+                 Vcmap=None, Vgatefilter=None, name="RadarDisplay",
+                 parent=None):
         '''
         Initialize the class to create display.
 
         Parameters
         ----------
-        Vradar : :py:class:`~artview.core.core.Variable` instance
-            Radar signal variable.
-        Vfield : :py:class:`~artview.core.core.Variable` instance
-            Field signal variable.
-        Vtilt : :py:class:`~artview.core.core.Variable` instance
-            Tilt signal variable.
         [Optional]
+        Vradar : :py:class:`~artview.core.core.Variable` instance
+            Radar signal variable. If None start new one with None.
+        Vfield : :py:class:`~artview.core.core.Variable` instance
+            Field signal variable. If None start new one with empty string.
+        Vtilt : :py:class:`~artview.core.core.Variable` instance
+            Tilt signal variable. If None start new one with 0.
         Vlims : :py:class:`~artview.core.core.Variable` instance
             Limits signal variable.
             A value of None will instantiate a limits variable.
@@ -74,10 +78,6 @@ class RadarDisplay(Component):
             If None, then Qt owns, otherwise associated with parent PyQt
             instance.
 
-        Notes
-        -----
-        This class records the selected button and passes the
-        change value back to variable.
         '''
         super(RadarDisplay, self).__init__(name=name, parent=parent)
         self.setFocusPolicy(QtCore.Qt.ClickFocus)
@@ -85,9 +85,18 @@ class RadarDisplay(Component):
         # external (or internal) changes in radar, field,
         # lims and tilt (expected to be Core.Variable instances)
         # The capital V so people remember using ".value"
-        self.Vradar = Vradar
-        self.Vfield = Vfield
-        self.Vtilt = Vtilt
+        if Vradar is None:
+            self.Vradar = Variable(None)
+        else:
+            self.Vradar = Vradar
+        if Vfield is None:
+            self.Vfield = Variable('')
+        else:
+            self.Vfield = Vfield
+        if Vtilt is None:
+            self.Vtilt = Variable(0)
+        else:
+            self.Vtilt = Vtilt
         if Vlims is None:
             self.Vlims = Variable(None)
         else:
@@ -103,12 +112,17 @@ class RadarDisplay(Component):
         else:
             self.Vgatefilter = Vgatefilter
 
+        self.VpathInteriorFunc = Variable(self.getPathInteriorValues)
+        self.VplotAxes = Variable(None)
+
         self.sharedVariables = {"Vradar": self.NewRadar,
                                 "Vfield": self.NewField,
                                 "Vtilt": self.NewTilt,
                                 "Vlims": self.NewLims,
                                 "Vcmap": self.NewCmap,
-                                "Vgatefilter": self.NewGatefilter}
+                                "Vgatefilter": self.NewGatefilter,
+                                "VpathInteriorFunc": None,
+                                "VplotAxes": None}
 
         # Connect the components
         self.connectAllVariables()
@@ -261,7 +275,6 @@ class RadarDisplay(Component):
         else:
             self.gatefilterToggle.setText("GateFilter Off")
         self._update_plot()
-        
 
     def _title_input(self):
         '''Retrieve new plot title.'''
@@ -321,7 +334,7 @@ class RadarDisplay(Component):
         dispLimits.setToolTip("Set data, X, and Y range limits")
         self.gatefilterToggle = QtGui.QAction(
             'GateFilter On', dispmenu, checkable=True,
-            triggered=self._GateFilterToggleAction)#_update_plot)
+            triggered=self._GateFilterToggleAction)
         dispmenu.addAction(self.gatefilterToggle)
         self.gatefilterToggle.setChecked(True)
         dispTitle = dispmenu.addAction("Change Title")
@@ -597,9 +610,10 @@ class RadarDisplay(Component):
 
     def toolSelectRegionCmd(self):
         '''Creates and connects to Region of Interest instance'''
-        from .select_region import SelectRegion
+        from .select_region_old import SelectRegion
         self.tools['select_region'] = SelectRegion(
-            self, name=self.name + " SelectRegion", parent=self)
+            self.VplotAxes, self.VpathInteriorFunc, self.Vfield,
+            name=self.name + " SelectRegion", parent=self)
 
     def toolResetCmd(self):
         '''Reset tools via disconnect.'''
@@ -614,17 +628,17 @@ class RadarDisplay(Component):
         self.Vcmap.change(cmap)
         self.Vlims.change(limits)
 
-    def getPathInteriorValues(self, path):
+    def getPathInteriorValues(self, paths):
         '''
         Return the bins values path.
 
         Parameters
         ----------
-        path : Matplotlib Path instance
+        paths : list of :py:class:`matplotlib.path.Path` instances
 
         Returns
         -------
-        points: Points
+        points : :py:class`artview.core.points.Points`
             Points object containing all bins of the current radar
             and tilt inside path. Axes : 'x_disp', 'y_disp', 'ray_index',
             'range_index', 'azimuth', 'range'. Fields: just current field
@@ -638,7 +652,19 @@ class RadarDisplay(Component):
         if radar is None:
             return None
 
-        xy, idx = interior_radar(path, radar, self.Vtilt.value)
+        try:
+            iter(paths)
+        except:
+            paths = [paths]
+
+        xy = np.empty((0,2))
+        idx = np.empty((0,2), dtype=np.int)
+
+        for path in paths:
+            _xy, _idx = interior_radar(path, radar, self.Vtilt.value)
+            xy = np.concatenate((xy, _xy))
+            idx = np.concatenate((idx, _idx))
+
         xaxis = {'data':  xy[:, 0] * 1000.,
                  'long_name': 'X-coordinate in Cartesian system',
                  'axis': 'X',
@@ -688,6 +714,7 @@ class RadarDisplay(Component):
         self.fig = Figure(figsize=(self.XSIZE, self.YSIZE))
         self.ax = self.fig.add_axes([0.2, 0.2, 0.7, 0.7])
         self.cax = self.fig.add_axes([0.2, 0.10, 0.7, 0.02])
+        self.VplotAxes.change(self.ax)
         # self._update_axes()
 
     def _update_fig_ax(self):
@@ -717,6 +744,8 @@ class RadarDisplay(Component):
         # Create the plot with PyArt RadarDisplay
         self.ax.cla()  # Clear the plot axes
         self.cax.cla()  # Clear the colorbar axes
+
+        self.VplotAxes.update()
 
         if self.Vfield.value not in self.Vradar.value.fields.keys():
             self.canvas.draw()
@@ -839,6 +868,16 @@ class RadarDisplay(Component):
         else:
             d['vmin'] = -10
             d['vmax'] = 65
+
+        # HACK while pyart don't implemt it self
+        if self.Vradar.value is not None:
+            if 'valid_min' in self.Vradar.value.fields[self.Vfield.value]:
+                d['vmin'] = self.Vradar.value.fields[self.Vfield.value][
+                    'valid_min']
+            if 'valid_max' in self.Vradar.value.fields[self.Vfield.value]:
+                d['vmax'] = self.Vradar.value.fields[self.Vfield.value][
+                    'valid_max']
+
         self.Vcmap.change(d, strong)
 
     def _get_default_title(self):
@@ -901,7 +940,7 @@ class RadarDisplay(Component):
     def getUnits(self):
         '''Get current units.'''
         return self.units
-        
+
     def getRadar(self):
         ''' get current radar '''
         return self.Vradar.value
@@ -978,7 +1017,7 @@ class _DisplayStart(QtGui.QDialog):
         self.layout.addWidget(QtGui.QLabel("Vlims"), 3, 0)
         self.layout.addWidget(self.limsButton, 3, 1, 1, 3)
 
-        self.name = QtGui.QLineEdit("Display")
+        self.name = QtGui.QLineEdit("RadarDisplay")
         self.layout.addWidget(QtGui.QLabel("name"), 4, 0)
         self.layout.addWidget(self.name, 4, 1, 1, 3)
 
@@ -994,7 +1033,8 @@ class _DisplayStart(QtGui.QDialog):
 
         # if no Vradar abort
         if 'Vradar' not in self.result:
-            common.ShowWarning("Must select a variable for Vradar")
+            self.result['Vradar'] = Variable(None)
+            # common.ShowWarning("Must select a variable for Vradar")
             # I'm allowing this to continue, but this will result in error
 
         # if Vfield, Vtilt, Vlims were not select create new

@@ -12,6 +12,7 @@ from ..components import RadarDisplay, Menu, SelectRegion
 from ..plugins import GateFilter
 from ._common import _parse_dir, _parse_field
 
+
 def run(DirIn=None, filename=None, field=None):
     """
     artview execution for filtering gates radar display
@@ -29,11 +30,11 @@ def run(DirIn=None, filename=None, field=None):
     # start Displays
     Vtilt = Variable(0)
     plot1 = RadarDisplay(Vradar, Variable(field), Vtilt, name="Display",
-        parent=menu)
+                         parent=menu)
     roi = SelectRegion(plot1, name="SelectRegion", parent=menu)
 
     filt = GateFilter(Vradar=Vradar, Vgatefilter=plot1.Vgatefilter,
-            name="GateFilter", parent=menu)
+                      name="GateFilter", parent=menu)
     menu.addLayoutWidget(roi)
     menu.addLayoutWidget(filt)
     roi.show()

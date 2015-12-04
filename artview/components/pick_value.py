@@ -34,6 +34,11 @@ class ValueClick(Component):
             Parent instance to associate to ROI instance.
             If None, then Qt owns, otherwise associated with parent PyQt
             instance.
+
+        NOTE
+        ----
+        Since ARTView 1.2 this is not more a valid Component, since it
+        has mandatory arguments and this is no longer allowed
         '''
         super(ValueClick, self).__init__(name=name, parent=parent)
         self.sharedVariables = {}
