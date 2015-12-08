@@ -235,7 +235,7 @@ class SelectRegion(Component):
         self.buttonResetSelectRegion = QtGui.QPushButton('Reset Region', self)
         self.buttonResetSelectRegion.setToolTip("Clear the Region")
         self.saveButton = QtGui.QPushButton("Save File", self)
-        self.saveButton.setToolTip("Save modified radar instance to cfradial file") 
+        self.saveButton.setToolTip("Save modified radar instance to cfradial file")
         self.buttonHelp = QtGui.QPushButton('Help', self)
         self.buttonHelp.setToolTip("About using SelectRegion")
         self.buttonViewTable.clicked.connect(self.viewTable)
@@ -247,7 +247,7 @@ class SelectRegion(Component):
         self.buttonRestoreMask.clicked.connect(self.restoreMask)
         self.buttonResetSelectRegion.clicked.connect(self.resetSelectRegion)
         self.saveButton.clicked.connect(self.saveRadar)
-        self.buttonHelp.clicked.connect(self.displayHelp)
+        self.buttonHelp.clicked.connect(self._displayHelp)
 
         # Create functionality buttons
         self.rBox_layout.addWidget(self.buttonViewTable)
@@ -261,8 +261,8 @@ class SelectRegion(Component):
         self.rBox_layout.addWidget(self.saveButton)
         self.rBox_layout.addWidget(self.buttonHelp)
 
-    def displayHelp(self):
-
+    def _displayHelp(self):
+        ''' Launch pop-up help window.'''
         text = (
             "<b>Using the Region of Interest (SelectRegion) Tool</b><br><br>"
             "<i>Purpose</i>:<br>"
@@ -276,7 +276,6 @@ class SelectRegion(Component):
             "WARNING: By saving the file, the mask associated with the data "
             "values may be modfidied. The data itself does not change.<br>"
             )
-
         common.ShowLongText(text)
 
     def viewTable(self):

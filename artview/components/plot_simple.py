@@ -182,12 +182,13 @@ class PlotDisplay(Component):
         dispUnit.triggered[()].connect(self._units_input)
 #        toolZoomPan.triggered[()].connect(self.toolZoomPanCmd)
         dispSaveFile.triggered[()].connect(self._savefile)
-        self.dispHelp.triggered[()].connect(self.displayHelp)
+        self.dispHelp.triggered[()].connect(self._displayHelp)
 
         self._add_cmaps_to_button()
         self.dispButton.setMenu(dispmenu)
 
-    def displayHelp(self):
+    def _displayHelp(self):
+        '''Launch pop-up help window.'''
         text = (
             "<b>Using the Simple Plot Feature</b><br><br>"
             "<i>Purpose</i>:<br>"

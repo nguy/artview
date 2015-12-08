@@ -1,0 +1,6 @@
+artview.components.SelectRegion.applyMask
+=========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: SelectRegion.applyMask

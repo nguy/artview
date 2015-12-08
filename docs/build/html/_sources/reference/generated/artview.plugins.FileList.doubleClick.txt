@@ -1,0 +1,6 @@
+artview.plugins.FileList.doubleClick
+====================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: FileList.doubleClick

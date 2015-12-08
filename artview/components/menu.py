@@ -425,17 +425,31 @@ class Menu(Component):
 
     def _about(self):
         # Add a more extensive about eventually
-        txOut = ("ARTview is a visualization package that leverages the\n"
-                 "DoE PyArt python software to view individual weather\n"
-                 "radar data files or to browse a directory of data.\n\n"
-
-                 "If you hover over butttons and menus with the mouse,\n"
-                 "more instructions and information are available.\n\n"
-
-                 "More complete documentation can be found at:\n"
-                 "https://rawgit.com/nguy/artview/master/docs/build"
-                 "/html/index.html\n")
-        QtGui.QMessageBox.about(self, "About ARTview", txOut)
+#         txOut = ("ARTview is a visualization package that leverages the\n"
+#                  "DoE PyArt python software to view individual weather\n"
+#                  "radar data files or to browse a directory of data.\n\n"
+#
+#                  "If you hover over butttons and menus with the mouse,\n"
+#                  "more instructions and information are available.\n\n"
+#
+#                  "More complete documentation can be found at:\n"
+#                  "https://rawgit.com/nguy/artview/master/docs/build"
+#                  "/html/index.html\n")
+#         QtGui.QMessageBox.about(self, "About ARTview", txOut)
+        text = (
+            "<b>About ARTView</b><br><br>"
+            "ARTview is a visualization package that leverages the <br>"
+            "DoE Py-ART python software to view individual weather <br>"
+            "radar data files or to browse a directory of data.<br><br>"
+            "<i>Note</i>:<br>"
+            "Tooltip information is available if you hover over buttons <br> "
+            "and menus with the mouse.<br><br>"
+            "<i>Documentation</i>:<br>"
+            "<br><br>"
+            "For a demonstration, a "
+            "<a href='https://rawgit.com/nguy/artview/master/docs/build/html/index.html'>Software Package Documentation</a><br>"
+            )
+        common.ShowLongTextHyperlinked(text)
 
     def _get_RadarLongInfo(self):
         '''Print out the radar info to text box.'''

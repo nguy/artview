@@ -127,7 +127,7 @@ class GateFilter(Component):
         gBox_layout = QtGui.QGridLayout()
 
         self.helpButton = QtGui.QPushButton("Help")
-        self.helpButton.clicked.connect(self.displayHelp)
+        self.helpButton.clicked.connect(self._displayHelp)
         gBox_layout.addWidget(self.helpButton, 0, 0, 1, 1)
 
         self.scriptButton = QtGui.QPushButton("Show Script")
@@ -227,35 +227,60 @@ class GateFilter(Component):
         self.Vgatefilter = Vgatefilter
         self.connectAllVariables()
 
-    def displayHelp(self):
+    def _displayHelp(self):
         '''Display Py-Art's docstring for help.'''
         text = (
-            "**Using the GateFilter window**\n"
-            "Choose a filter:\n"
-            "  1. Select an operation and value(s) to exclude.\n"
+#             "**Using the GateFilter window**\n"
+#             "Choose a filter:\n"
+#             "  1. Select an operation and value(s) to exclude.\n"
+#             "       Notes: 'outside' masks values less than 'Value 1' and "
+#             "greater than 'Value 2.'\n"
+#             "              'inside' masks values greater than 'Value 1' and "
+#             "less than 'Value 2.'\n"
+#             "              For other operations only 'Value 1 is used.\n"
+#             "  2. Check the 'Activate Filter' box to apply the filter.\n"
+#             "  3. Click the 'Filter' button.\n"
+#             "  4. GateFilter needs to be activated in the Display to see the "
+#             "results. It is turned on by default. To check see "
+#             "'Display Options' dropdown menu on the Display of interest.\n\n"
+#             "Change Radar variables:\n"
+#             "  Click the 'Find Variable', select variable.\n\n"
+#             "Show Python script for batching:\n"
+#             "  Click the 'Show Script' button.\n\n"
+#             "The following information is from the PyArt documentation.\n\n"
+#             "WARNING: By saving the file, the mask associated with the data "
+#             "values may be modfidied. The data itself does not change.\n\n"
+#             "**GateFilter**\n" +
+#             pyart.filters.GateFilter.__doc__ +
+#             "\n\n"
+#             "**GateFilter.exclude_below**\n" +
+#             pyart.filters.GateFilter.exclude_below.__doc__)
+            "<b>Using the GateFilter window</b><br><br>"
+            "<i>Choose a filter:</i><br>"
+            "  1. Select an operation and value(s) to exclude.<br>"
             "       Notes: 'outside' masks values less than 'Value 1' and "
-            "greater than 'Value 2.'\n"
+            "greater than 'Value 2.'<br>"
             "              'inside' masks values greater than 'Value 1' and "
-            "less than 'Value 2.'\n"
-            "              For other operations only 'Value 1 is used.\n"
-            "  2. Check the 'Activate Filter' box to apply the filter.\n"
-            "  3. Click the 'Filter' button.\n"
+            "less than 'Value 2.'<br>"
+            "              For other operations only 'Value 1 is used.<br>"
+            "  2. Check the 'Activate Filter' box to apply the filter.<br>"
+            "  3. Click the 'Filter' button.<br>"
             "  4. GateFilter needs to be activated in the Display to see the "
             "results. It is turned on by default. To check see "
-            "'Display Options' dropdown menu on the Display of interest.\n\n"
-            "Change Radar variables:\n"
-            "  Click the 'Find Variable', select variable.\n\n"
-            "Show Python script for batching:\n"
-            "  Click the 'Show Script' button.\n\n"
-            "The following information is from the PyArt documentation.\n\n"
-            "WARNING: By saving the file, the mask associated with the data "
-            "values may be modfidied. The data itself does not change.\n\n"
-            "**GateFilter**\n" +
-            pyart.filters.GateFilter.__doc__ +
-            "\n\n"
-            "**GateFilter.exclude_below**\n" +
-            pyart.filters.GateFilter.exclude_below.__doc__)
-        common.ShowLongText(text)
+            "'Display Options' dropdown menu on the Display of interest.<br><br>"
+            "<i>Change Radar variables:</i><br>"
+            "  Click the 'Find Variable', select variable.<br><br>"
+            "<i>Show Python script for batching:</i><br>"
+            "  Click the 'Show Script' button.<br><br>"
+            "The following information is from the Py-ART documentation.<br><br>"
+            "<b>WARNING</b>: By saving the file, the mask associated with the data "
+            "values may be modfidied. The data itself does not change.<br><br>"
+            "<b>GateFilter</b><br>" + pyart.filters.GateFilter.__doc__ + "<br><br>"
+            "<b>GateFilter.exclude_below</b><br>"
+            "" + pyart.filters.GateFilter.exclude_below.__doc__ + ""
+            )
+        print(text)
+        common.ShowLongText(text.replace("\n", "<br>"), set_html=True)
 
     def set_operator_menu(self):
         '''Set the field operators choice.'''

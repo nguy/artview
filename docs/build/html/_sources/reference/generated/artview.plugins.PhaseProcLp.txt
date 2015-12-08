@@ -16,7 +16,6 @@ artview.plugins.PhaseProcLp
    
          PhaseProcLp.addGeneralOptions
          PhaseProcLp.chooseRadar
-         PhaseProcLp.displayHelp
          PhaseProcLp.guiStart
          PhaseProcLp.phase_proc_lp
    

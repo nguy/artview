@@ -1,0 +1,38 @@
+artview.plugins.ManualFilter
+============================
+
+.. currentmodule:: artview.plugins
+
+.. autoclass:: ManualFilter
+   :show-inheritance:
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+         ManualFilter.NewField
+         ManualFilter.NewRadar
+         ManualFilter.guiStart
+         ManualFilter.removeFromField
+         ManualFilter.removeFromFilter
+         ManualFilter.removeFromRadar
+         ManualFilter.reset
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+   
+   
+   .. autoattribute:: Vfield
+   .. autoattribute:: Vgatefilter
+   .. autoattribute:: Vpoints
+   .. autoattribute:: Vradar
+   
+   
+

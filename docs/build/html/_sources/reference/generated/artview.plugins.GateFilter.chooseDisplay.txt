@@ -1,0 +1,6 @@
+artview.plugins.GateFilter.chooseDisplay
+========================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: GateFilter.chooseDisplay

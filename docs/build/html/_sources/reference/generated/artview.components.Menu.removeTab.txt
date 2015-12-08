@@ -1,0 +1,6 @@
+artview.components.Menu.removeTab
+=================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Menu.removeTab

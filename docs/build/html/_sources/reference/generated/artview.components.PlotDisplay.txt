@@ -17,7 +17,6 @@ artview.components.PlotDisplay
          PlotDisplay.LaunchGUI
          PlotDisplay.addButtons
          PlotDisplay.cmapSelectCmd
-         PlotDisplay.displayHelp
          PlotDisplay.setUILayout
    
    

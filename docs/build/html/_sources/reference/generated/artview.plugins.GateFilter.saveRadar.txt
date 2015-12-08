@@ -1,0 +1,6 @@
+artview.plugins.GateFilter.saveRadar
+====================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: GateFilter.saveRadar

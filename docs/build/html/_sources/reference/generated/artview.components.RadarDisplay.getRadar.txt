@@ -1,0 +1,6 @@
+artview.components.RadarDisplay.getRadar
+========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: RadarDisplay.getRadar

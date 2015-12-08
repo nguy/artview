@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>artview.components.RadarDisplay &mdash; ARTview 1.1.1.dev+cd00646 documentation</title>
+    <title>artview.components.RadarDisplay &mdash; ARTview 1.2.0.dev+a576859 documentation</title>
     
     <link rel="stylesheet" href="../../_static/scipy.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '1.1.1.dev+cd00646',
+        VERSION:     '1.2.0.dev+a576859',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="ARTview 1.1.1.dev+cd00646 documentation" href="../../index.html" />
+    <link rel="top" title="ARTview 1.2.0.dev+a576859 documentation" href="../../index.html" />
     <link rel="up" title="Main Components (artview.components)" href="../components.html" />
     <link rel="next" title="artview.components.RadarDisplay.FieldSelectCmd" href="artview.components.RadarDisplay.FieldSelectCmd.html" />
     <link rel="prev" title="artview.components.PlotDisplay.setUILayout" href="artview.components.PlotDisplay.setUILayout.html" /> 
@@ -48,7 +48,7 @@
         <li class="right" >
           <a href="artview.components.PlotDisplay.setUILayout.html" title="artview.components.PlotDisplay.setUILayout"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">ARTview 1.1.1.dev+cd00646 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">ARTview 1.2.0.dev+a576859 documentation</a> &raquo;</li>
           <li><a href="../index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li>
           <li><a href="../components.html" accesskey="U">Main Components (<tt class="docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
       </ul>
@@ -63,31 +63,31 @@
 <h1>artview.components.RadarDisplay<a class="headerlink" href="#artview-components-radardisplay" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="artview.components.RadarDisplay">
-<em class="property">class </em><tt class="descclassname">artview.components.</tt><tt class="descname">RadarDisplay</tt><big>(</big><em>Vradar</em>, <em>Vfield</em>, <em>Vtilt</em>, <em>Vlims=None</em>, <em>Vcmap=None</em>, <em>Vgatefilter=None</em>, <em>name='RadarDisplay'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/plot_radar.py#L28"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.RadarDisplay" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">artview.components.</tt><tt class="descname">RadarDisplay</tt><big>(</big><em>Vradar=None</em>, <em>Vfield=None</em>, <em>Vtilt=None</em>, <em>Vlims=None</em>, <em>Vcmap=None</em>, <em>Vgatefilter=None</em>, <em>name='RadarDisplay'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/plot_radar.py#L28"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.RadarDisplay" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><tt class="xref py py-class docutils literal"><span class="pre">artview.core.core.Component</span></tt></a></p>
 <p>Class to create a display plot, using a returned Radar structure
 from the PyArt pyart.graph package.</p>
 <dl class="method">
 <dt id="artview.components.RadarDisplay.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>Vradar</em>, <em>Vfield</em>, <em>Vtilt</em>, <em>Vlims=None</em>, <em>Vcmap=None</em>, <em>Vgatefilter=None</em>, <em>name='RadarDisplay'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/plot_radar.py#L47"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.RadarDisplay.__init__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__init__</tt><big>(</big><em>Vradar=None</em>, <em>Vfield=None</em>, <em>Vtilt=None</em>, <em>Vlims=None</em>, <em>Vcmap=None</em>, <em>Vgatefilter=None</em>, <em>name='RadarDisplay'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/plot_radar.py#L50"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.RadarDisplay.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize the class to create display.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>Vradar</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>[Optional]</strong> :</p>
+<p><strong>Vradar</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
 <blockquote>
-<div><p>Radar signal variable.</p>
+<div><p>Radar signal variable. If None start new one with None.</p>
 </div></blockquote>
 <p><strong>Vfield</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
 <blockquote>
-<div><p>Field signal variable.</p>
+<div><p>Field signal variable. If None start new one with empty string.</p>
 </div></blockquote>
 <p><strong>Vtilt</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
 <blockquote>
-<div><p>Tilt signal variable.</p>
+<div><p>Tilt signal variable. If None start new one with 0.</p>
 </div></blockquote>
-<p><strong>[Optional]</strong> :</p>
 <p><strong>Vlims</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
 <blockquote>
 <div><p>Limits signal variable.
@@ -117,9 +117,6 @@ instance.</p>
 </tr>
 </tbody>
 </table>
-<p class="rubric">Notes</p>
-<p>This class records the selected button and passes the
-change value back to variable.</p>
 </dd></dl>
 
 <p class="rubric">Methods</p>
@@ -166,42 +163,45 @@ change value back to variable.</p>
 <td>Captures colormap selection and redraws.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="artview.components.RadarDisplay.getField.html#artview.components.RadarDisplay.getField" title="artview.components.RadarDisplay.getField"><tt class="xref py py-obj docutils literal"><span class="pre">RadarDisplay.getField</span></tt></a>()</td>
-<td>get current field</td>
+<td>Get current field.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="artview.components.RadarDisplay.getPathInteriorValues.html#artview.components.RadarDisplay.getPathInteriorValues" title="artview.components.RadarDisplay.getPathInteriorValues"><tt class="xref py py-obj docutils literal"><span class="pre">RadarDisplay.getPathInteriorValues</span></tt></a>(path)</td>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.RadarDisplay.getPathInteriorValues.html#artview.components.RadarDisplay.getPathInteriorValues" title="artview.components.RadarDisplay.getPathInteriorValues"><tt class="xref py py-obj docutils literal"><span class="pre">RadarDisplay.getPathInteriorValues</span></tt></a>(paths)</td>
 <td>Return the bins values path.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="artview.components.RadarDisplay.getPlotAxis.html#artview.components.RadarDisplay.getPlotAxis" title="artview.components.RadarDisplay.getPlotAxis"><tt class="xref py py-obj docutils literal"><span class="pre">RadarDisplay.getPlotAxis</span></tt></a>()</td>
-<td>get <a class="reference external" href="http://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v1.4.3)"><tt class="xref py py-class docutils literal"><span class="pre">matplotlib.axes.Axes</span></tt></a> instance of main plot</td>
+<td>Get <a class="reference external" href="http://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v1.5.0)"><tt class="xref py py-class docutils literal"><span class="pre">matplotlib.axes.Axes</span></tt></a> instance of main plot.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="artview.components.RadarDisplay.getStatusBar.html#artview.components.RadarDisplay.getStatusBar" title="artview.components.RadarDisplay.getStatusBar"><tt class="xref py py-obj docutils literal"><span class="pre">RadarDisplay.getStatusBar</span></tt></a>()</td>
-<td>get <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QStatusBar</span></tt> instance</td>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.RadarDisplay.getRadar.html#artview.components.RadarDisplay.getRadar" title="artview.components.RadarDisplay.getRadar"><tt class="xref py py-obj docutils literal"><span class="pre">RadarDisplay.getRadar</span></tt></a>()</td>
+<td>get current radar</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="artview.components.RadarDisplay.getUnits.html#artview.components.RadarDisplay.getUnits" title="artview.components.RadarDisplay.getUnits"><tt class="xref py py-obj docutils literal"><span class="pre">RadarDisplay.getUnits</span></tt></a>()</td>
-<td>get current units</td>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.RadarDisplay.getStatusBar.html#artview.components.RadarDisplay.getStatusBar" title="artview.components.RadarDisplay.getStatusBar"><tt class="xref py py-obj docutils literal"><span class="pre">RadarDisplay.getStatusBar</span></tt></a>()</td>
+<td>Get <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QStatusBar</span></tt> instance.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="artview.components.RadarDisplay.guiStart.html#artview.components.RadarDisplay.guiStart" title="artview.components.RadarDisplay.guiStart"><tt class="xref py py-obj docutils literal"><span class="pre">RadarDisplay.guiStart</span></tt></a>([parent])</td>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.RadarDisplay.getUnits.html#artview.components.RadarDisplay.getUnits" title="artview.components.RadarDisplay.getUnits"><tt class="xref py py-obj docutils literal"><span class="pre">RadarDisplay.getUnits</span></tt></a>()</td>
+<td>Get current units.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.RadarDisplay.guiStart.html#artview.components.RadarDisplay.guiStart" title="artview.components.RadarDisplay.guiStart"><tt class="xref py py-obj docutils literal"><span class="pre">RadarDisplay.guiStart</span></tt></a>([parent])</td>
 <td>Graphical interface for starting this class</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="artview.components.RadarDisplay.keyPressEvent.html#artview.components.RadarDisplay.keyPressEvent" title="artview.components.RadarDisplay.keyPressEvent"><tt class="xref py py-obj docutils literal"><span class="pre">RadarDisplay.keyPressEvent</span></tt></a>(event)</td>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.RadarDisplay.keyPressEvent.html#artview.components.RadarDisplay.keyPressEvent" title="artview.components.RadarDisplay.keyPressEvent"><tt class="xref py py-obj docutils literal"><span class="pre">RadarDisplay.keyPressEvent</span></tt></a>(event)</td>
 <td>Allow tilt adjustment via the Up-Down arrow keys.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="artview.components.RadarDisplay.setUILayout.html#artview.components.RadarDisplay.setUILayout" title="artview.components.RadarDisplay.setUILayout"><tt class="xref py py-obj docutils literal"><span class="pre">RadarDisplay.setUILayout</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.RadarDisplay.setUILayout.html#artview.components.RadarDisplay.setUILayout" title="artview.components.RadarDisplay.setUILayout"><tt class="xref py py-obj docutils literal"><span class="pre">RadarDisplay.setUILayout</span></tt></a>()</td>
 <td>Setup the button/display UI layout.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="artview.components.RadarDisplay.toolDefaultCmd.html#artview.components.RadarDisplay.toolDefaultCmd" title="artview.components.RadarDisplay.toolDefaultCmd"><tt class="xref py py-obj docutils literal"><span class="pre">RadarDisplay.toolDefaultCmd</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.RadarDisplay.toolDefaultCmd.html#artview.components.RadarDisplay.toolDefaultCmd" title="artview.components.RadarDisplay.toolDefaultCmd"><tt class="xref py py-obj docutils literal"><span class="pre">RadarDisplay.toolDefaultCmd</span></tt></a>()</td>
 <td>Restore the Display defaults.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="artview.components.RadarDisplay.toolResetCmd.html#artview.components.RadarDisplay.toolResetCmd" title="artview.components.RadarDisplay.toolResetCmd"><tt class="xref py py-obj docutils literal"><span class="pre">RadarDisplay.toolResetCmd</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.RadarDisplay.toolResetCmd.html#artview.components.RadarDisplay.toolResetCmd" title="artview.components.RadarDisplay.toolResetCmd"><tt class="xref py py-obj docutils literal"><span class="pre">RadarDisplay.toolResetCmd</span></tt></a>()</td>
 <td>Reset tools via disconnect.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="artview.components.RadarDisplay.toolSelectRegionCmd.html#artview.components.RadarDisplay.toolSelectRegionCmd" title="artview.components.RadarDisplay.toolSelectRegionCmd"><tt class="xref py py-obj docutils literal"><span class="pre">RadarDisplay.toolSelectRegionCmd</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.RadarDisplay.toolSelectRegionCmd.html#artview.components.RadarDisplay.toolSelectRegionCmd" title="artview.components.RadarDisplay.toolSelectRegionCmd"><tt class="xref py py-obj docutils literal"><span class="pre">RadarDisplay.toolSelectRegionCmd</span></tt></a>()</td>
 <td>Creates and connects to Region of Interest instance</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="artview.components.RadarDisplay.toolValueClickCmd.html#artview.components.RadarDisplay.toolValueClickCmd" title="artview.components.RadarDisplay.toolValueClickCmd"><tt class="xref py py-obj docutils literal"><span class="pre">RadarDisplay.toolValueClickCmd</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.RadarDisplay.toolValueClickCmd.html#artview.components.RadarDisplay.toolValueClickCmd" title="artview.components.RadarDisplay.toolValueClickCmd"><tt class="xref py py-obj docutils literal"><span class="pre">RadarDisplay.toolValueClickCmd</span></tt></a>()</td>
 <td>Creates and connects to Point-and-click value retrieval</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="artview.components.RadarDisplay.toolZoomPanCmd.html#artview.components.RadarDisplay.toolZoomPanCmd" title="artview.components.RadarDisplay.toolZoomPanCmd"><tt class="xref py py-obj docutils literal"><span class="pre">RadarDisplay.toolZoomPanCmd</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.RadarDisplay.toolZoomPanCmd.html#artview.components.RadarDisplay.toolZoomPanCmd" title="artview.components.RadarDisplay.toolZoomPanCmd"><tt class="xref py py-obj docutils literal"><span class="pre">RadarDisplay.toolZoomPanCmd</span></tt></a>()</td>
 <td>Creates and connects to a Zoom/Pan instance.</td>
 </tr>
 </tbody>
@@ -229,6 +229,18 @@ change value back to variable.</p>
 <dt id="artview.components.RadarDisplay.Vlims">
 <tt class="descname">Vlims</tt><em class="property"> = None</em><a class="headerlink" href="#artview.components.RadarDisplay.Vlims" title="Permalink to this definition">¶</a></dt>
 <dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="artview.components.RadarDisplay.VpathInteriorFunc">
+<tt class="descname">VpathInteriorFunc</tt><em class="property"> = None</em><a class="headerlink" href="#artview.components.RadarDisplay.VpathInteriorFunc" title="Permalink to this definition">¶</a></dt>
+<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a> (no internal use)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="artview.components.RadarDisplay.VplotAxes">
+<tt class="descname">VplotAxes</tt><em class="property"> = None</em><a class="headerlink" href="#artview.components.RadarDisplay.VplotAxes" title="Permalink to this definition">¶</a></dt>
+<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a> (no internal use)</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -299,14 +311,14 @@ change value back to variable.</p>
         <li class="right" >
           <a href="artview.components.PlotDisplay.setUILayout.html" title="artview.components.PlotDisplay.setUILayout"
              >previous</a> |</li>
-        <li><a href="../../index.html">ARTview 1.1.1.dev+cd00646 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">ARTview 1.2.0.dev+a576859 documentation</a> &raquo;</li>
           <li><a href="../index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li>
           <li><a href="../components.html" >Main Components (<tt class="docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Sep 13, 2015.
+      Last updated on Dec 08, 2015.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>

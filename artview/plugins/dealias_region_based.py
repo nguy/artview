@@ -72,7 +72,7 @@ class DealiasRegionBased(Component):
         self.layout.addLayout(self.generalLayout, 0, 0, 1, 2)
 
         self.helpButton = QtGui.QPushButton("Help")
-        self.helpButton.clicked.connect(self.displayHelp)
+        self.helpButton.clicked.connect(self._displayHelp)
         self.layout.addWidget(self.helpButton, 1, 0, 1, 1)
 
         self.button = QtGui.QPushButton("Correct")
@@ -168,7 +168,7 @@ class DealiasRegionBased(Component):
         else:
             self.raysWrapAround.setChecked(False)
 
-    def displayHelp(self):
+    def _displayHelp(self):
         '''Display Py-Art's docstring for help.'''
         common.ShowLongText(pyart.correct.dealias_region_based.__doc__)
 

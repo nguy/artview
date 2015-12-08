@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>artview.components.SelectRegion &mdash; ARTview 1.1.1.dev+cd00646 documentation</title>
+    <title>artview.components.SelectRegion &mdash; ARTview 1.2.0.dev+a576859 documentation</title>
     
     <link rel="stylesheet" href="../../_static/scipy.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '1.1.1.dev+cd00646',
+        VERSION:     '1.2.0.dev+a576859',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="ARTview 1.1.1.dev+cd00646 documentation" href="../../index.html" />
+    <link rel="top" title="ARTview 1.2.0.dev+a576859 documentation" href="../../index.html" />
     <link rel="up" title="Main Components (artview.components)" href="../components.html" />
     <link rel="next" title="artview.components.SelectRegion.CreateSelectRegionWidget" href="artview.components.SelectRegion.CreateSelectRegionWidget.html" />
     <link rel="prev" title="artview.components.LinkPlugins.setupUi" href="artview.components.LinkPlugins.setupUi.html" /> 
@@ -48,7 +48,7 @@
         <li class="right" >
           <a href="artview.components.LinkPlugins.setupUi.html" title="artview.components.LinkPlugins.setupUi"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">ARTview 1.1.1.dev+cd00646 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">ARTview 1.2.0.dev+a576859 documentation</a> &raquo;</li>
           <li><a href="../index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li>
           <li><a href="../components.html" accesskey="U">Main Components (<tt class="docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
       </ul>
@@ -63,7 +63,7 @@
 <h1>artview.components.SelectRegion<a class="headerlink" href="#artview-components-selectregion" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="artview.components.SelectRegion">
-<em class="property">class </em><tt class="descclassname">artview.components.</tt><tt class="descname">SelectRegion</tt><big>(</big><em>display</em>, <em>name='SelectRegion'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/select_region.py#L18"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.SelectRegion" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">artview.components.</tt><tt class="descname">SelectRegion</tt><big>(</big><em>VplotAxes=None</em>, <em>VpathInteriorFunc=None</em>, <em>Vfield=None</em>, <em>name='SelectRegion'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/select_region_old.py#L20"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.SelectRegion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><tt class="xref py py-class docutils literal"><span class="pre">artview.core.core.Component</span></tt></a></p>
 <p>Select a Region of Interest.</p>
 <p>This tool allows the user to draw a path in the display window using
@@ -81,32 +81,30 @@ toolbox menu.</p>
 <p><a class="reference external" href="https://www.mail-archive.com/matplotlib-users&#64;lists.sourceforge.net/msg00661.html">https://www.mail-archive.com/matplotlib-users&#64;lists.sourceforge.net/msg00661.html</a></p>
 <dl class="method">
 <dt id="artview.components.SelectRegion.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>display</em>, <em>name='SelectRegion'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/select_region.py#L48"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.SelectRegion.__init__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__init__</tt><big>(</big><em>VplotAxes=None</em>, <em>VpathInteriorFunc=None</em>, <em>Vfield=None</em>, <em>name='SelectRegion'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/select_region_old.py#L56"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.SelectRegion.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize the class to select an Region of Interest on display.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>display - ARTView Display</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>VplotAxes</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
 <blockquote>
-<div><p>Display instance to associate SelectRegion.
-Must have following elements:</p>
+<div><p>Plot axes signal variable. If None start new one with None.</p>
+</div></blockquote>
+<p><strong>VpathInteriorFunc</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
 <blockquote>
-<div><ul class="simple">
-<li>getPlotAxis() - Matplotlib axis instance</li>
-<li>getStatusBar() - QtGui.QStatusBar</li>
-<li>getField() - string</li>
-<li>getPathInteriorValues(Path) - see
-<a class="reference internal" href="artview.components.RadarDisplay.getPathInteriorValues.html#artview.components.RadarDisplay.getPathInteriorValues" title="artview.components.RadarDisplay.getPathInteriorValues"><tt class="xref py py-func docutils literal"><span class="pre">getPathInteriorValues</span></tt></a></li>
-</ul>
+<div><p>py:func:<cite>~artview.components.RadarDisplay.getPathInteriorValues</cite>
+signal variable. If None start new one with None.</p>
 </div></blockquote>
+<p><strong>Vfield</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
+<blockquote>
+<div><p>Field signal variable. If None start new one with empty string.</p>
 </div></blockquote>
-<p><strong>[Optional]</strong> :</p>
-<p><strong>name - string</strong> :</p>
+<p><strong>name</strong> : string</p>
 <blockquote>
 <div><p>Window name.</p>
 </div></blockquote>
-<p><strong>parent - PyQt instance</strong> :</p>
+<p><strong>parent</strong> : PyQt instance</p>
 <blockquote class="last">
 <div><p>Parent instance to associate to SelectRegion instance.
 If None, then Qt owns, otherwise associated with parent PyQt
@@ -128,20 +126,20 @@ instance.</p>
 <tr class="row-odd"><td><a class="reference internal" href="artview.components.SelectRegion.CreateSelectRegionWidget.html#artview.components.SelectRegion.CreateSelectRegionWidget" title="artview.components.SelectRegion.CreateSelectRegionWidget"><tt class="xref py py-obj docutils literal"><span class="pre">SelectRegion.CreateSelectRegionWidget</span></tt></a>()</td>
 <td>Create a widget to access SelectRegion tools.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="artview.components.SelectRegion.button_press_callback.html#artview.components.SelectRegion.button_press_callback" title="artview.components.SelectRegion.button_press_callback"><tt class="xref py py-obj docutils literal"><span class="pre">SelectRegion.button_press_callback</span></tt></a>(event)</td>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.SelectRegion.applyMask.html#artview.components.SelectRegion.applyMask" title="artview.components.SelectRegion.applyMask"><tt class="xref py py-obj docutils literal"><span class="pre">SelectRegion.applyMask</span></tt></a>()</td>
+<td>Mount Options and execute</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.SelectRegion.button_press_callback.html#artview.components.SelectRegion.button_press_callback" title="artview.components.SelectRegion.button_press_callback"><tt class="xref py py-obj docutils literal"><span class="pre">SelectRegion.button_press_callback</span></tt></a>(event)</td>
 <td>Grab the data when line is drawn.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="artview.components.SelectRegion.closeEvent.html#artview.components.SelectRegion.closeEvent" title="artview.components.SelectRegion.closeEvent"><tt class="xref py py-obj docutils literal"><span class="pre">SelectRegion.closeEvent</span></tt></a>(QCloseEvent)</td>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.SelectRegion.closeEvent.html#artview.components.SelectRegion.closeEvent" title="artview.components.SelectRegion.closeEvent"><tt class="xref py py-obj docutils literal"><span class="pre">SelectRegion.closeEvent</span></tt></a>(QCloseEvent)</td>
 <td>Reimplementations to remove from components list.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="artview.components.SelectRegion.connect.html#artview.components.SelectRegion.connect" title="artview.components.SelectRegion.connect"><tt class="xref py py-obj docutils literal"><span class="pre">SelectRegion.connect</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.SelectRegion.connect.html#artview.components.SelectRegion.connect" title="artview.components.SelectRegion.connect"><tt class="xref py py-obj docutils literal"><span class="pre">SelectRegion.connect</span></tt></a>()</td>
 <td>Connect the SelectRegion instance.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="artview.components.SelectRegion.disconnect.html#artview.components.SelectRegion.disconnect" title="artview.components.SelectRegion.disconnect"><tt class="xref py py-obj docutils literal"><span class="pre">SelectRegion.disconnect</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.SelectRegion.disconnect.html#artview.components.SelectRegion.disconnect" title="artview.components.SelectRegion.disconnect"><tt class="xref py py-obj docutils literal"><span class="pre">SelectRegion.disconnect</span></tt></a>()</td>
 <td>Disconnect the SelectRegion instance.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="artview.components.SelectRegion.displayHelp.html#artview.components.SelectRegion.displayHelp" title="artview.components.SelectRegion.displayHelp"><tt class="xref py py-obj docutils literal"><span class="pre">SelectRegion.displayHelp</span></tt></a>()</td>
-<td></td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="artview.components.SelectRegion.displayStats.html#artview.components.SelectRegion.displayStats" title="artview.components.SelectRegion.displayStats"><tt class="xref py py-obj docutils literal"><span class="pre">SelectRegion.displayStats</span></tt></a>()</td>
 <td>Calculate basic statistics of the SelectRegion list.</td>
@@ -152,27 +150,66 @@ instance.</p>
 <tr class="row-odd"><td><a class="reference internal" href="artview.components.SelectRegion.motion_notify_callback.html#artview.components.SelectRegion.motion_notify_callback" title="artview.components.SelectRegion.motion_notify_callback"><tt class="xref py py-obj docutils literal"><span class="pre">SelectRegion.motion_notify_callback</span></tt></a>(event)</td>
 <td>Create the shape in plot area.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="artview.components.SelectRegion.openTable.html#artview.components.SelectRegion.openTable" title="artview.components.SelectRegion.openTable"><tt class="xref py py-obj docutils literal"><span class="pre">SelectRegion.openTable</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.SelectRegion.newPlotAxes.html#artview.components.SelectRegion.newPlotAxes" title="artview.components.SelectRegion.newPlotAxes"><tt class="xref py py-obj docutils literal"><span class="pre">SelectRegion.newPlotAxes</span></tt></a>(variable,&nbsp;value,&nbsp;strong)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.SelectRegion.openTable.html#artview.components.SelectRegion.openTable" title="artview.components.SelectRegion.openTable"><tt class="xref py py-obj docutils literal"><span class="pre">SelectRegion.openTable</span></tt></a>()</td>
 <td>Open a saved table of SelectRegion points from a CSV file.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="artview.components.SelectRegion.resetSelectRegion.html#artview.components.SelectRegion.resetSelectRegion" title="artview.components.SelectRegion.resetSelectRegion"><tt class="xref py py-obj docutils literal"><span class="pre">SelectRegion.resetSelectRegion</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.SelectRegion.resetSelectRegion.html#artview.components.SelectRegion.resetSelectRegion" title="artview.components.SelectRegion.resetSelectRegion"><tt class="xref py py-obj docutils literal"><span class="pre">SelectRegion.resetSelectRegion</span></tt></a>()</td>
 <td>Clear the SelectRegion lines from plot and reset things.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="artview.components.SelectRegion.saveTable.html#artview.components.SelectRegion.saveTable" title="artview.components.SelectRegion.saveTable"><tt class="xref py py-obj docutils literal"><span class="pre">SelectRegion.saveTable</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.SelectRegion.restoreMask.html#artview.components.SelectRegion.restoreMask" title="artview.components.SelectRegion.restoreMask"><tt class="xref py py-obj docutils literal"><span class="pre">SelectRegion.restoreMask</span></tt></a>()</td>
+<td>Remove applied filter by restoring original mask</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.SelectRegion.saveRadar.html#artview.components.SelectRegion.saveRadar" title="artview.components.SelectRegion.saveRadar"><tt class="xref py py-obj docutils literal"><span class="pre">SelectRegion.saveRadar</span></tt></a>()</td>
+<td>Open a dialog box to save radar file.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.SelectRegion.saveTable.html#artview.components.SelectRegion.saveTable" title="artview.components.SelectRegion.saveTable"><tt class="xref py py-obj docutils literal"><span class="pre">SelectRegion.saveTable</span></tt></a>()</td>
 <td>Save a Table of SelectRegion points to a CSV file.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="artview.components.SelectRegion.showHist.html#artview.components.SelectRegion.showHist" title="artview.components.SelectRegion.showHist"><tt class="xref py py-obj docutils literal"><span class="pre">SelectRegion.showHist</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.SelectRegion.showHist.html#artview.components.SelectRegion.showHist" title="artview.components.SelectRegion.showHist"><tt class="xref py py-obj docutils literal"><span class="pre">SelectRegion.showHist</span></tt></a>()</td>
 <td>Show a histogram plot of the SelectRegion list.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="artview.components.SelectRegion.viewTable.html#artview.components.SelectRegion.viewTable" title="artview.components.SelectRegion.viewTable"><tt class="xref py py-obj docutils literal"><span class="pre">SelectRegion.viewTable</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.SelectRegion.viewTable.html#artview.components.SelectRegion.viewTable" title="artview.components.SelectRegion.viewTable"><tt class="xref py py-obj docutils literal"><span class="pre">SelectRegion.viewTable</span></tt></a>()</td>
 <td>View a Table of Region points.</td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Attributes</p>
 <dl class="attribute">
-<dt id="artview.components.SelectRegion.VSelectRegion">
-<tt class="descname">VSelectRegion</tt><em class="property"> = None</em><a class="headerlink" href="#artview.components.SelectRegion.VSelectRegion" title="Permalink to this definition">¶</a></dt>
+<dt id="artview.components.SelectRegion.Vfield">
+<tt class="descname">Vfield</tt><em class="property"> = None</em><a class="headerlink" href="#artview.components.SelectRegion.Vfield" title="Permalink to this definition">¶</a></dt>
+<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="artview.components.SelectRegion.Vgatefilter">
+<tt class="descname">Vgatefilter</tt><em class="property"> = None</em><a class="headerlink" href="#artview.components.SelectRegion.Vgatefilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="artview.components.SelectRegion.VpathInteriorFunc">
+<tt class="descname">VpathInteriorFunc</tt><em class="property"> = None</em><a class="headerlink" href="#artview.components.SelectRegion.VpathInteriorFunc" title="Permalink to this definition">¶</a></dt>
+<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="artview.components.SelectRegion.VplotAxes">
+<tt class="descname">VplotAxes</tt><em class="property"> = None</em><a class="headerlink" href="#artview.components.SelectRegion.VplotAxes" title="Permalink to this definition">¶</a></dt>
+<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="artview.components.SelectRegion.Vpoints">
+<tt class="descname">Vpoints</tt><em class="property"> = None</em><a class="headerlink" href="#artview.components.SelectRegion.Vpoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="artview.components.SelectRegion.Vradar">
+<tt class="descname">Vradar</tt><em class="property"> = None</em><a class="headerlink" href="#artview.components.SelectRegion.Vradar" title="Permalink to this definition">¶</a></dt>
 <dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a></p>
 </dd></dl>
 
@@ -232,14 +269,14 @@ instance.</p>
         <li class="right" >
           <a href="artview.components.LinkPlugins.setupUi.html" title="artview.components.LinkPlugins.setupUi"
              >previous</a> |</li>
-        <li><a href="../../index.html">ARTview 1.1.1.dev+cd00646 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">ARTview 1.2.0.dev+a576859 documentation</a> &raquo;</li>
           <li><a href="../index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li>
           <li><a href="../components.html" >Main Components (<tt class="docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Sep 13, 2015.
+      Last updated on Dec 08, 2015.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>

@@ -1,0 +1,6 @@
+artview.components.Menu.addModesMenu
+====================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Menu.addModesMenu

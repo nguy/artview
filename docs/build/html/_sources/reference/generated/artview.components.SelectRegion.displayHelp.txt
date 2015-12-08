@@ -1,6 +1,0 @@
-artview.components.SelectRegion.displayHelp
-===========================================
-
-.. currentmodule:: artview.components
-
-.. automethod:: SelectRegion.displayHelp

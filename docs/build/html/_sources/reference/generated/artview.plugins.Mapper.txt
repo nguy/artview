@@ -16,6 +16,7 @@ artview.plugins.Mapper
    
          Mapper.addEspecificOptions
          Mapper.addGeneralOptions
+         Mapper.constantRoiOptions
          Mapper.distBeamRoiOptions
          Mapper.distRoiOptions
          Mapper.grid_from_radars

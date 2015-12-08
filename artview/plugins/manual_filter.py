@@ -120,6 +120,11 @@ class ManualFilter(Component):
         self.resetButton.clicked.connect(self.reset)
         self.layout.addWidget(self.resetButton, 4, 1)
 
+        self.buttonHelp = QtGui.QPushButton("Help")
+        self.buttonHelp.setToolTip("About using Manual Filter")
+        self.buttonHelp.clicked.connect(self._displayHelp)
+        self.layout.addWidget(self.buttonHelp, 6, 1)
+
         self.show()
 
     def removeFromFilter(self):
@@ -197,6 +202,31 @@ class ManualFilter(Component):
     def _fieldAction(self, text):
         '''Define action for Field Button selection.'''
         self.Vfield.change(str(text))
+
+    def _displayHelp(self):
+        ''' Launch pop-up help window.'''
+        text = (
+            "<b>Using the Manual Filter Tool</b><br><br>"
+            "The SelectRegion tool is used to select points on an "
+            "ARTView Display.<br>"
+            "The selected region consists of points loaded into <br>"
+            "a Vpoints shared variable.<br>"
+            "Operation is performed on these points.<br><br>"
+            "<i>Purpose</i>:<br>"
+            "Filter a selected region through GateFilter, individual "
+            "fields, or remove values in a radar file.<br><br>"
+            "<i>Functions</i>:<br>"
+            " Primary Mouse Button (e.g. left button)- add vertex<br>"
+            " Hold button to draw free-hand path<br>"
+            " Secondary Button (e.g. right button)- close path<br><br>"
+            "A message 'Closed Region' appears in status bar when "
+            "boundary is properly closed.<br><br>"
+            "Select the desired action to be performed.<br><br>"
+            "For a demonstration, a "
+            "<a href='https://youtu.be/WuS7tvvRtiM'>Video Tutorial</a> "
+            "has been created.<br>"
+            )
+        common.ShowLongTextHyperlinked(text)
 
     def NewRadar(self, variable, value, strong):
         '''

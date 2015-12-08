@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Scripts (artview.scripts) &mdash; ARTview 1.1.1.dev+cd00646 documentation</title>
+    <title>Scripts (artview.scripts) &mdash; ARTview 1.2.0.dev+a576859 documentation</title>
     
     <link rel="stylesheet" href="../_static/scipy.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.1.1.dev+cd00646',
+        VERSION:     '1.2.0.dev+a576859',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,9 +24,9 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="ARTview 1.1.1.dev+cd00646 documentation" href="../index.html" />
+    <link rel="top" title="ARTview 1.2.0.dev+a576859 documentation" href="../index.html" />
     <link rel="up" title="ARTview (artview)" href="index.html" />
-    <link rel="next" title="artview.scripts.corrections" href="generated/artview.scripts.corrections.html" />
+    <link rel="next" title="artview.scripts.compare_fields" href="generated/artview.scripts.compare_fields.html" />
     <link rel="prev" title="artview.plugins.PhaseProcLp.phase_proc_lp" href="generated/artview.plugins.PhaseProcLp.phase_proc_lp.html" /> 
   </head>
   <body>
@@ -43,12 +43,12 @@
           <a href="../np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="generated/artview.scripts.corrections.html" title="artview.scripts.corrections"
+          <a href="generated/artview.scripts.compare_fields.html" title="artview.scripts.compare_fields"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="generated/artview.plugins.PhaseProcLp.phase_proc_lp.html" title="artview.plugins.PhaseProcLp.phase_proc_lp"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">ARTview 1.1.1.dev+cd00646 documentation</a> &raquo;</li>
+        <li><a href="../index.html">ARTview 1.2.0.dev+a576859 documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li> 
       </ul>
     </div>  
@@ -67,32 +67,41 @@
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/artview.scripts.corrections.html#artview.scripts.corrections" title="artview.scripts.corrections"><tt class="xref py py-obj docutils literal"><span class="pre">corrections</span></tt></a>([DirIn,&nbsp;filename,&nbsp;field])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/artview.scripts.compare_fields.html#artview.scripts.compare_fields" title="artview.scripts.compare_fields"><tt class="xref py py-obj docutils literal"><span class="pre">compare_fields</span></tt></a>([DirIn,&nbsp;filename,&nbsp;field])</td>
+<td>artview execution for comparing fields in radar display</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/artview.scripts.corrections.html#artview.scripts.corrections" title="artview.scripts.corrections"><tt class="xref py py-obj docutils literal"><span class="pre">corrections</span></tt></a>([DirIn,&nbsp;filename,&nbsp;field])</td>
 <td>artview execution for radar corrections</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/artview.scripts.radar_and_grid.html#artview.scripts.radar_and_grid" title="artview.scripts.radar_and_grid"><tt class="xref py py-obj docutils literal"><span class="pre">radar_and_grid</span></tt></a>([DirIn,&nbsp;filename,&nbsp;field])</td>
-<td>artview execution for radar and grid display</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/artview.scripts.gatefilter.html#artview.scripts.gatefilter" title="artview.scripts.gatefilter"><tt class="xref py py-obj docutils literal"><span class="pre">gatefilter</span></tt></a>([DirIn,&nbsp;filename,&nbsp;field])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/artview.scripts.edit_radar.html#artview.scripts.edit_radar" title="artview.scripts.edit_radar"><tt class="xref py py-obj docutils literal"><span class="pre">edit_radar</span></tt></a>([DirIn,&nbsp;filename,&nbsp;field])</td>
 <td>artview execution for filtering gates radar display</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/artview.scripts.map_to_grid.html#artview.scripts.map_to_grid" title="artview.scripts.map_to_grid"><tt class="xref py py-obj docutils literal"><span class="pre">map_to_grid</span></tt></a>([DirIn,&nbsp;filename,&nbsp;field])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/artview.scripts.gatefilter.html#artview.scripts.gatefilter" title="artview.scripts.gatefilter"><tt class="xref py py-obj docutils literal"><span class="pre">gatefilter</span></tt></a>([DirIn,&nbsp;filename,&nbsp;field])</td>
+<td>artview execution for filtering gates radar display</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/artview.scripts.grid.html#artview.scripts.grid" title="artview.scripts.grid"><tt class="xref py py-obj docutils literal"><span class="pre">grid</span></tt></a>([DirIn,&nbsp;filename,&nbsp;field])</td>
+<td>artview execution for simple grid display</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/artview.scripts.manual_unfold.html#artview.scripts.manual_unfold" title="artview.scripts.manual_unfold"><tt class="xref py py-obj docutils literal"><span class="pre">manual_unfold</span></tt></a>([DirIn,&nbsp;filename,&nbsp;field])</td>
+<td>artview execution for manual unfolding velocity field of radar</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/artview.scripts.map_to_grid.html#artview.scripts.map_to_grid" title="artview.scripts.map_to_grid"><tt class="xref py py-obj docutils literal"><span class="pre">map_to_grid</span></tt></a>([DirIn,&nbsp;filename,&nbsp;field])</td>
 <td>artview execution for mapping radar data to grid</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/artview.scripts.radar.html#artview.scripts.radar" title="artview.scripts.radar"><tt class="xref py py-obj docutils literal"><span class="pre">radar</span></tt></a>([DirIn,&nbsp;filename,&nbsp;field])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/artview.scripts.radar.html#artview.scripts.radar" title="artview.scripts.radar"><tt class="xref py py-obj docutils literal"><span class="pre">radar</span></tt></a>([DirIn,&nbsp;filename,&nbsp;field])</td>
 <td>artview execution for simple radar display</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/artview.scripts.grid.html#artview.scripts.grid" title="artview.scripts.grid"><tt class="xref py py-obj docutils literal"><span class="pre">grid</span></tt></a>([DirIn,&nbsp;filename,&nbsp;field])</td>
-<td>artview execution for simple grid display</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/artview.scripts.radar_and_grid.html#artview.scripts.radar_and_grid" title="artview.scripts.radar_and_grid"><tt class="xref py py-obj docutils literal"><span class="pre">radar_and_grid</span></tt></a>([DirIn,&nbsp;filename,&nbsp;field])</td>
+<td>artview execution for radar and grid display</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/artview.scripts.select_region.html#artview.scripts.select_region" title="artview.scripts.select_region"><tt class="xref py py-obj docutils literal"><span class="pre">select_region</span></tt></a>([DirIn,&nbsp;filename,&nbsp;field])</td>
+<td>artview execution for selecting a region in radar display</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/artview.scripts.standard.html#artview.scripts.standard" title="artview.scripts.standard"><tt class="xref py py-obj docutils literal"><span class="pre">standard</span></tt></a>([DirIn,&nbsp;filename,&nbsp;field])</td>
 <td>standard artview execution</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/artview.scripts.compare_fields.html#artview.scripts.compare_fields" title="artview.scripts.compare_fields"><tt class="xref py py-obj docutils literal"><span class="pre">compare_fields</span></tt></a>([DirIn,&nbsp;filename,&nbsp;field])</td>
-<td>artview execution for comparing fields in radar display</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/artview.scripts.select_region.html#artview.scripts.select_region" title="artview.scripts.select_region"><tt class="xref py py-obj docutils literal"><span class="pre">select_region</span></tt></a>([DirIn,&nbsp;filename,&nbsp;field])</td>
-<td>artview execution for selecting a region in radar display</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/artview.scripts.view.html#artview.scripts.view" title="artview.scripts.view"><tt class="xref py py-obj docutils literal"><span class="pre">view</span></tt></a>([DirIn,&nbsp;filename,&nbsp;field])</td>
+<td>artview execution for advanced IO display</td>
 </tr>
 </tbody>
 </table>
@@ -108,8 +117,8 @@
   <p class="topless"><a href="generated/artview.plugins.PhaseProcLp.phase_proc_lp.html"
                         title="previous chapter">artview.plugins.PhaseProcLp.phase_proc_lp</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="generated/artview.scripts.corrections.html"
-                        title="next chapter">artview.scripts.corrections</a></p>
+  <p class="topless"><a href="generated/artview.scripts.compare_fields.html"
+                        title="next chapter">artview.scripts.compare_fields</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/reference/scripts.txt"
@@ -145,18 +154,18 @@
           <a href="../np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="generated/artview.scripts.corrections.html" title="artview.scripts.corrections"
+          <a href="generated/artview.scripts.compare_fields.html" title="artview.scripts.compare_fields"
              >next</a> |</li>
         <li class="right" >
           <a href="generated/artview.plugins.PhaseProcLp.phase_proc_lp.html" title="artview.plugins.PhaseProcLp.phase_proc_lp"
              >previous</a> |</li>
-        <li><a href="../index.html">ARTview 1.1.1.dev+cd00646 documentation</a> &raquo;</li>
+        <li><a href="../index.html">ARTview 1.2.0.dev+a576859 documentation</a> &raquo;</li>
           <li><a href="index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Sep 13, 2015.
+      Last updated on Dec 08, 2015.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>

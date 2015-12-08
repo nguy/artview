@@ -1,0 +1,6 @@
+artview.plugins.ManualFilter.removeFromRadar
+============================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: ManualFilter.removeFromRadar

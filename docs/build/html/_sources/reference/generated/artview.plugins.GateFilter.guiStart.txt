@@ -1,0 +1,6 @@
+artview.plugins.GateFilter.guiStart
+===================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: GateFilter.guiStart

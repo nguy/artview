@@ -1,0 +1,6 @@
+artview.plugins.GateFilter.apply_filters
+========================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: GateFilter.apply_filters

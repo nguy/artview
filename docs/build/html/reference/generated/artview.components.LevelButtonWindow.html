@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>artview.components.LevelButtonWindow &mdash; ARTview 1.1.1.dev+cd00646 documentation</title>
+    <title>artview.components.LevelButtonWindow &mdash; ARTview 1.2.0.dev+a576859 documentation</title>
     
     <link rel="stylesheet" href="../../_static/scipy.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '1.1.1.dev+cd00646',
+        VERSION:     '1.2.0.dev+a576859',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,10 +24,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="ARTview 1.1.1.dev+cd00646 documentation" href="../../index.html" />
+    <link rel="top" title="ARTview 1.2.0.dev+a576859 documentation" href="../../index.html" />
     <link rel="up" title="Main Components (artview.components)" href="../components.html" />
     <link rel="next" title="artview.components.LevelButtonWindow.CreateLevelWidget" href="artview.components.LevelButtonWindow.CreateLevelWidget.html" />
-    <link rel="prev" title="artview.components.Menu.startComponent" href="artview.components.Menu.startComponent.html" /> 
+    <link rel="prev" title="artview.components.Menu.subMenus" href="artview.components.Menu.subMenus.html" /> 
   </head>
   <body>
     <div class="related">
@@ -46,9 +46,9 @@
           <a href="artview.components.LevelButtonWindow.CreateLevelWidget.html" title="artview.components.LevelButtonWindow.CreateLevelWidget"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="artview.components.Menu.startComponent.html" title="artview.components.Menu.startComponent"
+          <a href="artview.components.Menu.subMenus.html" title="artview.components.Menu.subMenus"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">ARTview 1.1.1.dev+cd00646 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">ARTview 1.2.0.dev+a576859 documentation</a> &raquo;</li>
           <li><a href="../index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li>
           <li><a href="../components.html" accesskey="U">Main Components (<tt class="docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
       </ul>
@@ -63,22 +63,23 @@
 <h1>artview.components.LevelButtonWindow<a class="headerlink" href="#artview-components-levelbuttonwindow" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="artview.components.LevelButtonWindow">
-<em class="property">class </em><tt class="descclassname">artview.components.</tt><tt class="descname">LevelButtonWindow</tt><big>(</big><em>Vlevel</em>, <em>plot_type</em>, <em>Vcontainer=None</em>, <em>controlType='radio'</em>, <em>name='LevelButtons'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/level.py#L13"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.LevelButtonWindow" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">artview.components.</tt><tt class="descname">LevelButtonWindow</tt><big>(</big><em>Vlevel=None</em>, <em>plot_type='Radar'</em>, <em>Vcontainer=None</em>, <em>controlType='radio'</em>, <em>name='LevelButtons'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/level.py#L13"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.LevelButtonWindow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><tt class="xref py py-class docutils literal"><span class="pre">artview.core.core.Component</span></tt></a></p>
 <p>Class to display the Window with Level radio buttons.
 The level can represent either tilts in a native radar file
 or some height level in a gridded data file.</p>
 <dl class="method">
 <dt id="artview.components.LevelButtonWindow.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>Vlevel</em>, <em>plot_type</em>, <em>Vcontainer=None</em>, <em>controlType='radio'</em>, <em>name='LevelButtons'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/level.py#L32"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.LevelButtonWindow.__init__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__init__</tt><big>(</big><em>Vlevel=None</em>, <em>plot_type='Radar'</em>, <em>Vcontainer=None</em>, <em>controlType='radio'</em>, <em>name='LevelButtons'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/level.py#L32"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.LevelButtonWindow.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize the class to create the Level Selection interface.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>Vlevel</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>[Optional]</strong> :</p>
+<p><strong>Vlevel</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
 <blockquote>
-<div><p>Level signal variable.</p>
+<div><p>Level signal variable. If None start new one with 0.</p>
 </div></blockquote>
 <p><strong>plot_type</strong> : string</p>
 <blockquote>
@@ -92,7 +93,6 @@ can&#8217;t be changed afterwards.</p>
 <div><p>Radar/Grid signal variable. None will create empty variable.
 Will be passed to Vradar or Vgrid according with plot_type.</p>
 </div></blockquote>
-<p><strong>[Optional]</strong> :</p>
 <p><strong>controlType</strong> : &#8220;radio&#8221; or &#8220;slider&#8221;</p>
 <blockquote>
 <div><p>Type of control used, radio button or slider bar.</p>
@@ -175,19 +175,19 @@ plot_type.</p>
 <dl class="attribute">
 <dt id="artview.components.LevelButtonWindow.VlevelX">
 <tt class="descname">VlevelX</tt><em class="property"> = None</em><a class="headerlink" href="#artview.components.LevelButtonWindow.VlevelX" title="Permalink to this definition">¶</a></dt>
-<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a>, only used if plot_type=&#8221;gridX&#8221;</p>
+<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a>, used if plot_type=&#8221;gridX&#8221;</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="artview.components.LevelButtonWindow.VlevelY">
 <tt class="descname">VlevelY</tt><em class="property"> = None</em><a class="headerlink" href="#artview.components.LevelButtonWindow.VlevelY" title="Permalink to this definition">¶</a></dt>
-<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a>, only used if plot_type=&#8221;gridY&#8221;</p>
+<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a>, used if plot_type=&#8221;gridY&#8221;</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="artview.components.LevelButtonWindow.VlevelZ">
 <tt class="descname">VlevelZ</tt><em class="property"> = None</em><a class="headerlink" href="#artview.components.LevelButtonWindow.VlevelZ" title="Permalink to this definition">¶</a></dt>
-<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a>, only used if plot_type=&#8221;gridZ&#8221;</p>
+<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a>, used if plot_type=&#8221;gridZ&#8221;</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -199,7 +199,7 @@ plot_type.</p>
 <dl class="attribute">
 <dt id="artview.components.LevelButtonWindow.Vtilt">
 <tt class="descname">Vtilt</tt><em class="property"> = None</em><a class="headerlink" href="#artview.components.LevelButtonWindow.Vtilt" title="Permalink to this definition">¶</a></dt>
-<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a>, only used if plot_type starts with &#8220;Radar&#8221;</p>
+<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a>, used if plot_type starts with &#8220;Radar&#8221;</p>
 </dd></dl>
 
 </dd></dl>
@@ -213,8 +213,8 @@ plot_type.</p>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="artview.components.Menu.startComponent.html"
-                        title="previous chapter">artview.components.Menu.startComponent</a></p>
+  <p class="topless"><a href="artview.components.Menu.subMenus.html"
+                        title="previous chapter">artview.components.Menu.subMenus</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="artview.components.LevelButtonWindow.CreateLevelWidget.html"
                         title="next chapter">artview.components.LevelButtonWindow.CreateLevelWidget</a></p>
@@ -256,16 +256,16 @@ plot_type.</p>
           <a href="artview.components.LevelButtonWindow.CreateLevelWidget.html" title="artview.components.LevelButtonWindow.CreateLevelWidget"
              >next</a> |</li>
         <li class="right" >
-          <a href="artview.components.Menu.startComponent.html" title="artview.components.Menu.startComponent"
+          <a href="artview.components.Menu.subMenus.html" title="artview.components.Menu.subMenus"
              >previous</a> |</li>
-        <li><a href="../../index.html">ARTview 1.1.1.dev+cd00646 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">ARTview 1.2.0.dev+a576859 documentation</a> &raquo;</li>
           <li><a href="../index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li>
           <li><a href="../components.html" >Main Components (<tt class="docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Sep 13, 2015.
+      Last updated on Dec 08, 2015.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>

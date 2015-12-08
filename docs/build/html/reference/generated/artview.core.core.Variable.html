@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>artview.core.core.Variable &mdash; ARTview 1.1.1.dev+cd00646 documentation</title>
+    <title>artview.core.core.Variable &mdash; ARTview 1.2.0.dev+a576859 documentation</title>
     
     <link rel="stylesheet" href="../../_static/scipy.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '1.1.1.dev+cd00646',
+        VERSION:     '1.2.0.dev+a576859',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="ARTview 1.1.1.dev+cd00646 documentation" href="../../index.html" /> 
+    <link rel="top" title="ARTview 1.2.0.dev+a576859 documentation" href="../../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="../../np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">ARTview 1.1.1.dev+cd00646 documentation</a> &raquo;</li> 
+        <li><a href="../../index.html">ARTview 1.2.0.dev+a576859 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -93,7 +93,9 @@ Vgrid</td>
 <tr class="row-odd"><td>Vfield</td>
 <td>Name of a Field
 in radar file</td>
-<td>string in radar.fields.keys()</td>
+<td>string, preferencialy in
+radar.fields.keys(), but there is
+no garanty</td>
 </tr>
 <tr class="row-even"><td>Vtilt</td>
 <td>Tilt (sweep) of
@@ -143,11 +145,22 @@ GateFilter</td>
 <td><a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.filters.GateFilter.html#pyart.filters.GateFilter" title="(in Py-ART v1.5)"><tt class="xref py py-class docutils literal"><span class="pre">pyart.filters.GateFilter</span></tt></a>
 instance or None</td>
 </tr>
+<tr class="row-even"><td>VplotAxes</td>
+<td>Hold axes of
+Matplotlib figure</td>
+<td><a class="reference external" href="http://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v1.5.0)"><tt class="xref py py-class docutils literal"><span class="pre">matplotlib.axes.Axes</span></tt></a>
+instance or None</td>
+</tr>
+<tr class="row-odd"><td>VPathInteriorFunc</td>
+<td>Hold auxiliar
+function</td>
+<td>function like <a class="reference internal" href="artview.components.RadarDisplay.getPathInteriorValues.html#artview.components.RadarDisplay.getPathInteriorValues" title="artview.components.RadarDisplay.getPathInteriorValues"><tt class="xref py py-func docutils literal"><span class="pre">getPathInteriorValues</span></tt></a> or None</td>
+</tr>
 </tbody>
 </table>
 <dl class="method">
 <dt id="artview.core.core.Variable.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>value=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/core/core.py#L82"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.core.core.Variable.__init__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__init__</tt><big>(</big><em>value=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/core/core.py#L90"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.core.core.Variable.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p class="rubric">Methods</p>
@@ -160,7 +173,7 @@ instance or None</td>
 <tr class="row-odd"><td><a class="reference internal" href="artview.core.core.Variable.change.html#artview.core.core.Variable.change" title="artview.core.core.Variable.change"><tt class="xref py py-obj docutils literal"><span class="pre">Variable.change</span></tt></a>(value[,&nbsp;strong])</td>
 <td>Change the Variable value and emit &#8216;ValueChanged&#8217; signal.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="artview.core.core.Variable.update.html#artview.core.core.Variable.update" title="artview.core.core.Variable.update"><tt class="xref py py-obj docutils literal"><span class="pre">Variable.update</span></tt></a>(strong)</td>
+<tr class="row-even"><td><a class="reference internal" href="artview.core.core.Variable.update.html#artview.core.core.Variable.update" title="artview.core.core.Variable.update"><tt class="xref py py-obj docutils literal"><span class="pre">Variable.update</span></tt></a>([strong])</td>
 <td>Emits the &#8216;ValueChanged&#8217; signal without changings value. This is</td>
 </tr>
 </tbody>
@@ -216,12 +229,12 @@ instance or None</td>
         <li class="right" >
           <a href="../../np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">ARTview 1.1.1.dev+cd00646 documentation</a> &raquo;</li> 
+        <li><a href="../../index.html">ARTview 1.2.0.dev+a576859 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Sep 13, 2015.
+      Last updated on Dec 08, 2015.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>

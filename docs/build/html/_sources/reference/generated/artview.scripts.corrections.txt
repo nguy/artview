@@ -1,0 +1,6 @@
+artview.scripts.corrections
+===========================
+
+.. currentmodule:: artview.scripts
+
+.. autofunction:: corrections

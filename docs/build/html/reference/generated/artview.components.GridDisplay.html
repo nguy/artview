@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>artview.components.GridDisplay &mdash; ARTview 1.1.1.dev+cd00646 documentation</title>
+    <title>artview.components.GridDisplay &mdash; ARTview 1.2.0.dev+a576859 documentation</title>
     
     <link rel="stylesheet" href="../../_static/scipy.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '1.1.1.dev+cd00646',
+        VERSION:     '1.2.0.dev+a576859',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="ARTview 1.1.1.dev+cd00646 documentation" href="../../index.html" />
+    <link rel="top" title="ARTview 1.2.0.dev+a576859 documentation" href="../../index.html" />
     <link rel="up" title="Main Components (artview.components)" href="../components.html" />
     <link rel="next" title="artview.components.GridDisplay.FieldSelectCmd" href="artview.components.GridDisplay.FieldSelectCmd.html" />
     <link rel="prev" title="artview.components.RadarDisplay.toolZoomPanCmd" href="artview.components.RadarDisplay.toolZoomPanCmd.html" /> 
@@ -48,7 +48,7 @@
         <li class="right" >
           <a href="artview.components.RadarDisplay.toolZoomPanCmd.html" title="artview.components.RadarDisplay.toolZoomPanCmd"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">ARTview 1.1.1.dev+cd00646 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">ARTview 1.2.0.dev+a576859 documentation</a> &raquo;</li>
           <li><a href="../index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li>
           <li><a href="../components.html" accesskey="U">Main Components (<tt class="docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
       </ul>
@@ -63,26 +63,26 @@
 <h1>artview.components.GridDisplay<a class="headerlink" href="#artview-components-griddisplay" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="artview.components.GridDisplay">
-<em class="property">class </em><tt class="descclassname">artview.components.</tt><tt class="descname">GridDisplay</tt><big>(</big><em>Vgrid</em>, <em>Vfield</em>, <em>VlevelZ=None</em>, <em>VlevelY=None</em>, <em>VlevelX=None</em>, <em>Vlims=None</em>, <em>Vcmap=None</em>, <em>plot_type='gridZ'</em>, <em>name='Display'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/plot_grid.py#L28"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.GridDisplay" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">artview.components.</tt><tt class="descname">GridDisplay</tt><big>(</big><em>Vgrid=None</em>, <em>Vfield=None</em>, <em>VlevelZ=None</em>, <em>VlevelY=None</em>, <em>VlevelX=None</em>, <em>Vlims=None</em>, <em>Vcmap=None</em>, <em>plot_type='gridZ'</em>, <em>name='Display'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/plot_grid.py#L28"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.GridDisplay" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><tt class="xref py py-class docutils literal"><span class="pre">artview.core.core.Component</span></tt></a></p>
 <p>Class to create a display plot, using a Grid structure.</p>
 <dl class="method">
 <dt id="artview.components.GridDisplay.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>Vgrid</em>, <em>Vfield</em>, <em>VlevelZ=None</em>, <em>VlevelY=None</em>, <em>VlevelX=None</em>, <em>Vlims=None</em>, <em>Vcmap=None</em>, <em>plot_type='gridZ'</em>, <em>name='Display'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/plot_grid.py#L49"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.GridDisplay.__init__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__init__</tt><big>(</big><em>Vgrid=None</em>, <em>Vfield=None</em>, <em>VlevelZ=None</em>, <em>VlevelY=None</em>, <em>VlevelX=None</em>, <em>Vlims=None</em>, <em>Vcmap=None</em>, <em>plot_type='gridZ'</em>, <em>name='Display'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/plot_grid.py#L52"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.GridDisplay.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize the class to create display.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>Vgrid</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>[Optional]</strong> :</p>
+<p><strong>Vgrid</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
 <blockquote>
-<div><p>grid signal variable.</p>
+<div><p>grid signal variable. If None start new one with None.</p>
 </div></blockquote>
 <p><strong>Vfield</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
 <blockquote>
-<div><p>Field signal variable.</p>
+<div><p>Field signal variable. If None start new one with empty string.</p>
 </div></blockquote>
-<p><strong>[Optional]</strong> :</p>
 <p><strong>VlevelZ</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
 <blockquote>
 <div><p>Signal variable for vertical level, only used if
@@ -178,11 +178,11 @@ change value back to variable.</p>
 <tr class="row-odd"><td><a class="reference internal" href="artview.components.GridDisplay.getNearestPoints.html#artview.components.GridDisplay.getNearestPoints" title="artview.components.GridDisplay.getNearestPoints"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.getNearestPoints</span></tt></a>(xdata,&nbsp;ydata)</td>
 <td>Return the bins values nearest to point.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="artview.components.GridDisplay.getPathInteriorValues.html#artview.components.GridDisplay.getPathInteriorValues" title="artview.components.GridDisplay.getPathInteriorValues"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.getPathInteriorValues</span></tt></a>(path)</td>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.GridDisplay.getPathInteriorValues.html#artview.components.GridDisplay.getPathInteriorValues" title="artview.components.GridDisplay.getPathInteriorValues"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.getPathInteriorValues</span></tt></a>(paths)</td>
 <td>Return the bins values path.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="artview.components.GridDisplay.getPlotAxis.html#artview.components.GridDisplay.getPlotAxis" title="artview.components.GridDisplay.getPlotAxis"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.getPlotAxis</span></tt></a>()</td>
-<td>get <a class="reference external" href="http://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v1.4.3)"><tt class="xref py py-class docutils literal"><span class="pre">matplotlib.axes.Axes</span></tt></a> instance of main plot</td>
+<td>get <a class="reference external" href="http://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v1.5.0)"><tt class="xref py py-class docutils literal"><span class="pre">matplotlib.axes.Axes</span></tt></a> instance of main plot</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="artview.components.GridDisplay.getStatusBar.html#artview.components.GridDisplay.getStatusBar" title="artview.components.GridDisplay.getStatusBar"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.getStatusBar</span></tt></a>()</td>
 <td>get <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QStatusBar</span></tt> instance</td>
@@ -260,6 +260,18 @@ change value back to variable.</p>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="artview.components.GridDisplay.VpathInteriorFunc">
+<tt class="descname">VpathInteriorFunc</tt><em class="property"> = None</em><a class="headerlink" href="#artview.components.GridDisplay.VpathInteriorFunc" title="Permalink to this definition">¶</a></dt>
+<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a> (no internal use)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="artview.components.GridDisplay.VplotAxes">
+<tt class="descname">VplotAxes</tt><em class="property"> = None</em><a class="headerlink" href="#artview.components.GridDisplay.VplotAxes" title="Permalink to this definition">¶</a></dt>
+<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a> (no internal use)</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="artview.components.GridDisplay.levels">
 <tt class="descname">levels</tt><a class="headerlink" href="#artview.components.GridDisplay.levels" title="Permalink to this definition">¶</a></dt>
 <dd><p>Values from the axes of grid, depending on plot_type.</p>
@@ -321,14 +333,14 @@ change value back to variable.</p>
         <li class="right" >
           <a href="artview.components.RadarDisplay.toolZoomPanCmd.html" title="artview.components.RadarDisplay.toolZoomPanCmd"
              >previous</a> |</li>
-        <li><a href="../../index.html">ARTview 1.1.1.dev+cd00646 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">ARTview 1.2.0.dev+a576859 documentation</a> &raquo;</li>
           <li><a href="../index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li>
           <li><a href="../components.html" >Main Components (<tt class="docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Sep 13, 2015.
+      Last updated on Dec 08, 2015.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>

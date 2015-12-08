@@ -1,6 +1,0 @@
-artview.plugins.DealiasRegionBased.displayHelp
-==============================================
-
-.. currentmodule:: artview.plugins
-
-.. automethod:: DealiasRegionBased.displayHelp

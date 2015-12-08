@@ -15,16 +15,19 @@ artview.components.SelectRegion
       :toctree:
    
          SelectRegion.CreateSelectRegionWidget
+         SelectRegion.applyMask
          SelectRegion.button_press_callback
          SelectRegion.closeEvent
          SelectRegion.connect
          SelectRegion.disconnect
-         SelectRegion.displayHelp
          SelectRegion.displayStats
          SelectRegion.guiStart
          SelectRegion.motion_notify_callback
+         SelectRegion.newPlotAxes
          SelectRegion.openTable
          SelectRegion.resetSelectRegion
+         SelectRegion.restoreMask
+         SelectRegion.saveRadar
          SelectRegion.saveTable
          SelectRegion.showHist
          SelectRegion.viewTable
@@ -36,7 +39,12 @@ artview.components.SelectRegion
    .. rubric:: Attributes
    
    
-   .. autoattribute:: VSelectRegion
+   .. autoattribute:: Vfield
+   .. autoattribute:: Vgatefilter
+   .. autoattribute:: VpathInteriorFunc
+   .. autoattribute:: VplotAxes
+   .. autoattribute:: Vpoints
+   .. autoattribute:: Vradar
    
    
 

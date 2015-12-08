@@ -1,0 +1,6 @@
+artview.plugins.AccessTerminal.runCode
+======================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: AccessTerminal.runCode

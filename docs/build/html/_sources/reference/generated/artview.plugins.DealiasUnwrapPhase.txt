@@ -17,7 +17,6 @@ artview.plugins.DealiasUnwrapPhase
          DealiasUnwrapPhase.addGeneralOptions
          DealiasUnwrapPhase.chooseRadar
          DealiasUnwrapPhase.dealias_unwrap_phase
-         DealiasUnwrapPhase.displayHelp
          DealiasUnwrapPhase.guiStart
          DealiasUnwrapPhase.newRadar
    

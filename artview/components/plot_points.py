@@ -266,13 +266,13 @@ class PointsDisplay(Component):
 #        dispTitle.triggered.connect(self._title_input)
 #        dispUnit.triggered.connect(self._units_input)
         dispSaveFile.triggered.connect(self._savefile)
-#        dispHelp.triggered.connect(self.displayHelp) #XXX help is out dated
+#        dispHelp.triggered.connect(self._displayHelp) #XXX help is out dated
 
-    def displayHelp(self):
+    def _displayHelp(self):
         text = (
-            "<b>Using the Simple Plot Feature</b><br><br>"
+            "<b>Using the PlotPoints Display</b><br><br>"
             "<i>Purpose</i>:<br>"
-            "Display a plot.<br><br>"
+            "Display a plot of selected points.<br><br>"
             "The limits dialog is a common format that allows the user "
             "change:<br>"
             "<i>X and Y limits<br>"
@@ -281,7 +281,7 @@ class PointsDisplay(Component):
             "For example, a simple line plot has no data min/max data "
             "value.<br>")
 
-        common.ShowLongText(text)
+        common.ShowLongText(text, set_html=True)
 
     def NewPoints(self, variable, value, strong):
         '''

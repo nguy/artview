@@ -54,6 +54,8 @@ artview.components.GridDisplay
    .. autoattribute:: VlevelX
    .. autoattribute:: VlevelY
    .. autoattribute:: VlevelZ
+   .. autoattribute:: VpathInteriorFunc
+   .. autoattribute:: VplotAxes
    .. autoattribute:: levels
    
    

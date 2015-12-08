@@ -1,0 +1,6 @@
+artview.plugins.AccessTerminal.guiStart
+=======================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: AccessTerminal.guiStart

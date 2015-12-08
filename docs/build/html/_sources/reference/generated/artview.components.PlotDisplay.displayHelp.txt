@@ -1,6 +1,0 @@
-artview.components.PlotDisplay.displayHelp
-==========================================
-
-.. currentmodule:: artview.components
-
-.. automethod:: PlotDisplay.displayHelp

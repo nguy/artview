@@ -238,7 +238,7 @@ class SelectRegion(Component):
         self.buttonRemoveVertex = QtGui.QPushButton('Remove Vertex', self)
         self.buttonRemoveVertex.setToolTip("Remove last Vertex")
         self.buttonResetSelectRegion.clicked.connect(self.resetSelectRegion)
-        self.buttonHelp.clicked.connect(self.displayHelp)
+        self.buttonHelp.clicked.connect(self._displayHelp)
         self.buttonRemovePoly.clicked.connect(self.removePolygon)
         self.buttonRemoveVertex.clicked.connect(self.removeVertex)
 
@@ -291,8 +291,8 @@ class SelectRegion(Component):
         self.fig.canvas.draw()
         self.update_points()
 
-    def displayHelp(self):
-
+    def _displayHelp(self):
+        ''' Launch pop-up help window.'''
         text = (
             "<b>Using the Region of Interest (SelectRegion) Tool</b><br><br>"
             "<i>Purpose</i>:<br>"
@@ -303,9 +303,11 @@ class SelectRegion(Component):
             " Secondary Button (e.g. right button)- close path<br><br>"
             "A message 'Closed Region' appears in status bar when "
             "boundary is properly closed.<br><br>"
+            "If using SelectRegion in 'extract_points' mode, a "
+            "<a href='https://youtu.be/PYhwG8Juryo'>Video Tutorial</a> "
+            "has been created.<br>"
             )
-
-        common.ShowLongText(text)
+        common.ShowLongTextHyperlinked(text)
 
     def resetSelectRegion(self):
         '''Clear the SelectRegion lines from plot and reset things.'''
