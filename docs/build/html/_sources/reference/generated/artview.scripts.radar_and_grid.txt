@@ -1,0 +1,6 @@
+artview.scripts.radar_and_grid
+==============================
+
+.. currentmodule:: artview.scripts
+
+.. autofunction:: radar_and_grid

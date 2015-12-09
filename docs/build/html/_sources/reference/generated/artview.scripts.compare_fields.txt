@@ -1,0 +1,6 @@
+artview.scripts.compare_fields
+==============================
+
+.. currentmodule:: artview.scripts
+
+.. autofunction:: compare_fields

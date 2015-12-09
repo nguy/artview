@@ -1,0 +1,6 @@
+artview.scripts.edit_radar
+==========================
+
+.. currentmodule:: artview.scripts
+
+.. autofunction:: edit_radar

@@ -1,6 +1,0 @@
-artview.plugins.DealiasUnwrapPhase.displayHelp
-==============================================
-
-.. currentmodule:: artview.plugins
-
-.. automethod:: DealiasUnwrapPhase.displayHelp

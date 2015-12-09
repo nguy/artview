@@ -37,6 +37,9 @@ The Basics
       of :py:class:`~artview.core.core.Component`. Like this:
       ``class MyPlugin(core.Component):``
 
+    * Plug-ins have no mandatory argument and can be started like this:
+      ``myplugin = MyPlugin()``
+
     * If plug-ins must interact with other ARTview components they use
       :py:class:`~artview.core.core.Variable`, not direct call.
 
@@ -217,6 +220,9 @@ Graphical Start
     * :py:class:`artview.core.choose_variable.VariableChoose` will present the
       user a tree view of the current components and its shared variables,
       allowing the selection of one instance.
+
+    This is a more historical request, but as for now it is still useful and
+    therefore still mandatory.
 
 
 Example

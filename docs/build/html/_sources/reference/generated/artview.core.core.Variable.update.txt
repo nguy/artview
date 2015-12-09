@@ -1,0 +1,6 @@
+artview.core.core.Variable.update
+=================================
+
+.. currentmodule:: artview.core.core
+
+.. automethod:: Variable.update

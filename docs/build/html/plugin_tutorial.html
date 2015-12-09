@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Tutorial: Writing your own Plugin &mdash; ARTview 1.1.1.dev+cd00646 documentation</title>
+    <title>Tutorial: Writing your own Plugin &mdash; ARTview 1.2.0.dev+a576859 documentation</title>
     
     <link rel="stylesheet" href="_static/scipy.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.1.1.dev+cd00646',
+        VERSION:     '1.2.0.dev+a576859',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="ARTview 1.1.1.dev+cd00646 documentation" href="index.html" />
+    <link rel="top" title="ARTview 1.2.0.dev+a576859 documentation" href="index.html" />
     <link rel="prev" title="Tutorial: Writing your own Script" href="script_tutorial.html" /> 
   </head>
   <body>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="script_tutorial.html" title="Tutorial: Writing your own Script"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">ARTview 1.1.1.dev+cd00646 documentation</a> &raquo;</li> 
+        <li><a href="index.html">ARTview 1.2.0.dev+a576859 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -84,6 +84,9 @@ plug-ins, normally just one.</p>
 <li><p class="first">Plug-ins are always a class, moreover they are always child classes
 of <a class="reference internal" href="reference/generated/artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><tt class="xref py py-class docutils literal"><span class="pre">Component</span></tt></a>. Like this:
 <tt class="docutils literal"><span class="pre">class</span> <span class="pre">MyPlugin(core.Component):</span></tt></p>
+</li>
+<li><p class="first">Plug-ins have no mandatory argument and can be started like this:
+<tt class="docutils literal"><span class="pre">myplugin</span> <span class="pre">=</span> <span class="pre">MyPlugin()</span></tt></p>
 </li>
 <li><p class="first">If plug-ins must interact with other ARTview components they use
 <a class="reference internal" href="reference/generated/artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a>, not direct call.</p>
@@ -257,6 +260,8 @@ this:</li>
 user a tree view of the current components and its shared variables,
 allowing the selection of one instance.</li>
 </ul>
+<p>This is a more historical request, but as for now it is still useful and
+therefore still mandatory.</p>
 </div></blockquote>
 </div>
 <div class="section" id="example">
@@ -373,12 +378,12 @@ allowing the selection of one instance.</li>
         <li class="right" >
           <a href="script_tutorial.html" title="Tutorial: Writing your own Script"
              >previous</a> |</li>
-        <li><a href="index.html">ARTview 1.1.1.dev+cd00646 documentation</a> &raquo;</li> 
+        <li><a href="index.html">ARTview 1.2.0.dev+a576859 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Sep 13, 2015.
+      Last updated on Dec 08, 2015.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>

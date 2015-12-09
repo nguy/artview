@@ -1,0 +1,6 @@
+artview.plugins.ManualFilter.reset
+==================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: ManualFilter.reset

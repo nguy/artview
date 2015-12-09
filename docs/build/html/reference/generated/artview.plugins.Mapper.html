@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>artview.plugins.Mapper &mdash; ARTview 1.1.1.dev+cd00646 documentation</title>
+    <title>artview.plugins.Mapper &mdash; ARTview 1.2.0.dev+a576859 documentation</title>
     
     <link rel="stylesheet" href="../../_static/scipy.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '1.1.1.dev+cd00646',
+        VERSION:     '1.2.0.dev+a576859',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,10 +24,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="ARTview 1.1.1.dev+cd00646 documentation" href="../../index.html" />
+    <link rel="top" title="ARTview 1.2.0.dev+a576859 documentation" href="../../index.html" />
     <link rel="up" title="Plugins (artview.plugins)" href="../plugins.html" />
     <link rel="next" title="artview.plugins.Mapper.addEspecificOptions" href="artview.plugins.Mapper.addEspecificOptions.html" />
-    <link rel="prev" title="artview.plugins.GateFilter.showScript" href="artview.plugins.GateFilter.showScript.html" /> 
+    <link rel="prev" title="artview.plugins.ManualUnfold.unfold" href="artview.plugins.ManualUnfold.unfold.html" /> 
   </head>
   <body>
     <div class="related">
@@ -46,9 +46,9 @@
           <a href="artview.plugins.Mapper.addEspecificOptions.html" title="artview.plugins.Mapper.addEspecificOptions"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="artview.plugins.GateFilter.showScript.html" title="artview.plugins.GateFilter.showScript"
+          <a href="artview.plugins.ManualUnfold.unfold.html" title="artview.plugins.ManualUnfold.unfold"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">ARTview 1.1.1.dev+cd00646 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">ARTview 1.2.0.dev+a576859 documentation</a> &raquo;</li>
           <li><a href="../index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li>
           <li><a href="../plugins.html" accesskey="U">Plugins (<tt class="docutils literal"><span class="pre">artview.plugins</span></tt>)</a> &raquo;</li> 
       </ul>
@@ -113,25 +113,28 @@ If None, then Qt owns, otherwise associated w/ parent PyQt instance</p>
 <tr class="row-even"><td><a class="reference internal" href="artview.plugins.Mapper.addGeneralOptions.html#artview.plugins.Mapper.addGeneralOptions" title="artview.plugins.Mapper.addGeneralOptions"><tt class="xref py py-obj docutils literal"><span class="pre">Mapper.addGeneralOptions</span></tt></a>()</td>
 <td>Mount Options Layout for <a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.map.grid_from_radars.html#pyart.map.grid_from_radars" title="(in Py-ART v1.5)"><tt class="xref py py-func docutils literal"><span class="pre">grid_from_radars</span></tt></a></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="artview.plugins.Mapper.distBeamRoiOptions.html#artview.plugins.Mapper.distBeamRoiOptions" title="artview.plugins.Mapper.distBeamRoiOptions"><tt class="xref py py-obj docutils literal"><span class="pre">Mapper.distBeamRoiOptions</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="artview.plugins.Mapper.constantRoiOptions.html#artview.plugins.Mapper.constantRoiOptions" title="artview.plugins.Mapper.constantRoiOptions"><tt class="xref py py-obj docutils literal"><span class="pre">Mapper.constantRoiOptions</span></tt></a>()</td>
+<td>Mount Options Layout for constant radius of influence.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="artview.plugins.Mapper.distBeamRoiOptions.html#artview.plugins.Mapper.distBeamRoiOptions" title="artview.plugins.Mapper.distBeamRoiOptions"><tt class="xref py py-obj docutils literal"><span class="pre">Mapper.distBeamRoiOptions</span></tt></a>()</td>
 <td>Mount Options Layout for dist beam radius of influence.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="artview.plugins.Mapper.distRoiOptions.html#artview.plugins.Mapper.distRoiOptions" title="artview.plugins.Mapper.distRoiOptions"><tt class="xref py py-obj docutils literal"><span class="pre">Mapper.distRoiOptions</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="artview.plugins.Mapper.distRoiOptions.html#artview.plugins.Mapper.distRoiOptions" title="artview.plugins.Mapper.distRoiOptions"><tt class="xref py py-obj docutils literal"><span class="pre">Mapper.distRoiOptions</span></tt></a>()</td>
 <td>Mount Options Layout for dist radius of influence.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="artview.plugins.Mapper.grid_from_radars.html#artview.plugins.Mapper.grid_from_radars" title="artview.plugins.Mapper.grid_from_radars"><tt class="xref py py-obj docutils literal"><span class="pre">Mapper.grid_from_radars</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="artview.plugins.Mapper.grid_from_radars.html#artview.plugins.Mapper.grid_from_radars" title="artview.plugins.Mapper.grid_from_radars"><tt class="xref py py-obj docutils literal"><span class="pre">Mapper.grid_from_radars</span></tt></a>()</td>
 <td>Mount Options and execute <tt class="xref py py-func docutils literal"><span class="pre">grid_from_radars</span></tt>.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="artview.plugins.Mapper.guiStart.html#artview.plugins.Mapper.guiStart" title="artview.plugins.Mapper.guiStart"><tt class="xref py py-obj docutils literal"><span class="pre">Mapper.guiStart</span></tt></a>([parent])</td>
+<tr class="row-odd"><td><a class="reference internal" href="artview.plugins.Mapper.guiStart.html#artview.plugins.Mapper.guiStart" title="artview.plugins.Mapper.guiStart"><tt class="xref py py-obj docutils literal"><span class="pre">Mapper.guiStart</span></tt></a>([parent])</td>
 <td>Graphical interface for starting this class</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="artview.plugins.Mapper.mapGatesToGridOptions.html#artview.plugins.Mapper.mapGatesToGridOptions" title="artview.plugins.Mapper.mapGatesToGridOptions"><tt class="xref py py-obj docutils literal"><span class="pre">Mapper.mapGatesToGridOptions</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="artview.plugins.Mapper.mapGatesToGridOptions.html#artview.plugins.Mapper.mapGatesToGridOptions" title="artview.plugins.Mapper.mapGatesToGridOptions"><tt class="xref py py-obj docutils literal"><span class="pre">Mapper.mapGatesToGridOptions</span></tt></a>()</td>
 <td>Mount Options Layout for <a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.map.map_gates_to_grid.html#pyart.map.map_gates_to_grid" title="(in Py-ART v1.5)"><tt class="xref py py-func docutils literal"><span class="pre">map_gates_to_grid</span></tt></a></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="artview.plugins.Mapper.mapToGridOptions.html#artview.plugins.Mapper.mapToGridOptions" title="artview.plugins.Mapper.mapToGridOptions"><tt class="xref py py-obj docutils literal"><span class="pre">Mapper.mapToGridOptions</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="artview.plugins.Mapper.mapToGridOptions.html#artview.plugins.Mapper.mapToGridOptions" title="artview.plugins.Mapper.mapToGridOptions"><tt class="xref py py-obj docutils literal"><span class="pre">Mapper.mapToGridOptions</span></tt></a>()</td>
 <td>Mount Options Layout for <a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.map.map_to_grid.html#pyart.map.map_to_grid" title="(in Py-ART v1.5)"><tt class="xref py py-func docutils literal"><span class="pre">map_to_grid</span></tt></a></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="artview.plugins.Mapper.newRadar.html#artview.plugins.Mapper.newRadar" title="artview.plugins.Mapper.newRadar"><tt class="xref py py-obj docutils literal"><span class="pre">Mapper.newRadar</span></tt></a>(variable,&nbsp;value,&nbsp;strong)</td>
+<tr class="row-even"><td><a class="reference internal" href="artview.plugins.Mapper.newRadar.html#artview.plugins.Mapper.newRadar" title="artview.plugins.Mapper.newRadar"><tt class="xref py py-obj docutils literal"><span class="pre">Mapper.newRadar</span></tt></a>(variable,&nbsp;value,&nbsp;strong)</td>
 <td>Display Py-Art&#8217;s docstring for help.</td>
 </tr>
 </tbody>
@@ -160,8 +163,8 @@ If None, then Qt owns, otherwise associated w/ parent PyQt instance</p>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="artview.plugins.GateFilter.showScript.html"
-                        title="previous chapter">artview.plugins.GateFilter.showScript</a></p>
+  <p class="topless"><a href="artview.plugins.ManualUnfold.unfold.html"
+                        title="previous chapter">artview.plugins.ManualUnfold.unfold</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="artview.plugins.Mapper.addEspecificOptions.html"
                         title="next chapter">artview.plugins.Mapper.addEspecificOptions</a></p>
@@ -203,16 +206,16 @@ If None, then Qt owns, otherwise associated w/ parent PyQt instance</p>
           <a href="artview.plugins.Mapper.addEspecificOptions.html" title="artview.plugins.Mapper.addEspecificOptions"
              >next</a> |</li>
         <li class="right" >
-          <a href="artview.plugins.GateFilter.showScript.html" title="artview.plugins.GateFilter.showScript"
+          <a href="artview.plugins.ManualUnfold.unfold.html" title="artview.plugins.ManualUnfold.unfold"
              >previous</a> |</li>
-        <li><a href="../../index.html">ARTview 1.1.1.dev+cd00646 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">ARTview 1.2.0.dev+a576859 documentation</a> &raquo;</li>
           <li><a href="../index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li>
           <li><a href="../plugins.html" >Plugins (<tt class="docutils literal"><span class="pre">artview.plugins</span></tt>)</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Sep 13, 2015.
+      Last updated on Dec 08, 2015.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>

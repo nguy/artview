@@ -1,0 +1,6 @@
+artview.plugins.ManualFilter.NewField
+=====================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: ManualFilter.NewField

@@ -106,6 +106,11 @@ class ManualUnfold(Component):
         self.foldButton.clicked.connect(self.foldBack)
         self.layout.addWidget(self.foldButton, 5, 1)
 
+        self.buttonHelp = QtGui.QPushButton("Help")
+        self.buttonHelp.setToolTip("About using Manual Unfold")
+        self.buttonHelp.clicked.connect(self._displayHelp)
+        self.layout.addWidget(self.buttonHelp, 6, 1)
+
         self.newRadar(None, None, True)
         self.show()
 
@@ -198,6 +203,32 @@ class ManualUnfold(Component):
         data = data - 2 * unfold * nyquist
         radar.fields[corrVel]['data'] = data
         self.Vradar.update()
+
+    def _displayHelp(self):
+        ''' Launch pop-up help window.'''
+        text = (
+            "<b>Using the Manual Unfold Tool</b><br><br>"
+            "The SelectRegion tool is used to select points on an "
+            "ARTView Display.<br>"
+            "The selected region consists of points loaded into a "
+            "Vpoints shared variable.<br>"
+            "Operation is performed on these points.<br><br>"
+            "<i>Purpose</i>:<br>"
+            "Unfold postive and/or negative aliased Doppler velocity <br>"
+            "values in a radar file from a selected region (path) <br>"
+            "in the display window using the Mouse.<br><br>"
+            "<i>Functions</i>:<br>"
+            " Primary Mouse Button (e.g. left button)- add vertex<br>"
+            " Hold button to draw free-hand path<br>"
+            " Secondary Button (e.g. right button)- close path<br><br>"
+            "A message 'Closed Region' appears in status bar when "
+            "boundary is properly closed.<br><br>"
+            "Select the desired unfolding to be performed.<br><br>"
+            "For a demonstration, a "
+            "<a href='https://youtu.be/1ehZXbp7000'>Video Tutorial</a> "
+            "has been created.<br>"
+            )
+        common.ShowLongTextHyperlinked(text)
 
     def newRadar(self, variable, value, strong):
         '''respond to change in radar.'''

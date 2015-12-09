@@ -1,0 +1,6 @@
+artview.plugins.FileList.open_with
+==================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: FileList.open_with

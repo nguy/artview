@@ -1,0 +1,6 @@
+artview.scripts.manual_unfold
+=============================
+
+.. currentmodule:: artview.scripts
+
+.. autofunction:: manual_unfold

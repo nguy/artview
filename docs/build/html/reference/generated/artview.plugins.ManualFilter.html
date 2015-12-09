@@ -1,0 +1,235 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>artview.plugins.ManualFilter &mdash; ARTview 1.2.0.dev+a576859 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/scipy.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.2.0.dev+a576859',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="ARTview 1.2.0.dev+a576859 documentation" href="../../index.html" />
+    <link rel="up" title="Plugins (artview.plugins)" href="../plugins.html" />
+    <link rel="next" title="artview.plugins.ManualFilter.NewField" href="artview.plugins.ManualFilter.NewField.html" />
+    <link rel="prev" title="artview.plugins.FileList.open_with" href="artview.plugins.FileList.open_with.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="artview.plugins.ManualFilter.NewField.html" title="artview.plugins.ManualFilter.NewField"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="artview.plugins.FileList.open_with.html" title="artview.plugins.FileList.open_with"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ARTview 1.2.0.dev+a576859 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li>
+          <li><a href="../plugins.html" accesskey="U">Plugins (<tt class="docutils literal"><span class="pre">artview.plugins</span></tt>)</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="artview-plugins-manualfilter">
+<h1>artview.plugins.ManualFilter<a class="headerlink" href="#artview-plugins-manualfilter" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="artview.plugins.ManualFilter">
+<em class="property">class </em><tt class="descclassname">artview.plugins.</tt><tt class="descname">ManualFilter</tt><big>(</big><em>Vradar=None</em>, <em>Vpoints=None</em>, <em>Vfield=None</em>, <em>Vgatefilter=None</em>, <em>name=' ManualFilter'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/plugins/manual_filter.py#L23"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.plugins.ManualFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><tt class="xref py py-class docutils literal"><span class="pre">artview.core.core.Component</span></tt></a></p>
+<p>Use of Points to remove data from Radar.</p>
+<dl class="method">
+<dt id="artview.plugins.ManualFilter.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>Vradar=None</em>, <em>Vpoints=None</em>, <em>Vfield=None</em>, <em>Vgatefilter=None</em>, <em>name=' ManualFilter'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/plugins/manual_filter.py#L41"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.plugins.ManualFilter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the class to create the interface.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>[Optional]</strong> :</p>
+<p><strong>Vradar</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
+<blockquote>
+<div><p>Radar signal variable.
+A value of None will instantiate a empty variable.</p>
+</div></blockquote>
+<p><strong>Vpoints</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
+<blockquote>
+<div><p>Points signal variable.
+A value of None will instantiate a empty variable.</p>
+</div></blockquote>
+<p><strong>Vfield</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
+<blockquote>
+<div><p>Field signal variable. If None start new one with empty string.</p>
+</div></blockquote>
+<p><strong>Vgatefilter</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
+<blockquote>
+<div><p>Gatefilter signal variable.
+A value of None will instantiate a empty variable.</p>
+</div></blockquote>
+<p><strong>name</strong> : string</p>
+<blockquote>
+<div><p>Field Radiobutton window name.</p>
+</div></blockquote>
+<p><strong>parent</strong> : PyQt instance</p>
+<blockquote class="last">
+<div><p>Parent instance to associate to this class.
+If None, then Qt owns, otherwise associated with parent PyQt
+instance.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="artview.plugins.ManualFilter.NewField.html#artview.plugins.ManualFilter.NewField" title="artview.plugins.ManualFilter.NewField"><tt class="xref py py-obj docutils literal"><span class="pre">ManualFilter.NewField</span></tt></a>(variable,&nbsp;value,&nbsp;strong)</td>
+<td>Slot for &#8216;ValueChanged&#8217; signal of</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="artview.plugins.ManualFilter.NewRadar.html#artview.plugins.ManualFilter.NewRadar" title="artview.plugins.ManualFilter.NewRadar"><tt class="xref py py-obj docutils literal"><span class="pre">ManualFilter.NewRadar</span></tt></a>(variable,&nbsp;value,&nbsp;strong)</td>
+<td>Slot for &#8216;ValueChanged&#8217; signal of</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="artview.plugins.ManualFilter.guiStart.html#artview.plugins.ManualFilter.guiStart" title="artview.plugins.ManualFilter.guiStart"><tt class="xref py py-obj docutils literal"><span class="pre">ManualFilter.guiStart</span></tt></a>([parent])</td>
+<td>Graphical interface for starting this class.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="artview.plugins.ManualFilter.removeFromField.html#artview.plugins.ManualFilter.removeFromField" title="artview.plugins.ManualFilter.removeFromField"><tt class="xref py py-obj docutils literal"><span class="pre">ManualFilter.removeFromField</span></tt></a>()</td>
+<td>Remove selected points from current field in Radar.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="artview.plugins.ManualFilter.removeFromFilter.html#artview.plugins.ManualFilter.removeFromFilter" title="artview.plugins.ManualFilter.removeFromFilter"><tt class="xref py py-obj docutils literal"><span class="pre">ManualFilter.removeFromFilter</span></tt></a>()</td>
+<td>Filter selected gates.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="artview.plugins.ManualFilter.removeFromRadar.html#artview.plugins.ManualFilter.removeFromRadar" title="artview.plugins.ManualFilter.removeFromRadar"><tt class="xref py py-obj docutils literal"><span class="pre">ManualFilter.removeFromRadar</span></tt></a>()</td>
+<td>Remove selected points from all fields in Radar.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="artview.plugins.ManualFilter.reset.html#artview.plugins.ManualFilter.reset" title="artview.plugins.ManualFilter.reset"><tt class="xref py py-obj docutils literal"><span class="pre">ManualFilter.reset</span></tt></a>()</td>
+<td>Reset Getafilter to a empty one.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<dl class="attribute">
+<dt id="artview.plugins.ManualFilter.Vfield">
+<tt class="descname">Vfield</tt><em class="property"> = None</em><a class="headerlink" href="#artview.plugins.ManualFilter.Vfield" title="Permalink to this definition">¶</a></dt>
+<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="artview.plugins.ManualFilter.Vgatefilter">
+<tt class="descname">Vgatefilter</tt><em class="property"> = None</em><a class="headerlink" href="#artview.plugins.ManualFilter.Vgatefilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="artview.plugins.ManualFilter.Vpoints">
+<tt class="descname">Vpoints</tt><em class="property"> = None</em><a class="headerlink" href="#artview.plugins.ManualFilter.Vpoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="artview.plugins.ManualFilter.Vradar">
+<tt class="descname">Vradar</tt><em class="property"> = None</em><a class="headerlink" href="#artview.plugins.ManualFilter.Vradar" title="Permalink to this definition">¶</a></dt>
+<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="artview.plugins.FileList.open_with.html"
+                        title="previous chapter">artview.plugins.FileList.open_with</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="artview.plugins.ManualFilter.NewField.html"
+                        title="next chapter">artview.plugins.ManualFilter.NewField</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/reference/generated/artview.plugins.ManualFilter.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="artview.plugins.ManualFilter.NewField.html" title="artview.plugins.ManualFilter.NewField"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="artview.plugins.FileList.open_with.html" title="artview.plugins.FileList.open_with"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ARTview 1.2.0.dev+a576859 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li>
+          <li><a href="../plugins.html" >Plugins (<tt class="docutils literal"><span class="pre">artview.plugins</span></tt>)</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Nick Guy.
+      Last updated on Dec 08, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

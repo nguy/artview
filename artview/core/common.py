@@ -54,7 +54,7 @@ def ShowQuestion(msg):
     return response
 
 
-def ShowLongText(msg, modal=True):
+def ShowLongText(msg, modal=True, set_html=False):
     '''
     Show a Long message with QTextEdit.
 
@@ -70,7 +70,35 @@ def ShowLongText(msg, modal=True):
     layout.addWidget(text, 0, 0)
     text.setAcceptRichText(True)
     text.setReadOnly(True)
+    if set_html:
+        text.setHtml(msg)
+    else:
+        text.setText(msg)
+    if modal is True:
+        response = Dialog.exec_()
+        return response
+    else:
+        response = Dialog.show()
+        return Dialog, response
+
+
+def ShowLongTextHyperlinked(msg, modal=True):
+    '''
+    Show a Long message with QLabel that will display
+    hyperlinks and take user to website.
+
+    Parameters::
+    ----------
+    msg - string
+        Message to display in MessageBox.
+    '''
+    Dialog = QtGui.QDialog()
+#    Dialog.resize(600, 400)
+    layout = QtGui.QGridLayout(Dialog)
+    text = QtGui.QLabel("")
     text.setText(msg)
+    text.setOpenExternalLinks(True)
+    layout.addWidget(text)
     if modal is True:
         response = Dialog.exec_()
         return response

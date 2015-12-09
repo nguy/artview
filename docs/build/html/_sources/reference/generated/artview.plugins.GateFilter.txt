@@ -1,0 +1,39 @@
+artview.plugins.GateFilter
+==========================
+
+.. currentmodule:: artview.plugins
+
+.. autoclass:: GateFilter
+   :show-inheritance:
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+         GateFilter.apply_filters
+         GateFilter.chooseDisplay
+         GateFilter.createButtonUI
+         GateFilter.createFilterBox
+         GateFilter.createVarUI
+         GateFilter.guiStart
+         GateFilter.restoreRadar
+         GateFilter.saveRadar
+         GateFilter.set_operator_menu
+         GateFilter.showScript
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+   
+   
+   .. autoattribute:: Vgatefilter
+   .. autoattribute:: Vradar
+   
+   
+

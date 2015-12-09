@@ -1,0 +1,6 @@
+artview.plugins.ManualFilter.guiStart
+=====================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: ManualFilter.guiStart

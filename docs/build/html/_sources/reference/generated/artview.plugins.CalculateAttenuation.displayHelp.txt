@@ -1,6 +1,0 @@
-artview.plugins.CalculateAttenuation.displayHelp
-================================================
-
-.. currentmodule:: artview.plugins
-
-.. automethod:: CalculateAttenuation.displayHelp

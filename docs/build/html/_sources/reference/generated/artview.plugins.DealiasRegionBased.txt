@@ -17,7 +17,6 @@ artview.plugins.DealiasRegionBased
          DealiasRegionBased.addGeneralOptions
          DealiasRegionBased.chooseRadar
          DealiasRegionBased.dealias_region_based
-         DealiasRegionBased.displayHelp
          DealiasRegionBased.guiStart
          DealiasRegionBased.newRadar
    

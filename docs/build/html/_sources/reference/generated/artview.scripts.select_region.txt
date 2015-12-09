@@ -1,0 +1,6 @@
+artview.scripts.select_region
+=============================
+
+.. currentmodule:: artview.scripts
+
+.. autofunction:: select_region

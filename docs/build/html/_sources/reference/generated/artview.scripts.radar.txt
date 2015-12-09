@@ -1,0 +1,6 @@
+artview.scripts.radar
+=====================
+
+.. currentmodule:: artview.scripts
+
+.. autofunction:: radar

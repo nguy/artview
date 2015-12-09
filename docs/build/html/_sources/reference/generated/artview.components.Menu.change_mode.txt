@@ -1,0 +1,6 @@
+artview.components.Menu.change_mode
+===================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Menu.change_mode

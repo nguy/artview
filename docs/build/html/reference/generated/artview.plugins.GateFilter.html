@@ -1,0 +1,222 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>artview.plugins.GateFilter &mdash; ARTview 1.2.0.dev+a576859 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/scipy.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.2.0.dev+a576859',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="ARTview 1.2.0.dev+a576859 documentation" href="../../index.html" />
+    <link rel="up" title="Plugins (artview.plugins)" href="../plugins.html" />
+    <link rel="next" title="artview.plugins.GateFilter.apply_filters" href="artview.plugins.GateFilter.apply_filters.html" />
+    <link rel="prev" title="artview.plugins.DealiasUnwrapPhase.newRadar" href="artview.plugins.DealiasUnwrapPhase.newRadar.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="artview.plugins.GateFilter.apply_filters.html" title="artview.plugins.GateFilter.apply_filters"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="artview.plugins.DealiasUnwrapPhase.newRadar.html" title="artview.plugins.DealiasUnwrapPhase.newRadar"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ARTview 1.2.0.dev+a576859 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li>
+          <li><a href="../plugins.html" accesskey="U">Plugins (<tt class="docutils literal"><span class="pre">artview.plugins</span></tt>)</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="artview-plugins-gatefilter">
+<h1>artview.plugins.GateFilter<a class="headerlink" href="#artview-plugins-gatefilter" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="artview.plugins.GateFilter">
+<em class="property">class </em><tt class="descclassname">artview.plugins.</tt><tt class="descname">GateFilter</tt><big>(</big><em>Vradar=None</em>, <em>Vgatefilter=None</em>, <em>name='GateFilter'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/plugins/gatefilter.py#L16"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.plugins.GateFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><tt class="xref py py-class docutils literal"><span class="pre">artview.core.core.Component</span></tt></a></p>
+<p>Interface for executing <a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.filters.GateFilter.html#pyart.filters.GateFilter" title="(in Py-ART v1.5)"><tt class="xref py py-class docutils literal"><span class="pre">pyart.filters.GateFilter</span></tt></a>.</p>
+<dl class="method">
+<dt id="artview.plugins.GateFilter.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>Vradar=None</em>, <em>Vgatefilter=None</em>, <em>name='GateFilter'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/plugins/gatefilter.py#L32"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.plugins.GateFilter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the class to create the interface.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>[Optional]</strong> :</p>
+<p><strong>Vradar</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
+<blockquote>
+<div><p>Radar signal variable.
+A value of None initializes an empty Variable.</p>
+</div></blockquote>
+<p><strong>Vgatefilter</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
+<blockquote>
+<div><p>GateFilter signal variable.
+A value of None initializes an empty Variable.</p>
+</div></blockquote>
+<p><strong>name</strong> : string</p>
+<blockquote>
+<div><p>GateFilter instance window name.</p>
+</div></blockquote>
+<p><strong>parent</strong> : PyQt instance</p>
+<blockquote class="last">
+<div><p>Parent instance to associate to this class.
+If None, then Qt owns, otherwise associated w/ parent PyQt instance</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="artview.plugins.GateFilter.apply_filters.html#artview.plugins.GateFilter.apply_filters" title="artview.plugins.GateFilter.apply_filters"><tt class="xref py py-obj docutils literal"><span class="pre">GateFilter.apply_filters</span></tt></a>()</td>
+<td>Mount Options and execute</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="artview.plugins.GateFilter.chooseDisplay.html#artview.plugins.GateFilter.chooseDisplay" title="artview.plugins.GateFilter.chooseDisplay"><tt class="xref py py-obj docutils literal"><span class="pre">GateFilter.chooseDisplay</span></tt></a>()</td>
+<td>Get Display.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="artview.plugins.GateFilter.createButtonUI.html#artview.plugins.GateFilter.createButtonUI" title="artview.plugins.GateFilter.createButtonUI"><tt class="xref py py-obj docutils literal"><span class="pre">GateFilter.createButtonUI</span></tt></a>()</td>
+<td>Mount the Action layout.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="artview.plugins.GateFilter.createFilterBox.html#artview.plugins.GateFilter.createFilterBox" title="artview.plugins.GateFilter.createFilterBox"><tt class="xref py py-obj docutils literal"><span class="pre">GateFilter.createFilterBox</span></tt></a>()</td>
+<td>Mount options layout.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="artview.plugins.GateFilter.createVarUI.html#artview.plugins.GateFilter.createVarUI" title="artview.plugins.GateFilter.createVarUI"><tt class="xref py py-obj docutils literal"><span class="pre">GateFilter.createVarUI</span></tt></a>()</td>
+<td>Mount the Variable layout.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="artview.plugins.GateFilter.guiStart.html#artview.plugins.GateFilter.guiStart" title="artview.plugins.GateFilter.guiStart"><tt class="xref py py-obj docutils literal"><span class="pre">GateFilter.guiStart</span></tt></a>([parent])</td>
+<td>Graphical interface for starting this class.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="artview.plugins.GateFilter.restoreRadar.html#artview.plugins.GateFilter.restoreRadar" title="artview.plugins.GateFilter.restoreRadar"><tt class="xref py py-obj docutils literal"><span class="pre">GateFilter.restoreRadar</span></tt></a>()</td>
+<td>Remove applied filters by restoring original mask</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="artview.plugins.GateFilter.saveRadar.html#artview.plugins.GateFilter.saveRadar" title="artview.plugins.GateFilter.saveRadar"><tt class="xref py py-obj docutils literal"><span class="pre">GateFilter.saveRadar</span></tt></a>()</td>
+<td>Open a dialog box to save radar file.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="artview.plugins.GateFilter.set_operator_menu.html#artview.plugins.GateFilter.set_operator_menu" title="artview.plugins.GateFilter.set_operator_menu"><tt class="xref py py-obj docutils literal"><span class="pre">GateFilter.set_operator_menu</span></tt></a>()</td>
+<td>Set the field operators choice.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="artview.plugins.GateFilter.showScript.html#artview.plugins.GateFilter.showScript" title="artview.plugins.GateFilter.showScript"><tt class="xref py py-obj docutils literal"><span class="pre">GateFilter.showScript</span></tt></a>()</td>
+<td>Create the output script to reproduce filtering results.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<dl class="attribute">
+<dt id="artview.plugins.GateFilter.Vgatefilter">
+<tt class="descname">Vgatefilter</tt><em class="property"> = None</em><a class="headerlink" href="#artview.plugins.GateFilter.Vgatefilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="artview.plugins.GateFilter.Vradar">
+<tt class="descname">Vradar</tt><em class="property"> = None</em><a class="headerlink" href="#artview.plugins.GateFilter.Vradar" title="Permalink to this definition">¶</a></dt>
+<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="artview.plugins.DealiasUnwrapPhase.newRadar.html"
+                        title="previous chapter">artview.plugins.DealiasUnwrapPhase.newRadar</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="artview.plugins.GateFilter.apply_filters.html"
+                        title="next chapter">artview.plugins.GateFilter.apply_filters</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/reference/generated/artview.plugins.GateFilter.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="artview.plugins.GateFilter.apply_filters.html" title="artview.plugins.GateFilter.apply_filters"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="artview.plugins.DealiasUnwrapPhase.newRadar.html" title="artview.plugins.DealiasUnwrapPhase.newRadar"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ARTview 1.2.0.dev+a576859 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li>
+          <li><a href="../plugins.html" >Plugins (<tt class="docutils literal"><span class="pre">artview.plugins</span></tt>)</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Nick Guy.
+      Last updated on Dec 08, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>
