@@ -649,7 +649,8 @@ class RadarDisplay(Component):
         '''
         from .tools import interior_radar
         radar = self.Vradar.value
-        if radar is None:
+        tilt = self.Vtilt.value
+        if radar is None or not self.display:
             return None
 
         try:
@@ -661,7 +662,55 @@ class RadarDisplay(Component):
         idx = np.empty((0,2), dtype=np.int)
 
         for path in paths:
-            _xy, _idx = interior_radar(path, radar, self.Vtilt.value)
+            x, y, z = self.display._get_x_y_z(
+                self.Vfield.value, tilt, False, True)
+            if self.plot_type == "radarAirborne":
+                _xy = np.empty(shape=(x.size, 2))
+                _xy[:, 0] = x.flatten()
+                _xy[:, 1] = z.flatten()
+                ind = np.nonzero([path.contains_point(p) for p in _xy])[0]
+
+                _xy = _xy[ind]
+                ngates = radar.range['data'].size
+                rayIndex = (radar.sweep_start_ray_index['data'][tilt] +
+                            ind / ngates)
+                gateIndex = ind % ngates
+                _idx = np.concatenate((rayIndex[np.newaxis],
+                                        gateIndex[np.newaxis]), axis=0)
+                _idx = _idx.transpose().astype(np.int)
+            elif self.plot_type == "radarPpi":
+                _xy = np.empty(shape=(x.size, 2))
+                _xy[:, 0] = x.flatten()
+                _xy[:, 1] = y.flatten()
+                ind = np.nonzero([path.contains_point(p) for p in _xy])[0]
+
+                _xy = _xy[ind]
+                ngates = radar.range['data'].size
+                rayIndex = (radar.sweep_start_ray_index['data'][tilt] +
+                            ind / ngates)
+                gateIndex = ind % ngates
+                _idx = np.concatenate((rayIndex[np.newaxis],
+                                        gateIndex[np.newaxis]), axis=0)
+                _idx = _idx.transpose().astype(np.int)
+            elif self.plot_type == "radarRhi":
+                _xy = np.empty(shape=(x.size, 2))
+                r = np.sqrt(x ** 2 + y ** 2) * np.sign(y)
+                if np.all(r < 1.):
+                    r = -r
+                _xy[:, 0] = r.flatten()
+                _xy[:, 1] = z.flatten()
+                ind = np.nonzero([path.contains_point(p) for p in _xy])[0]
+
+                _xy = _xy[ind]
+                ngates = radar.range['data'].size
+                rayIndex = (radar.sweep_start_ray_index['data'][tilt] +
+                            ind / ngates)
+                gateIndex = ind % ngates
+                _idx = np.concatenate((rayIndex[np.newaxis],
+                                        gateIndex[np.newaxis]), axis=0)
+                _idx = _idx.transpose().astype(np.int)
+
+
             xy = np.concatenate((xy, _xy))
             idx = np.concatenate((idx, _idx))
 

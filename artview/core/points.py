@@ -102,8 +102,8 @@ class Points:
         if 'data' not in dic:
             raise KeyError("dic must contain a 'data' key")
         if dic['data'].shape != (self.npoints,):
-            t = (self.npoits,)
-            err = "'data' has invalid shape, should be (%i, %i)" % t
+            t = (self.npoints,)
+            err = str("'data' has invalid shape, should be (%i,)" % t)
             raise ValueError(err)
         # add the field
         self.fields[field_name] = dic
