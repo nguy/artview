@@ -147,6 +147,14 @@ manual_filter_mode = (
         ]
     )
 
+filelist_mode= (
+    [Menu, FileList],
+    [
+        ((0, 'Vradar'), (1, 'Vradar')),
+        ((0, 'Vgrid'), (1, 'Vgrid')),
+    ]
+)
+
 modes = {
     'radar': radar_mode,
     'map_to_grid': map_to_grid_mode,
@@ -158,4 +166,5 @@ modes = {
     'select_region': select_region_mode,
     'extract_points': extract_points_mode,
     'manual_unfold': manual_unfold_mode,
-    'manual_filter': manual_filter_mode, }
+    'manual_filter': manual_filter_mode,
+    'file_list': filelist_mode,}
