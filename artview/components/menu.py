@@ -240,8 +240,6 @@ class Menu(Component):
         self.addFileMenu()
         self.addAboutMenu()
         self.addFileAdvanceMenu()
-        self.addPluginMenu()
-        self.addModesMenu()
 
     def addFileMenu(self):
         '''Add the File Menu to menubar.'''
@@ -299,20 +297,6 @@ class Menu(Component):
         '''Add Layout Menu to menubar.'''
         self.layoutmenu = self.menubar.addMenu('&Layout')
         self.layoutmenuItems = {}
-
-    def addPluginMenu(self):
-        '''Add Advanced Tools Menu to menu bar.'''
-        self.pluginmenu = self.menubar.addMenu('Advanced Tools')
-
-    def addModesMenu(self):
-        '''Add Modes Menu to menu bar.'''
-        from ..modes import modes
-        self.modesmenu = self.menubar.addMenu('Modes')
-        for key in modes.keys():
-            act = QtGui.QAction(key, self)
-            act.triggered.connect(lambda b, key=key:
-                                  self.change_mode(modes[key]))
-            self.modesmenu.addAction(act)
 
     def addLayoutMenuItem(self, widget):
         '''Add widget item to Layout Menu.'''

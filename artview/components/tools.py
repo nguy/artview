@@ -351,7 +351,7 @@ http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-
 #                     Auxiliary Functions              ###
 ##########################################################
 
-
+#XXX deprecated in favor of pyart:RadarDisplay._get_x_y_z()
 def interior_radar(path, radar, tilt):
     '''
     Return the bins of the Radar in the interior of the path.

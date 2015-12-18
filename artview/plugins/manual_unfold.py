@@ -162,11 +162,11 @@ class ManualUnfold(Component):
         rng = points.axes['range_index']['data']
         nyquist = self.nyquistVelocity.value()
         if side == 'positive':
-            data[ray, rng] = np.where(
+            data[ray, rng] = np.ma.where(
                 original_data[ray, rng] > 0,
                 -2 * nyquist + original_data[ray, rng], data[ray, rng])
         elif side == 'negative':
-            data[ray, rng] = np.where(
+            data[ray, rng] = np.ma.where(
                 original_data[ray, rng] < 0,
                 2 * nyquist + original_data[ray, rng], data[ray, rng])
 

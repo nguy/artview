@@ -79,13 +79,24 @@ def startMainMenu(DirIn=None, filename=None):
             action = QtGui.QAction(plugin.__name__, MainMenu)
             action.triggered[()].connect(
                 lambda plugin=plugin: MainMenu.startComponent(plugin))
-            if plugin.__name__ != 'FileList':
-                MainMenu.addMenuAction(("Advanced Tools",), action)
+            MainMenu.addMenuAction(("Advanced Tools",), action)
+    except:
+        import warnings
+        warnings.warn("Loading Plugins Fail")
+
+    try:
+        from ..modes import modes
+        for mode in modes.keys():
+            action = QtGui.QAction(mode, MainMenu)
+            action.triggered[()].connect(
+                lambda mode=mode: MainMenu.change_mode(modes[mode]))
+            if mode != 'file_list':
+                MainMenu.addMenuAction(("Modes",), action)
             else:
                 MainMenu.addMenuAction(("File",), action)
     except:
         import warnings
-        warnings.warn("Loading Plugins Fail")
+        warnings.warn("Loading Modes Fail")
 
     return MainMenu
     # resize menu
