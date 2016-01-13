@@ -602,11 +602,16 @@ class RadarDisplay(Component):
 
     def toolValueClickCmd(self):
         '''Creates and connects to Point-and-click value retrieval'''
-        from .tools import ValueClick
-        self.tools['valueclick'] = ValueClick(
-            self.Vradar, self.Vtilt, self.Vfield,
-            self.units, self.ax, self.statusbar, parent=self.parent)
-        self.tools['valueclick'].connect()
+        if self.plot_type == 'radarPpi':
+            from .tools import ValueClick
+            self.tools['valueclick'] = ValueClick(
+                self.Vradar, self.Vtilt, self.Vfield,
+                self.units, self.ax, self.statusbar, parent=self.parent)
+            self.tools['valueclick'].connect()
+        else:
+            import warnings
+            warnings.warn("valueclick not implemented for airborne or rhi",
+                          NotImplementedError)
 
     def toolSelectRegionCmd(self):
         '''Creates and connects to Region of Interest instance'''
@@ -622,11 +627,12 @@ class RadarDisplay(Component):
 
     def toolDefaultCmd(self):
         '''Restore the Display defaults.'''
-        from . import tools
-        self.tools, limits, cmap = tools.restore_default_display(
-            self.tools, self.Vfield.value, self.plot_type)
-        self.Vcmap.change(cmap)
-        self.Vlims.change(limits)
+        for key in self.tools.keys():
+            if self.tools[key] is not None:
+                self.tools[key].disconnect()
+                self.tools[key] = None
+        self._set_default_cmap()
+        self._set_default_limits()
 
     def getPathInteriorValues(self, paths):
         '''
@@ -919,7 +925,8 @@ class RadarDisplay(Component):
             d['vmax'] = 65
 
         # HACK while pyart don't implemt it self
-        if self.Vradar.value is not None:
+        if (self.Vradar.value is not None and
+            self.Vfield.value in self.Vradar.value.fields):
             if 'valid_min' in self.Vradar.value.fields[self.Vfield.value]:
                 d['vmin'] = self.Vradar.value.fields[self.Vfield.value][
                     'valid_min']

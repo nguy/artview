@@ -574,7 +574,10 @@ class GridDisplay(Component):
 
     def toolDefaultCmd(self):
         '''Restore the Display defaults.'''
-        from . import tools
+        for key in self.tools.keys():
+            if self.tools[key] is not None:
+                self.tools[key].disconnect()
+                self.tools[key] = None
         self._set_default_limits()
         self._set_default_cmap()
 

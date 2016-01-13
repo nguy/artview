@@ -39,6 +39,8 @@ def restore_default_display(tooldict, field, scan_type):
     -----
     Disconnects all tools and resets limits and colormap to default.
     '''
+    import warnings
+    warnings.warn("this function is deprecated")
     tooldict = reset_tools(tooldict)
 
     display_limits, cmap = limits._default_limits(field, scan_type)
@@ -58,6 +60,8 @@ def reset_tools(tooldict):
     -----
     Disconnects all tools.
     '''
+    import warnings
+    warnings.warn("this function is deprecated")
     for tool in tooldict:
         if tooldict[tool] is not None:
             tooldict[tool].disconnect()
