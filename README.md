@@ -145,7 +145,7 @@ Linux Red Hat (RHEL6)
 
 ##Contributors
 
-Anderson Gama
+Anderson Gama (gamaanderson92@gmail.com)
 
 Nick Guy (nick.guy@uwyo.edu)
 
