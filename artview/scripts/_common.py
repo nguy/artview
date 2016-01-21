@@ -89,10 +89,13 @@ def startMainMenu(DirIn=None, filename=None):
 
     try:
         from ..modes import modes
+        print("Import success")
         for mode in modes.keys():
-            action = QtGui.QAction(mode, MainMenu)
+            print(mode)
+            action = QtGui.QAction(modes[mode]['label'], MainMenu)
+            print(modes[mode]['label'])
             action.triggered[()].connect(
-                lambda mode=mode: MainMenu.change_mode(modes[mode]))
+                lambda mode=mode: MainMenu.change_mode(modes[mode]['action']))
             if mode != 'file_list':
                 MainMenu.addMenuAction(("Modes",), action)
             else:
