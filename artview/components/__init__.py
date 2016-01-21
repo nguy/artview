@@ -21,9 +21,14 @@ ARTview functions.
     SelectRegion
     PlotDisplay
 """
+import pyart
+from pkg_resources import parse_version
 
 from .plot_radar import RadarDisplay
-from .plot_grid import GridDisplay
+if parse_version(pyart.__version__) >= parse_version('1.6.0'):
+    from .plot_grid import GridDisplay
+else:
+    from .plot_grid_legacy import GridDisplay
 from .plot_points import PointsDisplay
 from .menu import Menu
 from .level import LevelButtonWindow
@@ -32,3 +37,6 @@ from .component_control import LinkPlugins
 from .select_region import SelectRegion as SelectRegion_dev
 from .select_region_old import SelectRegion
 from .plot_simple import PlotDisplay
+
+del pyart
+del parse_version

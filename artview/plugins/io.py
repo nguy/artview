@@ -17,20 +17,30 @@ import artview
 
 from ..core import Component, Variable, common, QtGui, QtCore, componentsList
 
+# get list of read functions
+import inspect
+aux_read_functions = inspect.getmembers(pyart.aux_io, inspect.isfunction)
+read_functions = [
+    pyart.io.read,
+    pyart.io.read_grid,
+    pyart.io.read_grid_mdv] + [a[1] for a in aux_read_functions]
 try:
-    open_functions = [
-        pyart.io.read,
-        pyart.io.read_grid,
-        pyart.io.read_grid_mdv,
-        pyart.aux_io.read_d3r_gcpex_nc,
-        pyart.aux_io.read_gamic,
-        pyart.aux_io.read_kazr,
-        pyart.aux_io.read_noxp_iphex_nc,
-        pyart.aux_io.read_odim_h5,
-        pyart.aux_io.read_pattern,
-        pyart.aux_io.read_radx]
+    read_functions.append(pyart.io.read_legacy_grid)
 except:
-    open_functions = []
+    pass
+
+# test for missing dependency
+brocken_read_functions = []
+try:
+    for func in read_functions:
+        try:
+            func(None)
+        except pyart.exceptions.MissingOptionalDependency:
+            brocken_read_functions.append(func)
+        except:
+            pass
+except:
+    pass
 
 
 class FileList(Component):
@@ -156,11 +166,14 @@ class FileList(Component):
         menu = QtGui.QMenu(self)
         index = self.listView.currentIndex()
         path = str(self.listView.model().filePath(index))
-        for func in open_functions:
+        for func in read_functions:
             action = QtGui.QAction("Open with: %s" % func.__name__, self)
             # lambda inside loop: problem with variable capturing
-            f = lambda boo, func=func: self.open_with(func, path)
-            action.triggered.connect(f)
+            if func not in brocken_read_functions:
+                f = lambda boo, func=func: self.open_with(func, path)
+                action.triggered.connect(f)
+            else:
+                action.setEnabled(False)
             menu.addAction(action)
         menu.exec_(self.listView.mapToGlobal(pos))
 

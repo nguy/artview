@@ -12,17 +12,20 @@ from ..core import QtGui, QtCore
 def _add_all_advanced_tools(menu):
 
     # add grafical starts
-    menu.addComponent(LinkPlugins)
-    menu.addComponent(RadarDisplay)
-    menu.addComponent(GridDisplay)
-    menu.addComponent(SelectRegion)
-    menu.addComponent(PointsDisplay)
+    for comp in [LinkPlugins, RadarDisplay, GridDisplay, SelectRegion]:
+        action = QtGui.QAction(comp.__name__, menu)
+        action.triggered[()].connect(
+            lambda comp=comp: menu.startComponent(comp))
+        menu.addMenuAction(("Advanced Tools",), action)
 
     # add all plugins to grafical start
     try:
         from .. import plugins
         for plugin in plugins._plugins.values():
-            menu.addComponent(plugin)
+            action = QtGui.QAction(plugin.__name__, menu)
+            action.triggered[()].connect(
+                lambda plugin=plugin: menu.startComponent(plugin))
+            menu.addMenuAction(("Advanced Tools",), action)
     except:
         import traceback
         print(traceback.format_exc())

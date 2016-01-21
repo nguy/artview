@@ -322,6 +322,7 @@ class Menu(Component):
     def addPluginMenuItem(self, Comp, label=None):
         '''Add Component item to Component Menu.
         If label is None use class name.'''
+        # XXX this function is broken and need to be removed
         if label is None:
             label = Comp.__name__
         action = self.pluginmenu.addAction(label)

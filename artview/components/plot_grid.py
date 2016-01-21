@@ -254,11 +254,11 @@ class GridDisplay(Component):
         self.levelBox.addItem("Level Window")
         # Loop through and create each level button
         if self.plot_type == "gridZ":
-            levels = self.Vgrid.value.axes['z_disp']['data']
+            levels = self.Vgrid.value.z['data']
         elif self.plot_type == "gridY":
-            levels = self.Vgrid.value.axes['y_disp']['data']
+            levels = self.Vgrid.value.y['data']
         elif self.plot_type == "gridX":
-            levels = self.Vgrid.value.axes['x_disp']['data']
+            levels = self.Vgrid.value.x['data']
 
         for nlevel in range(len(levels)):
             btntxt = "%2.1f m (level %d)" % (levels[nlevel], nlevel+1)
@@ -574,7 +574,10 @@ class GridDisplay(Component):
 
     def toolDefaultCmd(self):
         '''Restore the Display defaults.'''
-        from . import tools
+        for key in self.tools.keys():
+            if self.tools[key] is not None:
+                self.tools[key].disconnect()
+                self.tools[key] = None
         self._set_default_limits()
         self._set_default_cmap()
 
@@ -700,8 +703,8 @@ class GridDisplay(Component):
         grid = self.Vgrid.value
 
         # map center
-        lat0 = self.Vgrid.value.axes['lat']['data'][0]
-        lon0 = self.Vgrid.value.axes['lon']['data'][0]
+        lat0 = self.Vgrid.value.origin_latitude['data'][0]
+        lon0 = self.Vgrid.value.origin_longitude['data'][0]
 
         if grid is None:
             return (np.array([]),)*7
@@ -718,9 +721,9 @@ class GridDisplay(Component):
             idx = nearest_point_grid(
                 grid, self.basemap, ydata * 1000., xdata * 1000.,
                 self.levels[self.VlevelX.value])
-        aux = (grid.axes['x_disp']['data'][idx[:, 2]],
-               grid.axes['y_disp']['data'][idx[:, 1]],
-               grid.axes['z_disp']['data'][idx[:, 0]],
+        aux = (grid.x['data'][idx[:, 2]],
+               grid.y['data'][idx[:, 1]],
+               grid.z['data'][idx[:, 0]],
                grid.fields[self.Vfield.value]['data'][idx[:, 0], idx[:, 1],
                                                       idx[:, 2]],
                idx[:, 2], idx[:, 1], idx[:, 0])
@@ -868,22 +871,22 @@ class GridDisplay(Component):
                 limits['ymin'] = -150
                 limits['ymax'] = 150
         elif self.plot_type == "gridY":
-            limits['xmin'] = (self.Vgrid.value.axes['x_disp']['data'][0] /
+            limits['xmin'] = (self.Vgrid.value.x['data'][0] /
                               1000.)
-            limits['xmax'] = (self.Vgrid.value.axes['x_disp']['data'][-1] /
+            limits['xmax'] = (self.Vgrid.value.x['data'][-1] /
                               1000.)
-            limits['ymin'] = (self.Vgrid.value.axes['z_disp']['data'][0] /
+            limits['ymin'] = (self.Vgrid.value.z['data'][0] /
                               1000.)
-            limits['ymax'] = (self.Vgrid.value.axes['z_disp']['data'][-1] /
+            limits['ymax'] = (self.Vgrid.value.z['data'][-1] /
                               1000.)
         elif self.plot_type == "gridX":
-            limits['xmin'] = (self.Vgrid.value.axes['y_disp']['data'][0] /
+            limits['xmin'] = (self.Vgrid.value.y['data'][0] /
                               1000.)
-            limits['xmax'] = (self.Vgrid.value.axes['y_disp']['data'][-1] /
+            limits['xmax'] = (self.Vgrid.value.y['data'][-1] /
                               1000.)
-            limits['ymin'] = (self.Vgrid.value.axes['z_disp']['data'][0] /
+            limits['ymin'] = (self.Vgrid.value.z['data'][0] /
                               1000.)
-            limits['ymax'] = (self.Vgrid.value.axes['z_disp']['data'][-1] /
+            limits['ymax'] = (self.Vgrid.value.z['data'][-1] /
                               1000.)
         self.Vlims.change(limits, strong)
 
@@ -1017,11 +1020,11 @@ class GridDisplay(Component):
     def levels(self):
         '''Values from the axes of grid, depending on plot_type.'''
         if self.plot_type == "gridZ":
-            return self.Vgrid.value.axes['z_disp']['data'][:]
+            return self.Vgrid.value.z['data'][:]
         elif self.plot_type == "gridY":
-            return self.Vgrid.value.axes['y_disp']['data'][:]
+            return self.Vgrid.value.y['data'][:]
         elif self.plot_type == "gridX":
-            return self.Vgrid.value.axes['x_disp']['data'][:]
+            return self.Vgrid.value.x['data'][:]
         else:
             return None
 

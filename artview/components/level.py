@@ -171,12 +171,22 @@ class LevelButtonWindow(Component):
         self.levelbutton = []
 
         # Pull out the level indices and elevations for display
-        if self.plot_type == "gridZ":
-            elevs = self.Vgrid.value.axes["z_disp"]["data"][:]
-        elif self.plot_type == "gridY":
-            elevs = self.Vgrid.value.axes["y_disp"]["data"][:]
-        elif self.plot_type == "gridX":
-            elevs = self.Vgrid.value.axes["x_disp"]["data"][:]
+        import pyart
+        from pkg_resources import parse_version
+        if parse_version(pyart.__version__) >= parse_version('1.6.0'):
+            if self.plot_type == "gridZ":
+                elevs = self.Vgrid.value.z["data"][:]
+            elif self.plot_type == "gridY":
+                elevs = self.Vgrid.value.y["data"][:]
+            elif self.plot_type == "gridX":
+                elevs = self.Vgrid.value.x["data"][:]
+        else:
+            if self.plot_type == "gridZ":
+                elevs = self.Vgrid.value.axes["z_disp"]["data"][:]
+            elif self.plot_type == "gridY":
+                elevs = self.Vgrid.value.axes["y_disp"]["data"][:]
+            elif self.plot_type == "gridX":
+                elevs = self.Vgrid.value.axes["x_disp"]["data"][:]
         self.elevs = elevs
 
         if self.controlType == "radio":
