@@ -31,6 +31,7 @@ grid_mode = (
         ]
     )
 
+# Deprecated - duplicated of grid_mode and radar_mode
 radar_and_grid_mode = (
     [Menu, RadarDisplay, GridDisplay],
     [
@@ -49,6 +50,7 @@ map_to_grid_mode = (
         ]
     )
 
+# XXX Deprecated as this is standard startup
 compare_fields_mode = (
     [Menu, RadarDisplay, RadarDisplay],
     [
@@ -158,14 +160,10 @@ filelist_mode= (
 modes = {
          'radar': {'label': 'Add RadarDisplay',
                    'action': radar_mode},
-         'map_to_grid': {'label': 'Map Radar to Grid',
-                         'action': map_to_grid_mode},
          'grid': {'label': 'Add GridDisplay',
                   'action': grid_mode},
-         'radar_and_grid': {'label': 'Add RadarDisplay and GridDisplay',
-                            'action': radar_and_grid_mode},
-         'compare_fields': {'label': 'Compare two RadarDisplays',
-                            'action': compare_fields_mode},
+         'map_to_grid': {'label': 'Map Radar to Grid',
+                         'action': map_to_grid_mode},
          'corrections': {'label': 'Apply corrections to Radar',
                                   'action': corrections_mode},
          'gatefilter': {'label': 'Apply a filter to gates',

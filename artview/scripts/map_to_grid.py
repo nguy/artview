@@ -41,7 +41,7 @@ def run(DirIn=None, filename=None, field=None):
     menu.addLayoutWidget(mapper)
 
     # add graphical starts
-    _add_all_advanced_tools(menu)
+#    _add_all_advanced_tools(menu)
 
     menu.setGeometry(0, 0, 600, 600)
 

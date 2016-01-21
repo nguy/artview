@@ -36,7 +36,7 @@ def run(DirIn=None, filename=None, field=None):
     menu.addLayoutWidget(view)
 
     # add grafical starts
-    _add_all_advanced_tools(menu)
+#    _add_all_advanced_tools(menu)
 
     menu.setGeometry(0, 0, 700, 700)
 

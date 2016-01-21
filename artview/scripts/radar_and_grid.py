@@ -34,7 +34,7 @@ def run(DirIn=None, filename=None, field=None):
                         name="Grid", parent=menu)
 
     # add graphical starts
-    _add_all_advanced_tools(menu)
+#    _add_all_advanced_tools(menu)
 
     # start program
     app.exec_()
