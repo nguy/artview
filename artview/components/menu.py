@@ -245,6 +245,7 @@ class Menu(Component):
         '''Add the File Menu to menubar.'''
         self.filemenu = self.menubar.addMenu('File')
 
+        # Create Open action
         if self.mode:
             openFile = QtGui.QAction('Open', self)
             openFile.setShortcut('Ctrl+O')
@@ -252,6 +253,7 @@ class Menu(Component):
             openFile.triggered.connect(self.showFileDialog)
             self.filemenu.addAction(openFile)
 
+        # Create Save radar and/or grid action
         if "radar" in self.mode:
             saveRadar = QtGui.QAction('Save Radar', self)
             saveRadar.setStatusTip('Save Radar to Cf/Radial NetCDF')
@@ -263,19 +265,44 @@ class Menu(Component):
             saveGrid.triggered.connect(self.saveGrid)
             self.filemenu.addAction(saveGrid)
 
+        # Create About ARTView action
+        aboutApp = QtGui.QAction('ARTView...', self)
+        aboutApp.setStatusTip('About ARTview')
+        aboutApp.triggered.connect(self._about)
+        self.filemenu.addAction(aboutApp)
+
+        # Create Plugin Help action
+        pluginHelp = QtGui.QAction('Plugin Help', self)
+        pluginHelp.setStatusTip('More information about Plugins')
+        pluginHelp.triggered.connect(self._get_pluginhelp)
+        self.filemenu.addAction(pluginHelp)
+
+        # Create Display Plugins action
+        pluginlist = self.filemenu.addMenu("Plugins")
+        try:
+            from .. import plugins
+            for plugin in plugins._plugins.values():
+                action = QtGui.QAction(plugin.__name__, pluginlist)
+                action.triggered[()].connect(
+                    lambda plugin=plugin: self.startComponent(plugin))
+                pluginlist.addAction(action)
+        except:
+            import traceback
+            print(traceback.format_exc())
+            import warnings
+            warnings.warn("Loading Plugins Fail")
+
+        # Create Close ARTView action
         exitApp = QtGui.QAction('Close', self)
         exitApp.setShortcut('Ctrl+Q')
         exitApp.setStatusTip('Exit ARTview')
         exitApp.triggered.connect(self.close)
         self.filemenu.addAction(exitApp)
+        self.filemenu.addSeparator()
 
     def addAboutMenu(self):
         '''Add Help menu to menubar.'''
-        self.aboutmenu = self.menubar.addMenu('About')
-
-        self._aboutArtview = QtGui.QAction('ARTview', self)
-        self._aboutArtview.setStatusTip('About ARTview')
-        self._aboutArtview.triggered.connect(self._about)
+        self.aboutmenu = self.menubar.addMenu('Radar')
 
         self.RadarShort = QtGui.QAction('Show Short Radar Info', self)
         self.RadarShort.setStatusTip('Print Short Radar Structure Info')
@@ -285,13 +312,8 @@ class Menu(Component):
         self.RadarLong.setStatusTip('Print Long Radar Structure Info')
         self.RadarLong.triggered.connect(self._get_RadarLongInfo)
 
-        self.PluginHelp = QtGui.QAction('Plugin Help', self)
-        self.PluginHelp.triggered.connect(self._get_pluginhelp)
-
-        self.aboutmenu.addAction(self._aboutArtview)
         self.aboutmenu.addAction(self.RadarShort)
         self.aboutmenu.addAction(self.RadarLong)
-        self.aboutmenu.addAction(self.PluginHelp)
 
     def addLayoutMenu(self):
         '''Add Layout Menu to menubar.'''
@@ -539,7 +561,7 @@ class Menu(Component):
 
         text = (
             "<b>Existing Plugins</b><br><br>"
-            "Current plugins can be found under the <i>Advanced Tools</i> "
+            "Current plugins can be found under the <i>File->Plugins</i> "
             "menu.<br>"
             "Most plugins have a help button for useage information.<br>"
             "<br><br>"
