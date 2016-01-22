@@ -45,7 +45,7 @@ except:
 
 class FileList(Component):
     '''
-    Open an interactive python console so the direct manipulation
+    Open an interactive python console so the direct manipulation.
     '''
 
     Vradar = None  #: see :ref:`shared_variable`
@@ -69,7 +69,7 @@ class FileList(Component):
         dirIn: string
             Initial directory path to open.
         name : string
-            Field Radiobutton window name.
+            Window name.
         parent : PyQt instance
             Parent instance to associate to this class.
             If None, then Qt owns, otherwise associated with parent PyQt
@@ -197,4 +197,201 @@ class FileList(Component):
             traceback.format_exc()
 
 
-_plugins = [FileList]
+#_plugins = [FileList]
+
+
+class FileDetail(Component):
+    '''
+    Open an interactive button driven file advancement.
+    '''
+
+    Vradar = None  #: see :ref:`shared_variable`
+    Vgrid = None  #: see :ref:`shared_variable`
+
+    @classmethod
+    def guiStart(self, parent=None):
+        '''Graphical interface for starting this class.'''
+        kwargs, independent = \
+            common._SimplePluginStart("FileDetail").startDisplay()
+        kwargs['parent'] = parent
+        return self(**kwargs), independent
+        return self(), False
+
+    def __init__(self, dirIn=None, name="FileDetail", parent=None):
+        '''Initialize the class to create the interface.
+
+        Parameters
+        ----------
+        [Optional]
+        dirIn: string
+            Initial directory path to open.
+        name : string
+            Window name.
+        parent : PyQt instance
+            Parent instance to associate to this class.
+            If None, then Qt owns, otherwise associated with parent PyQt
+            instance.
+        '''
+        super(FileDetail, self).__init__(name=name, parent=parent)
+        self.central_widget = QtGui.QWidget()
+        self.setCentralWidget(self.central_widget)
+        self.layout = QtGui.QGridLayout(self.central_widget)
+
+        # Set up signal, so that DISPLAY can react to
+        # changes in radar or gatefilter shared variables
+        self.Vradar = Variable(None)
+        self.Vgrid = Variable(None)
+        self.sharedVariables = {"Vradar": None,
+                                "Vgrid": None}
+        self.connectAllVariables()
+
+        # Set the layout
+        self.generalLayout = QtGui.QVBoxLayout()
+        self.generalLayout.addWidget(self.createShortUI())
+        self.generalLayout.addWidget(self.createLongUI())
+
+        self.layout.addLayout(self.generalLayout, 0, 0, 1, 2)
+
+        self.show()
+
+    def createShortUI(self):
+        '''
+        Choose to save minimal information from Radar instance.
+        '''
+        groupBox = QtGui.QGroupBox("Output Short Radar Text Information")
+        gBox_layout = QtGui.QGridLayout()
+
+        self.RadarShortButton = QtGui.QPushButton("Save Short Info File")
+        self.RadarShortButton.setStatusTip('Save Short Radar Structure Info')
+        self.RadarShortButton.clicked.connect(self._get_RadarShortInfo)
+        gBox_layout.addWidget(self.RadarShortButton, 0, 0, 1, 1)
+
+        groupBox.setLayout(gBox_layout)
+
+        return groupBox
+
+    def createLongUI(self):
+        '''
+        Choose to save full information from Radar instance.
+        '''
+        groupBox = QtGui.QGroupBox("Output Long Radar Text Information")
+        gBox_layout = QtGui.QGridLayout()
+
+        # XXX The output function is not operating correctly in Py-ART
+#        self.RadarLongButton = QtGui.QPushButton("Save Long Info File")
+        self.RadarLongButton = QtGui.QPushButton("Print Long Info")
+        self.RadarLongButton.setStatusTip('Save Long Radar Structure Info')
+        self.RadarLongButton.clicked.connect(self._get_RadarLongInfo)
+        gBox_layout.addWidget(self.RadarLongButton, 0, 0, 1, 1)
+
+
+        groupBox.setLayout(gBox_layout)
+
+        return groupBox
+
+    def _get_RadarLongInfo(self):
+        '''Print out the radar info to text box.'''
+        # Get the radar info form rada object and print it
+        txOut = self.Vradar.value.info()
+        # XXX Enable when output print function is working properly
+#        self.showSaveDialog('short_radar_info.txt', txOut)
+
+    def _get_RadarShortInfo(self):
+        '''Print out some basic info about the radar.'''
+        # For any missing data
+        infoNA = "Info not available"
+
+        try:
+            rname = self.Vradar.value.metadata['instrument_name']
+        except:
+            rname = infoNA
+        try:
+            rlon = str(self.Vradar.value.longitude['data'][0])
+        except:
+            rlon = infoNA
+        try:
+            rlat = str(self.Vradar.value.latitude['data'][0])
+        except:
+            rlat = infoNA
+        try:
+            ralt = str(self.Vradar.value.altitude['data'][0])
+            raltu = self.Vradar.value.altitude['units'][0]
+        except:
+            ralt = infoNA
+            raltu = " "
+        try:
+            maxr = str(self.Vradar.value.instrument_parameters[
+                'unambiguous_range']['data'][0])
+            maxru = self.Vradar.value.instrument_parameters[
+                'unambiguous_range']['units'][0]
+        except:
+            maxr = infoNA
+            maxru = " "
+        try:
+            nyq = str(self.Vradar.value.instrument_parameters[
+                'nyquist_velocity']['data'][0])
+            nyqu = self.Vradar.value.instrument_parameters[
+                'nyquist_velocity']['units'][0]
+        except:
+            nyq = infoNA
+            nyqu = " "
+        try:
+            bwh = str(self.Vradar.value.instrument_parameters[
+                'radar_beam_width_h']['data'][0])
+            bwhu = self.Vradar.value.instrument_parameters[
+                'radar_beam_width_h']['units'][0]
+        except:
+            bwh = infoNA
+            bwhu = " "
+        try:
+            bwv = str(self.Vradar.value.instrument_parameters[
+                'radar_beam_width_v']['data'][0])
+            bwvu = self.Vradar.value.instrument_parameters[
+                'radar_beam_width_v']['units'][0]
+        except:
+            bwv = infoNA
+            bwvu = " "
+        try:
+            pw = str(self.Vradar.value.instrument_parameters[
+                'pulse_width']['data'][0])
+            pwu = self.Vradar.value.instrument_parameters[
+                'pulse_width']['units'][0]
+        except:
+            pw = infoNA
+            pwu = " "
+        try:
+            ngates = str(self.Vradar.value.ngates)
+        except:
+            ngates = infoNA
+        try:
+            nsweeps = str(self.Vradar.value.nsweeps)
+        except:
+            nsweeps = infoNA
+
+        txOut = (('Radar Name: %s\n' % rname) +
+                 ('Radar longitude: %s\n' % rlon) +
+                 ('Radar latitude: %s\n' % rlat) +
+                 ('Radar altitude: %s %s\n' % (ralt, raltu)) +
+                 ('    \n') +
+                 ('Unambiguous range: %s %s\n' % (maxr, maxru)) +
+                 ('Nyquist velocity: %s %s\n' % (nyq, nyqu)) +
+                 ('    \n') +
+                 ('Radar Beamwidth, horiz: %s %s\n' % (bwh, bwhu)) +
+                 ('Radar Beamwidth, vert: %s %s\n' % (bwv, bwvu)) +
+                 ('Pulsewidth: %s %s \n' % (pw, pwu)) +
+                 ('    \n') +
+                 ('Number of gates: %s\n' % ngates) +
+                 ('Number of sweeps: %s\n' % nsweeps))
+
+        self.showSaveDialog('long_radar_info.txt', txOut)
+
+    def showSaveDialog(self, fsuggest, txt):
+
+        path = QtGui.QFileDialog.getSaveFileName(
+                self, 'Save Text File', QtCore.QString(fsuggest), 'TXT(*.txt)')
+
+        with open(path, "w") as text_file:
+            text_file.write(txt)
+
+
+_plugins = [FileList, FileDetail]

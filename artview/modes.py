@@ -157,6 +157,14 @@ filelist_mode= (
     ]
 )
 
+filedetail_mode= (
+    [Menu, FileDetail],
+    [
+        ((0, 'Vradar'), (1, 'Vradar')),
+        ((0, 'Vgrid'), (1, 'Vgrid')),
+    ]
+)
+
 modes = {
          'radar': {'label': 'Add RadarDisplay',
                    'action': radar_mode},
@@ -176,6 +184,8 @@ modes = {
                            'action': manual_unfold_mode},
          'manual_filter': {'label': 'Apply a filter to data',
                                     'action': manual_filter_mode},
-         'file_list': {'label': 'Display Filelist',
+         'file_list': {'label': 'Filelist',
                        'action': filelist_mode},
+         'file_detail': {'label': 'File details',
+                       'action': filedetail_mode},
         }

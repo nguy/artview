@@ -238,7 +238,6 @@ class Menu(Component):
         self.menubar = self.menuBar()
 
         self.addFileMenu()
-        self.addAboutMenu()
         self.addFileAdvanceMenu()
 
     def addFileMenu(self):
@@ -299,21 +298,6 @@ class Menu(Component):
         exitApp.triggered.connect(self.close)
         self.filemenu.addAction(exitApp)
         self.filemenu.addSeparator()
-
-    def addAboutMenu(self):
-        '''Add Help menu to menubar.'''
-        self.aboutmenu = self.menubar.addMenu('Radar')
-
-        self.RadarShort = QtGui.QAction('Show Short Radar Info', self)
-        self.RadarShort.setStatusTip('Print Short Radar Structure Info')
-        self.RadarShort.triggered.connect(self._get_RadarShortInfo)
-
-        self.RadarLong = QtGui.QAction('Print Long Radar Info', self)
-        self.RadarLong.setStatusTip('Print Long Radar Structure Info')
-        self.RadarLong.triggered.connect(self._get_RadarLongInfo)
-
-        self.aboutmenu.addAction(self.RadarShort)
-        self.aboutmenu.addAction(self.RadarLong)
 
     def addLayoutMenu(self):
         '''Add Layout Menu to menubar.'''

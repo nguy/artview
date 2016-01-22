@@ -36,9 +36,6 @@ def run(DirIn=None, filename=None, field=None):
     plot1 = RadarDisplay(Vradar, Variable(field), Vtilt, name="Display",
                          parent=menu)
 
-    # add graphical starts
-#    _add_all_advanced_tools(menu)
-
     menu.setGeometry(0, 0, 700, 700)
 
     for correction in corrections:

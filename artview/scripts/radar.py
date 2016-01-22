@@ -32,9 +32,6 @@ def run(DirIn=None, filename=None, field=None):
 
     menu.addLayoutWidget(plot1)
 
-    # add graphical starts
-#    _add_all_advanced_tools(menu)
-
     menu.setGeometry(0, 0, 700, 700)
 
     # start program
