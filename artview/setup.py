@@ -6,6 +6,7 @@ def configuration(parent_package='', top_path=None):
     config.add_subpackage('components')
     config.add_subpackage('plugins')
     config.add_subpackage('scripts')
+    config.add_subpackage('icons')
 
     return config
 

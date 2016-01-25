@@ -10,6 +10,7 @@ import os
 import sys
 
 from ..core import Variable, Component, common, QtGui, QtCore, componentsList
+from .nav import FileNavigator
 
 
 class Menu(Component):
@@ -299,6 +300,13 @@ class Menu(Component):
         self.filemenu.addAction(exitApp)
         self.filemenu.addSeparator()
 
+        # Create File Navigator action
+        fileNav = QtGui.QAction('File Navigator', self)
+        fileNav.setStatusTip('Widget providing navigation tools')
+        fileNav.triggered.connect(self._launch_FileNavigator)
+        self.filemenu.addAction(fileNav)
+
+
     def addLayoutMenu(self):
         '''Add Layout Menu to menubar.'''
         self.layoutmenu = self.menubar.addMenu('&Layout')
@@ -391,7 +399,8 @@ class Menu(Component):
     def addFileAdvanceMenu(self):
         '''
         Add menu to advance to next or previous file.
-        Or to go to the first or last file in the selected directory.'''
+        Or to go to the first or last file in the selected directory.
+        '''
         self.advancemenu = self.menubar.addMenu("Change file")
         nextAction = self.advancemenu.addAction("Next")
         nextAction.triggered[()].connect(
@@ -410,23 +419,17 @@ class Menu(Component):
             lambda findex=(len(self.filelist) - 1):
             self.AdvanceFileSelect(findex))
 
+    def _launch_FileNavigator(self):
+        '''
+        Launch the FileNavigator widget.
+        '''
+        FileNavigator(parent=self)
     ######################
     # Help methods #
     ######################
 
     def _about(self):
         # Add a more extensive about eventually
-#         txOut = ("ARTview is a visualization package that leverages the\n"
-#                  "DoE PyArt python software to view individual weather\n"
-#                  "radar data files or to browse a directory of data.\n\n"
-#
-#                  "If you hover over butttons and menus with the mouse,\n"
-#                  "more instructions and information are available.\n\n"
-#
-#                  "More complete documentation can be found at:\n"
-#                  "https://rawgit.com/nguy/artview/master/docs/build"
-#                  "/html/index.html\n")
-#         QtGui.QMessageBox.about(self, "About ARTview", txOut)
         text = (
             "<b>About ARTView</b><br><br>"
             "ARTview is a visualization package that leverages the <br>"
@@ -442,6 +445,7 @@ class Menu(Component):
             )
         common.ShowLongTextHyperlinked(text)
 
+    # XXX Remove once FileDetails is made live
     def _get_RadarLongInfo(self):
         '''Print out the radar info to text box.'''
         # Get the radar info form rada object and print it
@@ -451,6 +455,7 @@ class Menu(Component):
         QtGui.QMessageBox.information(self, "Long Radar Info",
                                       "See terminal window")
 
+    # XXX Remove once FileDetails is made live
     def _get_RadarShortInfo(self):
         '''Print out some basic info about the radar.'''
         # For any missing data

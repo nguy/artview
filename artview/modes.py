@@ -165,6 +165,14 @@ filedetail_mode= (
     ]
 )
 
+#navigate_mode= (
+#    [Menu, FileNavigator],
+#    [
+#        ((0, 'Vradar'), (1, 'Vradar')),
+#        ((0, 'Vgrid'), (1, 'Vgrid')),
+#    ]
+#)
+
 modes = [
          {'label': 'Add RadarDisplay',
           'action': radar_mode},
@@ -188,4 +196,6 @@ modes = [
           'action': filedetail_mode},
          {'label': 'Filelist',
           'action': filelist_mode},
+#         {'label': 'File navigator',
+#          'action': navigate_mode},
         ]

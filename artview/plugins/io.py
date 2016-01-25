@@ -278,8 +278,8 @@ class FileDetail(Component):
         gBox_layout = QtGui.QGridLayout()
 
         # XXX The output function is not operating correctly in Py-ART
-#        self.RadarLongButton = QtGui.QPushButton("Save Long Info File")
-        self.RadarLongButton = QtGui.QPushButton("Print Long Info")
+        self.RadarLongButton = QtGui.QPushButton("Save Long Info File")
+#        self.RadarLongButton = QtGui.QPushButton("Print Long Info")
         self.RadarLongButton.setStatusTip('Save Long Radar Structure Info')
         self.RadarLongButton.clicked.connect(self._get_RadarLongInfo)
         gBox_layout.addWidget(self.RadarLongButton, 0, 0, 1, 1)
@@ -291,10 +291,14 @@ class FileDetail(Component):
 
     def _get_RadarLongInfo(self):
         '''Print out the radar info to text box.'''
-        # Get the radar info form rada object and print it
-        txOut = self.Vradar.value.info()
-        # XXX Enable when output print function is working properly
-#        self.showSaveDialog('short_radar_info.txt', txOut)
+        path = QtGui.QFileDialog.getSaveFileName(self,
+                'Save Text File',
+                QtCore.QString('long_radar_info.txt'), 'TXT(*.txt)')
+
+        # Get info and print to file
+        file_obj = open(path, 'w')
+        self.Vradar.value.info(out=file_obj)
+        file_obj.close()
 
     def _get_RadarShortInfo(self):
         '''Print out some basic info about the radar.'''

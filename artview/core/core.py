@@ -44,9 +44,9 @@ class Variable(QtCore.QObject):
         | Vcontainer| Alias to Vradar or| Radar, Grid or None                |
         |           | Vgrid             |                                    |
         +-----------+-------------------+------------------------------------+
-        | Vfield    | Name of a Field   | string, preferencialy in           |
+        | Vfield    | Name of a Field   | string, preferentially in          |
         |           | in radar file     | radar.fields.keys(), but there is  |
-        |           |                   | no garanty                         |
+        |           |                   | no guarranty                       |
         +-----------+-------------------+------------------------------------+
         | Vtilt     | Tilt (sweep) of   | int between 0 and                  |
         |           | a radar file      | (number of sweeps) - 1             |
@@ -78,7 +78,7 @@ class Variable(QtCore.QObject):
         |VplotAxes  | Hold axes of      |:py:class:`matplotlib.axes.Axes`    |
         |           | Matplotlib figure |instance or None                    |
         +-----------+-------------------+------------------------------------+
-        |VPathInte\ | Hold auxiliar     |function like :py:func:`~artview.\  |
+        |VPathInte\ | Hold auxillary    |function like :py:func:`~artview.\  |
         |riorFunc   | function          |components.RadarDisplay.\           |
         |           |                   |getPathInteriorValues` or None      |
         +-----------+-------------------+------------------------------------+
@@ -139,7 +139,7 @@ class ComponentsList(QtCore.QObject):
     '''
     Keep track of Components in a list and emit signals.
     Methods 'append' and 'remove' are provided and emit signals,
-    direct acess to the list is allowed with 'ComponentList.list',
+    direct access to the list is allowed with 'ComponentList.list',
     but not recommended.'''
 
     def __init__(self):

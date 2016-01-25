@@ -76,7 +76,9 @@ def startMainMenu(DirIn=None, filename=None):
             action = QtGui.QAction(mode['label'], MainMenu)
             action.triggered[()].connect(
                 lambda mode=mode: MainMenu.change_mode(mode['action']))
-            if mode['label'] != 'Filelist' and mode['label'] != 'File details':
+            if (mode['label'] != 'Filelist' and
+                mode['label'] != 'File details' and
+                mode['label'] != 'File navigator'):
                 MainMenu.addMenuAction(("Modes",), action)
             else:
                 MainMenu.addMenuAction(("File",), action)
