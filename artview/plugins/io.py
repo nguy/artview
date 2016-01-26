@@ -197,9 +197,6 @@ class FileList(Component):
             traceback.format_exc()
 
 
-#_plugins = [FileList]
-
-
 class FileDetail(Component):
     '''
     Open an interactive button driven file advancement.
