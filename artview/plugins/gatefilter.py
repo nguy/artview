@@ -329,8 +329,9 @@ class GateFilter(Component):
             return
         else:
             for field in self.Vradar.value.fields.keys():
-                self.Vradar.value.fields[field]['data'].mask = (
-                    self.Vgatefilter.value._gate_excluded)
+                self.Vradar.value.fields[field]['data'] = np.ma.array(
+                    self.Vradar.value.fields[field]['data'],
+                     mask=self.Vgatefilter.value._gate_excluded)
 
                 # **This section is a potential replacement for merging
                 # if problems are found in mask later **
@@ -351,8 +352,9 @@ class GateFilter(Component):
     def restoreRadar(self):
         '''Remove applied filters by restoring original mask'''
         for field in self.Vradar.value.fields.keys():
-            self.Vradar.value.fields[field]['data'].mask = (
-                self.original_masks[field])
+            self.Vradar.value.fields[field]['data'] = np.ma.array(
+                self.Vradar.value.fields[field]['data'],
+                    mask=self.original_masks[field])
         self.Vgatefilter.value._gate_excluded = self.original_masks[field]
         self.Vgatefilter.update(True)
 
@@ -374,8 +376,8 @@ class GateFilter(Component):
         # Retain the original masks
         self.original_masks = {}
         for field in self.Vradar.value.fields.keys():
-            self.original_masks[field] = (
-                self.Vradar.value.fields[field]['data'].mask)
+            self.original_masks[field] = np.ma.getmaskarray(
+                self.Vradar.value.fields[field]['data'])
             print(field)
 
         gatefilter = pyart.filters.GateFilter(self.Vradar.value,
