@@ -82,6 +82,10 @@ class Variable(QtCore.QObject):
         |riorFunc   | function          |components.RadarDisplay.\           |
         |           |                   |getPathInteriorValues` or None      |
         +-----------+-------------------+------------------------------------+
+        |Vfilelist  | Hold filenames in |list containing string file         |
+        |           | current working   |basenames                           |
+        |           | directory         |                                    |
+        +-----------+-------------------+------------------------------------+
 
     '''
 

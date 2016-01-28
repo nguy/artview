@@ -1,5 +1,11 @@
 """
 nav.py
+
+Icons used in this script were created by
+oxygenicons (http://www.oxygen-icons.org/)
+and distributed at the IconArchive (http://www.iconarchive.com) under
+the GNU Lesser General Public License.
+
 """
 
 # Load the needed packages
@@ -79,6 +85,7 @@ class FileNavigator(Component):
         self.generalLayout = QtGui.QVBoxLayout()
 ##        self.generalLayout.addWidget(self.createDispUI())
         self.generalLayout.addWidget(self.createNavButtonUI())
+        self.generalLayout.addWidget(self.createNavToolbar())
 ##        self.generalLayout.addWidget(self.createTiltButtonUI())
         self.generalLayout.addWidget(self.createInfoUI())
 
@@ -116,7 +123,7 @@ class FileNavigator(Component):
         return groupBox
 
     def createNavButtonUI(self):
-        '''Mount the Action layout.'''
+        '''Mount the file navigation buttons.'''
         groupBox = QtGui.QGroupBox("File Navigation")
         gBox_layout = QtGui.QGridLayout()
 
@@ -144,6 +151,33 @@ class FileNavigator(Component):
         self.lastbutton.clicked.connect(self.goto_last_file)
         gBox_layout.addWidget(self.lastbutton, 0, 3, 1, 1)
 
+        groupBox.setLayout(gBox_layout)
+
+        return groupBox
+
+    def createNavToolbar(self):
+        '''Mount the file navigation buttons.'''
+        parentdir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+        groupBox = QtGui.QGroupBox("File Navigation")
+        gBox_layout = QtGui.QGridLayout()
+
+     #   arrow_icons = icons.get_arrow_icon_dict()
+        self.navtoolbar = QtGui.QToolBar()
+##        pixfirst = QtGui.QPixmap('icons/player_play.png')
+        pixfirst = QtGui.QPixmap(os.sep.join([parentdir, 'icons',"arrow_go_first_icon.png"]))
+        pixprev = QtGui.QPixmap(os.sep.join([parentdir, 'icons',"arrow_go_previous_icon.png"]))
+        pixnext = QtGui.QPixmap(os.sep.join([parentdir, 'icons',"arrow_go_next_icon.png"]))
+        pixlast = QtGui.QPixmap(os.sep.join([parentdir, 'icons',"arrow_go_last_icon.png"]))
+        self.act_first = self.navtoolbar.addAction(
+            QtGui.QIcon(pixfirst), 'First', self.goto_first_file)
+        self.act_prev = self.navtoolbar.addAction(
+            QtGui.QIcon(pixprev), 'Previous', self.goto_prev_file)
+        self.act_next = self.navtoolbar.addAction(
+            QtGui.QIcon(pixnext), 'Next', self.goto_next_file)
+        self.act_las = self.navtoolbar.addAction(
+            QtGui.QIcon(pixlast), 'Last', self.goto_last_file)
+
+        gBox_layout.addWidget(self.navtoolbar)
         groupBox.setLayout(gBox_layout)
 
         return groupBox
