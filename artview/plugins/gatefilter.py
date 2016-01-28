@@ -370,7 +370,7 @@ class GateFilter(Component):
         '''
         # Test radar
         if self.Vradar.value is None:
-            common.ShowWarning("Radar is None, can not perform filtering.")
+            common.ShowWarning("Radar is None, cannot perform filtering.")
             return
 
         # Retain the original masks
