@@ -169,10 +169,7 @@ navigate_mode= (
     [Menu, FileNavigator],
     [
         ((0, 'Vradar'), (1, 'Vradar')),
-#        ((1, 'Vradar'), (2, 'Vradar')),
         ((0, 'Vgrid'), (1, 'Vgrid')),
-#        ((1, 'Vgrid'), (2, 'Vgrid')),
-#        ((1, 'Vtilt'), (2, 'Vtilt')),
     ]
 )
 

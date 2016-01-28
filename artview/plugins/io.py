@@ -384,7 +384,7 @@ class FileDetail(Component):
                  ('Number of gates: %s\n' % ngates) +
                  ('Number of sweeps: %s\n' % nsweeps))
 
-        self.showSaveDialog('long_radar_info.txt', txOut)
+        self.showSaveDialog('short_radar_info.txt', txOut)
 
     def showSaveDialog(self, fsuggest, txt):
 
