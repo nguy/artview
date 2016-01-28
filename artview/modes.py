@@ -165,13 +165,16 @@ filedetail_mode= (
     ]
 )
 
-#navigate_mode= (
-#    [Menu, FileNavigator],
-#    [
-#        ((0, 'Vradar'), (1, 'Vradar')),
-#        ((0, 'Vgrid'), (1, 'Vgrid')),
-#    ]
-#)
+navigate_mode= (
+    [Menu, FileNavigator],
+    [
+        ((0, 'Vradar'), (1, 'Vradar')),
+#        ((1, 'Vradar'), (2, 'Vradar')),
+        ((0, 'Vgrid'), (1, 'Vgrid')),
+#        ((1, 'Vgrid'), (2, 'Vgrid')),
+#        ((1, 'Vtilt'), (2, 'Vtilt')),
+    ]
+)
 
 modes = [
          {'label': 'Add RadarDisplay',
@@ -192,10 +195,10 @@ modes = [
           'action': manual_unfold_mode},
          {'label': 'Apply a filter to data',
           'action': manual_filter_mode},
+         {'label': 'File navigator',
+          'action': navigate_mode},
          {'label': 'File details',
           'action': filedetail_mode},
          {'label': 'Filelist',
           'action': filelist_mode},
-#         {'label': 'File navigator',
-#          'action': navigate_mode},
         ]

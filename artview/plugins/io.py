@@ -1,5 +1,7 @@
 """
-tree_view.py
+io.py
+
+Classes for interaction with files.
 """
 
 # Load the needed packages
@@ -30,13 +32,13 @@ except:
     pass
 
 # test for missing dependency
-brocken_read_functions = []
+broken_read_functions = []
 try:
     for func in read_functions:
         try:
             func(None)
         except pyart.exceptions.MissingOptionalDependency:
-            brocken_read_functions.append(func)
+            broken_read_functions.append(func)
         except:
             pass
 except:
@@ -169,7 +171,7 @@ class FileList(Component):
         for func in read_functions:
             action = QtGui.QAction("Open with: %s" % func.__name__, self)
             # lambda inside loop: problem with variable capturing
-            if func not in brocken_read_functions:
+            if func not in broken_read_functions:
                 f = lambda boo, func=func: self.open_with(func, path)
                 action.triggered.connect(f)
             else:
@@ -274,9 +276,7 @@ class FileDetail(Component):
         groupBox = QtGui.QGroupBox("Output Long Radar Text Information")
         gBox_layout = QtGui.QGridLayout()
 
-        # XXX The output function is not operating correctly in Py-ART
         self.RadarLongButton = QtGui.QPushButton("Save Long Info File")
-#        self.RadarLongButton = QtGui.QPushButton("Print Long Info")
         self.RadarLongButton.setStatusTip('Save Long Radar Structure Info')
         self.RadarLongButton.clicked.connect(self._get_RadarLongInfo)
         gBox_layout.addWidget(self.RadarLongButton, 0, 0, 1, 1)

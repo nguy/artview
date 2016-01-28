@@ -10,7 +10,7 @@ import os
 import sys
 
 from ..core import Variable, Component, common, QtGui, QtCore, componentsList
-from .nav import FileNavigator
+###from .nav import FileNavigator
 
 
 class Menu(Component):
@@ -18,9 +18,10 @@ class Menu(Component):
 
     Vradar = None  #: see :ref:`shared_variable`
     Vgrid = None  #: see :ref:`shared_variable`
+    Vfilelist = None  #: see :ref:`shared_variable`
 
     def __init__(self, pathDir=None, filename=None, Vradar=None, Vgrid=None,
-                 mode=["Radar"], name="Menu", parent=None):
+                 Vfilelist=None, mode=["Radar"], name="Menu", parent=None):
         '''
         Initialize the class to create the interface.
 
@@ -60,14 +61,16 @@ class Menu(Component):
             pathDir = os.getcwd()
         self.dirIn = pathDir
         self.fileindex = 0
-        self.filelist = []
+###        self.filelist = []
         self.mode = []
         for m in mode:
             self.mode.append(m.lower())
         self.Vradar = Vradar
         self.Vgrid = Vgrid
+        self.Vfilelist = Vfilelist
         self.sharedVariables = {"Vradar": None,
-                                "Vgrid": None}
+                                "Vgrid": None,
+                                "Vfilelist": None}
 
         # Show an "Open" dialog box and return the path to the selected file
         # Just do that if Vradar was not given
@@ -75,6 +78,8 @@ class Menu(Component):
             self.Vradar = Variable(None)
         if self.Vgrid is None:
             self.Vgrid = Variable(None)
+        if self.Vfilelist is None:
+            self.Vfilelist = Variable(None)
         if Vradar is None and Vgrid is None and self.mode:
             if filename is None:
                 self.showFileDialog()
@@ -239,7 +244,7 @@ class Menu(Component):
         self.menubar = self.menuBar()
 
         self.addFileMenu()
-        self.addFileAdvanceMenu()
+#        self.addFileAdvanceMenu()
 
     def addFileMenu(self):
         '''Add the File Menu to menubar.'''
@@ -299,13 +304,6 @@ class Menu(Component):
         exitApp.triggered.connect(self.close)
         self.filemenu.addAction(exitApp)
         self.filemenu.addSeparator()
-
-        # Create File Navigator action
-        fileNav = QtGui.QAction('File Navigator', self)
-        fileNav.setStatusTip('Widget providing navigation tools')
-        fileNav.triggered.connect(self._launch_FileNavigator)
-        self.filemenu.addAction(fileNav)
-
 
     def addLayoutMenu(self):
         '''Add Layout Menu to menubar.'''
@@ -416,14 +414,16 @@ class Menu(Component):
 
         lastAction = self.advancemenu.addAction("Last")
         lastAction.triggered[()].connect(
-            lambda findex=(len(self.filelist) - 1):
+            lambda findex=(len(self.Vfilelist.value) - 1):
             self.AdvanceFileSelect(findex))
 
-    def _launch_FileNavigator(self):
-        '''
-        Launch the FileNavigator widget.
-        '''
-        FileNavigator(parent=self)
+###    def _launch_FileNavigator(self):
+###        '''
+###        Launch the FileNavigator widget.
+###        '''
+####        FileNavigator(parent=self)
+###        self.filenav = FileNavigator(parent=self)
+
     ######################
     # Help methods #
     ######################
@@ -573,11 +573,11 @@ class Menu(Component):
 
     def AdvanceFileSelect(self, findex):
         '''Captures a selection and open file.'''
-        if findex > (len(self.filelist)-1):
-            print(len(self.filelist))
+        if findex > (len(self.Vfilelist.value)-1):
+            print(len(self.Vfilelist.value))
             msg = "End of directory, cannot advance!"
             common.ShowWarning(msg)
-            findex = (len(self.filelist) - 1)
+            findex = (len(self.Vfilelist.value) - 1)
             return
         if findex < 0:
             msg = "Beginning of directory, must move forward!"
@@ -585,26 +585,30 @@ class Menu(Component):
             findex = 0
             return
         self.fileindex = findex
-        self.filename = os.path.join(self.dirIn, self.filelist[findex])
+        self.filename = os.path.join(self.dirIn, self.Vfilelist.value[findex])
         self._openfile()
 
     ########################
     # Menu display methods #
     ########################
 
-    def _openfile(self):
+    def _openfile(self, filename=None):
         '''Open a file via a file selection window.'''
+        if filename is not None:
+            self.filename = filename
+
         print("Opening file " + self.filename)
 
         # Update to current directory when file is chosen
         self.dirIn = os.path.dirname(self.filename)
 
         # Get a list of files in the working directory
-        self.filelist = os.listdir(self.dirIn)
-        self.filelist.sort()
+        filelist = os.listdir(self.dirIn)
+        filelist.sort()
+        self.Vfilelist.change(filelist)
 
-        if os.path.basename(self.filename) in self.filelist:
-            self.fileindex = self.filelist.index(
+        if os.path.basename(self.filename) in self.Vfilelist.value:
+            self.fileindex = self.Vfilelist.value.index(
                 os.path.basename(self.filename))
         else:
             self.fileindex = 0

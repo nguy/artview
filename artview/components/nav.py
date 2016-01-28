@@ -21,6 +21,7 @@ class FileNavigator(Component):
 
     Vradar = None  #: see :ref:`shared_variable`
     Vgrid = None  #: see :ref:`shared_variable`
+    Vfilelist = None  #: see :ref:`shared_variable`
 
     @classmethod
     def guiStart(self, parent=None):
@@ -30,7 +31,8 @@ class FileNavigator(Component):
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
-    def __init__(self, name="FileNavigator", parent=None):
+    def __init__(self, Vradar=None, Vgrid=None, Vfilelist=None,
+                 name="FileNavigator", parent=None):
         '''Initialize the class to create the interface.
 
         Parameters
@@ -48,21 +50,36 @@ class FileNavigator(Component):
 
         # Set up signal, so that DISPLAY can react to
         # changes in radar or gatefilter shared variables
-        self.Vradar = Variable(None)
-        self.Vgrid = Variable(None)
-        self.Vtilt = Variable(0)
+        if Vradar is None:
+            self.Vradar = Variable(None)
+        else:
+            self.Vradar = Vradar
+        if Vgrid is None:
+            self.Vgrid = Variable(None)
+        else:
+            self.Vgrid = Vgrid
+        if Vfilelist is None:
+            self.Vfilelist = Variable(0)
+        else:
+            self.Vfilelist = Vfilelist
+##        if Vtilt is None:
+##            self.Vtilt = Variable(0)
+##        else:
+##            self.Vtilt = Vtilt
+
         self.sharedVariables = {"Vradar": None,
                                 "Vgrid": None,
-                                "Vtilt": None}
+                                "Vfilelist": None}
         # Connect the components
         self.connectAllVariables()
-        self.field = None
 
+        self.get_variables()
+
+        # Set up the Display layout
         self.generalLayout = QtGui.QVBoxLayout()
-        # Set the Variable layout
-        self.generalLayout.addWidget(self.createDispUI())
+##        self.generalLayout.addWidget(self.createDispUI())
         self.generalLayout.addWidget(self.createNavButtonUI())
-        self.generalLayout.addWidget(self.createTiltButtonUI())
+##        self.generalLayout.addWidget(self.createTiltButtonUI())
         self.generalLayout.addWidget(self.createInfoUI())
 
         self.layout.addLayout(self.generalLayout, 0, 0, 1, 2)
@@ -92,6 +109,7 @@ class FileNavigator(Component):
             self.DispChoiceList.append(component)
         self.dispCombo.setCurrentIndex(0)
 
+        self.menu = self.components[0]
         self.chooseDisplay()
         groupBox.setLayout(gBox_layout)
 
@@ -106,52 +124,46 @@ class FileNavigator(Component):
         self.firstbutton = QtGui.QPushButton("First")
         self.firstbutton.setToolTip("Load first file in directory")
 ##        self.firstbutton.setIcon(arrow_icons['first'])
-        self.firstbutton.clicked.connect(
-            lambda findex=0: self.parent.AdvanceFileSelect(findex))
+        self.firstbutton.clicked.connect(self.goto_first_file)
         gBox_layout.addWidget(self.firstbutton, 0, 0, 1, 1)
 
         self.prevbutton = QtGui.QPushButton("Previous")
         self.prevbutton.setToolTip("Load previous file")
 ##        self.prevbutton.setIcon(arrow_icons['previous'])
         self.prevbutton.setIconSize(QtCore.QSize(32,32))
-        self.prevbutton.clicked.connect(
-#            lambda findex=self.fileindex - 1: self.AdvanceFileSelect(findex))
-            lambda findex=self.parent.fileindex - 1: self.parent.AdvanceFileSelect(findex))
+        self.prevbutton.clicked.connect(self.goto_prev_file)
         gBox_layout.addWidget(self.prevbutton, 0, 1, 1, 1)
 
         self.nextbutton = QtGui.QPushButton("Next")
         self.nextbutton.setToolTip("Load next file")
-        self.nextbutton.clicked.connect(
-            lambda findex=self.parent.fileindex + 1: self.parent.AdvanceFileSelect(findex))
+        self.nextbutton.clicked.connect(self.goto_next_file)
         gBox_layout.addWidget(self.nextbutton, 0, 2, 1, 1)
 
         self.lastbutton = QtGui.QPushButton("Last")
         self.lastbutton.setToolTip("Load last file in directory")
-        self.lastbutton.clicked.connect(
-            lambda findex=(len(self.parent.filelist) - 1):
-            self.parent.AdvanceFileSelect(findex))
+        self.lastbutton.clicked.connect(self.goto_last_file)
         gBox_layout.addWidget(self.lastbutton, 0, 3, 1, 1)
 
         groupBox.setLayout(gBox_layout)
 
         return groupBox
 
-    def createTiltButtonUI(self):
-        '''Mount the Tilt button.'''
-        groupBox = QtGui.QGroupBox("Tilt Navigation")
-        gBox_layout = QtGui.QGridLayout()
-
-        self.tiltup = QtGui.QPushButton("Up")
-        self.tiltup.setToolTip("Load next tilt up")
-#        self.tiltup.clicked.connect(self.TiltSelectCmd(self.Vtilt.value + 1))
-        gBox_layout.addWidget(self.tiltup, 0, 0, 1, 1)
-
-        self.tiltdn = QtGui.QPushButton("Down")
-        self.tiltdn.setToolTip("Load next tilt down")
-#        self.tiltdn.clicked.connect(self.TiltSelectCmd(self.Vtilt.value - 1))
-        gBox_layout.addWidget(self.tiltdn, 0, 1, 1, 1)
-
-        groupBox.setLayout(gBox_layout)
+#     def createTiltButtonUI(self):
+#         '''Mount the Tilt button.'''
+#         groupBox = QtGui.QGroupBox("Tilt Navigation")
+#         gBox_layout = QtGui.QGridLayout()
+#
+#         self.tiltupbutton = QtGui.QPushButton("Up")
+#         self.tiltupbutton.setToolTip("Load next tilt up")
+#         self.tiltupbutton.clicked.connect(self.go_tilt_up)
+#         gBox_layout.addWidget(self.tiltupbutton, 0, 0, 1, 1)
+#
+#         self.tiltdnbutton = QtGui.QPushButton("Down")
+#         self.tiltdnbutton.setToolTip("Load next tilt down")
+#         self.tiltdnbutton.clicked.connect(self.go_tilt_down)
+#         gBox_layout.addWidget(self.tiltdnbutton, 0, 1, 1, 1)
+#
+#         groupBox.setLayout(gBox_layout)
 
         return groupBox
 
@@ -160,17 +172,15 @@ class FileNavigator(Component):
         groupBox = QtGui.QGroupBox("File Information")
         gBox_layout = QtGui.QGridLayout()
 
-        self.infodir = QtGui.QLabel("Directory: %s"%(
-            os.path.dirname(self.Vradar.value.filename)))
-        self.infodir.setStyleSheet('font: italic 10px')
+        self.dirIn = os.path.dirname(self.Vradar.value.filename)
+        self.infodir = QtGui.QLabel("Directory: %s"%(self.dirIn))
+        self.infodir.setStyleSheet('font: italic 12px')
         gBox_layout.addWidget(self.infodir, 0, 0, 1, 1)
 
         self.infofile = QtGui.QLabel("File: %s"%(
             os.path.basename(self.Vradar.value.filename)))
-        self.infofile.setStyleSheet('font: italic 10px')
+        self.infofile.setStyleSheet('font: italic 12px')
         gBox_layout.addWidget(self.infofile, 1, 0, 1, 1)
-
-        self.Vradar.value.filename
 
         groupBox.setLayout(gBox_layout)
 
@@ -178,8 +188,8 @@ class FileNavigator(Component):
 
     def _update_InfoUI(self):
         '''Update the info label.'''
-        self.infostatus.setText("Directory: %s"%(
-            os.path.dirname(self.Vradar.value.filename)))
+        self.dirIn = os.path.dirname(self.Vradar.value.filename)
+        self.infodir.setText("Directory: %s"%(self.dirIn))
         self.infofile.setText("File: %s"%(
             os.path.basename(self.Vradar.value.filename)))
 
@@ -190,82 +200,103 @@ class FileNavigator(Component):
     def chooseDisplay(self):
         '''Get Display.'''
         selection = self.dispCombo.currentIndex()
-        Vradar = getattr(self.DispChoiceList[selection], str("Vradar"))
+        Vradar = getattr(self.DispChoiceList[0], str("Vradar"))
+
+        # Grab shared variables from the Menu instance, always zero
+        Vfilelist = getattr(self.DispChoiceList[0], str("Vfilelist"))
 
         self.dispCombo.setCurrentIndex(selection)
 
         self.disconnectAllVariables()
         self.Vradar = Vradar
+        self.Vfilelist = Vfilelist
+
+        # Find the file index statring
+        if self.Vradar.value is None:
+            common.ShowWarning("Radar is None.")
+            return
+        else:
+            filename = os.path.basename(self.Vradar.value.filename)
+            if filename in self.Vfilelist.value:
+                self.fileindex = self.Vfilelist.value.index(filename)
+            else:
+                self.fileindex = 0
+
+        self.connectAllVariables()
+
+    def get_variables(self):
+        self.components = componentsList
+        self.menu = self.components[0]
+        # Grab shared variables from the Menu instance, always zero
+        Vradar = getattr(self.menu, str("Vradar"))
+        Vfilelist = getattr(self.menu, str("Vfilelist"))
+        self.disconnectAllVariables()
+        self.Vradar = Vradar
+        self.Vfilelist = Vfilelist
+
+        # Find the file index statring
+        if self.Vradar.value is None:
+            common.ShowWarning("Radar is None.")
+            return
+        else:
+            filename = os.path.basename(self.Vradar.value.filename)
+            if filename in self.Vfilelist.value:
+                self.fileindex = self.Vfilelist.value.index(filename)
+            else:
+                self.fileindex = 0
+
         self.connectAllVariables()
 
     def AdvanceFileSelect(self, findex):
         '''Captures a selection and open file.'''
-        if findex > (len(self.parent.filelist)-1):
-            print(len(self.parent.filelist))
+        if findex > (len(self.Vfilelist.value) - 1):
+            print(len(self.Vfilelist.value))
             msg = "End of directory, cannot advance!"
             common.ShowWarning(msg)
-            findex = (len(self.parent.filelist) - 1)
+            findex = (len(self.Vfilelist.value) - 1)
             return
-        if findex < 0:
+        elif findex < 0:
             msg = "Beginning of directory, must move forward!"
             common.ShowWarning(msg)
             findex = 0
             return
-        self.parent.fileindex = findex
-        self.filename = os.path.join(self.parent.dirIn, self.parent.filelist[findex])
-        self.parent._openfile()
-#        self.menu._openfile()
+        self.fileindex = findex
+        self.filename = os.path.join(self.dirIn, self.Vfilelist.value[findex])
+        self.menu._openfile(filename=self.filename)
+        self._update_InfoUI()
 
-    def TiltSelectCmd(self, ntilt):
-        '''
-        Captures tilt selection and update tilt
-        :py:class:`~artview.core.core.Variable`.
-        '''
-        if ntilt < 0:
-            ntilt = len(self.rTilts)-1
-        elif ntilt >= len(self.rTilts):
-            ntilt = 0
-        self.Vtilt.change(ntilt)
+    def goto_first_file(self):
+        self.fileindex = 0
+        self.AdvanceFileSelect(self.fileindex)
 
-    def NewRadar(self, variable, value, strong):
-        '''
-        Slot for 'ValueChanged' signal of
-        :py:class:`Vradar <artview.core.core.Variable>`.
+    def goto_last_file(self):
+        self.fileindex = len(self.Vfilelist.value) - 1
+        self.AdvanceFileSelect(self.fileindex)
 
-        This will:
+    def goto_prev_file(self):
+        self.fileindex = self.fileindex - 1
+        self.AdvanceFileSelect(self.fileindex)
 
-        * Update fields and tilts lists and MenuBoxes
-        * Check radar scan type and reset limits if needed
-        * Reset units and title
-        * If strong update: update plot
-        '''
-        # test for None
-        if self.Vradar.value is None:
-            self.fieldBox.clear()
-            self.tiltBox.clear()
-            return
+    def goto_next_file(self):
+        self.fileindex = self.fileindex + 1
+        self.AdvanceFileSelect(self.fileindex)
 
-        # Get the tilt angles
-        self.rTilts = self.Vradar.value.sweep_number['data'][:]
-        # Get field names
-        self.fieldnames = self.Vradar.value.fields.keys()
-
-        # Check the file type and initialize limts
-        self._check_file_type()
-
-        # Update field and tilt MenuBox
-        self._fillTiltBox()
-        self._fillFieldBox()
-
-        self.units = self._get_default_units()
-        self.title = self._get_default_title()
-        if strong:
-            self._update_plot()
-            self._update_infolabel()
-
-    ######################
-    #   Filter Methods   #
-    ######################
-
+#     def TiltSelectCmd(self, ntilt):
+#         '''
+#         Captures tilt selection and update tilt
+#         :py:class:`~artview.core.core.Variable`.
+#         '''
+#         if ntilt < 0:
+#             ntilt = len(self.Vradar.value.sweep_number['data'][:]) - 1
+#         elif ntilt >= len(self.Vradar.value.sweep_number['data'][:]):
+#             ntilt = 0
+#         self.Vtilt.change(ntilt)
+#         self.menu._openfile()
+#
+#     def go_tilt_up(self):
+#         self.TiltSelectCmd(self.Vtilt.value + 1)
+#
+#     def go_tilt_down(self):
+#         self.TiltSelectCmd(self.Vtilt.value -1)
 
 _plugins = [FileNavigator]
