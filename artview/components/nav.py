@@ -63,18 +63,17 @@ class FileNavigator(Component):
         else:
             self.Vgrid = Vgrid
         if Vfilelist is None:
-            self.Vfilelist = Variable(0)
+            self.Vfilelist = Variable([])
         else:
             self.Vfilelist = Vfilelist
+        self.filename = ""
+        self.fileindex = 0
 
-        self.sharedVariables = {"Vradar": None,
-                                "Vgrid": None,
-                                "Vfilelist": None}
+        self.sharedVariables = {"Vradar": self.NewFile,
+                                "Vgrid": self.NewFile,
+                                "Vfilelist": self.NewFilelist}
         # Connect the components
         self.connectAllVariables()
-
-        # Initialize variables
-        self.get_variables()
 
         # Set up the Display layout
         self.generalLayout = QtGui.QVBoxLayout()
@@ -83,6 +82,9 @@ class FileNavigator(Component):
         self.generalLayout.addWidget(self.createHelpUI())
 
         self.layout.addLayout(self.generalLayout, 0, 0, 1, 2)
+
+        self.NewFile(self.Vradar, None, True)
+        self.NewFilelist(self.Vfilelist, None, True)
 
         self.show()
 
@@ -133,19 +135,19 @@ class FileNavigator(Component):
         pixlast = QtGui.QPixmap(os.sep.join([parentdir, 'icons',"arrow_go_last_icon.png"]))
         self.act_first = self.navtoolbar.addAction(
             QtGui.QIcon(pixfirst),
-            "First file: %s"%(os.path.basename(self.Vfilelist.value[0])),
+            "First file:",
             self.goto_first_file)
         self.act_prev = self.navtoolbar.addAction(
             QtGui.QIcon(pixprev),
-            "Previous file: %s"%(os.path.basename(self.Vfilelist.value[self.fileindex - 1])),
+            "Previous file:",
             self.goto_prev_file)
         self.act_next = self.navtoolbar.addAction(
             QtGui.QIcon(pixnext),
-            "Next file: %s"%(os.path.basename(self.Vfilelist.value[self.fileindex + 1])),
+            "Next file:",
             self.goto_next_file)
         self.act_last = self.navtoolbar.addAction(
             QtGui.QIcon(pixlast),
-            "Last file: %s"%(os.path.basename(self.Vfilelist.value[-1])),
+            "Last file:",
             self.goto_last_file)
 
         gBox_layout.addWidget(self.navtoolbar)
@@ -158,13 +160,11 @@ class FileNavigator(Component):
         groupBox = QtGui.QGroupBox("File Information")
         gBox_layout = QtGui.QGridLayout()
 
-        self.dirIn = os.path.dirname(self.Vradar.value.filename)
-        self.infodir = QtGui.QLabel("Directory: %s"%(self.dirIn))
+        self.infodir = QtGui.QLabel("Directory:")
         self.infodir.setStyleSheet('font: italic 12px')
         gBox_layout.addWidget(self.infodir, 0, 0, 1, 1)
 
-        self.infofile = QtGui.QLabel("File: %s"%(
-            os.path.basename(self.Vradar.value.filename)))
+        self.infofile = QtGui.QLabel("File:")
         self.infofile.setStyleSheet('font: italic 12px')
         gBox_layout.addWidget(self.infofile, 1, 0, 1, 1)
 
@@ -194,54 +194,62 @@ class FileNavigator(Component):
     #   Update Methods   #
     ######################
 
-    def _update_InfoUI(self):
-        '''Update the info label.'''
-        self.dirIn = os.path.dirname(self.Vradar.value.filename)
-        self.infodir.setText("Directory: %s"%(self.dirIn))
-        self.infofile.setText("File: %s"%(
-            os.path.basename(self.Vradar.value.filename)))
+#    def _update_InfoUI(self):
+#        '''Update the info label.'''
+#        self.dirIn = os.path.dirname(self.Vradar.value.filename)
+#        self.infodir.setText("Directory: %s"%(self.dirIn))
+#        self.infofile.setText("File: %s"%(
+#            os.path.basename(self.Vradar.value.filename)))
 
     def _update_tools(self):
-        '''Update the info label.'''
-        self._update_InfoUI()
-        filename = self.Vradar.value.filename
-        if filename in self.Vfilelist.value:
-            self.fileindex = self.Vfilelist.value.index(filename)
+        '''Update the navigation button.'''
+        filelist = self.Vfilelist.value
+        if self.filename in filelist:
+            self.fileindex = filelist.index(self.filename)
         else:
             self.fileindex = 0
-        self.act_prev.setToolTip(
-            'Previous file: %s'%os.path.basename(self.Vfilelist.value[self.fileindex - 1]))
-        self.act_next.setToolTip(
-            'Next file: %s'%os.path.basename(self.Vfilelist.value[self.fileindex + 1]))
+
+        print self.fileindex
+        print filelist
+
+        if self.fileindex > 0 and self.fileindex < len(filelist):
+            self.act_prev.setEnabled(True)
+            self.act_prev.setToolTip(
+                'Previous file: %s' %
+                os.path.basename(filelist[self.fileindex - 1]))
+        else:
+            self.act_prev.setEnabled(False)
+            self.act_prev.setToolTip('Previous file:')
+
+        if self.fileindex >= 0 and self.fileindex < len(filelist) - 1:
+            self.act_next.setEnabled(True)
+            self.act_next.setToolTip(
+                'Next file: %s' %
+                os.path.basename(filelist[self.fileindex + 1]))
+        else:
+            self.act_next.setEnabled(False)
+            self.act_next.setToolTip('Next file:')
+
+        if filelist:
+            self.act_first.setEnabled(True)
+            self.act_first.setToolTip(
+                "First file: %s" %
+                os.path.basename(filelist[0]))
+
+            self.act_last.setEnabled(True)
+            self.act_last.setToolTip(
+                "Last file: %s" %
+                os.path.basename(filelist[-1]))
+        else:
+            self.act_first.setEnabled(False)
+            self.act_first.setToolTip("First file:")
+
+            self.act_last.setEnabled(False)
+            self.act_last.setToolTip("Last file:")
 
     #########################
     #   Selection Methods   #
     #########################
-
-    def get_variables(self):
-        '''Initialize variables.'''
-        # Set the menu
-        self.components = componentsList
-        self.menu = self.components[0]
-        # Grab shared variables from the Menu instance, always zero
-        Vradar = getattr(self.menu, str("Vradar"))
-        Vfilelist = getattr(self.menu, str("Vfilelist"))
-        self.disconnectAllVariables()
-        self.Vradar = Vradar
-        self.Vfilelist = Vfilelist
-
-        # Find the file index statring
-        if self.Vradar.value is None:
-            common.ShowWarning("Radar is None.")
-            return
-        else:
-            filename = self.Vradar.value.filename
-            if filename in self.Vfilelist.value:
-                self.fileindex = self.Vfilelist.value.index(filename)
-            else:
-                self.fileindex = 0
-
-        self.connectAllVariables()
 
     def AdvanceFileSelect(self, findex):
         '''Captures a selection and open file.'''
@@ -258,40 +266,91 @@ class FileNavigator(Component):
             return
         self.fileindex = findex
         self.filename = self.Vfilelist.value[findex]
-        self.menu._openfile(filename=self.filename)
-        self._update_InfoUI()
+        self._openfile(self.filename)
 
     def goto_first_file(self):
         self.fileindex = 0
         self.AdvanceFileSelect(self.fileindex)
+        self._update_tools()
 
     def goto_last_file(self):
         self.fileindex = len(self.Vfilelist.value) - 1
         self.AdvanceFileSelect(self.fileindex)
+        self._update_tools()
 
     def goto_prev_file(self):
         self.fileindex = self.fileindex - 1
-        self.act_prev.setToolTip(
-            'Previous file: %s'%os.path.basename(self.Vfilelist.value[self.fileindex - 1]))
-        self.act_next.setToolTip(
-            'Next file: %s'%os.path.basename(self.Vfilelist.value[self.fileindex + 1]))
         self.AdvanceFileSelect(self.fileindex)
+        self._update_tools()
 
     def goto_next_file(self):
         self.fileindex = self.fileindex + 1
-        self.act_prev.setToolTip(
-            'Previous file: %s'%os.path.basename(self.Vfilelist.value[self.fileindex - 1]))
-        self.act_next.setToolTip(
-            'Next file: %s'%os.path.basename(self.Vfilelist.value[self.fileindex + 1]))
         self.AdvanceFileSelect(self.fileindex)
+        self._update_tools()
 
-    def NewFileList(self, variable, value, strong):
-        '''respond to change in radar.'''
-        if self.Vfilelist.value is None:
+    def _openfile(self, filename=None):
+        '''Open a file via a file selection window.'''
+        print("Opening file " + filename)
+
+        # Read the data from file
+        radar_warning = False
+        grid_warning = False
+
+        try:
+            radar = pyart.io.read(filename, delay_field_loading=True)
+            # Add the filename for Display
+            radar.filename = filename
+            self.Vradar.change(radar)
             return
+        except:
+            try:
+                radar = pyart.io.read(filename)
+                # Add the filename for Display
+                radar.filename = filename
+                self.Vradar.change(radar)
+                return
+            except:
+                import traceback
+                print(traceback.format_exc())
+                radar_warning = True
 
+        try:
+            grid = pyart.io.read_grid(
+                filename, delay_field_loading=True)
+            self.Vgrid.change(grid)
+            return
+        except:
+            try:
+                grid = pyart.io.read_grid(filename)
+                self.Vgrid.change(grid)
+                return
+            except:
+                import traceback
+                print(traceback.format_exc())
+                grid_warning = True
+
+        if grid_warning or radar_warning:
+            msg = "Py-ART didn't recognize this file!"
+            common.ShowWarning(msg)
+        else:
+            msg = "Could not open file, invalid mode!"
+            common.ShowWarning(msg)
+        return
+
+    def NewFilelist(self, variable, value, strong):
+        '''respond to change in filelist.'''
         if strong:
-            self.Vfilelist.change(value)
             self._update_tools()
+
+    def NewFile(self, variable, value, strong):
+        '''Respond to change in a container (radar or grid).'''
+        if hasattr(variable.value, 'filename'):
+            # Update the info label.'''
+            self.filename = variable.value.filename
+            dirIn = os.path.dirname(self.filename)
+            self.infodir.setText("Directory: %s" % dirIn)
+            self.infofile.setText("File: %s" %
+                                  os.path.basename(self.filename))
+
 
 _plugins = [FileNavigator]
