@@ -194,13 +194,6 @@ class FileNavigator(Component):
     #   Update Methods   #
     ######################
 
-#    def _update_InfoUI(self):
-#        '''Update the info label.'''
-#        self.dirIn = os.path.dirname(self.Vradar.value.filename)
-#        self.infodir.setText("Directory: %s"%(self.dirIn))
-#        self.infofile.setText("File: %s"%(
-#            os.path.basename(self.Vradar.value.filename)))
-
     def _update_tools(self):
         '''Update the navigation button.'''
         filelist = self.Vfilelist.value
@@ -208,9 +201,6 @@ class FileNavigator(Component):
             self.fileindex = filelist.index(self.filename)
         else:
             self.fileindex = 0
-
-        print self.fileindex
-        print filelist
 
         if self.fileindex > 0 and self.fileindex < len(filelist):
             self.act_prev.setEnabled(True)
@@ -267,26 +257,23 @@ class FileNavigator(Component):
         self.fileindex = findex
         self.filename = self.Vfilelist.value[findex]
         self._openfile(self.filename)
+        self._update_tools()
 
     def goto_first_file(self):
         self.fileindex = 0
         self.AdvanceFileSelect(self.fileindex)
-        self._update_tools()
 
     def goto_last_file(self):
         self.fileindex = len(self.Vfilelist.value) - 1
         self.AdvanceFileSelect(self.fileindex)
-        self._update_tools()
 
     def goto_prev_file(self):
         self.fileindex = self.fileindex - 1
         self.AdvanceFileSelect(self.fileindex)
-        self._update_tools()
 
     def goto_next_file(self):
         self.fileindex = self.fileindex + 1
         self.AdvanceFileSelect(self.fileindex)
-        self._update_tools()
 
     def _openfile(self, filename=None):
         '''Open a file via a file selection window.'''
