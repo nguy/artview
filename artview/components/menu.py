@@ -8,6 +8,7 @@ import pyart
 
 import os
 import sys
+import glob
 
 from ..core import Variable, Component, common, QtGui, QtCore, componentsList
 ###from .nav import FileNavigator
@@ -61,7 +62,6 @@ class Menu(Component):
             pathDir = os.getcwd()
         self.dirIn = pathDir
         self.fileindex = 0
-###        self.filelist = []
         self.mode = []
         for m in mode:
             self.mode.append(m.lower())
@@ -244,7 +244,6 @@ class Menu(Component):
         self.menubar = self.menuBar()
 
         self.addFileMenu()
-#        self.addFileAdvanceMenu()
 
     def addFileMenu(self):
         '''Add the File Menu to menubar.'''
@@ -417,13 +416,6 @@ class Menu(Component):
             lambda findex=(len(self.Vfilelist.value) - 1):
             self.AdvanceFileSelect(findex))
 
-###    def _launch_FileNavigator(self):
-###        '''
-###        Launch the FileNavigator widget.
-###        '''
-####        FileNavigator(parent=self)
-###        self.filenav = FileNavigator(parent=self)
-
     ######################
     # Help methods #
     ######################
@@ -585,7 +577,7 @@ class Menu(Component):
             findex = 0
             return
         self.fileindex = findex
-        self.filename = os.path.join(self.dirIn, self.Vfilelist.value[findex])
+        self.filename = self.Vfilelist.value[findex]
         self._openfile()
 
     ########################
@@ -603,13 +595,13 @@ class Menu(Component):
         self.dirIn = os.path.dirname(self.filename)
 
         # Get a list of files in the working directory
-        filelist = os.listdir(self.dirIn)
+        filelist = glob.glob(os.path.join(self.dirIn, '*'))
         filelist.sort()
         self.Vfilelist.change(filelist)
 
-        if os.path.basename(self.filename) in self.Vfilelist.value:
+        if self.filename in self.Vfilelist.value:
             self.fileindex = self.Vfilelist.value.index(
-                os.path.basename(self.filename))
+                self.filename)
         else:
             self.fileindex = 0
 

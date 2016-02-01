@@ -133,19 +133,19 @@ class FileNavigator(Component):
         pixlast = QtGui.QPixmap(os.sep.join([parentdir, 'icons',"arrow_go_last_icon.png"]))
         self.act_first = self.navtoolbar.addAction(
             QtGui.QIcon(pixfirst),
-            "First file: %s"%(self.Vfilelist.value[0]),
+            "First file: %s"%(os.path.basename(self.Vfilelist.value[0])),
             self.goto_first_file)
         self.act_prev = self.navtoolbar.addAction(
             QtGui.QIcon(pixprev),
-            "Previous file: %s"%(self.Vfilelist.value[self.fileindex - 1]),
+            "Previous file: %s"%(os.path.basename(self.Vfilelist.value[self.fileindex - 1])),
             self.goto_prev_file)
         self.act_next = self.navtoolbar.addAction(
             QtGui.QIcon(pixnext),
-            "Next file: %s"%(self.Vfilelist.value[self.fileindex + 1]),
+            "Next file: %s"%(os.path.basename(self.Vfilelist.value[self.fileindex + 1])),
             self.goto_next_file)
         self.act_last = self.navtoolbar.addAction(
             QtGui.QIcon(pixlast),
-            "Last file: %s"%(self.Vfilelist.value[-1]),
+            "Last file: %s"%(os.path.basename(self.Vfilelist.value[-1])),
             self.goto_last_file)
 
         gBox_layout.addWidget(self.navtoolbar)
@@ -190,12 +190,29 @@ class FileNavigator(Component):
 
         return groupBox
 
+    ######################
+    #   Update Methods   #
+    ######################
+
     def _update_InfoUI(self):
         '''Update the info label.'''
         self.dirIn = os.path.dirname(self.Vradar.value.filename)
         self.infodir.setText("Directory: %s"%(self.dirIn))
         self.infofile.setText("File: %s"%(
             os.path.basename(self.Vradar.value.filename)))
+
+    def _update_tools(self):
+        '''Update the info label.'''
+        self._update_InfoUI()
+        filename = self.Vradar.value.filename
+        if filename in self.Vfilelist.value:
+            self.fileindex = self.Vfilelist.value.index(filename)
+        else:
+            self.fileindex = 0
+        self.act_prev.setToolTip(
+            'Previous file: %s'%os.path.basename(self.Vfilelist.value[self.fileindex - 1]))
+        self.act_next.setToolTip(
+            'Next file: %s'%os.path.basename(self.Vfilelist.value[self.fileindex + 1]))
 
     #########################
     #   Selection Methods   #
@@ -218,7 +235,7 @@ class FileNavigator(Component):
             common.ShowWarning("Radar is None.")
             return
         else:
-            filename = os.path.basename(self.Vradar.value.filename)
+            filename = self.Vradar.value.filename
             if filename in self.Vfilelist.value:
                 self.fileindex = self.Vfilelist.value.index(filename)
             else:
@@ -240,7 +257,7 @@ class FileNavigator(Component):
             findex = 0
             return
         self.fileindex = findex
-        self.filename = os.path.join(self.dirIn, self.Vfilelist.value[findex])
+        self.filename = self.Vfilelist.value[findex]
         self.menu._openfile(filename=self.filename)
         self._update_InfoUI()
 
@@ -255,17 +272,26 @@ class FileNavigator(Component):
     def goto_prev_file(self):
         self.fileindex = self.fileindex - 1
         self.act_prev.setToolTip(
-            'Previous file: %s'%self.Vfilelist.value[self.fileindex - 1])
+            'Previous file: %s'%os.path.basename(self.Vfilelist.value[self.fileindex - 1]))
         self.act_next.setToolTip(
-            'Next file: %s'%self.Vfilelist.value[self.fileindex + 1])
+            'Next file: %s'%os.path.basename(self.Vfilelist.value[self.fileindex + 1]))
         self.AdvanceFileSelect(self.fileindex)
 
     def goto_next_file(self):
         self.fileindex = self.fileindex + 1
         self.act_prev.setToolTip(
-            'Previous file: %s'%self.Vfilelist.value[self.fileindex - 1])
+            'Previous file: %s'%os.path.basename(self.Vfilelist.value[self.fileindex - 1]))
         self.act_next.setToolTip(
-            'Next file: %s'%self.Vfilelist.value[self.fileindex + 1])
+            'Next file: %s'%os.path.basename(self.Vfilelist.value[self.fileindex + 1]))
         self.AdvanceFileSelect(self.fileindex)
+
+    def NewFileList(self, variable, value, strong):
+        '''respond to change in radar.'''
+        if self.Vfilelist.value is None:
+            return
+
+        if strong:
+            self.Vfilelist.change(value)
+            self._update_tools()
 
 _plugins = [FileNavigator]
