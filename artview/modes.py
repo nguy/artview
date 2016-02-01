@@ -170,7 +170,7 @@ navigate_mode= (
     [
         ((0, 'Vradar'), (1, 'Vradar')),
         ((0, 'Vgrid'), (1, 'Vgrid')),
-        ((0, 'Vfilelist'), (3, 'Vfilelist')),
+        ((0, 'Vfilelist'), (1, 'Vfilelist')),
     ]
 )
 
