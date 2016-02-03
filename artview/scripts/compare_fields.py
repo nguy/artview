@@ -38,8 +38,5 @@ def run(DirIn=None, filename=None, field=None):
     # add control to Menu
     menu.addLayoutWidget(control)
 
-    # add graphical starts
-    _add_all_advanced_tools(menu)
-
     # start program
     app.exec_()

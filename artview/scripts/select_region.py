@@ -37,9 +37,6 @@ def run(DirIn=None, filename=None, field=None):
 
     menu.addLayoutWidget(roi)
 
-    # add graphical starts
-    _add_all_advanced_tools(menu)
-
     menu.setGeometry(0, 0, 300, 300)
 
     # start program

@@ -8,8 +8,10 @@ import pyart
 
 import os
 import sys
+import glob
 
 from ..core import Variable, Component, common, QtGui, QtCore, componentsList
+###from .nav import FileNavigator
 
 
 class Menu(Component):
@@ -17,9 +19,10 @@ class Menu(Component):
 
     Vradar = None  #: see :ref:`shared_variable`
     Vgrid = None  #: see :ref:`shared_variable`
+    Vfilelist = None  #: see :ref:`shared_variable`
 
     def __init__(self, pathDir=None, filename=None, Vradar=None, Vgrid=None,
-                 mode=["Radar"], name="Menu", parent=None):
+                 Vfilelist=None, mode=["Radar"], name="Menu", parent=None):
         '''
         Initialize the class to create the interface.
 
@@ -59,14 +62,15 @@ class Menu(Component):
             pathDir = os.getcwd()
         self.dirIn = pathDir
         self.fileindex = 0
-        self.filelist = []
         self.mode = []
         for m in mode:
             self.mode.append(m.lower())
         self.Vradar = Vradar
         self.Vgrid = Vgrid
+        self.Vfilelist = Vfilelist
         self.sharedVariables = {"Vradar": None,
-                                "Vgrid": None}
+                                "Vgrid": None,
+                                "Vfilelist": None}
 
         # Show an "Open" dialog box and return the path to the selected file
         # Just do that if Vradar was not given
@@ -74,6 +78,8 @@ class Menu(Component):
             self.Vradar = Variable(None)
         if self.Vgrid is None:
             self.Vgrid = Variable(None)
+        if self.Vfilelist is None:
+            self.Vfilelist = Variable(None)
         if Vradar is None and Vgrid is None and self.mode:
             if filename is None:
                 self.showFileDialog()
@@ -238,13 +244,12 @@ class Menu(Component):
         self.menubar = self.menuBar()
 
         self.addFileMenu()
-        self.addAboutMenu()
-        self.addFileAdvanceMenu()
 
     def addFileMenu(self):
         '''Add the File Menu to menubar.'''
         self.filemenu = self.menubar.addMenu('File')
 
+        # Create Open action
         if self.mode:
             openFile = QtGui.QAction('Open', self)
             openFile.setShortcut('Ctrl+O')
@@ -252,6 +257,7 @@ class Menu(Component):
             openFile.triggered.connect(self.showFileDialog)
             self.filemenu.addAction(openFile)
 
+        # Create Save radar and/or grid action
         if "radar" in self.mode:
             saveRadar = QtGui.QAction('Save Radar', self)
             saveRadar.setStatusTip('Save Radar to Cf/Radial NetCDF')
@@ -263,35 +269,40 @@ class Menu(Component):
             saveGrid.triggered.connect(self.saveGrid)
             self.filemenu.addAction(saveGrid)
 
+        # Create About ARTView action
+        aboutApp = QtGui.QAction('ARTView...', self)
+        aboutApp.setStatusTip('About ARTview')
+        aboutApp.triggered.connect(self._about)
+        self.filemenu.addAction(aboutApp)
+
+        # Create Plugin Help action
+        pluginHelp = QtGui.QAction('Plugin Help', self)
+        pluginHelp.setStatusTip('More information about Plugins')
+        pluginHelp.triggered.connect(self._get_pluginhelp)
+        self.filemenu.addAction(pluginHelp)
+
+        # Create Display Plugins action
+        pluginlist = self.filemenu.addMenu("Plugins")
+        try:
+            from .. import plugins
+            for plugin in plugins._plugins.values():
+                action = QtGui.QAction(plugin.__name__, pluginlist)
+                action.triggered[()].connect(
+                    lambda plugin=plugin: self.startComponent(plugin))
+                pluginlist.addAction(action)
+        except:
+            import traceback
+            print(traceback.format_exc())
+            import warnings
+            warnings.warn("Loading Plugins Fail")
+
+        # Create Close ARTView action
         exitApp = QtGui.QAction('Close', self)
         exitApp.setShortcut('Ctrl+Q')
         exitApp.setStatusTip('Exit ARTview')
         exitApp.triggered.connect(self.close)
         self.filemenu.addAction(exitApp)
-
-    def addAboutMenu(self):
-        '''Add Help menu to menubar.'''
-        self.aboutmenu = self.menubar.addMenu('About')
-
-        self._aboutArtview = QtGui.QAction('ARTview', self)
-        self._aboutArtview.setStatusTip('About ARTview')
-        self._aboutArtview.triggered.connect(self._about)
-
-        self.RadarShort = QtGui.QAction('Show Short Radar Info', self)
-        self.RadarShort.setStatusTip('Print Short Radar Structure Info')
-        self.RadarShort.triggered.connect(self._get_RadarShortInfo)
-
-        self.RadarLong = QtGui.QAction('Print Long Radar Info', self)
-        self.RadarLong.setStatusTip('Print Long Radar Structure Info')
-        self.RadarLong.triggered.connect(self._get_RadarLongInfo)
-
-        self.PluginHelp = QtGui.QAction('Plugin Help', self)
-        self.PluginHelp.triggered.connect(self._get_pluginhelp)
-
-        self.aboutmenu.addAction(self._aboutArtview)
-        self.aboutmenu.addAction(self.RadarShort)
-        self.aboutmenu.addAction(self.RadarLong)
-        self.aboutmenu.addAction(self.PluginHelp)
+        self.filemenu.addSeparator()
 
     def addLayoutMenu(self):
         '''Add Layout Menu to menubar.'''
@@ -385,7 +396,8 @@ class Menu(Component):
     def addFileAdvanceMenu(self):
         '''
         Add menu to advance to next or previous file.
-        Or to go to the first or last file in the selected directory.'''
+        Or to go to the first or last file in the selected directory.
+        '''
         self.advancemenu = self.menubar.addMenu("Change file")
         nextAction = self.advancemenu.addAction("Next")
         nextAction.triggered[()].connect(
@@ -401,7 +413,7 @@ class Menu(Component):
 
         lastAction = self.advancemenu.addAction("Last")
         lastAction.triggered[()].connect(
-            lambda findex=(len(self.filelist) - 1):
+            lambda findex=(len(self.Vfilelist.value) - 1):
             self.AdvanceFileSelect(findex))
 
     ######################
@@ -410,17 +422,6 @@ class Menu(Component):
 
     def _about(self):
         # Add a more extensive about eventually
-#         txOut = ("ARTview is a visualization package that leverages the\n"
-#                  "DoE PyArt python software to view individual weather\n"
-#                  "radar data files or to browse a directory of data.\n\n"
-#
-#                  "If you hover over butttons and menus with the mouse,\n"
-#                  "more instructions and information are available.\n\n"
-#
-#                  "More complete documentation can be found at:\n"
-#                  "https://rawgit.com/nguy/artview/master/docs/build"
-#                  "/html/index.html\n")
-#         QtGui.QMessageBox.about(self, "About ARTview", txOut)
         text = (
             "<b>About ARTView</b><br><br>"
             "ARTview is a visualization package that leverages the <br>"
@@ -436,6 +437,7 @@ class Menu(Component):
             )
         common.ShowLongTextHyperlinked(text)
 
+    # XXX Remove once FileDetails is made live
     def _get_RadarLongInfo(self):
         '''Print out the radar info to text box.'''
         # Get the radar info form rada object and print it
@@ -445,6 +447,7 @@ class Menu(Component):
         QtGui.QMessageBox.information(self, "Long Radar Info",
                                       "See terminal window")
 
+    # XXX Remove once FileDetails is made live
     def _get_RadarShortInfo(self):
         '''Print out some basic info about the radar.'''
         # For any missing data
@@ -539,7 +542,7 @@ class Menu(Component):
 
         text = (
             "<b>Existing Plugins</b><br><br>"
-            "Current plugins can be found under the <i>Advanced Tools</i> "
+            "Current plugins can be found under the <i>File->Plugins</i> "
             "menu.<br>"
             "Most plugins have a help button for useage information.<br>"
             "<br><br>"
@@ -562,11 +565,11 @@ class Menu(Component):
 
     def AdvanceFileSelect(self, findex):
         '''Captures a selection and open file.'''
-        if findex > (len(self.filelist)-1):
-            print(len(self.filelist))
+        if findex > (len(self.Vfilelist.value)-1):
+            print(len(self.Vfilelist.value))
             msg = "End of directory, cannot advance!"
             common.ShowWarning(msg)
-            findex = (len(self.filelist) - 1)
+            findex = (len(self.Vfilelist.value) - 1)
             return
         if findex < 0:
             msg = "Beginning of directory, must move forward!"
@@ -574,27 +577,31 @@ class Menu(Component):
             findex = 0
             return
         self.fileindex = findex
-        self.filename = os.path.join(self.dirIn, self.filelist[findex])
+        self.filename = self.Vfilelist.value[findex]
         self._openfile()
 
     ########################
     # Menu display methods #
     ########################
 
-    def _openfile(self):
+    def _openfile(self, filename=None):
         '''Open a file via a file selection window.'''
+        if filename is not None:
+            self.filename = filename
+
         print("Opening file " + self.filename)
 
         # Update to current directory when file is chosen
         self.dirIn = os.path.dirname(self.filename)
 
         # Get a list of files in the working directory
-        self.filelist = os.listdir(self.dirIn)
-        self.filelist.sort()
+        filelist = glob.glob(os.path.join(self.dirIn, '*'))
+        filelist.sort()
+        self.Vfilelist.change(filelist)
 
-        if os.path.basename(self.filename) in self.filelist:
-            self.fileindex = self.filelist.index(
-                os.path.basename(self.filename))
+        if self.filename in self.Vfilelist.value:
+            self.fileindex = self.Vfilelist.value.index(
+                self.filename)
         else:
             self.fileindex = 0
 

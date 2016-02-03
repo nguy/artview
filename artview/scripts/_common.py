@@ -70,30 +70,15 @@ def startMainMenu(DirIn=None, filename=None):
 
     MainMenu = Menu(DirIn, filename, mode=("Radar", "Grid"))
 
-    for comp in [LinkPlugins, RadarDisplay, GridDisplay, SelectRegion]:
-        action = QtGui.QAction(comp.__name__, MainMenu)
-        action.triggered[()].connect(
-            lambda comp=comp: MainMenu.startComponent(comp))
-        MainMenu.addMenuAction(("Advanced Tools",), action)
-
-    try:
-        from .. import plugins
-        for plugin in plugins._plugins.values():
-            action = QtGui.QAction(plugin.__name__, MainMenu)
-            action.triggered[()].connect(
-                lambda plugin=plugin: MainMenu.startComponent(plugin))
-            MainMenu.addMenuAction(("Advanced Tools",), action)
-    except:
-        import warnings
-        warnings.warn("Loading Plugins Fail")
-
     try:
         from ..modes import modes
-        for mode in modes.keys():
-            action = QtGui.QAction(mode, MainMenu)
+        for mode in modes:
+            action = QtGui.QAction(mode['label'], MainMenu)
             action.triggered[()].connect(
-                lambda mode=mode: MainMenu.change_mode(modes[mode]))
-            if mode != 'file_list':
+                lambda mode=mode: MainMenu.change_mode(mode['action']))
+            if (mode['label'] != 'Filelist' and
+                mode['label'] != 'File details' and
+                mode['label'] != 'File navigator'):
                 MainMenu.addMenuAction(("Modes",), action)
             else:
                 MainMenu.addMenuAction(("File",), action)

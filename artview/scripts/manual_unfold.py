@@ -55,8 +55,6 @@ def run(DirIn=None, filename=None, field=None):
     control.show()
     roi.show()
     unfold.show()
-    # add grafical starts
-    _add_all_advanced_tools(menu)
 
     # Replace in Screen
     desktop_rect = QtGui.QDesktopWidget().screenGeometry()

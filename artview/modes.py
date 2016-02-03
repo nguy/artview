@@ -31,6 +31,7 @@ grid_mode = (
         ]
     )
 
+# Deprecated - duplicated of grid_mode and radar_mode
 radar_and_grid_mode = (
     [Menu, RadarDisplay, GridDisplay],
     [
@@ -49,6 +50,7 @@ map_to_grid_mode = (
         ]
     )
 
+# XXX Deprecated as this is standard startup
 compare_fields_mode = (
     [Menu, RadarDisplay, RadarDisplay],
     [
@@ -155,16 +157,46 @@ filelist_mode= (
     ]
 )
 
-modes = {
-    'radar': radar_mode,
-    'map_to_grid': map_to_grid_mode,
-    'grid': grid_mode,
-    'radar_and_grid': radar_and_grid_mode,
-    'compare_fields': compare_fields_mode,
-    'corrections': corrections_mode,
-    'gatefilter': gatefilter_mode,
-    'select_region': select_region_mode,
-    'extract_points': extract_points_mode,
-    'manual_unfold': manual_unfold_mode,
-    'manual_filter': manual_filter_mode,
-    'file_list': filelist_mode,}
+filedetail_mode= (
+    [Menu, FileDetail],
+    [
+        ((0, 'Vradar'), (1, 'Vradar')),
+        ((0, 'Vgrid'), (1, 'Vgrid')),
+    ]
+)
+
+navigate_mode= (
+    [Menu, FileNavigator],
+    [
+        ((0, 'Vradar'), (1, 'Vradar')),
+        ((0, 'Vgrid'), (1, 'Vgrid')),
+        ((0, 'Vfilelist'), (1, 'Vfilelist')),
+    ]
+)
+
+modes = [
+         {'label': 'Add RadarDisplay',
+          'action': radar_mode},
+         {'label': 'Add GridDisplay',
+          'action': grid_mode},
+         {'label': 'Map Radar to Grid',
+         'action': map_to_grid_mode},
+         {'label': 'Apply corrections to Radar',
+          'action': corrections_mode},
+         {'label': 'Apply a filter to gates',
+          'action': gatefilter_mode},
+         {'label': 'Query a selectable region of interest ',
+          'action': select_region_mode},
+         {'label': 'Extract a selected region of points',
+          'action': extract_points_mode},
+         {'label': 'Manually unfold velocity',
+          'action': manual_unfold_mode},
+         {'label': 'Apply a filter to data',
+          'action': manual_filter_mode},
+         {'label': 'File navigator',
+          'action': navigate_mode},
+         {'label': 'File details',
+          'action': filedetail_mode},
+         {'label': 'Filelist',
+          'action': filelist_mode},
+        ]
