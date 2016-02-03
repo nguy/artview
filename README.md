@@ -127,15 +127,13 @@ to the list.
 
 
 ## Dependencies
-[Py-Art](https://github.com/ARM-DOE/pyart) >= 1.5
+[Py-ART](https://github.com/ARM-DOE/pyart) >= 1.5
 
 [matplotlib](http://matplotlib.org) >= 1.1.0
 
 [Basemap](http://matplotlib.org/basemap) >= 0.99
 
 [PyQt4](http://www.riverbankcomputing.co.uk/software/pyqt/intro) >= 4.6
-
-[Py-ART](https://github.com/ARM-DOE/pyart)
 
 Make sure that `matplotlib` is loading `PyQt4` as backend, for testing that execute `python test/qt.py`.
 
@@ -169,7 +167,8 @@ Timothy Lang
 
 Jonathan Helmus
 
-NOTE:: This is open source software and contributions are very welcome!
+##Disclaimer
+This is open source software and contributions are very welcome!
 This is not a primary project for any of the contributors, so please be patient
 if you have questions/suggestions.  In addition it needs to be stated that no
 responsibility is taken by the authors for any adverse effects.
