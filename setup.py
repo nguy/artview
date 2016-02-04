@@ -156,7 +156,10 @@ def setup_package():
     # rewrite version file
     write_version_py()
 
-    from numpy.distutils.core import setup
+    try:
+        from numpy.distutils.core import setup
+    except:
+        from distutils.core import setup
 
     setup(
         name=NAME,
@@ -191,9 +194,10 @@ def pre_instalation_tests():
     dependencies={
         'pyart': '1.5',
         'matplotlib': '1.1.0',
-        'mpl_toolkits.basemap': '0.99',}
+#        'mpl_toolkits.basemap': '0.99',
+        }
     for key in dependencies.keys():
-        dep = __import__(key, locals(), globals(), ['__name__'], -1)
+        dep = __import__(key, locals(), globals(), ['__name__'])
         if dependencies[key] is not None:
             if (parse_version(dep.__version__) <
                 parse_version(dependencies[key])):

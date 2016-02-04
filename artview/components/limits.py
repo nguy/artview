@@ -207,6 +207,6 @@ def limits_dialog(limits, cmap, name):
         limits['xmax'] = float(ent_xmax.text())
         limits['ymin'] = float(ent_ymin.text())
         limits['ymax'] = float(ent_ymax.text())
-        print limits
+        print(limits)
 
     return limits, cmap, retval
