@@ -144,7 +144,7 @@ Shared Variables
 
     .. code-block:: python
 
-        def newMyVar(self, var, value, strong):
+        def newMyVar(self, var, strong):
 
     To define the slot of every shared variable define a dictionary named
     sharedVariables in ``__init__``. The key is the name of a variable
@@ -221,8 +221,8 @@ Graphical Start
       user a tree view of the current components and its shared variables,
       allowing the selection of one instance.
 
-    This is a more historical request, but as for now it is still useful and
-    therefore still mandatory.
+      This is a more historical request, but as for now it is still useful and
+      therefore still mandatory.
 
 
 Example
@@ -272,9 +272,8 @@ Example
             #         Other Methods        #
             ################################
 
-            def newMyVar(self, variable, value, strong):
+            def newMyVar(self, variable, strong):
                 print self.VmyVar.value  #  => "something else"
-                print value #  => "something else"
 
         _plugins=[MyPlugin]
 

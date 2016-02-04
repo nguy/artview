@@ -34,8 +34,8 @@ class RadarDisplay(Component):
     Vradar = None  #: see :ref:`shared_variable`
     Vfield = None  #: see :ref:`shared_variable`
     Vtilt = None  #: see :ref:`shared_variable`
-    Vlims = None  #: see :ref:`shared_variable`
-    Vcmap = None  #: see :ref:`shared_variable`
+    Vlimits = None  #: see :ref:`shared_variable`
+    Vcolormap = None  #: see :ref:`shared_variable`
     Vgatefilter = None  #: see :ref:`shared_variable`
     VplotAxes = None  #: see :ref:`shared_variable` (no internal use)
     VpathInteriorFunc = None  #: see :ref:`shared_variable` (no internal use)
@@ -47,8 +47,8 @@ class RadarDisplay(Component):
         args['parent'] = parent
         return self(**args), True
 
-    def __init__(self, Vradar=None, Vfield=None, Vtilt=None, Vlims=None,
-                 Vcmap=None, Vgatefilter=None, name="RadarDisplay",
+    def __init__(self, Vradar=None, Vfield=None, Vtilt=None, Vlimits=None,
+                 Vcolormap=None, Vgatefilter=None, name="RadarDisplay",
                  parent=None):
         '''
         Initialize the class to create display.
@@ -62,10 +62,10 @@ class RadarDisplay(Component):
             Field signal variable. If None start new one with empty string.
         Vtilt : :py:class:`~artview.core.core.Variable` instance
             Tilt signal variable. If None start new one with 0.
-        Vlims : :py:class:`~artview.core.core.Variable` instance
+        Vlimits : :py:class:`~artview.core.core.Variable` instance
             Limits signal variable.
             A value of None will instantiate a limits variable.
-        Vcmap : :py:class:`~artview.core.core.Variable` instance
+        Vcolormap : :py:class:`~artview.core.core.Variable` instance
             Colormap signal variable.
             A value of None will instantiate a colormap variable.
         Vgatefilter : :py:class:`~artview.core.core.Variable` instance
@@ -97,15 +97,15 @@ class RadarDisplay(Component):
             self.Vtilt = Variable(0)
         else:
             self.Vtilt = Vtilt
-        if Vlims is None:
-            self.Vlims = Variable(None)
+        if Vlimits is None:
+            self.Vlimits = Variable(None)
         else:
-            self.Vlims = Vlims
+            self.Vlimits = Vlimits
 
-        if Vcmap is None:
-            self.Vcmap = Variable(None)
+        if Vcolormap is None:
+            self.Vcolormap = Variable(None)
         else:
-            self.Vcmap = Vcmap
+            self.Vcolormap = Vcolormap
 
         if Vgatefilter is None:
             self.Vgatefilter = Variable(None)
@@ -118,8 +118,8 @@ class RadarDisplay(Component):
         self.sharedVariables = {"Vradar": self.NewRadar,
                                 "Vfield": self.NewField,
                                 "Vtilt": self.NewTilt,
-                                "Vlims": self.NewLims,
-                                "Vcmap": self.NewCmap,
+                                "Vlimits": self.NewLims,
+                                "Vcolormap": self.NewCmap,
                                 "Vgatefilter": self.NewGatefilter,
                                 "VpathInteriorFunc": None,
                                 "VplotAxes": None}
@@ -148,9 +148,9 @@ class RadarDisplay(Component):
         self.tools = {}
 
         # Set up Default limits and cmap
-        if Vlims is None:
+        if Vlimits is None:
             self._set_default_limits(strong=False)
-        if Vcmap is None:
+        if Vcolormap is None:
             self._set_default_cmap(strong=False)
 
         # Create a figure for output
@@ -160,7 +160,7 @@ class RadarDisplay(Component):
         self.LaunchGUI()
 
         # Initialize radar variable
-        self.NewRadar(None, None, True)
+        self.NewRadar(None, True)
 
         self.show()
 
@@ -230,10 +230,10 @@ class RadarDisplay(Component):
         '''Open a dialog box to change display limits.'''
         from .limits import limits_dialog
         limits, cmap, change = limits_dialog(
-            self.Vlims.value, self.Vcmap.value, self.name)
+            self.Vlimits.value, self.Vcolormap.value, self.name)
         if change == 1:
-            self.Vcmap.change(cmap)
-            self.Vlims.change(limits)
+            self.Vcolormap.change(cmap)
+            self.Vlimits.change(limits)
 
     def _fillTiltBox(self):
         '''Fill in the Tilt Window Box with current elevation angles.'''
@@ -425,7 +425,7 @@ class RadarDisplay(Component):
     # Selectionion methods #
     ########################
 
-    def NewRadar(self, variable, value, strong):
+    def NewRadar(self, variable, strong):
         '''
         Slot for 'ValueChanged' signal of
         :py:class:`Vradar <artview.core.core.Variable>`.
@@ -461,7 +461,7 @@ class RadarDisplay(Component):
             self._update_plot()
             self._update_infolabel()
 
-    def NewField(self, variable, value, strong):
+    def NewField(self, variable, strong):
         '''
         Slot for 'ValueChanged' signal of
         :py:class:`Vfield <artview.core.core.Variable>`.
@@ -476,16 +476,16 @@ class RadarDisplay(Component):
         self._set_default_cmap(strong=False)
         self.units = self._get_default_units()
         self.title = self._get_default_title()
-        idx = self.fieldBox.findText(value)
+        idx = self.fieldBox.findText(self.Vfield.value)
         self.fieldBox.setCurrentIndex(idx)
         if strong:
             self._update_plot()
             self._update_infolabel()
 
-    def NewLims(self, variable, value, strong):
+    def NewLims(self, variable, strong):
         '''
         Slot for 'ValueChanged' signal of
-        :py:class:`Vlims <artview.core.core.Variable>`.
+        :py:class:`Vlimits <artview.core.core.Variable>`.
 
         This will:
 
@@ -494,10 +494,10 @@ class RadarDisplay(Component):
         if strong:
             self._update_axes()
 
-    def NewCmap(self, variable, value, strong):
+    def NewCmap(self, variable, strong):
         '''
         Slot for 'ValueChanged' signal of
-        :py:class:`Vcmap <artview.core.core.Variable>`.
+        :py:class:`Vcolormap <artview.core.core.Variable>`.
 
         This will:
 
@@ -506,7 +506,7 @@ class RadarDisplay(Component):
         if strong:
             self._update_plot()
 
-    def NewGatefilter(self, variable, value, strong):
+    def NewGatefilter(self, variable, strong):
         '''
         Slot for 'ValueChanged' signal of
         :py:class:`Vgatefilter <artview.core.core.Variable>`.
@@ -518,7 +518,7 @@ class RadarDisplay(Component):
         if strong:
             self._update_plot()
 
-    def NewTilt(self, variable, value, strong):
+    def NewTilt(self, variable, strong):
         '''
         Slot for 'ValueChanged' signal of
         :py:class:`Vtilt <artview.core.core.Variable>`.
@@ -529,7 +529,7 @@ class RadarDisplay(Component):
         * If strong update: update plot
         '''
         # +1 since the first one is "Tilt Window"
-        self.tiltBox.setCurrentIndex(value+1)
+        self.tiltBox.setCurrentIndex(self.Vtilt.value+1)
         if strong:
             self._update_plot()
             self._update_infolabel()
@@ -566,7 +566,7 @@ class RadarDisplay(Component):
                 unrng = int(self.Vradar.value.instrument_parameters[
                     'unambiguous_range']['data'][0]/1000)
             except:
-                unrng = int(self.Vlims.value['xmax'])
+                unrng = int(self.Vlimits.value['xmax'])
 
             # Set the step
             if ringSel == '10 km':
@@ -588,15 +588,15 @@ class RadarDisplay(Component):
     def cmapSelectCmd(self, cm_name):
         '''Captures colormap selection and redraws.'''
         CMAP = cm_name
-        self.Vcmap.value['cmap'] = cm_name
-        self.Vcmap.update()
+        self.Vcolormap.value['cmap'] = cm_name
+        self.Vcolormap.update()
 
     def toolZoomPanCmd(self):
         '''Creates and connects to a Zoom/Pan instance.'''
         from .tools import ZoomPan
         scale = 1.1
         self.tools['zoompan'] = ZoomPan(
-            self.Vlims, self.ax,
+            self.Vlimits, self.ax,
             base_scale=scale, parent=self.parent)
         self.tools['zoompan'].connect()
 
@@ -816,8 +816,8 @@ class RadarDisplay(Component):
             self.statusbar.clearMessage()
 
         title = self.title
-        limits = self.Vlims.value
-        cmap = self.Vcmap.value
+        limits = self.Vlimits.value
+        cmap = self.Vcolormap.value
         if self.gatefilterToggle.isChecked():
             gatefilter = self.Vgatefilter.value
         else:
@@ -872,7 +872,7 @@ class RadarDisplay(Component):
 
     def _update_axes(self):
         '''Change the Plot Axes.'''
-        limits = self.Vlims.value
+        limits = self.Vlimits.value
         self.ax.set_xlim(limits['xmin'], limits['xmax'])
         self.ax.set_ylim(limits['ymin'], limits['ymax'])
         self.ax.figure.canvas.draw()
@@ -907,7 +907,7 @@ class RadarDisplay(Component):
         from .limits import _default_limits
         limits, cmap = _default_limits(
             self.Vfield.value, self.plot_type)
-        self.Vlims.change(limits, strong)
+        self.Vlimits.change(limits, strong)
 
     def _set_default_cmap(self, strong=True):
         ''' Set colormap to pre-defined default.'''
@@ -934,7 +934,7 @@ class RadarDisplay(Component):
                 d['vmax'] = self.Vradar.value.fields[self.Vfield.value][
                     'valid_max']
 
-        self.Vcmap.change(d, strong)
+        self.Vcolormap.change(d, strong)
 
     def _get_default_title(self):
         '''Get default title from pyart.'''
@@ -1043,7 +1043,7 @@ class _DisplayStart(QtGui.QDialog):
         if item is None:
             return
         else:
-            self.result["Vlims"] = getattr(item[1], item[2])
+            self.result["Vlimits"] = getattr(item[1], item[2])
 
     def setupUi(self):
 
@@ -1070,7 +1070,7 @@ class _DisplayStart(QtGui.QDialog):
 
         self.limsButton = QtGui.QPushButton("Find Variable")
         self.limsButton.clicked.connect(self.chooseLims)
-        self.layout.addWidget(QtGui.QLabel("Vlims"), 3, 0)
+        self.layout.addWidget(QtGui.QLabel("Vlimits"), 3, 0)
         self.layout.addWidget(self.limsButton, 3, 1, 1, 3)
 
         self.name = QtGui.QLineEdit("RadarDisplay")
@@ -1093,7 +1093,7 @@ class _DisplayStart(QtGui.QDialog):
             # common.ShowWarning("Must select a variable for Vradar")
             # I'm allowing this to continue, but this will result in error
 
-        # if Vfield, Vtilt, Vlims were not select create new
+        # if Vfield, Vtilt, Vlimits were not select create new
         field = str(self.field.text())
         tilt = self.tilt.value()
         if 'Vfield' not in self.result:

@@ -7,7 +7,7 @@ import os
 import sys
 
 from ..core import Variable, QtGui, QtCore
-from ..components import RadarDisplay, Menu, LinkPlugins, SelectRegion
+from ..components import RadarDisplay, Menu, LinkSharedVariables, SelectRegion
 from ._common import _add_all_advanced_tools, _parse_dir, _parse_field
 from ..plugins import ManualUnfold
 
@@ -34,9 +34,9 @@ def run(DirIn=None, filename=None, field=None):
                          parent=menu)
 
     # connect zoom
-    plot2.disconnectSharedVariable('Vlims')
-    plot2.Vlims = plot1.Vlims
-    plot2.connectSharedVariable('Vlims')
+    plot2.disconnectSharedVariable('Vlimits')
+    plot2.Vlimits = plot1.Vlimits
+    plot2.connectSharedVariable('Vlimits')
 
     # start region selection tool
     roi = SelectRegion(plot1, name="SelectRegion", parent=menu)
@@ -46,7 +46,7 @@ def run(DirIn=None, filename=None, field=None):
                           parent=menu)
 
     # start ComponentsControl
-    control = LinkPlugins()
+    control = LinkSharedVariables()
 
     # add components to Menu
     menu.addLayoutWidget(control)

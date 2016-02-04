@@ -225,7 +225,7 @@ class ManualFilter(Component):
             )
         common.ShowLongTextHyperlinked(text)
 
-    def NewRadar(self, variable, value, strong):
+    def NewRadar(self, variable, strong):
         '''
         Slot for 'ValueChanged' signal of
         :py:class:`Vradar <artview.core.core.Variable>`.
@@ -237,13 +237,13 @@ class ManualFilter(Component):
 
         self._fillFieldBox()
 
-    def NewField(self, variable, value, strong):
+    def NewField(self, variable, strong):
         '''
         Slot for 'ValueChanged' signal of
         :py:class:`Vfield <artview.core.core.Variable>`.
 
         '''
-        idx = self.fieldBox.findText(value)
+        idx = self.fieldBox.findText(self.Vfield.value)
         self.fieldBox.setCurrentIndex(idx)
 
 

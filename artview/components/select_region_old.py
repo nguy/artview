@@ -374,7 +374,7 @@ class SelectRegion(Component):
                 points.fields[field]['data'], plot_type="hist",
                 name="Select Region Histogram")
 
-    def newPlotAxes(self, variable, value, strong):
+    def newPlotAxes(self, variable, strong):
         self.disconnect()
         if self.VplotAxes.value is not None:
             self.fig = self.VplotAxes.value.get_figure()

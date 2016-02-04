@@ -45,7 +45,7 @@ except:
     pass
 
 
-class FileList(Component):
+class DirectoryList(Component):
     '''
     Open an interactive python console so the direct manipulation.
     '''
@@ -57,12 +57,12 @@ class FileList(Component):
     def guiStart(self, parent=None):
         '''Graphical interface for starting this class.'''
         kwargs, independent = \
-            common._SimplePluginStart("FileList").startDisplay()
+            common._SimplePluginStart("DirectoryList").startDisplay()
         kwargs['parent'] = parent
         return self(**kwargs), independent
         return self(), False
 
-    def __init__(self, dirIn=None, name="FileList", parent=None):
+    def __init__(self, dirIn=None, name="DirectoryList", parent=None):
         '''Initialize the class to create the interface.
 
         Parameters
@@ -77,7 +77,7 @@ class FileList(Component):
             If None, then Qt owns, otherwise associated with parent PyQt
             instance.
         '''
-        super(FileList, self).__init__(name=name, parent=parent)
+        super(DirectoryList, self).__init__(name=name, parent=parent)
         self.listView = QtGui.QListView()
 
         # set up listView
@@ -395,4 +395,4 @@ class FileDetail(Component):
             text_file.write(txt)
 
 
-_plugins = [FileList, FileDetail]
+_plugins = [DirectoryList, FileDetail]

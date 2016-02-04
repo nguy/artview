@@ -105,7 +105,7 @@ extract_points_mode = (
         ((1, 'Vradar'), (2, 'Vradar')),
         ((2, 'Vpoints'), (3, 'Vpoints')),
         ((1, 'Vfield'), (3, 'Vfield')),
-        # ((1, 'Vcmap'), (3, 'Vcmap')),
+        # ((1, 'Vcolormap'), (3, 'Vcolormap')),
         ]
     )
 
@@ -150,7 +150,7 @@ manual_filter_mode = (
     )
 
 filelist_mode= (
-    [Menu, FileList],
+    [Menu, DirectoryList],
     [
         ((0, 'Vradar'), (1, 'Vradar')),
         ((0, 'Vgrid'), (1, 'Vgrid')),

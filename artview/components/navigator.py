@@ -179,7 +179,7 @@ class FileNavigator(Component):
 
         helptext = ("Use Icons above for navigation.<br>"
                     "By linking/unliking the radar variables in the<br>"
-                    "LinkPlugins menu for various components, you can<br>"
+                    "LinkSharedVariables menu for various components, you can<br>"
                     "control which Display is navigated."
                     )
         self.help = QtGui.QLabel(helptext)
@@ -324,12 +324,12 @@ class FileNavigator(Component):
             common.ShowWarning(msg)
         return
 
-    def NewFilelist(self, variable, value, strong):
+    def NewFilelist(self, variable, strong):
         '''respond to change in filelist.'''
         if strong:
             self._update_tools()
 
-    def NewFile(self, variable, value, strong):
+    def NewFile(self, variable, strong):
         '''Respond to change in a container (radar or grid).'''
         if hasattr(variable.value, 'filename'):
             # Update the info label.'''

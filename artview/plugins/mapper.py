@@ -323,7 +323,7 @@ class Mapper(Component):
         self.roiFuncLayout.addWidget(QtGui.QLabel("min_radius"), 3, 0)
         self.roiFuncLayout.addWidget(self.minRadius, 3, 1, 1, 2)
 
-    def newRadar(self, variable, value, strong):
+    def newRadar(self, variable, strong):
         '''Display Py-Art's docstring for help.'''
         if self.Vradar.value is None:
             return

@@ -233,10 +233,10 @@ class PlotDisplay(Component):
 #         if strong:
 #             self._update_plot()
 
-#     def NewLims(self, variable, value, strong):
+#     def NewLimits(self, variable, strong):
 #         '''
 #         Slot for 'ValueChanged' signal of
-#         :py:class:`Vlims <artview.core.core.Variable>`.
+#         :py:class:`Vlimits <artview.core.core.Variable>`.
 #
 #         This will:
 #
@@ -245,10 +245,10 @@ class PlotDisplay(Component):
 #         if strong:
 #             self._update_axes()
 
-#     def NewCmap(self, variable, value, strong):
+#     def NewColormap(self, variable, strong):
 #         '''
 #         Slot for 'ValueChanged' signal of
-#         :py:class:`Vcmap <artview.core.core.Variable>`.
+#         :py:class:`Vcolormap <artview.core.core.Variable>`.
 #
 #         This will:
 #
@@ -260,8 +260,8 @@ class PlotDisplay(Component):
     def cmapSelectCmd(self, cm_name):
         '''Captures colormap selection and redraws.'''
         self.cmap['cmap'] = cm_name
-#        self.Vcmap.value['cmap'] = cm_name
-#        self.Vcmap.update()
+#        self.Vcolormap.value['cmap'] = cm_name
+#        self.Vcolormap.update()
 
 #    def toolZoomPanCmd(self):
 #        '''Creates and connects to a Zoom/Pan instance.'''

@@ -342,7 +342,7 @@ class SelectRegion(Component):
         self.disconnect()
         super(SelectRegion, self).closeEvent(QCloseEvent)
 
-    def newPlotAxes(self, variable, value, strong):
+    def newPlotAxes(self, variable, strong):
         self.disconnect()
         if self.VplotAxes.value is not None:
             self.fig = self.VplotAxes.value.get_figure()

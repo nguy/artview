@@ -26,8 +26,8 @@ def run(DirIn=None, filename=None, field=None):
     field = _parse_field(Vradar.value, field)
 
     # start Displays
-    from ..plugins import FileList
-    view = FileList(DirIn)
+    from ..plugins import DirectoryList
+    view = DirectoryList(DirIn)
 
     Vtilt = Variable(0)
     plot1 = RadarDisplay(view.Vradar, Variable(field), Vtilt, name="Display",

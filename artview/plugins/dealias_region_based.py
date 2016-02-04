@@ -158,7 +158,7 @@ class DealiasRegionBased(Component):
             self.Vradar = getattr(item[1], item[2])
             self.connectSharedVariable('Vradar')  # connect new
 
-    def newRadar(self, variable, value, strong):
+    def newRadar(self, variable, strong):
         '''respond to change in radar.'''
         if self.Vradar.value is None:
             return

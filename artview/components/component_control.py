@@ -10,7 +10,7 @@ from functools import partial
 from ..core import Variable, Component, QtGui, QtCore, common, componentsList
 
 
-class LinkPlugins(Component):
+class LinkSharedVariables(Component):
     '''
     Class instance for control variables shared between components.
 
@@ -24,11 +24,11 @@ class LinkPlugins(Component):
     @classmethod
     def guiStart(self, parent=None):
         kwargs, independent = \
-            common._SimplePluginStart("LinkPlugins").startDisplay()
+            common._SimplePluginStart("LinkSharedVariables").startDisplay()
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
-    def __init__(self, components=None, name="LinkPlugins", parent=None):
+    def __init__(self, components=None, name="LinkSharedVariables", parent=None):
         '''Initialize the class to create the interface.
 
         Parameters
@@ -45,7 +45,7 @@ class LinkPlugins(Component):
             instance.
 
         '''
-        super(LinkPlugins, self).__init__(name=name, parent=parent)
+        super(LinkSharedVariables, self).__init__(name=name, parent=parent)
         self.central_widget = QtGui.QWidget()
         self.setCentralWidget(self.central_widget)
         self.layout = QtGui.QGridLayout(self.central_widget)

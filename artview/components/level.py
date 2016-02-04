@@ -27,7 +27,7 @@ class LevelButtonWindow(Component):
         #: see :ref:`shared_variable`, used if plot_type="gridY"
     VlevelX = None \
         #: see :ref:`shared_variable`, used if plot_type="gridX"
-    Vcmap = None  #: see :ref:`shared_variable`
+    Vcolormap = None  #: see :ref:`shared_variable`
 
     def __init__(self, Vlevel=None, plot_type="Radar", Vcontainer=None,
                  controlType="radio", name="LevelButtons", parent=None):
@@ -163,7 +163,7 @@ class LevelButtonWindow(Component):
             self.rBox_layout.addWidget(self.label)
 
         # setChecked the current level
-        self.NewLevel(self.Vlevel, self.Vlevel.value, True)
+        self.NewLevel(self.Vlevel, True)
 
     def SetLevelRadioButtonsGrid(self):
         '''Set a level selection using radio buttons.'''
@@ -212,9 +212,9 @@ class LevelButtonWindow(Component):
             self.rBox_layout.addWidget(self.label)
 
         # setChecked the current level
-        self.NewLevel(self.Vlevel, self.Vlevel.value, True)
+        self.NewLevel(self.Vlevel, True)
 
-    def NewLevel(self, variable, value, strong):
+    def NewLevel(self, variable, strong):
         '''Slot for 'ValueChanged' signal of
         :py:class:`Vlevel <artview.core.core.Variable>`.
 
@@ -237,7 +237,7 @@ class LevelButtonWindow(Component):
                                                   level+1)
                 self.label.setText(txt)
 
-    def NewRadar(self, variable, value, strong):
+    def NewRadar(self, variable, strong):
         '''Slot for 'ValueChanged' signal of
         :py:class:`Vradar <artview.core.core.Variable>`.
 
@@ -249,7 +249,7 @@ class LevelButtonWindow(Component):
         self.CreateLevelWidget()
         self.SetLevelRadioButtonsRadar()
 
-    def NewGrid(self, variable, value, strong):
+    def NewGrid(self, variable, strong):
         '''Slot for 'ValueChanged' signal of
         :py:class:`Vgrid <artview.core.core.Variable>`.
 

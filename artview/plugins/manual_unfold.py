@@ -230,7 +230,7 @@ class ManualUnfold(Component):
             )
         common.ShowLongTextHyperlinked(text)
 
-    def newRadar(self, variable, value, strong):
+    def newRadar(self, variable, strong):
         '''respond to change in radar.'''
         if self.Vradar.value is None:
             return

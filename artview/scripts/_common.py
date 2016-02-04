@@ -4,7 +4,7 @@ _common.py
 auxiliary functions for scripts
 """
 import pyart
-from ..components import (Menu, RadarDisplay, GridDisplay, LinkPlugins,
+from ..components import (Menu, RadarDisplay, GridDisplay, LinkSharedVariables,
                           SelectRegion, PointsDisplay)
 from ..core import QtGui, QtCore
 
@@ -12,7 +12,7 @@ from ..core import QtGui, QtCore
 def _add_all_advanced_tools(menu):
 
     # add grafical starts
-    for comp in [LinkPlugins, RadarDisplay, GridDisplay, SelectRegion]:
+    for comp in [LinkSharedVariables, RadarDisplay, GridDisplay, SelectRegion]:
         action = QtGui.QAction(comp.__name__, menu)
         action.triggered[()].connect(
             lambda comp=comp: menu.startComponent(comp))

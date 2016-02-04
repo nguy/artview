@@ -38,7 +38,7 @@ class GridDisplay(Component):
         #: see :ref:`shared_variable`, only used if plot_type="gridY"
     VlevelX = None \
         #: see :ref:`shared_variable`, only used if plot_type="gridX"
-    Vcmap = None  #: see :ref:`shared_variable`
+    Vcolormap = None  #: see :ref:`shared_variable`
     VplotAxes = None  #: see :ref:`shared_variable` (no internal use)
     VpathInteriorFunc = None  #: see :ref:`shared_variable` (no internal use)
 
@@ -50,7 +50,7 @@ class GridDisplay(Component):
         return self(**args), True
 
     def __init__(self, Vgrid=None, Vfield=None, VlevelZ=None, VlevelY=None,
-                 VlevelX=None, Vlims=None, Vcmap=None, plot_type="gridZ",
+                 VlevelX=None, Vlimits=None, Vcolormap=None, plot_type="gridZ",
                  name="Display", parent=None):
         '''
         Initialize the class to create display.
@@ -71,10 +71,10 @@ class GridDisplay(Component):
         VlevelX : :py:class:`~artview.core.core.Variable` instance
             Signal variable for longitudinal level, only used if
             plot_type="gridX". If None start with value zero.
-        Vlims : :py:class:`~artview.core.core.Variable` instance
+        Vlimits : :py:class:`~artview.core.core.Variable` instance
             Limits signal variable.
             A value of None will instantiate a limits variable.
-        Vcmap : :py:class:`~artview.core.core.Variable` instance
+        Vcolormap : :py:class:`~artview.core.core.Variable` instance
             Colormap signal variable.
             A value of None will instantiate a colormap variable.
         plot_type : "gridZ", "gridY" or "gridX"
@@ -120,23 +120,23 @@ class GridDisplay(Component):
             self.VlevelX = Variable(0)
         else:
             self.VlevelX = VlevelX
-        if Vlims is None:
-            self.Vlims = Variable(None)
+        if Vlimits is None:
+            self.Vlimits = Variable(None)
         else:
-            self.Vlims = Vlims
+            self.Vlimits = Vlimits
 
-        if Vcmap is None:
-            self.Vcmap = Variable(None)
+        if Vcolormap is None:
+            self.Vcolormap = Variable(None)
         else:
-            self.Vcmap = Vcmap
+            self.Vcolormap = Vcolormap
 
         self.VpathInteriorFunc = Variable(self.getPathInteriorValues)
         self.VplotAxes = Variable(None)
 
         self.sharedVariables = {"Vgrid": self.Newgrid,
                                 "Vfield": self.NewField,
-                                "Vlims": self.NewLims,
-                                "Vcmap": self.NewCmap,
+                                "Vlimits": self.NewLimits,
+                                "Vcolormap": self.NewColormap,
                                 "VpathInteriorFunc": None,
                                 "VplotAxes": None}
 
@@ -162,9 +162,9 @@ class GridDisplay(Component):
         self.tools = {}
 
         # Set up Default limits and cmap
-        if Vlims is None:
+        if Vlimits is None:
             self._set_default_limits(strong=False)
-        if Vcmap is None:
+        if Vcolormap is None:
             self._set_default_cmap(strong=False)
 
         # Create a figure for output
@@ -174,7 +174,7 @@ class GridDisplay(Component):
         self.LaunchGUI()
 
         # Initialize grid variable
-        self.Newgrid(None, None, True)
+        self.Newgrid(None, True)
         self._update_fig_ax()
         self.show()
 
@@ -242,11 +242,11 @@ class GridDisplay(Component):
     def _open_LimsDialog(self):
         '''Open a dialog box to change display limits.'''
         from .limits import limits_dialog
-        limits, cmap, change = limits_dialog(self.Vlims.value,
-                                             self.Vcmap.value, self.name)
+        limits, cmap, change = limits_dialog(self.Vlimits.value,
+                                             self.Vcolormap.value, self.name)
         if change == 1:
-            self.Vcmap.change(cmap, False)
-            self.Vlims.change(limits)
+            self.Vcolormap.change(cmap, False)
+            self.Vlimits.change(limits)
 
     def _fillLevelBox(self):
         '''Fill in the Level Window Box with current levels.'''
@@ -426,7 +426,7 @@ class GridDisplay(Component):
     # Selectionion methods #
     ########################
 
-    def Newgrid(self, variable, value, strong):
+    def Newgrid(self, variable, strong):
         '''
         Slot for 'ValueChanged' signal of
         :py:class:`Vgrid <artview.core.core.Variable>`.
@@ -460,7 +460,7 @@ class GridDisplay(Component):
             self._update_plot()
             self._update_infolabel()
 
-    def NewField(self, variable, value, strong):
+    def NewField(self, variable, strong):
         '''
         Slot for 'ValueChanged' signal of
         :py:class:`Vfield <artview.core.core.Variable>`.
@@ -475,16 +475,16 @@ class GridDisplay(Component):
         self._set_default_cmap(strong=False)
         self.units = self._get_default_units()
         self.title = self._get_default_title()
-        idx = self.fieldBox.findText(value)
+        idx = self.fieldBox.findText(self.Vfield.value)
         self.fieldBox.setCurrentIndex(idx)
         if strong:
             self._update_plot()
             self._update_infolabel()
 
-    def NewLims(self, variable, value, strong):
+    def NewLimits(self, variable, strong):
         '''
         Slot for 'ValueChanged' signal of
-        :py:class:`Vlims <artview.core.core.Variable>`.
+        :py:class:`Vlimits <artview.core.core.Variable>`.
 
         This will:
 
@@ -493,10 +493,10 @@ class GridDisplay(Component):
         if strong:
             self._update_axes()
 
-    def NewCmap(self, variable, value, strong):
+    def NewColormap(self, variable, strong):
         '''
         Slot for 'ValueChanged' signal of
-        :py:class:`Vcmap <artview.core.core.Variable>`.
+        :py:class:`Vcolormap <artview.core.core.Variable>`.
 
         This will:
 
@@ -505,7 +505,7 @@ class GridDisplay(Component):
         if strong:
             self._update_plot()
 
-    def NewLevel(self, variable, value, strong):
+    def NewLevel(self, variable, strong):
         '''
         Slot for 'ValueChanged' signal of
         :py:class:`Vlevel* <artview.core.core.Variable>`.
@@ -542,15 +542,15 @@ class GridDisplay(Component):
     def cmapSelectCmd(self, cm_name):
         '''Captures colormap selection and redraws.'''
         CMAP = cm_name
-        self.Vcmap.value['cmap'] = cm_name
-        self.Vcmap.update()
+        self.Vcolormap.value['cmap'] = cm_name
+        self.Vcolormap.update()
 
     def toolZoomPanCmd(self):
         '''Creates and connects to a Zoom/Pan instance.'''
         from .tools import ZoomPan
         scale = 1.1
         self.tools['zoompan'] = ZoomPan(
-            self.Vlims, self.ax,
+            self.Vlimits, self.ax,
             base_scale=scale, parent=self.parent)
         self.tools['zoompan'].connect()
 
@@ -785,8 +785,8 @@ class GridDisplay(Component):
             self.statusbar.clearMessage()
 
         title = self.title
-        limits = self.Vlims.value
-        cmap = self.Vcmap.value
+        limits = self.Vlimits.value
+        cmap = self.Vcolormap.value
 
         self.display = pyart.graph.GridMapDisplay(self.Vgrid.value)
         # Create Plot
@@ -811,7 +811,7 @@ class GridDisplay(Component):
                 vmax=cmap['vmax'], cmap=cmap['cmap'], colorbar_flag=False,
                 title=title, ax=self.ax, fig=self.fig)
 
-        limits = self.Vlims.value
+        limits = self.Vlimits.value
         x = self.ax.get_xlim()
         y = self.ax.get_ylim()
         limits['xmin'] = x[0]
@@ -840,7 +840,7 @@ class GridDisplay(Component):
 
     def _update_axes(self):
         '''Change the Plot Axes.'''
-        limits = self.Vlims.value
+        limits = self.Vlimits.value
         self.ax.set_xlim(limits['xmin'], limits['xmax'])
         self.ax.set_ylim(limits['ymin'], limits['ymax'])
         self.ax.figure.canvas.draw()
@@ -851,7 +851,7 @@ class GridDisplay(Component):
 
     def _set_default_limits(self, strong=True):
         '''Set limits to pre-defined default.'''
-        limits = self.Vlims.value
+        limits = self.Vlimits.value
         if limits is None:
             limits = {}
         if self.Vgrid.value is None:
@@ -888,7 +888,7 @@ class GridDisplay(Component):
                               1000.)
             limits['ymax'] = (self.Vgrid.value.z['data'][-1] /
                               1000.)
-        self.Vlims.change(limits, strong)
+        self.Vlimits.change(limits, strong)
 
     def _set_default_cmap(self, strong=True):
         '''Set colormap to pre-defined default.'''
@@ -903,7 +903,7 @@ class GridDisplay(Component):
         else:
             d['vmin'] = -10
             d['vmax'] = 65
-        self.Vcmap.change(d, strong)
+        self.Vcolormap.change(d, strong)
 
     def _get_default_title(self):
         '''Get default title from pyart.'''
@@ -1070,7 +1070,7 @@ class _DisplayStart(QtGui.QDialog):
         if item is None:
             return
         else:
-            self.result["Vlims"] = getattr(item[1], item[2])
+            self.result["Vlimits"] = getattr(item[1], item[2])
 
     def setupUi(self):
 
@@ -1101,7 +1101,7 @@ class _DisplayStart(QtGui.QDialog):
 
         self.limsButton = QtGui.QPushButton("Find Variable")
         self.limsButton.clicked.connect(self.chooseLims)
-        self.layout.addWidget(QtGui.QLabel("Vlims"), 4, 0)
+        self.layout.addWidget(QtGui.QLabel("Vlimits"), 4, 0)
         self.layout.addWidget(self.limsButton, 4, 1, 1, 3)
 
         self.name = QtGui.QLineEdit("GridDisplay")
@@ -1124,7 +1124,7 @@ class _DisplayStart(QtGui.QDialog):
             # common.ShowWarning("Must select a variable for Vgrid.")
             # I'm allowing this to continue, but this will result in error
 
-        # if Vfield, Vlevel, Vlims were not select create new
+        # if Vfield, Vlevel, Vlimits were not select create new
         field = str(self.field.text())
         level = self.level.value()
         if 'Vfield' not in self.result:

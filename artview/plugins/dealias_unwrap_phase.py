@@ -148,7 +148,7 @@ class DealiasUnwrapPhase(Component):
             # connect new
             self.connectSharedVariable('Vradar')
 
-    def newRadar(self, variable, value, strong):
+    def newRadar(self, variable, strong):
         '''respond to change in radar.'''
         if self.Vradar.value is None:
             return
