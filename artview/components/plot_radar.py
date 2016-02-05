@@ -824,7 +824,13 @@ class RadarDisplay(Component):
             gatefilter = None
 
         if self.plot_type == "radarAirborne":
-            self.display = pyart.graph.RadarDisplay_Airborne(self.Vradar.value)
+            from pkg_resources import parse_version
+            if parse_version(pyart.__version__) >= parse_version('1.6.0'):
+                self.display = pyart.graph.AirborneRadarDisplay(
+                    self.Vradar.value)
+            else:
+                self.display = pyart.graph.RadarDisplay_Airborne(
+                    self.Vradar.value)
 
             self.plot = self.display.plot_sweep_grid(
                 self.Vfield.value, vmin=cmap['vmin'],
