@@ -50,6 +50,9 @@ class LinkSharedVariables(Component):
         self.setCentralWidget(self.central_widget)
         self.layout = QtGui.QGridLayout(self.central_widget)
 
+        self.radioLayout = QtGui.QGridLayout()
+        self.layout.addLayout(self.radioLayout, 2, 0)
+
         if components is None:
             self.components = componentsList
             QtCore.QObject.connect(
@@ -89,11 +92,11 @@ class LinkSharedVariables(Component):
 
         # Select Components buttons
         self.combo0 = QtGui.QComboBox()
-        self.combo0.activated[int].connect(self._comp0Action)
+        self.combo0.currentIndexChanged[int].connect(self._comp0Action)
         self.combo1 = QtGui.QComboBox()
-        self.combo1.activated[int].connect(self._comp1Action)
-        self.layout.addWidget(self.combo0, 0, 0)
-        self.layout.addWidget(self.combo1, 1, 0)
+        self.combo1.currentIndexChanged[int].connect(self._comp1Action)
+        #self.layout.addWidget(self.combo0, 0, 0)
+        #self.layout.addWidget(self.combo1, 1, 0)
 
         # Fill buttons
         for component in self.components:
@@ -108,17 +111,48 @@ class LinkSharedVariables(Component):
     def _setRadioButtons(self):
         '''Add radio buttons for control over the variables.'''
         # Radio Buttons
-        self.radioLayout = QtGui.QGridLayout()
-        self.layout.addLayout(self.radioLayout, 2, 0)
-        self.radioLayout.addWidget(QtGui.QLabel("Link"), 0, 1)
-        self.radioLayout.addWidget(QtGui.QLabel("Unlink"), 0, 2)
+        #self.radioLayout = QtGui.QGridLayout()
+        #self.layout.addLayout(self.radioLayout, 2, 0)
+        #self.radioLayout.addWidget(QtGui.QLabel("Link"), 0, 1)
+        #self.radioLayout.addWidget(QtGui.QLabel("Unlink"), 0, 2)
 
         self.radioBoxes = []
         for idx, var in enumerate(self.variables):
             self._addRadioButton(var, idx)
 
+        self.layout.addWidget(QtGui.QLabel('from'), 0, 1, -1, 1)
+        self.layout.addWidget(self.combo0, 0, 2, -1, 1)
+        self.layout.addWidget(QtGui.QLabel('to'), 0, 4, -1, 1)
+        self.layout.addWidget(self.combo1, 0, 5, -1, 1)
+
+    def linking(self, var, state):
+        if state == 0:
+            self.disconnectVar(var)
+        else:
+            self.connectVar(var)
+
     def _addRadioButton(self, var, idx):
         '''Add radio button for variable in the given index.'''
+
+        link = QtGui.QCheckBox('is linked')
+
+        if getattr(self.comp0, var) is getattr(self.comp1, var):
+            link.setChecked(True)
+        else:
+            link.setChecked(False)
+
+        if self.comp0 is self.comp1:
+            link.setDisabled(True)
+
+
+        self.layout.addWidget(QtGui.QLabel(var[1::] + ' '), idx, 0)
+        #self.radioLayout.addWidget(QtGui.QLabel('from ' + self.comp1.name + ' '), idx+1, 1)
+        self.layout.addWidget(link, idx, 3)
+        #self.radioLayout.addWidget(QtGui.QLabel('to ' + self.comp0.name), idx, 4)
+
+        link.stateChanged.connect(partial(self.linking, var))
+
+        return
         radioBox = QtGui.QButtonGroup()
         self.radioBoxes.append(radioBox)  # avoid garbage collector
 
@@ -140,23 +174,48 @@ class LinkSharedVariables(Component):
             unlink.setDisabled(True)
 
         self.radioLayout.addWidget(QtGui.QLabel(var[1::]), idx+1, 0)
+        self.radioLayout.addWidget(QtGui.QLabel(), idx+1, 0)
         self.radioLayout.addWidget(link, idx+1, 1)
         self.radioLayout.addWidget(unlink, idx+1, 2)
+
+    def setComponent0(self, name):
+        '''Set current component in first dropdown menu.'''
+        for idx, comp in enumerate(self.components):
+            if name == comp.name:
+                self.combo0.setCurrentIndex(idx)
+                return
+
+        import warnings
+        warnings.warn("Component not in Component list, ignoring.")
+
+    def setComponent1(self, name):
+        '''Set current component in second dropdown menu.'''
+        for idx, comp in enumerate(self.components):
+            if name == comp.name:
+                self.combo1.setCurrentIndex(idx)
+                return
+
+        import warnings
+        warnings.warn("Component not in Component list, ignoring.")
 
     def _comp0Action(self, idx):
         '''Update Component 0.'''
         self.comp0 = self.components[idx]
         self._setVariables()
-        self._clearLayout(self.radioLayout)
-        self.layout.removeItem(self.radioLayout)
+        self.layout.removeWidget(self.combo0)
+        self.layout.removeWidget(self.combo1)
+        self._clearLayout(self.layout)
+        #self.layout.removeItem(self.radioLayout)
         self._setRadioButtons()
 
     def _comp1Action(self, idx):
         '''Update Component 1.'''
         self.comp1 = self.components[idx]
         self._setVariables()
-        self._clearLayout(self.radioLayout)
-        self.layout.removeItem(self.radioLayout)
+        self.layout.removeWidget(self.combo0)
+        self.layout.removeWidget(self.combo1)
+        self._clearLayout(self.layout)
+        #self.layout.removeItem(self.radioLayout)
         self._setRadioButtons()
 
     def connectVar(self, var):

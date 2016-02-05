@@ -64,7 +64,7 @@ class DealiasUnwrapPhase(Component):
 #        else:
 #            self.Vgatefilter = Vgatefilter
 
-        self.sharedVariables = {"Vradar": self.newRadar, }
+        self.sharedVariables = {"Vradar": self.NewRadar, }
 #                                "Vgatefilter": None}
         self.connectAllVariables()
 
@@ -82,7 +82,7 @@ class DealiasUnwrapPhase(Component):
 
         self.addGeneralOptions()
 
-        self.newRadar(None, None, True)
+        self.NewRadar(None, True)
 
         self.show()
 
@@ -148,7 +148,7 @@ class DealiasUnwrapPhase(Component):
             # connect new
             self.connectSharedVariable('Vradar')
 
-    def newRadar(self, variable, strong):
+    def NewRadar(self, variable, strong):
         '''respond to change in radar.'''
         if self.Vradar.value is None:
             return

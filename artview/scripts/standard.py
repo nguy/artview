@@ -46,14 +46,15 @@ def run(DirIn=None, filename=None, field=None):
 
     # start Displays
     Vtilt = Variable(0)
-    Vtilt2 = Variable(0)
     plot1 = RadarDisplay(Vradar, Variable(field), Vtilt, name="Display1",
                          parent=MainMenu)
-    plot2 = RadarDisplay(Vradar, Variable(field), Vtilt2, name="Display2",
+    plot2 = RadarDisplay(Vradar, Variable(field), Vtilt, name="Display2",
                          parent=MainMenu)
 
     # start ComponentsControl
     control = LinkSharedVariables()
+    control.setComponent0(plot1.name)
+    control.setComponent1(plot2.name)
 
     # add control to Menu
     MainMenu.addLayoutWidget(control)

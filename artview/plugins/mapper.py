@@ -59,7 +59,7 @@ class Mapper(Component):
             self.Vgrid = Variable(None)
         else:
             self.Vgrid = Vgrid
-        self.sharedVariables = {"Vradar": self.newRadar,
+        self.sharedVariables = {"Vradar": self.NewRadar,
                                 "Vgrid": None}
         self.connectAllVariables()
 
@@ -75,7 +75,7 @@ class Mapper(Component):
 
         self.addGeneralOptions()
 
-        self.newRadar(None, None, True)
+        self.NewRadar(None, True)
 
         self.show()
 
@@ -323,7 +323,7 @@ class Mapper(Component):
         self.roiFuncLayout.addWidget(QtGui.QLabel("min_radius"), 3, 0)
         self.roiFuncLayout.addWidget(self.minRadius, 3, 1, 1, 2)
 
-    def newRadar(self, variable, strong):
+    def NewRadar(self, variable, strong):
         '''Display Py-Art's docstring for help.'''
         if self.Vradar.value is None:
             return

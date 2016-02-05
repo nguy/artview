@@ -97,7 +97,7 @@ class SelectRegion(Component):
         else:
             self.Vfield = Vfield
         self.sharedVariables = {
-            "VplotAxes": self.newPlotAxes,
+            "VplotAxes": self.NewPlotAxes,
             "Vgatefilter": None,
             "Vradar": None,
             "VpathInteriorFunc": None,
@@ -114,7 +114,7 @@ class SelectRegion(Component):
         # Initialize the variables and GUI
         self._initialize_SelectRegion_vars()
         self.CreateSelectRegionWidget()
-        self.newPlotAxes(None, None, False)
+        self.NewPlotAxes(None, False)
         self.show()
 
     def _initialize_SelectRegion_vars(self):
@@ -342,7 +342,7 @@ class SelectRegion(Component):
         self.disconnect()
         super(SelectRegion, self).closeEvent(QCloseEvent)
 
-    def newPlotAxes(self, variable, strong):
+    def NewPlotAxes(self, variable, strong):
         self.disconnect()
         if self.VplotAxes.value is not None:
             self.fig = self.VplotAxes.value.get_figure()

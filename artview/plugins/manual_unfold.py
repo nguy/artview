@@ -68,7 +68,7 @@ class ManualUnfold(Component):
         else:
             self.Vpoints = Vpoints
 
-        self.sharedVariables = {"Vradar": self.newRadar,
+        self.sharedVariables = {"Vradar": self.NewRadar,
                                 "Vpoints": None}
         self.connectAllVariables()
 
@@ -111,7 +111,7 @@ class ManualUnfold(Component):
         self.buttonHelp.clicked.connect(self._displayHelp)
         self.layout.addWidget(self.buttonHelp, 6, 1)
 
-        self.newRadar(None, None, True)
+        self.NewRadar(None, True)
         self.show()
 
     def getFieldNames(self):
@@ -230,7 +230,7 @@ class ManualUnfold(Component):
             )
         common.ShowLongTextHyperlinked(text)
 
-    def newRadar(self, variable, strong):
+    def NewRadar(self, variable, strong):
         '''respond to change in radar.'''
         if self.Vradar.value is None:
             return
