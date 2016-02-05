@@ -594,8 +594,9 @@ class Menu(Component):
         # Update to current directory when file is chosen
         self.dirIn = os.path.dirname(self.filename)
 
-        # Get a list of files in the working directory
-        filelist = glob.glob(os.path.join(self.dirIn, '*'))
+        # Get a list of files (and only files) in the working directory
+        filelist = [path for path in glob.glob(os.path.join(self.dirIn, '*'))
+                    if os.path.isfile(path)]
         filelist.sort()
         self.Vfilelist.change(filelist)
 

@@ -83,8 +83,8 @@ class FileNavigator(Component):
 
         self.layout.addLayout(self.generalLayout, 0, 0, 1, 2)
 
-        self.NewFile(self.Vradar, None, True)
-        self.NewFilelist(self.Vfilelist, None, True)
+        self.NewFile(self.Vradar, True)
+        self.NewFilelist(self.Vfilelist, True)
 
         self.show()
 
