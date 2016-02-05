@@ -281,21 +281,6 @@ class Menu(Component):
         pluginHelp.triggered.connect(self._get_pluginhelp)
         self.filemenu.addAction(pluginHelp)
 
-        # Create Display Plugins action
-        pluginlist = self.filemenu.addMenu("Plugins")
-        try:
-            from .. import plugins
-            for plugin in plugins._plugins.values():
-                action = QtGui.QAction(plugin.__name__, pluginlist)
-                action.triggered[()].connect(
-                    lambda plugin=plugin: self.startComponent(plugin))
-                pluginlist.addAction(action)
-        except:
-            import traceback
-            print(traceback.format_exc())
-            import warnings
-            warnings.warn("Loading Plugins Fail")
-
         # Create Close ARTView action
         exitApp = QtGui.QAction('Close', self)
         exitApp.setShortcut('Ctrl+Q')

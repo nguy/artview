@@ -197,6 +197,6 @@ modes = [
           'action': navigate_mode},
          {'label': 'File details',
           'action': filedetail_mode},
-         {'label': 'Filelist',
+         {'label': 'Directory View',
           'action': filelist_mode},
         ]
