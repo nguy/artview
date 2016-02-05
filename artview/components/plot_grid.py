@@ -140,7 +140,7 @@ class GridDisplay(Component):
                                 "VpathInteriorFunc": None,
                                 "VplotAxes": None}
 
-        self.change_plot_type(plot_type)
+        self.parse_plot_type(plot_type)
 
         # Connect the components
         self.connectAllVariables()
@@ -348,6 +348,16 @@ class GridDisplay(Component):
         self.dispCmap = dispmenu.addAction("Change Colormap")
         self.dispCmapmenu = QtGui.QMenu("Change Cmap")
         self.dispCmapmenu.setFocusPolicy(QtCore.Qt.NoFocus)
+
+        self.dispPlotType = dispmenu.addMenu("Change Plot Type")
+        self.dispPlotType.setFocusPolicy(QtCore.Qt.NoFocus)
+        cmapAction = self.dispPlotType.addAction('Altitude Plot')
+        cmapAction.triggered[()].connect(lambda: self.change_plot_type('gridZ'))
+        cmapAction = self.dispPlotType.addAction('Longitudinal Plot')
+        cmapAction.triggered[()].connect(lambda: self.change_plot_type('gridY'))
+        cmapAction = self.dispPlotType.addAction('Latitudinal Plot')
+        cmapAction.triggered[()].connect(lambda: self.change_plot_type('gridX'))
+
         dispQuickSave = dispmenu.addAction("Quick Save Image")
         dispQuickSave.setShortcut("Ctrl+D")
         dispQuickSave.setToolTip(
@@ -516,7 +526,7 @@ class GridDisplay(Component):
         * If strong update: update plot
         '''
         # +1 since the first one is "Level Window"
-        self.levelBox.setCurrentIndex(value+1)
+        self.levelBox.setCurrentIndex(variable.value+1)
         if strong:
             self._update_plot()
             self._update_infolabel()
@@ -738,7 +748,7 @@ class GridDisplay(Component):
         self.XSIZE = 8
         self.YSIZE = 8
         self.fig = Figure(figsize=(self.XSIZE, self.YSIZE))
-        self.ax = self.fig.add_axes([0.2, 0.2, 0.7, 0.7])
+        self.ax = self.fig.add_axes([0.2, 0.2, 0.7, 0.7], aspect='auto')
         self.cax = self.fig.add_axes([0.2, 0.10, 0.7, 0.02])
         self.VplotAxes.change(self.ax)
         # self._update_axes()
@@ -804,12 +814,14 @@ class GridDisplay(Component):
                 self.Vfield.value, self.VlevelY.value, vmin=cmap['vmin'],
                 vmax=cmap['vmax'], cmap=cmap['cmap'], colorbar_flag=False,
                 title=title, ax=self.ax, fig=self.fig)
+            self.ax.set_aspect('auto')
         elif self.plot_type == "gridX":
             self.basemap = None
             self.plot = self.display.plot_longitudinal_level(
                 self.Vfield.value, self.VlevelX.value, vmin=cmap['vmin'],
                 vmax=cmap['vmax'], cmap=cmap['cmap'], colorbar_flag=False,
                 title=title, ax=self.ax, fig=self.fig)
+            self.ax.set_aspect('auto')
 
         limits = self.Vlimits.value
         x = self.ax.get_xlim()
@@ -936,8 +948,8 @@ class GridDisplay(Component):
         # self._update_fig_ax()
         return
 
-    def change_plot_type(self, plot_type):
-        '''Change plot type.'''
+    def parse_plot_type(self, plot_type):
+        '''Parse Plot Type and change variables'''
         # remove shared variables
         for key in ("VlevelZ", "VlevelY", "VlevelX"):
             if key in self.sharedVariables.keys():
@@ -954,7 +966,19 @@ class GridDisplay(Component):
                           plot_type)
             self.sharedVariables["VlevelZ"] = self.NewLevel
             plot_type = "gridZ"
+
         self.plot_type = plot_type
+
+    def change_plot_type(self, plot_type):
+        '''Change plot type.'''
+
+        self.disconnectAllVariables()
+        self.parse_plot_type(plot_type)
+        self.connectAllVariables()
+        self.levelBox.clear()
+        self._fillLevelBox()
+        self._set_default_limits(strong=False)
+        self._update_plot()
 
     ########################
     # Image save methods #

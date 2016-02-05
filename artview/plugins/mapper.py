@@ -148,7 +148,7 @@ class Mapper(Component):
             self.mapGatesToGridOptions()
         elif item == 'map_to_grid':
             self.mapToGridOptions()
-        self.newRadar(None, None, True)
+        self.NewRadar(None, True)
 
     def mapGatesToGridOptions(self):
         '''Mount Options Layout for :py:func:`~pyart.map.map_gates_to_grid`'''
