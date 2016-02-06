@@ -77,7 +77,7 @@ gatefilter_mode = (
     [
         ((0, 'Vradar'), (1, 'Vradar')),
         ((1, 'Vradar'), (2, 'Vradar')),
-        ((1, 'Vgatefilter'), (3, 'Vgatefilter')),
+        ((1, 'Vgatefilter'), (2, 'Vgatefilter')),
         ]
     )
 

@@ -98,6 +98,7 @@ def ShowLongTextHyperlinked(msg, modal=True):
     text = QtGui.QLabel("")
     text.setText(msg)
     text.setOpenExternalLinks(True)
+    text.setWordWrap(True)
     layout.addWidget(text)
     if modal is True:
         response = Dialog.exec_()
