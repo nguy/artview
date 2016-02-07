@@ -140,9 +140,9 @@ class SelectRegion(Component):
             elif event.button == 1 and False:  # Free Hand Drawing
                 line = Line2D([self.previous_point[0], x],
                               [self.previous_point[1], y])
-                self.polys[-1].append(ax.add_line(line))
                 self.previous_point = [x, y]
                 self.verts[-1].append([x, y])
+                self.polys[-1].append(ax.add_line(self.line))
                 self.fig.canvas.draw()
 
     def button_press_callback(self, event):
