@@ -668,8 +668,12 @@ class RadarDisplay(Component):
         idx = np.empty((0,2), dtype=np.int)
 
         for path in paths:
-            x, y, z = self.display._get_x_y_z(
-                self.Vfield.value, tilt, False, True)
+            try:
+                x, y, z = self.display._get_x_y_z(
+                    tilt, False, True)
+            except:
+                x, y, z = self.display._get_x_y_z(
+                    self.Vfield.value, tilt, False, True)
             if self.plot_type == "radarAirborne":
                 _xy = np.empty(shape=(x.size, 2))
                 _xy[:, 0] = x.flatten()
