@@ -281,16 +281,15 @@ class FileDetail(Component):
         self.RadarLongButton.clicked.connect(self._get_RadarLongInfo)
         gBox_layout.addWidget(self.RadarLongButton, 0, 0, 1, 1)
 
-
         groupBox.setLayout(gBox_layout)
 
         return groupBox
 
     def _get_RadarLongInfo(self):
         '''Print out the radar info to text box.'''
-        path = QtGui.QFileDialog.getSaveFileName(self,
-                'Save Text File',
-                QtCore.QString('long_radar_info.txt'), 'TXT(*.txt)')
+        path = QtGui.QFileDialog.getSaveFileName(
+            self, 'Save Text File',
+            QtCore.QString('long_radar_info.txt'), 'TXT(*.txt)')
 
         # Get info and print to file
         file_obj = open(path, 'w')
@@ -389,7 +388,7 @@ class FileDetail(Component):
     def showSaveDialog(self, fsuggest, txt):
 
         path = QtGui.QFileDialog.getSaveFileName(
-                self, 'Save Text File', QtCore.QString(fsuggest), 'TXT(*.txt)')
+            self, 'Save Text File', QtCore.QString(fsuggest), 'TXT(*.txt)')
 
         with open(path, "w") as text_file:
             text_file.write(txt)

@@ -17,7 +17,7 @@ def _add_all_advanced_tools(menu):
         action = QtGui.QAction(comp.__name__, menu)
         action.triggered[()].connect(
             lambda comp=comp: menu.startComponent(comp))
-        menu.addMenuAction(("File","Plugins",), action)
+        menu.addMenuAction(("File", "Plugins", ), action)
 
     # add all plugins to grafical start
     try:
@@ -26,7 +26,7 @@ def _add_all_advanced_tools(menu):
             action = QtGui.QAction(plugin.__name__, menu)
             action.triggered[()].connect(
                 lambda plugin=plugin: menu.startComponent(plugin))
-            menu.addMenuAction(("File","Plugins",), action)
+            menu.addMenuAction(("File", "Plugins", ), action)
     except:
         import traceback
         print(traceback.format_exc())

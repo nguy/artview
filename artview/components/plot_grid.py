@@ -352,11 +352,14 @@ class GridDisplay(Component):
         self.dispPlotType = dispmenu.addMenu("Change Plot Type")
         self.dispPlotType.setFocusPolicy(QtCore.Qt.NoFocus)
         cmapAction = self.dispPlotType.addAction('Altitude Plot')
-        cmapAction.triggered[()].connect(lambda: self.change_plot_type('gridZ'))
+        cmapAction.triggered[()].connect(lambda:
+                                         self.change_plot_type('gridZ'))
         cmapAction = self.dispPlotType.addAction('Longitudinal Plot')
-        cmapAction.triggered[()].connect(lambda: self.change_plot_type('gridY'))
+        cmapAction.triggered[()].connect(lambda:
+                                         self.change_plot_type('gridY'))
         cmapAction = self.dispPlotType.addAction('Latitudinal Plot')
-        cmapAction.triggered[()].connect(lambda: self.change_plot_type('gridX'))
+        cmapAction.triggered[()].connect(lambda:
+                                         self.change_plot_type('gridX'))
 
         dispQuickSave = dispmenu.addAction("Quick Save Image")
         dispQuickSave.setShortcut("Ctrl+D")

@@ -11,7 +11,6 @@ import sys
 import glob
 
 from ..core import Variable, Component, common, QtGui, QtCore, componentsList
-###from .nav import FileNavigator
 
 
 class Menu(Component):
@@ -367,8 +366,8 @@ class Menu(Component):
             else:
                 # not linked, link
                 print("linking %s.%s to %s.%s" %
-                     (components[link[1][0]].name, link[1][1],
-                      components[link[0][0]].name, link[0][1]))
+                      (components[link[1][0]].name, link[1][1],
+                       components[link[0][0]].name, link[0][1]))
                 # Disconect old Variable
                 components[link[1][0]].disconnectSharedVariable(link[1][1])
                 # comp1.var = comp0.var
@@ -418,7 +417,8 @@ class Menu(Component):
             "<i>Documentation</i>:<br>"
             "<br><br>"
             "For a demonstration, a "
-            "<a href='https://rawgit.com/nguy/artview/master/docs/build/html/index.html'>Software Package Documentation</a><br>"
+            "<a href='https://rawgit.com/nguy/artview/master/docs/build/"
+            "html/index.html'>Software Package Documentation</a><br>"
             )
         common.ShowLongTextHyperlinked(text)
 

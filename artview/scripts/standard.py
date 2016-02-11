@@ -76,4 +76,5 @@ def run(DirIn=None, filename=None, field=None):
 
     # start program
     app.exec_()
-    print("You used ARTView. What you think and what you need of ARTView? Send your comment to artview-users@googlegroups.com")
+    print("You used ARTView. What you think and what you need of ARTView? "
+          "Send your comment to artview-users@googlegroups.com")

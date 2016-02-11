@@ -664,8 +664,8 @@ class RadarDisplay(Component):
         except:
             paths = [paths]
 
-        xy = np.empty((0,2))
-        idx = np.empty((0,2), dtype=np.int)
+        xy = np.empty((0, 2))
+        idx = np.empty((0, 2), dtype=np.int)
 
         for path in paths:
             try:
@@ -686,7 +686,7 @@ class RadarDisplay(Component):
                             ind / ngates)
                 gateIndex = ind % ngates
                 _idx = np.concatenate((rayIndex[np.newaxis],
-                                        gateIndex[np.newaxis]), axis=0)
+                                       gateIndex[np.newaxis]), axis=0)
                 _idx = _idx.transpose().astype(np.int)
             elif self.plot_type == "radarPpi":
                 _xy = np.empty(shape=(x.size, 2))
@@ -700,7 +700,7 @@ class RadarDisplay(Component):
                             ind / ngates)
                 gateIndex = ind % ngates
                 _idx = np.concatenate((rayIndex[np.newaxis],
-                                        gateIndex[np.newaxis]), axis=0)
+                                       gateIndex[np.newaxis]), axis=0)
                 _idx = _idx.transpose().astype(np.int)
             elif self.plot_type == "radarRhi":
                 _xy = np.empty(shape=(x.size, 2))
@@ -717,9 +717,8 @@ class RadarDisplay(Component):
                             ind / ngates)
                 gateIndex = ind % ngates
                 _idx = np.concatenate((rayIndex[np.newaxis],
-                                        gateIndex[np.newaxis]), axis=0)
+                                       gateIndex[np.newaxis]), axis=0)
                 _idx = _idx.transpose().astype(np.int)
-
 
             xy = np.concatenate((xy, _xy))
             idx = np.concatenate((idx, _idx))

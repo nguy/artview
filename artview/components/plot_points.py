@@ -442,7 +442,8 @@ class PointsDisplay(Component):
                 field = self.Vfield.value
                 SelectRegionstats = common._array_stats(
                     points.fields[field]['data'])
-                text = "<b>Basic statistics for the selected Region</b><br><br>"
+                text = ("<b>Basic statistics for the selected Region</b>"
+                        "<br><br>")
                 for stat in SelectRegionstats:
                     text += ("<i>%s</i>: %5.2f<br>" %
                              (stat, SelectRegionstats[stat]))

@@ -104,7 +104,7 @@ class FileNavigator(Component):
 
         self.prevbutton = QtGui.QPushButton("Previous")
         self.prevbutton.setToolTip("Load previous file")
-        self.prevbutton.setIconSize(QtCore.QSize(32,32))
+        self.prevbutton.setIconSize(QtCore.QSize(32, 32))
         self.prevbutton.clicked.connect(self.goto_prev_file)
         gBox_layout.addWidget(self.prevbutton, 0, 1, 1, 1)
 
@@ -124,15 +124,20 @@ class FileNavigator(Component):
 
     def createNavToolbar(self):
         '''Mount the file navigation toolbar.'''
-        parentdir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+        parentdir = os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                                 os.pardir))
         groupBox = QtGui.QGroupBox("File Navigation")
         gBox_layout = QtGui.QGridLayout()
 
         self.navtoolbar = QtGui.QToolBar()
-        pixfirst = QtGui.QPixmap(os.sep.join([parentdir, 'icons',"arrow_go_first_icon.png"]))
-        pixprev = QtGui.QPixmap(os.sep.join([parentdir, 'icons',"arrow_go_previous_icon.png"]))
-        pixnext = QtGui.QPixmap(os.sep.join([parentdir, 'icons',"arrow_go_next_icon.png"]))
-        pixlast = QtGui.QPixmap(os.sep.join([parentdir, 'icons',"arrow_go_last_icon.png"]))
+        pixfirst = QtGui.QPixmap(os.sep.join([parentdir, 'icons',
+                                              "arrow_go_first_icon.png"]))
+        pixprev = QtGui.QPixmap(os.sep.join([parentdir, 'icons',
+                                             "arrow_go_previous_icon.png"]))
+        pixnext = QtGui.QPixmap(os.sep.join([parentdir, 'icons',
+                                             "arrow_go_next_icon.png"]))
+        pixlast = QtGui.QPixmap(os.sep.join([parentdir, 'icons',
+                                             "arrow_go_last_icon.png"]))
         self.act_first = self.navtoolbar.addAction(
             QtGui.QIcon(pixfirst),
             "First file:",
@@ -179,7 +184,8 @@ class FileNavigator(Component):
 
         helptext = ("Use Icons above for navigation.<br>"
                     "By linking/unliking the radar variables in the<br>"
-                    "LinkSharedVariables menu for various components, you can<br>"
+                    "LinkSharedVariables menu for various components, "
+                    "you can<br>"
                     "control which Display is navigated."
                     )
         self.help = QtGui.QLabel(helptext)

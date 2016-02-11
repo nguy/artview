@@ -267,15 +267,20 @@ class GateFilter(Component):
             "  3. Click the 'Filter' button.<br>"
             "  4. GateFilter needs to be activated in the Display to see the "
             "results. It is turned on by default. To check see "
-            "'Display Options' dropdown menu on the Display of interest.<br><br>"
+            "'Display Options' dropdown menu on the Display of interest.<br>"
+            "<br>"
             "<i>Change Radar variables:</i><br>"
             "  Click the 'Find Variable', select variable.<br><br>"
             "<i>Show Python script for batching:</i><br>"
             "  Click the 'Show Script' button.<br><br>"
-            "The following information is from the Py-ART documentation.<br><br>"
-            "<b>WARNING</b>: By saving the file, the mask associated with the data "
-            "values may be modfidied. The data itself does not change.<br><br>"
-            "<b>GateFilter</b><br>" + pyart.filters.GateFilter.__doc__ + "<br><br>"
+            "The following information is from the Py-ART documentation.<br>"
+            "<br>"
+            "<b>WARNING</b>: By saving the file, the mask associated with "
+            "the data "
+            "values may be modfidied. The data itself does not change.<br>"
+            "<br>"
+            "<b>GateFilter</b><br>" + pyart.filters.GateFilter.__doc__ +
+            "<br><br>"
             "<b>GateFilter.exclude_below</b><br>"
             "" + pyart.filters.GateFilter.exclude_below.__doc__ + ""
             )
@@ -331,7 +336,7 @@ class GateFilter(Component):
             for field in self.Vradar.value.fields.keys():
                 self.Vradar.value.fields[field]['data'] = np.ma.array(
                     self.Vradar.value.fields[field]['data'],
-                     mask=self.Vgatefilter.value._gate_excluded)
+                    mask=self.Vgatefilter.value._gate_excluded)
 
                 # **This section is a potential replacement for merging
                 # if problems are found in mask later **
@@ -354,7 +359,7 @@ class GateFilter(Component):
         for field in self.Vradar.value.fields.keys():
             self.Vradar.value.fields[field]['data'] = np.ma.array(
                 self.Vradar.value.fields[field]['data'],
-                    mask=self.original_masks[field])
+                mask=self.original_masks[field])
         self.Vgatefilter.value._gate_excluded = self.original_masks[field]
         self.Vgatefilter.update(True)
 
