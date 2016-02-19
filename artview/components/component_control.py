@@ -51,8 +51,8 @@ class LinkSharedVariables(Component):
         self.setCentralWidget(self.central_widget)
         self.layout = QtGui.QGridLayout(self.central_widget)
 
-        self.groupBox = QtGui.QGroupBox("Manage how variables are shared
-                                        between components")
+        self.groupBox = QtGui.QGroupBox("Manage how variables are shared"
+                                        "between components")
         # self.groupBox.setCheckable(True)
         self.layout.addWidget(self.groupBox, 0, 0, 1, -1)
 
@@ -134,8 +134,8 @@ class LinkSharedVariables(Component):
             self.linkingLayout.addWidget(self.combo0, 0, 0)
             self.linkingLayout.addWidget(QtGui.QLabel('and'), 0, 1)
             self.linkingLayout.addWidget(self.combo1, 0, 2)
-            self.linkingLayout.addWidget(QtGui.QLabel('have no common shared
-                                                      variables'), 0, 3)
+            self.linkingLayout.addWidget(QtGui.QLabel('have no common shared'
+                                                      'variables'), 0, 3)
 
     def linking(self, var, state):
         if state == 0:
@@ -275,11 +275,11 @@ class LinkSharedVariables(Component):
             "components of ARTView share their variables.<br>"
             "By Selecting the components in the drop-down menu you receive "
             "a list of the variables common to both components together with "
-            "a check box signalizing if that variable is linked "
+            "a check box signaling if that variable is linked "
             "(i.e. is being shared).<br><br>"
             "<i>Functions</i>:<br>"
             "If a box is not checked, checking it will force those Components "
-            "to share that variables, in special the first one will drops its "
+            "to share that variables, in particular the first one will drops its "
             "variable and use the one from the second.<br>"
             "If a box is checked, unchecking it will unlink the variable. "
             "That means, the first components "

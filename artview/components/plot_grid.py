@@ -133,7 +133,7 @@ class GridDisplay(Component):
         self.VpathInteriorFunc = Variable(self.getPathInteriorValues)
         self.VplotAxes = Variable(None)
 
-        self.sharedVariables = {"Vgrid": self.Newgrid,
+        self.sharedVariables = {"Vgrid": self.NewGrid,
                                 "Vfield": self.NewField,
                                 "Vlimits": self.NewLimits,
                                 "Vcolormap": self.NewColormap,
@@ -174,7 +174,7 @@ class GridDisplay(Component):
         self.LaunchGUI()
 
         # Initialize grid variable
-        self.Newgrid(None, True)
+        self.NewGrid(None, True)
         self._update_fig_ax()
         self.show()
 
@@ -439,7 +439,7 @@ class GridDisplay(Component):
     # Selectionion methods #
     ########################
 
-    def Newgrid(self, variable, strong):
+    def NewGrid(self, variable, strong):
         '''
         Slot for 'ValueChanged' signal of
         :py:class:`Vgrid <artview.core.core.Variable>`.

@@ -15,7 +15,7 @@ import numpy as np
 import pyart
 import time
 
-from ..core import Component, Variable, common, QtGui, QtCore, componentsList
+from ..core import Component, Variable, common, QtGui, QtCore
 
 
 class FileNavigator(Component):
