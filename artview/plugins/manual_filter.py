@@ -220,7 +220,7 @@ class ManualFilter(Component):
             "boundary is properly closed.<br><br>"
             "Select the desired action to be performed.<br><br>"
             "For a demonstration, a "
-            "<a href='https://youtu.be/WuS7tvvRtiM'>Video Tutorial</a> "
+            "<a href='https://youtu.be/VXUZBiA3HfU'>Video Tutorial</a> "
             "has been created.<br>"
             )
         common.ShowLongTextHyperlinked(text)

@@ -304,7 +304,10 @@ class SelectRegion(Component):
             "A message 'Closed Region' appears in status bar when "
             "boundary is properly closed.<br><br>"
             "If using SelectRegion in 'extract_points' mode, a "
-            "<a href='https://youtu.be/PYhwG8Juryo'>Video Tutorial</a> "
+            "<a href='https://youtu.be/Hcz2YtpXBdM'>Video Tutorial</a> "
+            "has been created.<br>"
+            "For changing which display the SelectRegion is linked to, a "
+            "<a href='https://youtu.be/cd4_OBJ6HnA'>Video Tutorial</a> "
             "has been created.<br>"
             )
         common.ShowLongTextHyperlinked(text)

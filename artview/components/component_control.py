@@ -285,7 +285,9 @@ class LinkSharedVariables(Component):
             "That means, the first components "
             "will start to use copy of the variable, so it no longer uses the "
             "variable from the second.<br><br>"
-
+            "For an example on changing links of the SelectRegion, a "
+            "<a href='https://youtu.be/cd4_OBJ6HnA'>Video Tutorial</a> "
+            "has been created.<br>"
             # "For a demonstration, a "
             # "<a href='https://youtu.be/1ehZXbp7000'>Video Tutorial</a> "
             # "has been created.<br>"
