@@ -95,7 +95,7 @@ class SelectRegion(Component):
         else:
             self.Vfield = Vfield
         self.sharedVariables = {
-            "VplotAxes": self.newPlotAxes,
+            "VplotAxes": self.NewPlotAxes,
             "Vgatefilter": None,
             "Vradar": None,
             "VpathInteriorFunc": None,
@@ -116,7 +116,7 @@ class SelectRegion(Component):
         # Initialize the variables and GUI
         self._initialize_SelectRegion_vars()
         self.CreateSelectRegionWidget()
-        self.newPlotAxes(None, None, False)
+        self.NewPlotAxes(None, False)
         self.show()
 
     def _initialize_SelectRegion_vars(self):
@@ -374,7 +374,7 @@ class SelectRegion(Component):
                 points.fields[field]['data'], plot_type="hist",
                 name="Select Region Histogram")
 
-    def newPlotAxes(self, variable, value, strong):
+    def NewPlotAxes(self, variable, strong):
         self.disconnect()
         if self.VplotAxes.value is not None:
             self.fig = self.VplotAxes.value.get_figure()

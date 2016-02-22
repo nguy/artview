@@ -194,7 +194,7 @@ class ValueClick(QtGui.QMainWindow):
         '''Disconnect the ZoomPan instance'''
         self.fig.canvas.mpl_disconnect(self.pickPointID)
 
-    def NewRadar(self, variable, value, flag=False):
+    def NewRadar(self, variable, strong=False):
         '''Update the display list when radar variable is changed.'''
         print("In NewRadar")
 
@@ -211,14 +211,14 @@ class ZoomPan(QtGui.QMainWindow):
     Modified an original answer found here:
 http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-wheel
     '''
-    def __init__(self, Vlims, ax, base_scale=2.,
+    def __init__(self, Vlimits, ax, base_scale=2.,
                  name="ZoomPan", parent=None):
         '''
         Initialize the class to create the interface.
 
         Parameters::
         ----------
-        Vlims - Variable instance
+        Vlimits - Variable instance
             Limits signal variable to be used.
         ax - Matplotlib axis instance
             Axis instance to use.
@@ -245,7 +245,7 @@ http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-
         # Set up signal, so that DISPLAY can react to external
         # (or internal) changes in limits (Core.Variable instances expected)
         # Send the new limits back to the main window
-        self.Vlims = Vlims
+        self.Vlimits = Vlimits
 
         self.press = None
         self.cur_xlim = None
@@ -301,11 +301,11 @@ http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-
         rely = (cur_ylim[1] - ydata)/(cur_ylim[1] - cur_ylim[0])
 
         # Record the new limits and pass them to main window
-        self.Vlims.value['xmin'] = xdata - new_width * (1-relx)
-        self.Vlims.value['xmax'] = xdata + new_width * (relx)
-        self.Vlims.value['ymin'] = ydata - new_height * (1-rely)
-        self.Vlims.value['ymax'] = ydata + new_height * (rely)
-        self.Vlims.update()
+        self.Vlimits.value['xmin'] = xdata - new_width * (1-relx)
+        self.Vlimits.value['xmax'] = xdata + new_width * (relx)
+        self.Vlimits.value['ymin'] = ydata - new_height * (1-rely)
+        self.Vlimits.value['ymax'] = ydata + new_height * (rely)
+        self.Vlimits.update()
 
     def onPress(self, event):
         '''Get the current event parameters.'''
@@ -332,12 +332,12 @@ http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-
         self.cur_ylim -= dy
 
         # Record the new limits and pass them to main window
-        limits = self.Vlims.value
+        limits = self.Vlimits.value
         limits['xmin'], limits['xmax'] = \
             self.cur_xlim[0], self.cur_xlim[1]
         limits['ymin'], limits['ymax'] = \
             self.cur_ylim[0], self.cur_ylim[1]
-        self.Vlims.change(limits)
+        self.Vlimits.change(limits)
 
     def disconnect(self):
         '''Disconnect the ZoomPan instance.'''
@@ -355,7 +355,7 @@ http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-
 #                     Auxiliary Functions              ###
 ##########################################################
 
-#XXX deprecated in favor of pyart:RadarDisplay._get_x_y_z()
+# XXX deprecated in favor of pyart:RadarDisplay._get_x_y_z()
 def interior_radar(path, radar, tilt):
     '''
     Return the bins of the Radar in the interior of the path.

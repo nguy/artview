@@ -31,8 +31,8 @@ class PointsDisplay(Component):
 
     Vpoints = None  #: see :ref:`shared_variable`
     Vfield = None  #: see :ref:`shared_variable`
-    Vlims = None  #: see :ref:`shared_variable`
-    Vcmap = None  #: see :ref:`shared_variable`
+    Vlimits = None  #: see :ref:`shared_variable`
+    Vcolormap = None  #: see :ref:`shared_variable`
 
     @classmethod
     def guiStart(self, parent=None):
@@ -42,7 +42,7 @@ class PointsDisplay(Component):
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
-    def __init__(self, Vpoints=None, Vfield=None, Vlims=None, Vcmap=None,
+    def __init__(self, Vpoints=None, Vfield=None, Vlimits=None, Vcolormap=None,
                  plot_type="histogram", name="PointsDisplay", parent=None):
         '''
         Initialize the class to create display.
@@ -54,10 +54,10 @@ class PointsDisplay(Component):
             Points signal variable. If None start new one with None.
         Vfield : :py:class:`~artview.core.core.Variable` instance
             Field signal variable. If None start new one with empty string.
-        Vlims : :py:class:`~artview.core.core.Variable` instance
+        Vlimits : :py:class:`~artview.core.core.Variable` instance
             Limits signal variable.
             A value of None will instantiate a limits variable.
-        Vcmap : :py:class:`~artview.core.core.Variable` instance
+        Vcolormap : :py:class:`~artview.core.core.Variable` instance
             Colormap signal variable.
             A value of None will instantiate a colormap variable.
         plot_type : str
@@ -83,20 +83,20 @@ class PointsDisplay(Component):
         else:
             self.Vfield = Vfield
 
-        if Vlims is None:
-            self.Vlims = Variable({})
+        if Vlimits is None:
+            self.Vlimits = Variable({})
         else:
-            self.Vlims = Vlims
+            self.Vlimits = Vlimits
 
-        if Vcmap is None:
-            self.Vcmap = Variable(None)
+        if Vcolormap is None:
+            self.Vcolormap = Variable(None)
         else:
-            self.Vcmap = Vcmap
+            self.Vcolormap = Vcolormap
 
         self.sharedVariables = {"Vpoints": self.NewPoints,
                                 "Vfield": self.NewField,
-                                "Vlims": self.NewLims,
-                                "Vcmap": self.NewCmap,
+                                "Vlimits": self.NewLimits,
+                                "Vcolormap": self.NewColormap,
                                 }
 
         # Connect the components
@@ -118,9 +118,9 @@ class PointsDisplay(Component):
         self.LaunchGUI()
 
         # Set up Default limits and cmap
-        if Vcmap is None:
+        if Vcolormap is None:
             self._set_default_cmap(strong=False)
-        if Vlims is None:
+        if Vlimits is None:
             self._set_default_limits(strong=False)
 
         self.plot_type = None
@@ -222,11 +222,11 @@ class PointsDisplay(Component):
         '''Open a dialog box to change display limits.'''
         from .limits import limits_dialog
         limits, cmap, change = limits_dialog(
-            self.Vlims.value, self.Vcmap.value, self.name)
+            self.Vlimits.value, self.Vcolormap.value, self.name)
 
         if change == 1:
-            self.Vcmap.change(cmap)
-            self.Vlims.change(limits)
+            self.Vcolormap.change(cmap)
+            self.Vlimits.change(limits)
 
     def _title_input(self):
         '''Retrieve new plot title.'''
@@ -283,7 +283,7 @@ class PointsDisplay(Component):
 
         common.ShowLongText(text, set_html=True)
 
-    def NewPoints(self, variable, value, strong):
+    def NewPoints(self, variable, strong):
         '''
         Slot for 'ValueChanged' signal of
         :py:class:`Vradar <artview.core.core.Variable>`.
@@ -311,7 +311,7 @@ class PointsDisplay(Component):
             self._update_plot()
 #            self._update_infolabel()
 
-    def NewField(self, variable, value, strong):
+    def NewField(self, variable, strong):
         '''
         Slot for 'ValueChanged' signal of
         :py:class:`Vfield <artview.core.core.Variable>`.
@@ -326,16 +326,16 @@ class PointsDisplay(Component):
         self._set_default_cmap(strong=False)
         self.units = self._get_default_units()
         self.title = self._get_default_title()
-#        idx = self.fieldBox.findText(value)
+#        idx = self.fieldBox.findText(variable.value)
 #        self.fieldBox.setCurrentIndex(idx)
         if strong:
             self._update_plot()
 #            self._update_infolabel()
 
-    def NewLims(self, variable, value, strong):
+    def NewLimits(self, variable, strong):
         '''
         Slot for 'ValueChanged' signal of
-        :py:class:`Vlims <artview.core.core.Variable>`.
+        :py:class:`Vlimits <artview.core.core.Variable>`.
 
         This will:
 
@@ -344,10 +344,10 @@ class PointsDisplay(Component):
         if strong:
             self._update_axes()
 
-    def NewCmap(self, variable, value, strong):
+    def NewColormap(self, variable, strong):
         '''
         Slot for 'ValueChanged' signal of
-        :py:class:`Vcmap <artview.core.core.Variable>`.
+        :py:class:`Vcolormap <artview.core.core.Variable>`.
 
         This will:
 
@@ -391,7 +391,7 @@ class PointsDisplay(Component):
 
         points = self.Vpoints.value
         field = self.Vfield.value
-        cmap = self.Vcmap.value
+        cmap = self.Vcolormap.value
 
         if field not in points.fields.keys():
             self.canvas.draw()
@@ -442,7 +442,8 @@ class PointsDisplay(Component):
                 field = self.Vfield.value
                 SelectRegionstats = common._array_stats(
                     points.fields[field]['data'])
-                text = "<b>Basic statistics for the selected Region</b><br><br>"
+                text = ("<b>Basic statistics for the selected Region</b>"
+                        "<br><br>")
                 for stat in SelectRegionstats:
                     text += ("<i>%s</i>: %5.2f<br>" %
                              (stat, SelectRegionstats[stat]))
@@ -467,20 +468,20 @@ class PointsDisplay(Component):
 
     def _update_axes(self):
         '''Change the Plot Axes.'''
-        limits = self.Vlims.value
+        limits = self.Vlimits.value
         self.ax.set_xlim(limits['xmin'], limits['xmax'])
         self.ax.set_ylim(limits['ymin'], limits['ymax'])
         self.canvas.draw()
 
     def _update_limits(self):
-        limits = self.Vlims.value
+        limits = self.Vlimits.value
         ax = self.ax.get_xlim()
         limits['xmin'] = ax[0]
         limits['xmax'] = ax[1]
         ax = self.ax.get_ylim()
         limits['ymin'] = ax[0]
         limits['ymax'] = ax[1]
-        self.Vlims.update()
+        self.Vlimits.update()
 
     def _set_default_cmap(self, strong=True):
         ''' Set colormap to pre-defined default.'''
@@ -495,17 +496,17 @@ class PointsDisplay(Component):
         else:
             d['vmin'] = -10
             d['vmax'] = 65
-        self.Vcmap.change(d, False)
+        self.Vcolormap.change(d, False)
 
     def _set_default_limits(self, strong=True):
         ''' Set limits to pre-defined default.'''
-        cmap = self.Vcmap.value
+        cmap = self.Vcolormap.value
         d = {}
         d['xmin'] = cmap['vmin']
         d['xmax'] = cmap['vmax']
         d['ymin'] = 0
         d['ymax'] = 1000
-        self.Vlims.change(d, False)
+        self.Vlimits.change(d, False)
 
     def _get_default_title(self):
         '''Get default title.'''

@@ -7,7 +7,7 @@ import os
 import sys
 
 from ..core import Variable, QtGui, QtCore
-from ..components import RadarDisplay, Menu, LinkPlugins
+from ..components import RadarDisplay, Menu, LinkSharedVariables
 from ._common import _add_all_advanced_tools, _parse_dir, _parse_field
 
 
@@ -33,7 +33,7 @@ def run(DirIn=None, filename=None, field=None):
                          parent=menu)
 
     # start ComponentsControl
-    control = LinkPlugins()
+    control = LinkSharedVariables()
 
     # add control to Menu
     menu.addLayoutWidget(control)

@@ -17,7 +17,7 @@ ARTview functions.
     Menu
     LevelButtonWindow
     FieldButtonWindow
-    LinkPlugins
+    LinkSharedVariables
     SelectRegion
     PlotDisplay
 """
@@ -33,11 +33,11 @@ from .plot_points import PointsDisplay
 from .menu import Menu
 from .level import LevelButtonWindow
 from .field import FieldButtonWindow
-from .component_control import LinkPlugins
+from .component_control import LinkSharedVariables
 from .select_region import SelectRegion as SelectRegion_dev
 from .select_region_old import SelectRegion
 from .plot_simple import PlotDisplay
-from .nav import FileNavigator
+from .navigator import FileNavigator
 
 del pyart
 del parse_version

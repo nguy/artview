@@ -12,21 +12,21 @@ def run(DirIn=None, filename=None, field=None):
     standard artview execution
 
     It has :py:class:`~artview.components.Menu`
-    with :py:class:`~artview.components.LinkPlugins`,
+    with :py:class:`~artview.components.LinkSharedVariables`,
 
     2 :py:class:`~artview.components.RadarDisplay`,
 
     graphical start for:
         * All :py:class:`~artview.plugins`
         * :py:class:`~artview.components.RadarDisplay`
-        * :py:class:`~artview.components.LinkPlugins`
+        * :py:class:`~artview.components.LinkSharedVariables`
         * :py:class:`~artview.components.SelectRegion`
     """
     import sys
 
     from ..core import Variable, QtGui, QtCore
     from ..components import RadarDisplay, Menu, LevelButtonWindow, \
-        LinkPlugins, SelectRegion
+        LinkSharedVariables, SelectRegion
     from ._parse_field import _parse_field
     from ._common import startMainMenu
 
@@ -46,14 +46,15 @@ def run(DirIn=None, filename=None, field=None):
 
     # start Displays
     Vtilt = Variable(0)
-    Vtilt2 = Variable(0)
     plot1 = RadarDisplay(Vradar, Variable(field), Vtilt, name="Display1",
                          parent=MainMenu)
-    plot2 = RadarDisplay(Vradar, Variable(field), Vtilt2, name="Display2",
+    plot2 = RadarDisplay(Vradar, Variable(field), Vtilt, name="Display2",
                          parent=MainMenu)
 
     # start ComponentsControl
-    control = LinkPlugins()
+    control = LinkSharedVariables()
+    control.setComponent0(plot1.name)
+    control.setComponent1(plot2.name)
 
     # add control to Menu
     MainMenu.addLayoutWidget(control)
@@ -75,4 +76,5 @@ def run(DirIn=None, filename=None, field=None):
 
     # start program
     app.exec_()
-    print("You used ARTView. What you think and what need of ARTView: nick.guy@uwyo.edu")
+    print("You used ARTView. What you think and what you need of ARTView? "
+          "Send your comment to artview-users@googlegroups.com")

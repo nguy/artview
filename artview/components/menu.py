@@ -11,7 +11,6 @@ import sys
 import glob
 
 from ..core import Variable, Component, common, QtGui, QtCore, componentsList
-###from .nav import FileNavigator
 
 
 class Menu(Component):
@@ -281,21 +280,6 @@ class Menu(Component):
         pluginHelp.triggered.connect(self._get_pluginhelp)
         self.filemenu.addAction(pluginHelp)
 
-        # Create Display Plugins action
-        pluginlist = self.filemenu.addMenu("Plugins")
-        try:
-            from .. import plugins
-            for plugin in plugins._plugins.values():
-                action = QtGui.QAction(plugin.__name__, pluginlist)
-                action.triggered[()].connect(
-                    lambda plugin=plugin: self.startComponent(plugin))
-                pluginlist.addAction(action)
-        except:
-            import traceback
-            print(traceback.format_exc())
-            import warnings
-            warnings.warn("Loading Plugins Fail")
-
         # Create Close ARTView action
         exitApp = QtGui.QAction('Close', self)
         exitApp.setShortcut('Ctrl+Q')
@@ -382,8 +366,8 @@ class Menu(Component):
             else:
                 # not linked, link
                 print("linking %s.%s to %s.%s" %
-                     (components[link[1][0]].name, link[1][1],
-                      components[link[0][0]].name, link[0][1]))
+                      (components[link[1][0]].name, link[1][1],
+                       components[link[0][0]].name, link[0][1]))
                 # Disconect old Variable
                 components[link[1][0]].disconnectSharedVariable(link[1][1])
                 # comp1.var = comp0.var
@@ -433,7 +417,8 @@ class Menu(Component):
             "<i>Documentation</i>:<br>"
             "<br><br>"
             "For a demonstration, a "
-            "<a href='https://rawgit.com/nguy/artview/master/docs/build/html/index.html'>Software Package Documentation</a><br>"
+            "<a href='https://rawgit.com/nguy/artview/master/docs/build/"
+            "html/index.html'>Software Package Documentation</a><br>"
             )
         common.ShowLongTextHyperlinked(text)
 
@@ -594,8 +579,9 @@ class Menu(Component):
         # Update to current directory when file is chosen
         self.dirIn = os.path.dirname(self.filename)
 
-        # Get a list of files in the working directory
-        filelist = glob.glob(os.path.join(self.dirIn, '*'))
+        # Get a list of files (and only files) in the working directory
+        filelist = [path for path in glob.glob(os.path.join(self.dirIn, '*'))
+                    if os.path.isfile(path)]
         filelist.sort()
         self.Vfilelist.change(filelist)
 

@@ -4,7 +4,7 @@ _common.py
 auxiliary functions for scripts
 """
 import pyart
-from ..components import (Menu, RadarDisplay, GridDisplay, LinkPlugins,
+from ..components import (Menu, RadarDisplay, GridDisplay, LinkSharedVariables,
                           SelectRegion, PointsDisplay)
 from ..core import QtGui, QtCore
 
@@ -12,11 +12,12 @@ from ..core import QtGui, QtCore
 def _add_all_advanced_tools(menu):
 
     # add grafical starts
-    for comp in [LinkPlugins, RadarDisplay, GridDisplay, SelectRegion]:
+    for comp in [LinkSharedVariables, RadarDisplay, GridDisplay,
+                 SelectRegion, PointsDisplay]:
         action = QtGui.QAction(comp.__name__, menu)
         action.triggered[()].connect(
             lambda comp=comp: menu.startComponent(comp))
-        menu.addMenuAction(("Advanced Tools",), action)
+        menu.addMenuAction(("File", "Plugins", ), action)
 
     # add all plugins to grafical start
     try:
@@ -25,7 +26,7 @@ def _add_all_advanced_tools(menu):
             action = QtGui.QAction(plugin.__name__, menu)
             action.triggered[()].connect(
                 lambda plugin=plugin: menu.startComponent(plugin))
-            menu.addMenuAction(("Advanced Tools",), action)
+            menu.addMenuAction(("File", "Plugins", ), action)
     except:
         import traceback
         print(traceback.format_exc())
@@ -76,7 +77,7 @@ def startMainMenu(DirIn=None, filename=None):
             action = QtGui.QAction(mode['label'], MainMenu)
             action.triggered[()].connect(
                 lambda mode=mode: MainMenu.change_mode(mode['action']))
-            if (mode['label'] != 'Filelist' and
+            if (mode['label'] != 'Directory View' and
                 mode['label'] != 'File details' and
                 mode['label'] != 'File navigator'):
                 MainMenu.addMenuAction(("Modes",), action)
@@ -85,6 +86,8 @@ def startMainMenu(DirIn=None, filename=None):
     except:
         import warnings
         warnings.warn("Loading Modes Fail")
+
+    _add_all_advanced_tools(MainMenu)
 
     return MainMenu
     # resize menu

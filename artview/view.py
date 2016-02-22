@@ -21,7 +21,7 @@ import pyart
 
 from .core import Variable, QtGui, QtCore
 from .components import (
-    RadarDisplay, GridDisplay, Menu, LinkPlugins, SelectRegion)
+    RadarDisplay, GridDisplay, Menu, LinkSharedVariables, SelectRegion)
 from .scripts._common import startMainMenu
 
 app = None

@@ -95,9 +95,9 @@ class FieldButtonWindow(Component):
             self.rBox_layout.addWidget(button)
 
         # set Checked the current field
-        self.NewField(self.Vfield, self.Vfield.value, True)
+        self.NewField(self.Vfield, True)
 
-    def NewField(self, variable, value, strong):
+    def NewField(self, variable, strong):
         '''Slot for 'ValueChanged' signal of
         :py:class:`Vfield <artview.core.core.Variable>`.
 
@@ -106,10 +106,10 @@ class FieldButtonWindow(Component):
         * Update radio check
         '''
         if (self.Vradar.value is not None and
-                value in self.Vradar.value.fields):
-            self.fieldbutton[value].setChecked(True)
+                self.Vfield.value in self.Vradar.value.fields):
+            self.fieldbutton[self.Vfield.value].setChecked(True)
 
-    def NewRadar(self, variable, value, strong):
+    def NewRadar(self, variable, strong):
         '''Slot for 'ValueChanged' signal of
         :py:class:`Vradar <artview.core.core.Variable>`.
 

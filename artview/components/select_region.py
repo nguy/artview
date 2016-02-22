@@ -97,7 +97,7 @@ class SelectRegion(Component):
         else:
             self.Vfield = Vfield
         self.sharedVariables = {
-            "VplotAxes": self.newPlotAxes,
+            "VplotAxes": self.NewPlotAxes,
             "Vgatefilter": None,
             "Vradar": None,
             "VpathInteriorFunc": None,
@@ -114,7 +114,7 @@ class SelectRegion(Component):
         # Initialize the variables and GUI
         self._initialize_SelectRegion_vars()
         self.CreateSelectRegionWidget()
-        self.newPlotAxes(None, None, False)
+        self.NewPlotAxes(None, False)
         self.show()
 
     def _initialize_SelectRegion_vars(self):
@@ -137,12 +137,12 @@ class SelectRegion(Component):
                 self.line.set_data([self.previous_point[0], x],
                                    [self.previous_point[1], y])
                 self.fig.canvas.draw()
-            elif event.button == 1 and False:  # Free Hand Drawing
+            elif event.button == 1:  # Free Hand Drawing
                 line = Line2D([self.previous_point[0], x],
                               [self.previous_point[1], y])
-                self.polys[-1].append(ax.add_line(line))
                 self.previous_point = [x, y]
                 self.verts[-1].append([x, y])
+                self.polys[-1].append(ax.add_line(line))
                 self.fig.canvas.draw()
 
     def button_press_callback(self, event):
@@ -303,8 +303,14 @@ class SelectRegion(Component):
             " Secondary Button (e.g. right button)- close path<br><br>"
             "A message 'Closed Region' appears in status bar when "
             "boundary is properly closed.<br><br>"
+            "On the basic workings of the selection, a "
+            "<a href='https://youtu.be/Hcz2YtpXBdM'>Video Tutorial</a> "
+            "has been created.<br>"
+            "For changing which display the SelectRegion is linked to, a "
+            "<a href='https://youtu.be/cd4_OBJ6HnA'>Video Tutorial</a> "
+            "has been created.<br>"
             "If using SelectRegion in 'extract_points' mode, a "
-            "<a href='https://youtu.be/PYhwG8Juryo'>Video Tutorial</a> "
+            "<a href='https://youtu.be/iWBFSN6Thbw'>Video Tutorial</a> "
             "has been created.<br>"
             )
         common.ShowLongTextHyperlinked(text)
@@ -342,7 +348,7 @@ class SelectRegion(Component):
         self.disconnect()
         super(SelectRegion, self).closeEvent(QCloseEvent)
 
-    def newPlotAxes(self, variable, value, strong):
+    def NewPlotAxes(self, variable, strong):
         self.disconnect()
         if self.VplotAxes.value is not None:
             self.fig = self.VplotAxes.value.get_figure()

@@ -72,7 +72,8 @@ there, we appreciate your help in finding and addressing them.
 
 ##Tutorials
 Paul Hein has put together a [brief introduction](http://radarmet.atmos.colostate.edu/software/artview/).
-Anderson Gama has made a [video introduction](https://www.youtube.com/watch?v=iaNoGZTUhg4) to ARTview.
+Anderson Gama has made a [video introduction](https://www.youtube.com/watch?v=iaNoGZTUhg4) to ARTView 1.0.
+We still need a version of that for ARTView 1.2.
 
 ## Installation
 ```python

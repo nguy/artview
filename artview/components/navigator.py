@@ -15,7 +15,7 @@ import numpy as np
 import pyart
 import time
 
-from ..core import Component, Variable, common, QtGui, QtCore, componentsList
+from ..core import Component, Variable, common, QtGui, QtCore
 
 
 class FileNavigator(Component):
@@ -83,8 +83,8 @@ class FileNavigator(Component):
 
         self.layout.addLayout(self.generalLayout, 0, 0, 1, 2)
 
-        self.NewFile(self.Vradar, None, True)
-        self.NewFilelist(self.Vfilelist, None, True)
+        self.NewFile(self.Vradar, True)
+        self.NewFilelist(self.Vfilelist, True)
 
         self.show()
 
@@ -104,7 +104,7 @@ class FileNavigator(Component):
 
         self.prevbutton = QtGui.QPushButton("Previous")
         self.prevbutton.setToolTip("Load previous file")
-        self.prevbutton.setIconSize(QtCore.QSize(32,32))
+        self.prevbutton.setIconSize(QtCore.QSize(32, 32))
         self.prevbutton.clicked.connect(self.goto_prev_file)
         gBox_layout.addWidget(self.prevbutton, 0, 1, 1, 1)
 
@@ -124,15 +124,20 @@ class FileNavigator(Component):
 
     def createNavToolbar(self):
         '''Mount the file navigation toolbar.'''
-        parentdir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+        parentdir = os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                                 os.pardir))
         groupBox = QtGui.QGroupBox("File Navigation")
         gBox_layout = QtGui.QGridLayout()
 
         self.navtoolbar = QtGui.QToolBar()
-        pixfirst = QtGui.QPixmap(os.sep.join([parentdir, 'icons',"arrow_go_first_icon.png"]))
-        pixprev = QtGui.QPixmap(os.sep.join([parentdir, 'icons',"arrow_go_previous_icon.png"]))
-        pixnext = QtGui.QPixmap(os.sep.join([parentdir, 'icons',"arrow_go_next_icon.png"]))
-        pixlast = QtGui.QPixmap(os.sep.join([parentdir, 'icons',"arrow_go_last_icon.png"]))
+        pixfirst = QtGui.QPixmap(os.sep.join([parentdir, 'icons',
+                                              "arrow_go_first_icon.png"]))
+        pixprev = QtGui.QPixmap(os.sep.join([parentdir, 'icons',
+                                             "arrow_go_previous_icon.png"]))
+        pixnext = QtGui.QPixmap(os.sep.join([parentdir, 'icons',
+                                             "arrow_go_next_icon.png"]))
+        pixlast = QtGui.QPixmap(os.sep.join([parentdir, 'icons',
+                                             "arrow_go_last_icon.png"]))
         self.act_first = self.navtoolbar.addAction(
             QtGui.QIcon(pixfirst),
             "First file:",
@@ -179,7 +184,8 @@ class FileNavigator(Component):
 
         helptext = ("Use Icons above for navigation.<br>"
                     "By linking/unliking the radar variables in the<br>"
-                    "LinkPlugins menu for various components, you can<br>"
+                    "LinkSharedVariables menu for various components, "
+                    "you can<br>"
                     "control which Display is navigated."
                     )
         self.help = QtGui.QLabel(helptext)
@@ -324,12 +330,12 @@ class FileNavigator(Component):
             common.ShowWarning(msg)
         return
 
-    def NewFilelist(self, variable, value, strong):
+    def NewFilelist(self, variable, strong):
         '''respond to change in filelist.'''
         if strong:
             self._update_tools()
 
-    def NewFile(self, variable, value, strong):
+    def NewFile(self, variable, strong):
         '''Respond to change in a container (radar or grid).'''
         if hasattr(variable.value, 'filename'):
             # Update the info label.'''

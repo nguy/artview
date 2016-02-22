@@ -64,11 +64,11 @@ class Variable(QtCore.QObject):
         |           | VlevelZ, VlevelY  |                                    |
         |           | or VlevelX        |                                    |
         +-----------+-------------------+------------------------------------+
-        | Vlims     | Limits of display | dict containing keys: 'xmin',      |
+        | Vlimits   | Limits of display | dict containing keys: 'xmin',      |
         |           |                   | 'xmax', 'ymin', 'ymax' and holding |
         |           |                   | float values                       |
         +-----------+-------------------+------------------------------------+
-        | Vcmap     | Colormap          | dict containing keys: 'vmin' and   |
+        | Vcolormap | Colormap          | dict containing keys: 'vmin' and   |
         |           |                   | 'vmax' holding float values and key|
         |           |                   | 'cmap' holding colormap string name|
         +-----------+-------------------+------------------------------------+
@@ -82,8 +82,8 @@ class Variable(QtCore.QObject):
         |riorFunc   | function          |components.RadarDisplay.\           |
         |           |                   |getPathInteriorValues` or None      |
         +-----------+-------------------+------------------------------------+
-        |Vfilelist  | Hold filenames in |list containing string file         |
-        |           | current working   |basenames                           |
+        |Vfilelist  | Hold filenames in |list containing paths to files      |
+        |           | current working   |(strings)                           |
         |           | directory         |                                    |
         +-----------+-------------------+------------------------------------+
 
@@ -124,7 +124,7 @@ class Variable(QtCore.QObject):
         The arguments of the emitted signal are (self, value, strong).
         '''
         self.value = value
-        self.emit(QtCore.SIGNAL("ValueChanged"), self, value, strong)
+        self.emit(QtCore.SIGNAL("ValueChanged"), self, strong)
 
     def update(self, strong=True):
         '''
@@ -136,7 +136,7 @@ class Variable(QtCore.QObject):
         strong : bool, optional
             Define if this is a strong or weak change.
         '''
-        self.emit(QtCore.SIGNAL("ValueChanged"), self, self.value, strong)
+        self.emit(QtCore.SIGNAL("ValueChanged"), self, strong)
 
 
 class ComponentsList(QtCore.QObject):

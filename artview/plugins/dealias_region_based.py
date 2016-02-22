@@ -64,7 +64,7 @@ class DealiasRegionBased(Component):
 #        else:
 #            self.Vgatefilter = Vgatefilter
 
-        self.sharedVariables = {"Vradar": self.newRadar, }
+        self.sharedVariables = {"Vradar": self.NewRadar, }
 #                                "Vgatefilter": None}
         self.connectAllVariables()
 
@@ -81,7 +81,7 @@ class DealiasRegionBased(Component):
         self.layout.addWidget(self.button, 1, 1, 1, 1)
         self.addGeneralOptions()
 
-        self.newRadar(None, None, True)
+        self.NewRadar(None, True)
 
         self.show()
 
@@ -158,7 +158,7 @@ class DealiasRegionBased(Component):
             self.Vradar = getattr(item[1], item[2])
             self.connectSharedVariable('Vradar')  # connect new
 
-    def newRadar(self, variable, value, strong):
+    def NewRadar(self, variable, strong):
         '''respond to change in radar.'''
         if self.Vradar.value is None:
             return

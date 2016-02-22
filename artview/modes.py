@@ -1,5 +1,4 @@
 
-
 from .components import *
 from .plugins import *
 from .core import componentsList
@@ -77,7 +76,7 @@ gatefilter_mode = (
     [
         ((0, 'Vradar'), (1, 'Vradar')),
         ((1, 'Vradar'), (2, 'Vradar')),
-        ((1, 'Vgatefilter'), (3, 'Vgatefilter')),
+        ((1, 'Vgatefilter'), (2, 'Vgatefilter')),
         ]
     )
 
@@ -105,7 +104,7 @@ extract_points_mode = (
         ((1, 'Vradar'), (2, 'Vradar')),
         ((2, 'Vpoints'), (3, 'Vpoints')),
         ((1, 'Vfield'), (3, 'Vfield')),
-        # ((1, 'Vcmap'), (3, 'Vcmap')),
+        # ((1, 'Vcolormap'), (3, 'Vcolormap')),
         ]
     )
 
@@ -149,15 +148,15 @@ manual_filter_mode = (
         ]
     )
 
-filelist_mode= (
-    [Menu, FileList],
+filelist_mode = (
+    [Menu, DirectoryList],
     [
         ((0, 'Vradar'), (1, 'Vradar')),
         ((0, 'Vgrid'), (1, 'Vgrid')),
     ]
 )
 
-filedetail_mode= (
+filedetail_mode = (
     [Menu, FileDetail],
     [
         ((0, 'Vradar'), (1, 'Vradar')),
@@ -165,7 +164,7 @@ filedetail_mode= (
     ]
 )
 
-navigate_mode= (
+navigate_mode = (
     [Menu, FileNavigator],
     [
         ((0, 'Vradar'), (1, 'Vradar')),
@@ -175,28 +174,28 @@ navigate_mode= (
 )
 
 modes = [
-         {'label': 'Add RadarDisplay',
-          'action': radar_mode},
-         {'label': 'Add GridDisplay',
-          'action': grid_mode},
-         {'label': 'Map Radar to Grid',
-         'action': map_to_grid_mode},
-         {'label': 'Apply corrections to Radar',
-          'action': corrections_mode},
-         {'label': 'Apply a filter to gates',
-          'action': gatefilter_mode},
-         {'label': 'Query a selectable region of interest ',
-          'action': select_region_mode},
-         {'label': 'Extract a selected region of points',
-          'action': extract_points_mode},
-         {'label': 'Manually unfold velocity',
-          'action': manual_unfold_mode},
-         {'label': 'Apply a filter to data',
-          'action': manual_filter_mode},
-         {'label': 'File navigator',
-          'action': navigate_mode},
-         {'label': 'File details',
-          'action': filedetail_mode},
-         {'label': 'Filelist',
-          'action': filelist_mode},
-        ]
+    {'label': 'Add RadarDisplay',
+     'action': radar_mode},
+    {'label': 'Add GridDisplay',
+     'action': grid_mode},
+    {'label': 'Map Radar to Grid',
+     'action': map_to_grid_mode},
+    {'label': 'Apply corrections to Radar',
+     'action': corrections_mode},
+    {'label': 'Apply a filter to gates',
+     'action': gatefilter_mode},
+    {'label': 'Query a selectable region of interest ',
+     'action': select_region_mode},
+    {'label': 'Extract a selected region of points',
+     'action': extract_points_mode},
+    {'label': 'Manually unfold velocity',
+     'action': manual_unfold_mode},
+    {'label': 'Apply a filter to data',
+     'action': manual_filter_mode},
+    {'label': 'File navigator',
+     'action': navigate_mode},
+    {'label': 'File details',
+     'action': filedetail_mode},
+    {'label': 'Directory View',
+     'action': filelist_mode},
+    ]
