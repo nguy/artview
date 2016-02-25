@@ -72,8 +72,10 @@ there, we appreciate your help in finding and addressing them.
 
 ##Tutorials
 Paul Hein has put together a [brief introduction](http://radarmet.atmos.colostate.edu/software/artview/).
-Anderson Gama has made a [video introduction](https://www.youtube.com/watch?v=iaNoGZTUhg4) to ARTView 1.0.
-We still need a version of that for ARTView 1.2.
+Anderson Gama has made a [video introduction](https://www.youtube.com/watch?v=iaNoGZTUhg4) to ARTView 1.0
+as well as [video tutorials](https://www.youtube.com/watch?v=B_BmYV7GdCA&list=PLCmWx9EHGvfIrvrYSTpHrEqdVVjvKi4SF)
+to ARTView 1.2.
+
 
 ## Installation
 ```python
@@ -128,7 +130,7 @@ to the list.
 
 
 ## Dependencies
-[Py-ART](https://github.com/ARM-DOE/pyart) >= 1.5
+[Py-ART](https://github.com/ARM-DOE/pyart) >= 1.6
 
 [matplotlib](http://matplotlib.org) >= 1.1.0
 
@@ -151,16 +153,20 @@ MacOSX 10.9.4, 10.10.2, 10.10.4
 Linux Debian (Jessie)
 Linux Red Hat (RHEL6)
 
-##Special Note
-Icons used in ```FileNavigator``` were created by oxygenicons (http://www.oxygen-icons.org/)
-and distributed at the IconArchive (http://www.iconarchive.com) under
-the GNU Lesser General Public License.
+It is  **strongly** encouraged to use Python 2.7 or above. There are minor issues with
+Python 2.6 operability that keep popping up. We make no guarantees that 2.6 will
+work properly.
 
-##Contributors
+## User Forum
 
-Anderson Gama (gamaanderson92@gmail.com)
+For questions on the use of ARTView please write in the [mailing list](https://groups.google.com/forum/#!forum/artview-users),
+if you found any bug please report in the [Issue](https://github.com/nguy/artview/issues). We are thankful for all feedback.
 
-Nick Guy (nick.guy@uwyo.edu)
+## Contributors
+
+[Anderson Gama](https://github.com/gamaanderson)
+
+[Nick Guy](https://github.com/nguy)
 
 Paul Hein
 
@@ -168,17 +174,13 @@ Timothy Lang
 
 Jonathan Helmus
 
-##Disclaimer
+## Disclaimer
 This is open source software and contributions are very welcome!
 This is not a primary project for any of the contributors, so please be patient
 if you have questions/suggestions.  In addition it needs to be stated that no
 responsibility is taken by the authors for any adverse effects.
 
-## Caveats
-We are always looking for feedback. Please
-
-It is  **strongly** encouraged to use Python 2.7 or above. There are minor issues with
-Python 2.6 operability that keep popping up. We make no guarantees that 2.6 will
-work properly.
-
-Please contact Nick Guy at above email or preferably open an [Issue](https://github.com/nguy/artview/issues) with any problems you encounter.
+## Special Note
+Icons used in ```FileNavigator``` were created by oxygenicons (http://www.oxygen-icons.org/)
+and distributed at the IconArchive (http://www.iconarchive.com) under
+the GNU Lesser General Public License.
