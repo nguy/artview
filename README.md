@@ -76,16 +76,45 @@ Anderson Gama has made a [video introduction](https://www.youtube.com/watch?v=ia
 as well as [video tutorials](https://www.youtube.com/watch?v=B_BmYV7GdCA&list=PLCmWx9EHGvfIrvrYSTpHrEqdVVjvKi4SF)
 to ARTView 1.2.
 
+## Install
 
-## Installation
-```python
-python setup.py install
-```
+The easiest method for installing ARTView is to use the conda packages from
+the latest release.  To do this you must download and install
+`Anaconda <http://continuum.io/downloads>`_ or
+`Miniconda <http://continuum.io/downloads>`_.
+Then use the following command in a terminal or command prompt to install
+the latest version of ARTView::
 
-or for a single user install
-```python
-python setup.py install --user
-```
+    conda install -c jjhelmus artivew
+
+To update an older version of ARTView to the latest release use::
+
+    conda update -c jjhelmus artview
+
+If you do not wish to use Anaconda or Miniconda as a Python environment or want
+to use the latest, unreleased version of ARTView see the section below on
+**Installing from source**.
+
+## Installing from source
+
+Installing ARTView from source is the only way to get the latest updates and
+enhancement to the software that have not yet made it into a release.
+The latest source code for ARTView can be obtained from the GitHub repository,
+https://github.com/nguy/artview.  Either download and unpack the
+`zip file <https://github.com/nguy/artview/archive/master.zip>`_ of
+the source code or use git to checkout the repository::
+
+    git clone https://github.com/nguy/artview.git
+
+To install in your home directory, use::
+
+    python setup.py install --user
+
+To install for all users on Unix/Linux::
+
+    python setup.py build
+    sudo python setup.py install
+
 
 ## Usage
 Either cd into the installed folder and run:
