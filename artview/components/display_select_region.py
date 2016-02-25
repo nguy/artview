@@ -17,7 +17,7 @@ from ..core import (Variable, Component, common, VariableChoose,
 from ..core.points import Points, write_points_csv, read_points_csv
 
 
-class SelectRegion(Component):
+class DisplaySelectRegion(Component):
     '''
     Select a Region of Interest.
 
@@ -54,7 +54,7 @@ class SelectRegion(Component):
         return self(parent=parent), False
 
     def __init__(self, VplotAxes=None, VpathInteriorFunc=None, Vfield=None,
-                 name="SelectRegion", parent=None):
+                 name="DisplaySelectRegion", parent=None):
         '''
         Initialize the class to select an Region of Interest on display.
 
@@ -70,14 +70,14 @@ class SelectRegion(Component):
         name : string
             Window name.
         parent : PyQt instance
-            Parent instance to associate to SelectRegion instance.
+            Parent instance to associate to DisplaySelectRegion instance.
             If None, then Qt owns, otherwise associated with parent PyQt
             instance.
 
         Notes
         -----
         '''
-        super(SelectRegion, self).__init__(name=name, parent=parent)
+        super(DisplaySelectRegion, self).__init__(name=name, parent=parent)
         self.Vpoints = Variable(None)
         self.Vgatefilter = Variable(None)
         self.Vradar = Variable(None)
@@ -237,7 +237,7 @@ class SelectRegion(Component):
         self.saveButton = QtGui.QPushButton("Save File", self)
         self.saveButton.setToolTip("Save modified radar instance to cfradial file")
         self.buttonHelp = QtGui.QPushButton('Help', self)
-        self.buttonHelp.setToolTip("About using SelectRegion")
+        self.buttonHelp.setToolTip("About using DisplaySelectRegion")
         self.buttonViewTable.clicked.connect(self.viewTable)
         self.buttonOpenTable.clicked.connect(self.openTable)
         self.buttonSaveTable.clicked.connect(self.saveTable)
@@ -264,7 +264,7 @@ class SelectRegion(Component):
     def _displayHelp(self):
         ''' Launch pop-up help window.'''
         text = (
-            "<b>Using the Region of Interest (SelectRegion) Tool</b><br><br>"
+            "<b>Using the Display Region of Interest (DisplaySelectRegion) Tool</b><br><br>"
             "<i>Purpose</i>:<br>"
             "Draw a path in the display window using the Mouse.<br><br>"
             "<i>Functions</i>:<br>"

@@ -94,7 +94,7 @@ select_region_mode = (
 
 
 extract_points_mode = (
-    [Menu, RadarDisplay, SelectRegion_dev, PointsDisplay],
+    [Menu, RadarDisplay, SelectRegion, PointsDisplay],
     [
         ((0, 'Vradar'), (1, 'Vradar')),
         ((1, 'VplotAxes'), (2, 'VplotAxes')),
@@ -119,7 +119,7 @@ map_to_grid_mode = (
     )
 
 manual_unfold_mode = (
-    [Menu, RadarDisplay, SelectRegion_dev, ManualUnfold],
+    [Menu, RadarDisplay, SelectRegion, ManualUnfold],
     [
         ((0, 'Vradar'), (1, 'Vradar')),
         ((1, 'VplotAxes'), (2, 'VplotAxes')),
@@ -133,7 +133,7 @@ manual_unfold_mode = (
     )
 
 manual_filter_mode = (
-    [Menu, RadarDisplay, SelectRegion_dev, ManualFilter],
+    [Menu, RadarDisplay, SelectRegion, ManualFilter],
     [
         ((0, 'Vradar'), (1, 'Vradar')),
         ((1, 'VplotAxes'), (2, 'VplotAxes')),
