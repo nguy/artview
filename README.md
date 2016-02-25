@@ -70,7 +70,7 @@ out for new features.
 It has performed well in internal testing, but if you find bugs in
 there, we appreciate your help in finding and addressing them.
 
-##Tutorials
+## Tutorials
 Paul Hein has put together a [brief introduction](http://radarmet.atmos.colostate.edu/software/artview/).
 Anderson Gama has made a [video introduction](https://www.youtube.com/watch?v=iaNoGZTUhg4) to ARTView 1.0
 as well as [video tutorials](https://www.youtube.com/watch?v=B_BmYV7GdCA&list=PLCmWx9EHGvfIrvrYSTpHrEqdVVjvKi4SF)
