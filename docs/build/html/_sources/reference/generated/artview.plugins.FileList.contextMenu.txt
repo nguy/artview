@@ -1,6 +1,0 @@
-artview.plugins.FileList.contextMenu
-====================================
-
-.. currentmodule:: artview.plugins
-
-.. automethod:: FileList.contextMenu

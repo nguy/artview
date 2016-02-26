@@ -1,6 +1,0 @@
-artview.components.Menu.addPluginMenu
-=====================================
-
-.. currentmodule:: artview.components
-
-.. automethod:: Menu.addPluginMenu

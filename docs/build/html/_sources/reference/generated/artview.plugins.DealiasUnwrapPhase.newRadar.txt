@@ -1,6 +1,6 @@
-artview.plugins.DealiasUnwrapPhase.newRadar
+artview.plugins.DealiasUnwrapPhase.NewRadar
 ===========================================
 
 .. currentmodule:: artview.plugins
 
-.. automethod:: DealiasUnwrapPhase.newRadar
+.. automethod:: DealiasUnwrapPhase.NewRadar

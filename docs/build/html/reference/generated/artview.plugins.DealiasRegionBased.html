@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>artview.plugins.DealiasRegionBased &mdash; ARTview 1.2.0.dev+a576859 documentation</title>
+    <title>artview.plugins.DealiasRegionBased &mdash; ARTview 1.2.2.dev+2f32e51 documentation</title>
     
     <link rel="stylesheet" href="../../_static/scipy.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '1.2.0.dev+a576859',
+        VERSION:     '1.2.2.dev+2f32e51',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,9 +24,9 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="ARTview 1.2.0.dev+a576859 documentation" href="../../index.html" />
+    <link rel="top" title="ARTview 1.2.2.dev+2f32e51 documentation" href="../../index.html" />
     <link rel="up" title="Plugins (artview.plugins)" href="../plugins.html" />
-    <link rel="next" title="artview.plugins.DealiasRegionBased.addGeneralOptions" href="artview.plugins.DealiasRegionBased.addGeneralOptions.html" />
+    <link rel="next" title="artview.plugins.DealiasRegionBased.NewRadar" href="artview.plugins.DealiasRegionBased.NewRadar.html" />
     <link rel="prev" title="artview.plugins.AccessTerminal.runCode" href="artview.plugins.AccessTerminal.runCode.html" /> 
   </head>
   <body>
@@ -43,12 +43,12 @@
           <a href="../../np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="artview.plugins.DealiasRegionBased.addGeneralOptions.html" title="artview.plugins.DealiasRegionBased.addGeneralOptions"
+          <a href="artview.plugins.DealiasRegionBased.NewRadar.html" title="artview.plugins.DealiasRegionBased.NewRadar"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="artview.plugins.AccessTerminal.runCode.html" title="artview.plugins.AccessTerminal.runCode"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">ARTview 1.2.0.dev+a576859 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">ARTview 1.2.2.dev+2f32e51 documentation</a> &raquo;</li>
           <li><a href="../index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li>
           <li><a href="../plugins.html" accesskey="U">Plugins (<tt class="docutils literal"><span class="pre">artview.plugins</span></tt>)</a> &raquo;</li> 
       </ul>
@@ -65,7 +65,7 @@
 <dt id="artview.plugins.DealiasRegionBased">
 <em class="property">class </em><tt class="descclassname">artview.plugins.</tt><tt class="descname">DealiasRegionBased</tt><big>(</big><em>Vradar=None</em>, <em>name='DealiasRegionBased'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/plugins/dealias_region_based.py#L14"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.plugins.DealiasRegionBased" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><tt class="xref py py-class docutils literal"><span class="pre">artview.core.core.Component</span></tt></a></p>
-<p>Interface for executing <a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.correct.dealias_region_based.html#pyart.correct.dealias_region_based" title="(in Py-ART v1.5)"><tt class="xref py py-func docutils literal"><span class="pre">pyart.correct.dealias_region_based</span></tt></a></p>
+<p>Interface for executing <a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.correct.dealias_region_based.html#pyart.correct.dealias_region_based" title="(in Py-ART v1.6)"><tt class="xref py py-func docutils literal"><span class="pre">pyart.correct.dealias_region_based</span></tt></a></p>
 <dl class="method">
 <dt id="artview.plugins.DealiasRegionBased.__init__">
 <tt class="descname">__init__</tt><big>(</big><em>Vradar=None</em>, <em>name='DealiasRegionBased'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/plugins/dealias_region_based.py#L30"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.plugins.DealiasRegionBased.__init__" title="Permalink to this definition">¶</a></dt>
@@ -102,20 +102,20 @@ If None, then Qt owns, otherwise associated w/ parent PyQt instance</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="artview.plugins.DealiasRegionBased.addGeneralOptions.html#artview.plugins.DealiasRegionBased.addGeneralOptions" title="artview.plugins.DealiasRegionBased.addGeneralOptions"><tt class="xref py py-obj docutils literal"><span class="pre">DealiasRegionBased.addGeneralOptions</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="artview.plugins.DealiasRegionBased.NewRadar.html#artview.plugins.DealiasRegionBased.NewRadar" title="artview.plugins.DealiasRegionBased.NewRadar"><tt class="xref py py-obj docutils literal"><span class="pre">DealiasRegionBased.NewRadar</span></tt></a>(variable,&nbsp;strong)</td>
+<td>respond to change in radar.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="artview.plugins.DealiasRegionBased.addGeneralOptions.html#artview.plugins.DealiasRegionBased.addGeneralOptions" title="artview.plugins.DealiasRegionBased.addGeneralOptions"><tt class="xref py py-obj docutils literal"><span class="pre">DealiasRegionBased.addGeneralOptions</span></tt></a>()</td>
 <td>Mount Options Layout.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="artview.plugins.DealiasRegionBased.chooseRadar.html#artview.plugins.DealiasRegionBased.chooseRadar" title="artview.plugins.DealiasRegionBased.chooseRadar"><tt class="xref py py-obj docutils literal"><span class="pre">DealiasRegionBased.chooseRadar</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="artview.plugins.DealiasRegionBased.chooseRadar.html#artview.plugins.DealiasRegionBased.chooseRadar" title="artview.plugins.DealiasRegionBased.chooseRadar"><tt class="xref py py-obj docutils literal"><span class="pre">DealiasRegionBased.chooseRadar</span></tt></a>()</td>
 <td>Get Radar with <tt class="xref py py-class docutils literal"><span class="pre">VariableChoose</span></tt></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="artview.plugins.DealiasRegionBased.dealias_region_based.html#artview.plugins.DealiasRegionBased.dealias_region_based" title="artview.plugins.DealiasRegionBased.dealias_region_based"><tt class="xref py py-obj docutils literal"><span class="pre">DealiasRegionBased.dealias_region_based</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="artview.plugins.DealiasRegionBased.dealias_region_based.html#artview.plugins.DealiasRegionBased.dealias_region_based" title="artview.plugins.DealiasRegionBased.dealias_region_based"><tt class="xref py py-obj docutils literal"><span class="pre">DealiasRegionBased.dealias_region_based</span></tt></a>()</td>
 <td>Mount Options and execute.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="artview.plugins.DealiasRegionBased.guiStart.html#artview.plugins.DealiasRegionBased.guiStart" title="artview.plugins.DealiasRegionBased.guiStart"><tt class="xref py py-obj docutils literal"><span class="pre">DealiasRegionBased.guiStart</span></tt></a>([parent])</td>
+<tr class="row-odd"><td><a class="reference internal" href="artview.plugins.DealiasRegionBased.guiStart.html#artview.plugins.DealiasRegionBased.guiStart" title="artview.plugins.DealiasRegionBased.guiStart"><tt class="xref py py-obj docutils literal"><span class="pre">DealiasRegionBased.guiStart</span></tt></a>([parent])</td>
 <td>Graphical interface for starting this class</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="artview.plugins.DealiasRegionBased.newRadar.html#artview.plugins.DealiasRegionBased.newRadar" title="artview.plugins.DealiasRegionBased.newRadar"><tt class="xref py py-obj docutils literal"><span class="pre">DealiasRegionBased.newRadar</span></tt></a>(variable,&nbsp;value,&nbsp;...)</td>
-<td>respond to change in radar.</td>
 </tr>
 </tbody>
 </table>
@@ -140,8 +140,8 @@ If None, then Qt owns, otherwise associated w/ parent PyQt instance</p>
   <p class="topless"><a href="artview.plugins.AccessTerminal.runCode.html"
                         title="previous chapter">artview.plugins.AccessTerminal.runCode</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="artview.plugins.DealiasRegionBased.addGeneralOptions.html"
-                        title="next chapter">artview.plugins.DealiasRegionBased.addGeneralOptions</a></p>
+  <p class="topless"><a href="artview.plugins.DealiasRegionBased.NewRadar.html"
+                        title="next chapter">artview.plugins.DealiasRegionBased.NewRadar</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/reference/generated/artview.plugins.DealiasRegionBased.txt"
@@ -177,19 +177,19 @@ If None, then Qt owns, otherwise associated w/ parent PyQt instance</p>
           <a href="../../np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="artview.plugins.DealiasRegionBased.addGeneralOptions.html" title="artview.plugins.DealiasRegionBased.addGeneralOptions"
+          <a href="artview.plugins.DealiasRegionBased.NewRadar.html" title="artview.plugins.DealiasRegionBased.NewRadar"
              >next</a> |</li>
         <li class="right" >
           <a href="artview.plugins.AccessTerminal.runCode.html" title="artview.plugins.AccessTerminal.runCode"
              >previous</a> |</li>
-        <li><a href="../../index.html">ARTview 1.2.0.dev+a576859 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">ARTview 1.2.2.dev+2f32e51 documentation</a> &raquo;</li>
           <li><a href="../index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li>
           <li><a href="../plugins.html" >Plugins (<tt class="docutils literal"><span class="pre">artview.plugins</span></tt>)</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Dec 08, 2015.
+      Last updated on Feb 26, 2016.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>

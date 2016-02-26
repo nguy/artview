@@ -1,6 +1,0 @@
-artview.plugins.FileList.open
-=============================
-
-.. currentmodule:: artview.plugins
-
-.. automethod:: FileList.open

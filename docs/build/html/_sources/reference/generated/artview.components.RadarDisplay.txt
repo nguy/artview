@@ -48,10 +48,10 @@ artview.components.RadarDisplay
    .. rubric:: Attributes
    
    
-   .. autoattribute:: Vcmap
+   .. autoattribute:: Vcolormap
    .. autoattribute:: Vfield
    .. autoattribute:: Vgatefilter
-   .. autoattribute:: Vlims
+   .. autoattribute:: Vlimits
    .. autoattribute:: VpathInteriorFunc
    .. autoattribute:: VplotAxes
    .. autoattribute:: Vradar

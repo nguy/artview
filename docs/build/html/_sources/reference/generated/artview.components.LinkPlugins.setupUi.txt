@@ -1,6 +1,0 @@
-artview.components.LinkPlugins.setupUi
-======================================
-
-.. currentmodule:: artview.components
-
-.. automethod:: LinkPlugins.setupUi

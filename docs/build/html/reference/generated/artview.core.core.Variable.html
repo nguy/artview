@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>artview.core.core.Variable &mdash; ARTview 1.2.0.dev+a576859 documentation</title>
+    <title>artview.core.core.Variable &mdash; ARTview 1.2.2.dev+2f32e51 documentation</title>
     
     <link rel="stylesheet" href="../../_static/scipy.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '1.2.0.dev+a576859',
+        VERSION:     '1.2.2.dev+2f32e51',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="ARTview 1.2.0.dev+a576859 documentation" href="../../index.html" /> 
+    <link rel="top" title="ARTview 1.2.2.dev+2f32e51 documentation" href="../../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="../../np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">ARTview 1.2.0.dev+a576859 documentation</a> &raquo;</li> 
+        <li><a href="../../index.html">ARTview 1.2.2.dev+2f32e51 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -75,14 +75,14 @@ recommended:</p>
 <tr class="row-even"><td>Vradar</td>
 <td>Hold radar open
 with pyart</td>
-<td><a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.core.Radar.html#pyart.core.Radar" title="(in Py-ART v1.5)"><tt class="xref py py-class docutils literal"><span class="pre">pyart.core.Radar</span></tt></a>
+<td><a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.core.Radar.html#pyart.core.Radar" title="(in Py-ART v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">pyart.core.Radar</span></tt></a>
 instance</td>
 </tr>
 <tr class="row-odd"><td>Vgrid</td>
 <td>Hold grid open or
 generated with
 pyart</td>
-<td><a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.core.Grid.html#pyart.core.Grid" title="(in Py-ART v1.5)"><tt class="xref py py-class docutils literal"><span class="pre">pyart.core.Grid</span></tt></a>
+<td><a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.core.Grid.html#pyart.core.Grid" title="(in Py-ART v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">pyart.core.Grid</span></tt></a>
 instance</td>
 </tr>
 <tr class="row-even"><td>Vcontainer</td>
@@ -93,9 +93,9 @@ Vgrid</td>
 <tr class="row-odd"><td>Vfield</td>
 <td>Name of a Field
 in radar file</td>
-<td>string, preferencialy in
+<td>string, preferentially in
 radar.fields.keys(), but there is
-no garanty</td>
+no guarranty</td>
 </tr>
 <tr class="row-even"><td>Vtilt</td>
 <td>Tilt (sweep) of
@@ -127,13 +127,13 @@ VlevelZ, VlevelY
 or VlevelX</td>
 <td>positive integer</td>
 </tr>
-<tr class="row-odd"><td>Vlims</td>
+<tr class="row-odd"><td>Vlimits</td>
 <td>Limits of display</td>
 <td>dict containing keys: &#8216;xmin&#8217;,
 &#8216;xmax&#8217;, &#8216;ymin&#8217;, &#8216;ymax&#8217; and holding
 float values</td>
 </tr>
-<tr class="row-even"><td>Vcmap</td>
+<tr class="row-even"><td>Vcolormap</td>
 <td>Colormap</td>
 <td>dict containing keys: &#8216;vmin&#8217; and
 &#8216;vmax&#8217; holding float values and key
@@ -142,25 +142,32 @@ float values</td>
 <tr class="row-odd"><td>Vgatefilter</td>
 <td>Hold pyart
 GateFilter</td>
-<td><a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.filters.GateFilter.html#pyart.filters.GateFilter" title="(in Py-ART v1.5)"><tt class="xref py py-class docutils literal"><span class="pre">pyart.filters.GateFilter</span></tt></a>
+<td><a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.filters.GateFilter.html#pyart.filters.GateFilter" title="(in Py-ART v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">pyart.filters.GateFilter</span></tt></a>
 instance or None</td>
 </tr>
 <tr class="row-even"><td>VplotAxes</td>
 <td>Hold axes of
 Matplotlib figure</td>
-<td><a class="reference external" href="http://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v1.5.0)"><tt class="xref py py-class docutils literal"><span class="pre">matplotlib.axes.Axes</span></tt></a>
+<td><a class="reference external" href="http://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v1.5.1)"><tt class="xref py py-class docutils literal"><span class="pre">matplotlib.axes.Axes</span></tt></a>
 instance or None</td>
 </tr>
 <tr class="row-odd"><td>VPathInteriorFunc</td>
-<td>Hold auxiliar
+<td>Hold auxillary
 function</td>
 <td>function like <a class="reference internal" href="artview.components.RadarDisplay.getPathInteriorValues.html#artview.components.RadarDisplay.getPathInteriorValues" title="artview.components.RadarDisplay.getPathInteriorValues"><tt class="xref py py-func docutils literal"><span class="pre">getPathInteriorValues</span></tt></a> or None</td>
+</tr>
+<tr class="row-even"><td>Vfilelist</td>
+<td>Hold filenames in
+current working
+directory</td>
+<td>list containing paths to files
+(strings)</td>
 </tr>
 </tbody>
 </table>
 <dl class="method">
 <dt id="artview.core.core.Variable.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>value=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/core/core.py#L90"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.core.core.Variable.__init__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__init__</tt><big>(</big><em>value=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/core/core.py#L94"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.core.core.Variable.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p class="rubric">Methods</p>
@@ -229,12 +236,12 @@ function</td>
         <li class="right" >
           <a href="../../np-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">ARTview 1.2.0.dev+a576859 documentation</a> &raquo;</li> 
+        <li><a href="../../index.html">ARTview 1.2.2.dev+2f32e51 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Dec 08, 2015.
+      Last updated on Feb 26, 2016.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>

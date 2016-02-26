@@ -1,6 +1,0 @@
-artview.components.SelectRegion.saveRadar
-=========================================
-
-.. currentmodule:: artview.components
-
-.. automethod:: SelectRegion.saveRadar

@@ -17,7 +17,6 @@ artview.components.Menu
          Menu.AdvanceFileSelect
          Menu.CreateMenu
          Menu.LaunchApp
-         Menu.addAboutMenu
          Menu.addComponent
          Menu.addFileAdvanceMenu
          Menu.addFileMenu
@@ -25,8 +24,6 @@ artview.components.Menu
          Menu.addLayoutMenuItem
          Menu.addLayoutWidget
          Menu.addMenuAction
-         Menu.addModesMenu
-         Menu.addPluginMenu
          Menu.addPluginMenuItem
          Menu.change_mode
          Menu.keyPressEvent
@@ -47,6 +44,7 @@ artview.components.Menu
    .. rubric:: Attributes
    
    
+   .. autoattribute:: Vfilelist
    .. autoattribute:: Vgrid
    .. autoattribute:: Vradar
    

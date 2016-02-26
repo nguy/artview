@@ -1,6 +1,0 @@
-artview.components.SelectRegion.saveTable
-=========================================
-
-.. currentmodule:: artview.components
-
-.. automethod:: SelectRegion.saveTable

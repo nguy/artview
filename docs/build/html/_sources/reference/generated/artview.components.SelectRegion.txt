@@ -15,22 +15,17 @@ artview.components.SelectRegion
       :toctree:
    
          SelectRegion.CreateSelectRegionWidget
-         SelectRegion.applyMask
+         SelectRegion.NewPlotAxes
          SelectRegion.button_press_callback
          SelectRegion.closeEvent
          SelectRegion.connect
          SelectRegion.disconnect
-         SelectRegion.displayStats
          SelectRegion.guiStart
          SelectRegion.motion_notify_callback
-         SelectRegion.newPlotAxes
-         SelectRegion.openTable
+         SelectRegion.removePolygon
+         SelectRegion.removeVertex
          SelectRegion.resetSelectRegion
-         SelectRegion.restoreMask
-         SelectRegion.saveRadar
-         SelectRegion.saveTable
-         SelectRegion.showHist
-         SelectRegion.viewTable
+         SelectRegion.update_points
    
    
 

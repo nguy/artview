@@ -1,6 +1,0 @@
-artview.components.LinkPlugins.connectVar
-=========================================
-
-.. currentmodule:: artview.components
-
-.. automethod:: LinkPlugins.connectVar

@@ -14,11 +14,11 @@ artview.plugins.DealiasUnwrapPhase
    .. autosummary::
       :toctree:
    
+         DealiasUnwrapPhase.NewRadar
          DealiasUnwrapPhase.addGeneralOptions
          DealiasUnwrapPhase.chooseRadar
          DealiasUnwrapPhase.dealias_unwrap_phase
          DealiasUnwrapPhase.guiStart
-         DealiasUnwrapPhase.newRadar
    
    
 

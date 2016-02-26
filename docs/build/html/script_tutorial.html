@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Tutorial: Writing your own Script &mdash; ARTview 1.2.0.dev+a576859 documentation</title>
+    <title>Tutorial: Writing your own Script &mdash; ARTview 1.2.2.dev+2f32e51 documentation</title>
     
     <link rel="stylesheet" href="_static/scipy.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.2.0.dev+a576859',
+        VERSION:     '1.2.2.dev+2f32e51',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="ARTview 1.2.0.dev+a576859 documentation" href="index.html" />
+    <link rel="top" title="ARTview 1.2.2.dev+2f32e51 documentation" href="index.html" />
     <link rel="next" title="Tutorial: Writing your own Plugin" href="plugin_tutorial.html" />
     <link rel="prev" title="artview.view.addGrid" href="reference/generated/artview.view.addGrid.html" /> 
   </head>
@@ -47,7 +47,7 @@
         <li class="right" >
           <a href="reference/generated/artview.view.addGrid.html" title="artview.view.addGrid"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">ARTview 1.2.0.dev+a576859 documentation</a> &raquo;</li> 
+        <li><a href="index.html">ARTview 1.2.2.dev+2f32e51 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -72,15 +72,15 @@ to run, otherwise windows will not respond. Your basic script will look like
 this:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">artview</span>
 
-<span class="c"># start pyqt</span>
+<span class="c1"># start pyqt</span>
 <span class="n">app</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QApplication</span><span class="p">([])</span>
 
-<span class="c">###########################</span>
-<span class="c">#     do something        #</span>
-<span class="c">###########################</span>
+<span class="c1">###########################</span>
+<span class="c1">#     do something        #</span>
+<span class="c1">###########################</span>
 
-<span class="c"># start program</span>
-<span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span> <span class="c"># lock until all windows are closed</span>
+<span class="c1"># start program</span>
+<span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span> <span class="c1"># lock until all windows are closed</span>
 </pre></div>
 </div>
 <p>So what to do between those line?
@@ -89,51 +89,53 @@ The simplest thing you can do is start a single instance
 <a class="reference internal" href="reference/generated/artview.components.Menu.html#artview.components.Menu" title="artview.components.Menu"><tt class="xref py py-class docutils literal"><span class="pre">Menu</span></tt></a>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">artview</span>
 
-<span class="c"># start pyqt</span>
+<span class="c1"># start pyqt</span>
 <span class="n">app</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QApplication</span><span class="p">([])</span>
 
-<span class="c"># start Menu</span>
-<span class="n">menu</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="n">DirIn</span><span class="o">=</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;Menu&quot;</span><span class="p">)</span>
+<span class="c1"># start Menu</span>
+<span class="n">menu</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="n">DirIn</span><span class="o">=</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Menu&quot;</span><span class="p">)</span>
 
-<span class="c"># start program</span>
-<span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span> <span class="c"># lock until all windows are closed</span>
+<span class="c1"># start program</span>
+<span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span> <span class="c1"># lock until all windows are closed</span>
 </pre></div>
 </div>
 <p>The above will open a Menu instance with name &#8220;Menu&#8221;. Note: giving every new
 instance a different name is important for identifying them afterward.</p>
 <p>A slightly more useful component is a
 <a class="reference internal" href="reference/generated/artview.components.RadarDisplay.html#artview.components.RadarDisplay" title="artview.components.RadarDisplay"><tt class="xref py py-class docutils literal"><span class="pre">RadarDisplay</span></tt></a>, but this needs a
-<a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.core.Radar.html#pyart.core.Radar" title="(in Py-ART v1.5)"><tt class="xref py py-class docutils literal"><span class="pre">pyart.core.Radar</span></tt></a> instance. Luckily Py-ART has examples we
+<a class="reference external" href="https://arm-doe.github.io/pyart/dev/user_reference/generated/pyart.core.Radar.html#pyart.core.Radar" title="(in Py-ART v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">pyart.core.Radar</span></tt></a> instance. Luckily Py-ART has examples we
 can use:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">artview</span>
 
-<span class="c"># start pyqt</span>
+<span class="c1"># start pyqt</span>
 <span class="n">app</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QApplication</span><span class="p">([])</span>
 
-<span class="c"># get example radar from pyart</span>
+<span class="c1"># get example radar from pyart</span>
 <span class="kn">import</span> <span class="nn">pyart</span>
 <span class="n">radar</span> <span class="o">=</span> <span class="n">pyart</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">make_target_radar</span><span class="p">()</span>
 
-<span class="c"># start shared variables</span>
+<span class="c1"># start shared variables</span>
 <span class="n">Vradar</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">radar</span><span class="p">)</span>
-<span class="n">Vfield</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="s">&#39;reflectivity&#39;</span><span class="p">)</span>
-<span class="n">Vtilt</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c">#  first sweep</span>
+<span class="n">Vfield</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="s1">&#39;reflectivity&#39;</span><span class="p">)</span>
+<span class="n">Vtilt</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1">#  first sweep</span>
 
-<span class="c"># start display</span>
+<span class="c1"># start display</span>
 <span class="n">display</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">RadarDisplay</span><span class="p">(</span><span class="n">Vradar</span><span class="p">,</span> <span class="n">Vfield</span><span class="p">,</span> <span class="n">Vtilt</span><span class="p">,</span>
-                               <span class="n">name</span><span class="o">=</span><span class="s">&quot;DisplayRadar&quot;</span><span class="p">)</span>
+                               <span class="n">name</span><span class="o">=</span><span class="s2">&quot;DisplayRadar&quot;</span><span class="p">)</span>
 
-<span class="c"># start program</span>
-<span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span> <span class="c"># lock until all windows are closed</span>
+<span class="c1"># start program</span>
+<span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span> <span class="c1"># lock until all windows are closed</span>
 </pre></div>
 </div>
 <p>Now things start to get more complicated.
 The question is: Why we can&#8217;t pass the radar instance directly to
 <a class="reference internal" href="reference/generated/artview.components.RadarDisplay.html#artview.components.RadarDisplay" title="artview.components.RadarDisplay"><tt class="xref py py-class docutils literal"><span class="pre">RadarDisplay</span></tt></a>, but
-rather need to put it inside a <a class="reference internal" href="reference/generated/artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance?</p>
+rather need to put it inside a
+<a class="reference internal" href="reference/generated/artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance?</p>
 <p>We want our display(s) to be able to share this radar instance with
-other components. In C programming this could be done using pointers, and here
-we employ a kind of equivalent for Python. More about that in the next section.</p>
+other components. In C programming this could be done using pointers, and
+here we employ a kind of equivalent for Python. More about that in the
+next section.</p>
 </div></blockquote>
 </div>
 <div class="section" id="shared-variables">
@@ -151,70 +153,71 @@ package we want to plot this files.</p>
 <a class="reference internal" href="reference/generated/artview.components.RadarDisplay.html#artview.components.RadarDisplay" title="artview.components.RadarDisplay"><tt class="xref py py-class docutils literal"><span class="pre">RadarDisplay</span></tt></a>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">artview</span>
 
-<span class="c"># start pyqt</span>
+<span class="c1"># start pyqt</span>
 <span class="n">app</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QApplication</span><span class="p">([])</span>
 
-<span class="c"># start Menu</span>
-<span class="n">menu</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="n">DirIn</span><span class="o">=</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;Menu&quot;</span><span class="p">)</span>
+<span class="c1"># start Menu</span>
+<span class="n">menu</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="n">DirIn</span><span class="o">=</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Menu&quot;</span><span class="p">)</span>
 
-<span class="c"># get Vradar from menu</span>
+<span class="c1"># get Vradar from menu</span>
 <span class="n">Vradar</span> <span class="o">=</span> <span class="n">menu</span><span class="o">.</span><span class="n">Vradar</span>
 
-<span class="c"># start the other shared variables</span>
-<span class="n">Vfield</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="s">&#39;reflectivity&#39;</span><span class="p">)</span>
-<span class="n">Vtilt</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c">#  first sweep</span>
+<span class="c1"># start the other shared variables</span>
+<span class="n">Vfield</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="s1">&#39;reflectivity&#39;</span><span class="p">)</span>
+<span class="n">Vtilt</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1">#  first sweep</span>
 
-<span class="c"># start display</span>
+<span class="c1"># start display</span>
 <span class="n">display</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">RadarDisplay</span><span class="p">(</span><span class="n">Vradar</span><span class="p">,</span> <span class="n">Vfield</span><span class="p">,</span> <span class="n">Vtilt</span><span class="p">,</span>
-                               <span class="n">name</span><span class="o">=</span><span class="s">&quot;DisplayRadar&quot;</span><span class="p">)</span>
+                               <span class="n">name</span><span class="o">=</span><span class="s2">&quot;DisplayRadar&quot;</span><span class="p">)</span>
 
-<span class="c"># start program</span>
-<span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span> <span class="c"># lock until all windows are closed</span>
+<span class="c1"># start program</span>
+<span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span> <span class="c1"># lock until all windows are closed</span>
 </pre></div>
 </div>
 <p>So now we have the most simple script one would want.</p>
-<p><a class="reference internal" href="reference/generated/artview.components.Menu.html#artview.components.Menu" title="artview.components.Menu"><tt class="xref py py-class docutils literal"><span class="pre">Menu</span></tt></a> opens a file and <a class="reference internal" href="reference/generated/artview.components.RadarDisplay.html#artview.components.RadarDisplay" title="artview.components.RadarDisplay"><tt class="xref py py-class docutils literal"><span class="pre">RadarDisplay</span></tt></a> plots it.</p>
+<p><a class="reference internal" href="reference/generated/artview.components.Menu.html#artview.components.Menu" title="artview.components.Menu"><tt class="xref py py-class docutils literal"><span class="pre">Menu</span></tt></a> opens a file and
+<a class="reference internal" href="reference/generated/artview.components.RadarDisplay.html#artview.components.RadarDisplay" title="artview.components.RadarDisplay"><tt class="xref py py-class docutils literal"><span class="pre">RadarDisplay</span></tt></a> plots it.</p>
 <p>But ARTview is much more powerful.
 Suppose you want to compare two fields of the same radar
 side-by-side. Simply add another display:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">artview</span>
 
-<span class="c"># start pyqt</span>
+<span class="c1"># start pyqt</span>
 <span class="n">app</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QApplication</span><span class="p">([])</span>
 
-<span class="c"># start Menu</span>
-<span class="n">menu</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="n">DirIn</span><span class="o">=</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;Menu&quot;</span><span class="p">)</span>
+<span class="c1"># start Menu</span>
+<span class="n">menu</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="n">DirIn</span><span class="o">=</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Menu&quot;</span><span class="p">)</span>
 
-<span class="c"># DISPLAY 1</span>
+<span class="c1"># DISPLAY 1</span>
 
-<span class="c"># get Vradar from menu</span>
+<span class="c1"># get Vradar from menu</span>
 <span class="n">Vradar1</span> <span class="o">=</span> <span class="n">menu</span><span class="o">.</span><span class="n">Vradar</span>
 
-<span class="c"># start the other shared variables</span>
-<span class="n">Vfield1</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="s">&#39;reflectivity&#39;</span><span class="p">)</span>
-<span class="n">Vtilt1</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c">#  first sweep</span>
+<span class="c1"># start the other shared variables</span>
+<span class="n">Vfield1</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="s1">&#39;reflectivity&#39;</span><span class="p">)</span>
+<span class="n">Vtilt1</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1">#  first sweep</span>
 
-<span class="c"># start display</span>
+<span class="c1"># start display</span>
 <span class="n">display1</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">RadarDisplay</span><span class="p">(</span><span class="n">Vradar1</span><span class="p">,</span> <span class="n">Vfield1</span><span class="p">,</span> <span class="n">Vtilt1</span><span class="p">,</span>
-                                <span class="n">name</span><span class="o">=</span><span class="s">&quot;DisplayRadar&quot;</span><span class="p">)</span>
+                                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;DisplayRadar&quot;</span><span class="p">)</span>
 
-<span class="c"># DISPLAY 2</span>
+<span class="c1"># DISPLAY 2</span>
 
-<span class="c"># get Vradar from menu</span>
+<span class="c1"># get Vradar from menu</span>
 <span class="n">Vradar2</span> <span class="o">=</span> <span class="n">menu</span><span class="o">.</span><span class="n">Vradar</span>
-<span class="c"># or equivalently</span>
+<span class="c1"># or equivalently</span>
 <span class="n">Vradar2</span> <span class="o">=</span> <span class="n">Vradar1</span>
 
-<span class="c"># start the other shared variables</span>
-<span class="n">Vfield2</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="s">&#39;radial_velocity&#39;</span><span class="p">)</span>
-<span class="n">Vtilt2</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c">#  first sweep</span>
+<span class="c1"># start the other shared variables</span>
+<span class="n">Vfield2</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="s1">&#39;radial_velocity&#39;</span><span class="p">)</span>
+<span class="n">Vtilt2</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1">#  first sweep</span>
 
-<span class="c"># start display</span>
+<span class="c1"># start display</span>
 <span class="n">display</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">RadarDisplay</span><span class="p">(</span><span class="n">Vradar2</span><span class="p">,</span> <span class="n">Vfield2</span><span class="p">,</span> <span class="n">Vtilt2</span><span class="p">,</span>
-                               <span class="n">name</span><span class="o">=</span><span class="s">&quot;DisplayRadar&quot;</span><span class="p">)</span>
+                               <span class="n">name</span><span class="o">=</span><span class="s2">&quot;DisplayRadar&quot;</span><span class="p">)</span>
 
-<span class="c"># start program</span>
-<span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span> <span class="c"># lock until all windows are closed</span>
+<span class="c1"># start program</span>
+<span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span> <span class="c1"># lock until all windows are closed</span>
 </pre></div>
 </div>
 <p>This script will open 1 <a class="reference internal" href="reference/generated/artview.components.Menu.html#artview.components.Menu" title="artview.components.Menu"><tt class="xref py py-class docutils literal"><span class="pre">Menu</span></tt></a> and 2
@@ -229,44 +232,44 @@ creating a new Vtilt <a class="reference internal" href="reference/generated/art
 use the old one:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">artview</span>
 
-<span class="c"># start pyqt</span>
+<span class="c1"># start pyqt</span>
 <span class="n">app</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QApplication</span><span class="p">([])</span>
 
-<span class="c"># start Menu</span>
-<span class="n">menu</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="n">DirIn</span><span class="o">=</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;Menu&quot;</span><span class="p">)</span>
+<span class="c1"># start Menu</span>
+<span class="n">menu</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="n">DirIn</span><span class="o">=</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Menu&quot;</span><span class="p">)</span>
 
-<span class="c"># DISPLAY 1</span>
+<span class="c1"># DISPLAY 1</span>
 
-<span class="c"># get Vradar from menu</span>
+<span class="c1"># get Vradar from menu</span>
 <span class="n">Vradar1</span> <span class="o">=</span> <span class="n">menu</span><span class="o">.</span><span class="n">Vradar</span>
 
-<span class="c"># start the other shared variables</span>
-<span class="n">Vfield1</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="s">&#39;reflectivity&#39;</span><span class="p">)</span>
-<span class="n">Vtilt1</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c">#  first sweep</span>
+<span class="c1"># start the other shared variables</span>
+<span class="n">Vfield1</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="s1">&#39;reflectivity&#39;</span><span class="p">)</span>
+<span class="n">Vtilt1</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1">#  first sweep</span>
 
-<span class="c"># start display</span>
+<span class="c1"># start display</span>
 <span class="n">display1</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">RadarDisplay</span><span class="p">(</span><span class="n">Vradar1</span><span class="p">,</span> <span class="n">Vfield1</span><span class="p">,</span> <span class="n">Vtilt1</span><span class="p">,</span>
-                                <span class="n">name</span><span class="o">=</span><span class="s">&quot;DisplayRadar&quot;</span><span class="p">)</span>
+                                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;DisplayRadar&quot;</span><span class="p">)</span>
 
-<span class="c"># DISPLAY 2</span>
+<span class="c1"># DISPLAY 2</span>
 
-<span class="c"># get Vradar from menu</span>
+<span class="c1"># get Vradar from menu</span>
 <span class="n">Vradar2</span> <span class="o">=</span> <span class="n">menu</span><span class="o">.</span><span class="n">Vradar</span>
-<span class="c"># or equivalently</span>
+<span class="c1"># or equivalently</span>
 <span class="n">Vradar2</span> <span class="o">=</span> <span class="n">Vradar1</span>
 
-<span class="c"># start the other shared variables</span>
-<span class="n">Vfield2</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="s">&#39;radial_velocity&#39;</span><span class="p">)</span>
-<span class="c"># wrong: Vtilt2 = artview.core.Variable(0)</span>
-<span class="hll"><span class="c"># correct:</span>
+<span class="c1"># start the other shared variables</span>
+<span class="n">Vfield2</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="s1">&#39;radial_velocity&#39;</span><span class="p">)</span>
+<span class="c1"># wrong: Vtilt2 = artview.core.Variable(0)</span>
+<span class="hll"><span class="c1"># correct:</span>
 </span><span class="hll"><span class="n">Vtilt2</span> <span class="o">=</span> <span class="n">Vtilt1</span>
 </span><span class="hll">
-</span><span class="c"># start display</span>
+</span><span class="c1"># start display</span>
 <span class="n">display2</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">RadarDisplay</span><span class="p">(</span><span class="n">Vradar2</span><span class="p">,</span> <span class="n">Vfield2</span><span class="p">,</span> <span class="n">Vtilt2</span><span class="p">,</span>
-                                <span class="n">name</span><span class="o">=</span><span class="s">&quot;DisplayRadar&quot;</span><span class="p">)</span>
+                                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;DisplayRadar&quot;</span><span class="p">)</span>
 
-<span class="c"># start program</span>
-<span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span> <span class="c"># lock until all windows are closed</span>
+<span class="c1"># start program</span>
+<span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span> <span class="c1"># lock until all windows are closed</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -281,9 +284,9 @@ other potential sharing configurations.</p>
 AND you don&#8217;t want to keep changing your script every time. There is a tool
 that allows the user to modify the sharing behavior of Components,
 that is to link/unlink variables between components (e.g. Displays).
-This is <a class="reference internal" href="reference/generated/artview.components.LinkPlugins.html#artview.components.LinkPlugins" title="artview.components.LinkPlugins"><tt class="xref py py-class docutils literal"><span class="pre">LinkPlugins</span></tt></a>. To get it running
+This is <a class="reference internal" href="reference/generated/artview.components.LinkSharedVariables.html#artview.components.LinkSharedVariables" title="artview.components.LinkSharedVariables"><tt class="xref py py-class docutils literal"><span class="pre">LinkSharedVariables</span></tt></a>. To get it running
 just add the following line to your script:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">control</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">LinkPlugins</span><span class="p">()</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">control</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">LinkSharedVariables</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Now we got 4 independent windows floating around our Desktop.
@@ -291,13 +294,13 @@ To avoid this <a class="reference internal" href="reference/generated/artview.co
 method <a class="reference internal" href="reference/generated/artview.components.Menu.addLayoutWidget.html#artview.components.Menu.addLayoutWidget" title="artview.components.Menu.addLayoutWidget"><tt class="xref py py-func docutils literal"><span class="pre">addLayoutWidget</span></tt></a>,
 which offers the ability to put additional Components inside the Menu window.</p>
 <p>For instance like this:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="c"># start Menu</span>
-<span class="n">menu</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="n">DirIn</span><span class="o">=</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;Menu&quot;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="c1"># start Menu</span>
+<span class="n">menu</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="n">DirIn</span><span class="o">=</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Menu&quot;</span><span class="p">)</span>
 
-<span class="c"># start Control</span>
-<span class="n">control</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">LinkPlugins</span><span class="p">()</span>
+<span class="c1"># start Control</span>
+<span class="n">control</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">LinkSharedVariables</span><span class="p">()</span>
 
-<span class="c"># put control inside Menu</span>
+<span class="c1"># put control inside Menu</span>
 <span class="n">menu</span><span class="o">.</span><span class="n">addLayoutWidget</span><span class="p">(</span><span class="n">control</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -307,25 +310,25 @@ For this we leverage the fact that PyQt closes all children instances (windows)
 of an existing (parent) window. A good policy is to pass menu as the parent
 for all other components (components always accept a parent key)</p>
 <p>For instance:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="c"># start Menu</span>
-<span class="n">menu</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="n">DirIn</span><span class="o">=</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;Menu&quot;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="c1"># start Menu</span>
+<span class="n">menu</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="n">DirIn</span><span class="o">=</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Menu&quot;</span><span class="p">)</span>
 
-<span class="c"># start Control</span>
-<span class="n">control</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">LinkPlugins</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">menu</span><span class="p">)</span>
+<span class="c1"># start Control</span>
+<span class="n">control</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">LinkSharedVariables</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">menu</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Yay, we know how to close windows! What about opening new ones?</p>
 <p>This is a bit more complicated. Some components can just be started as
 a priori in the script. But some components like
 <a class="reference internal" href="reference/generated/artview.components.RadarDisplay.html#artview.components.RadarDisplay" title="artview.components.RadarDisplay"><tt class="xref py py-class docutils literal"><span class="pre">RadarDisplay</span></tt></a> and
-<a class="reference internal" href="reference/generated/artview.components.LinkPlugins.html#artview.components.LinkPlugins" title="artview.components.LinkPlugins"><tt class="xref py py-class docutils literal"><span class="pre">LinkPlugins</span></tt></a> have the <cite>GUIstart</cite>
+<a class="reference internal" href="reference/generated/artview.components.LinkSharedVariables.html#artview.components.LinkSharedVariables" title="artview.components.LinkSharedVariables"><tt class="xref py py-class docutils literal"><span class="pre">LinkSharedVariables</span></tt></a> have the <cite>GUIstart</cite>
 method and can be started by the user at execution time. To do this, use the
 Menu method <a class="reference internal" href="reference/generated/artview.components.Menu.addComponent.html#artview.components.Menu.addComponent" title="artview.components.Menu.addComponent"><tt class="xref py py-func docutils literal"><span class="pre">addComponent</span></tt></a>. For
 instance</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="c"># start Menu</span>
-<span class="n">menu</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="n">DirIn</span><span class="o">=</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;Menu&quot;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="c1"># start Menu</span>
+<span class="n">menu</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="n">DirIn</span><span class="o">=</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Menu&quot;</span><span class="p">)</span>
 
-<span class="c"># start Control</span>
+<span class="c1"># start Control</span>
 <span class="n">menu</span><span class="o">.</span><span class="n">addComponent</span><span class="p">(</span><span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">RadarDisplay</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -343,10 +346,10 @@ information on what each plug-in does please see the reference-manual.
 By default we ask that all plug-ins have the
 <cite>GUIstart</cite> method. Therefore to access them at execution time add the
 following at your script:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="c"># start Menu</span>
-<span class="n">menu</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="n">DirIn</span><span class="o">=</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;Menu&quot;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="c1"># start Menu</span>
+<span class="n">menu</span> <span class="o">=</span> <span class="n">artview</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="n">DirIn</span><span class="o">=</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Menu&quot;</span><span class="p">)</span>
 
-<span class="c"># add plugins</span>
+<span class="c1"># add plugins</span>
 <span class="k">for</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="n">artview</span><span class="o">.</span><span class="n">plugins</span><span class="o">.</span><span class="n">_plugins</span><span class="p">:</span>
     <span class="n">menu</span><span class="o">.</span><span class="n">addComponent</span><span class="p">(</span><span class="n">plugin</span><span class="p">)</span>
 </pre></div>
@@ -443,12 +446,12 @@ of your modified code.</p>
         <li class="right" >
           <a href="reference/generated/artview.view.addGrid.html" title="artview.view.addGrid"
              >previous</a> |</li>
-        <li><a href="index.html">ARTview 1.2.0.dev+a576859 documentation</a> &raquo;</li> 
+        <li><a href="index.html">ARTview 1.2.2.dev+2f32e51 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Dec 08, 2015.
+      Last updated on Feb 26, 2016.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>

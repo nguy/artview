@@ -1,6 +1,0 @@
-artview.components.SelectRegion.viewTable
-=========================================
-
-.. currentmodule:: artview.components
-
-.. automethod:: SelectRegion.viewTable

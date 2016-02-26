@@ -17,11 +17,11 @@ artview.components.GridDisplay
          GridDisplay.FieldSelectCmd
          GridDisplay.LaunchGUI
          GridDisplay.LevelSelectCmd
-         GridDisplay.NewCmap
+         GridDisplay.NewColormap
          GridDisplay.NewField
+         GridDisplay.NewGrid
          GridDisplay.NewLevel
-         GridDisplay.NewLims
-         GridDisplay.Newgrid
+         GridDisplay.NewLimits
          GridDisplay.addButtons
          GridDisplay.change_plot_type
          GridDisplay.cmapSelectCmd
@@ -33,6 +33,7 @@ artview.components.GridDisplay
          GridDisplay.getUnits
          GridDisplay.guiStart
          GridDisplay.keyPressEvent
+         GridDisplay.parse_plot_type
          GridDisplay.setUILayout
          GridDisplay.toolDefaultCmd
          GridDisplay.toolResetCmd
@@ -47,7 +48,7 @@ artview.components.GridDisplay
    .. rubric:: Attributes
    
    
-   .. autoattribute:: Vcmap
+   .. autoattribute:: Vcolormap
    .. autoattribute:: Vfield
    .. autoattribute:: Vgrid
    .. autoattribute:: Vlevel

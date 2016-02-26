@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Tutorial: Writing your own Plugin &mdash; ARTview 1.2.0.dev+a576859 documentation</title>
+    <title>Tutorial: Writing your own Plugin &mdash; ARTview 1.2.2.dev+2f32e51 documentation</title>
     
     <link rel="stylesheet" href="_static/scipy.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.2.0.dev+a576859',
+        VERSION:     '1.2.2.dev+2f32e51',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="ARTview 1.2.0.dev+a576859 documentation" href="index.html" />
+    <link rel="top" title="ARTview 1.2.2.dev+2f32e51 documentation" href="index.html" />
     <link rel="prev" title="Tutorial: Writing your own Script" href="script_tutorial.html" /> 
   </head>
   <body>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="script_tutorial.html" title="Tutorial: Writing your own Script"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">ARTview 1.2.0.dev+a576859 documentation</a> &raquo;</li> 
+        <li><a href="index.html">ARTview 1.2.2.dev+2f32e51 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -94,9 +94,9 @@ of <a class="reference internal" href="reference/generated/artview.core.core.Com
 <li><p class="first">Plug-ins must have a GUIstart class method, like this:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="nd">@classmethod</span>
 <span class="k">def</span> <span class="nf">guiStart</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-    <span class="c">################################</span>
-    <span class="c">#    Define Call Parameters    #</span>
-    <span class="c">################################</span>
+    <span class="c1">################################</span>
+    <span class="c1">#    Define Call Parameters    #</span>
+    <span class="c1">################################</span>
     <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="o">...</span><span class="p">),</span> <span class="bp">True</span><span class="o">/</span><span class="bp">False</span>
 </pre></div>
 </div>
@@ -185,12 +185,12 @@ part.</p>
 <p>By causing a change to the variable in your class, the variable will
 receive the &#8220;ValueChange&#8221; signal and executes some function in response.
 This is called the variable slot and it looks like this:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">newMyVar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">strong</span><span class="p">):</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">NewMyVar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">strong</span><span class="p">):</span>
 </pre></div>
 </div>
 <p>To define the slot of every shared variable define a dictionary named
 sharedVariables in <tt class="docutils literal"><span class="pre">__init__</span></tt>. The key is the name of a variable
-(e.g. <tt class="docutils literal"><span class="pre">&quot;VmyVar&quot;</span></tt>) and the value its slot (e.g. <tt class="docutils literal"><span class="pre">self.newMyVar</span></tt>). You
+(e.g. <tt class="docutils literal"><span class="pre">&quot;VmyVar&quot;</span></tt>) and the value its slot (e.g. <tt class="docutils literal"><span class="pre">self.ŃewMyVar</span></tt>). You
 may also assign the value <tt class="docutils literal"><span class="pre">None</span></tt> to signal that the plug-in does not
 need to respond to &#8220;ValueChanged&#8221;.</p>
 <p>You must also set an attribute with the instance of
@@ -250,25 +250,26 @@ this:</li>
 </ul>
 <div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">guiStart</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="n">kwargs</span><span class="p">,</span> <span class="n">independent</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">_SimplePluginStart</span><span class="p">(</span>
-                                <span class="s">&quot;CalculateAttenuation&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">startDisplay</span><span class="p">()</span>
-    <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;parent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">parent</span>
+                                <span class="s2">&quot;CalculateAttenuation&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">startDisplay</span><span class="p">()</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;parent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">parent</span>
     <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">),</span> <span class="n">independent</span>
 </pre></div>
 </div>
-<ul class="simple">
-<li><tt class="xref py py-class docutils literal"><span class="pre">artview.core.choose_variable.VariableChoose</span></tt> will present the
+<ul>
+<li><p class="first"><tt class="xref py py-class docutils literal"><span class="pre">artview.core.choose_variable.VariableChoose</span></tt> will present the
 user a tree view of the current components and its shared variables,
-allowing the selection of one instance.</li>
-</ul>
+allowing the selection of one instance.</p>
 <p>This is a more historical request, but as for now it is still useful and
 therefore still mandatory.</p>
+</li>
+</ul>
 </div></blockquote>
 </div>
 <div class="section" id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>Combining the above tutorial, here is a skeleton outline for your Plug-in:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="c"># Load the needed packages</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="c1"># Load the needed packages</span>
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">core</span><span class="p">,</span> <span class="n">components</span>
 
 <span class="k">class</span> <span class="nc">MyPlugin</span><span class="p">(</span><span class="n">core</span><span class="o">.</span><span class="n">Component</span><span class="p">):</span>
@@ -276,41 +277,40 @@ therefore still mandatory.</p>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">guiStart</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="n">kwargs</span><span class="p">,</span> <span class="n">independent</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">_SimplePluginStart</span><span class="p">(</span>
-                                            <span class="s">&quot;MyPlugin&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">startDisplay</span><span class="p">()</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;parent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">parent</span>
+                                            <span class="s2">&quot;MyPlugin&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">startDisplay</span><span class="p">()</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;parent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">parent</span>
         <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">),</span> <span class="n">independent</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">VmyVar</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;MyPlugin&quot;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">VmyVar</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;MyPlugin&quot;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="n">VmyVar</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">valid_value</span> <span class="o">=</span> <span class="s">&quot;something&quot;</span>
+            <span class="n">valid_value</span> <span class="o">=</span> <span class="s2">&quot;something&quot;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">VmyVar</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">valid_value</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">VmyVar</span> <span class="o">=</span> <span class="n">VmyVar</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">sharedVariables</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;VmyVar&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">newMyVar</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sharedVariables</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;VmyVar&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">NewMyVar</span><span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">connectAllVariables</span><span class="p">()</span>
 
-        <span class="c">################################</span>
-        <span class="c">#          Build Plug-in       #</span>
-        <span class="c">################################</span>
+        <span class="c1">################################</span>
+        <span class="c1">#          Build Plug-in       #</span>
+        <span class="c1">################################</span>
 
-        <span class="c">#  don`t do: self.VmyVar.change(value, True)</span>
-        <span class="c">#  but rather: self.VmyVar.change(value, False)</span>
+        <span class="c1">#  don`t do: self.VmyVar.change(value, True)</span>
+        <span class="c1">#  but rather: self.VmyVar.change(value, False)</span>
 
-        <span class="c">#  don`t do: self.VmyVar.emit(...)</span>
-        <span class="c">#  but rather: self.newMyVar(...)</span>
+        <span class="c1">#  don`t do: self.VmyVar.emit(...)</span>
+        <span class="c1">#  but rather: self.NewMyVar(...)</span>
 
-        <span class="c"># show plugin</span>
+        <span class="c1"># show plugin</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
-    <span class="c">################################</span>
-    <span class="c">#         Other Methods        #</span>
-    <span class="c">################################</span>
+    <span class="c1">################################</span>
+    <span class="c1">#         Other Methods        #</span>
+    <span class="c1">################################</span>
 
-    <span class="k">def</span> <span class="nf">newMyVar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">strong</span><span class="p">):</span>
-        <span class="k">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">VmyVar</span><span class="o">.</span><span class="n">value</span>  <span class="c">#  =&gt; &quot;something else&quot;</span>
-        <span class="k">print</span> <span class="n">value</span> <span class="c">#  =&gt; &quot;something else&quot;</span>
+    <span class="k">def</span> <span class="nf">NewMyVar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">strong</span><span class="p">):</span>
+        <span class="k">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">VmyVar</span><span class="o">.</span><span class="n">value</span>  <span class="c1">#  =&gt; &quot;something else&quot;</span>
 
 <span class="n">_plugins</span><span class="o">=</span><span class="p">[</span><span class="n">MyPlugin</span><span class="p">]</span>
 </pre></div>
@@ -378,12 +378,12 @@ therefore still mandatory.</p>
         <li class="right" >
           <a href="script_tutorial.html" title="Tutorial: Writing your own Script"
              >previous</a> |</li>
-        <li><a href="index.html">ARTview 1.2.0.dev+a576859 documentation</a> &raquo;</li> 
+        <li><a href="index.html">ARTview 1.2.2.dev+2f32e51 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Dec 08, 2015.
+      Last updated on Feb 26, 2016.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>

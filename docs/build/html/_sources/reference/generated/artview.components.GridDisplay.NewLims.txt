@@ -1,6 +1,0 @@
-artview.components.GridDisplay.NewLims
-======================================
-
-.. currentmodule:: artview.components
-
-.. automethod:: GridDisplay.NewLims

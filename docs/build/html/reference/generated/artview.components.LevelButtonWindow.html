@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>artview.components.LevelButtonWindow &mdash; ARTview 1.2.0.dev+a576859 documentation</title>
+    <title>artview.components.LevelButtonWindow &mdash; ARTview 1.2.2.dev+2f32e51 documentation</title>
     
     <link rel="stylesheet" href="../../_static/scipy.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '1.2.0.dev+a576859',
+        VERSION:     '1.2.2.dev+2f32e51',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="ARTview 1.2.0.dev+a576859 documentation" href="../../index.html" />
+    <link rel="top" title="ARTview 1.2.2.dev+2f32e51 documentation" href="../../index.html" />
     <link rel="up" title="Main Components (artview.components)" href="../components.html" />
     <link rel="next" title="artview.components.LevelButtonWindow.CreateLevelWidget" href="artview.components.LevelButtonWindow.CreateLevelWidget.html" />
     <link rel="prev" title="artview.components.Menu.subMenus" href="artview.components.Menu.subMenus.html" /> 
@@ -48,7 +48,7 @@
         <li class="right" >
           <a href="artview.components.Menu.subMenus.html" title="artview.components.Menu.subMenus"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">ARTview 1.2.0.dev+a576859 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">ARTview 1.2.2.dev+2f32e51 documentation</a> &raquo;</li>
           <li><a href="../index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li>
           <li><a href="../components.html" accesskey="U">Main Components (<tt class="docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
       </ul>
@@ -132,13 +132,13 @@ change value back to variable.</p>
 <tr class="row-odd"><td><a class="reference internal" href="artview.components.LevelButtonWindow.LevelSelectCmdSlider.html#artview.components.LevelButtonWindow.LevelSelectCmdSlider" title="artview.components.LevelButtonWindow.LevelSelectCmdSlider"><tt class="xref py py-obj docutils literal"><span class="pre">LevelButtonWindow.LevelSelectCmdSlider</span></tt></a>()</td>
 <td>Captures a selection and update level variable.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="artview.components.LevelButtonWindow.NewGrid.html#artview.components.LevelButtonWindow.NewGrid" title="artview.components.LevelButtonWindow.NewGrid"><tt class="xref py py-obj docutils literal"><span class="pre">LevelButtonWindow.NewGrid</span></tt></a>(variable,&nbsp;value,&nbsp;...)</td>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.LevelButtonWindow.NewGrid.html#artview.components.LevelButtonWindow.NewGrid" title="artview.components.LevelButtonWindow.NewGrid"><tt class="xref py py-obj docutils literal"><span class="pre">LevelButtonWindow.NewGrid</span></tt></a>(variable,&nbsp;strong)</td>
 <td>Slot for &#8216;ValueChanged&#8217; signal of</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="artview.components.LevelButtonWindow.NewLevel.html#artview.components.LevelButtonWindow.NewLevel" title="artview.components.LevelButtonWindow.NewLevel"><tt class="xref py py-obj docutils literal"><span class="pre">LevelButtonWindow.NewLevel</span></tt></a>(variable,&nbsp;value,&nbsp;...)</td>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.LevelButtonWindow.NewLevel.html#artview.components.LevelButtonWindow.NewLevel" title="artview.components.LevelButtonWindow.NewLevel"><tt class="xref py py-obj docutils literal"><span class="pre">LevelButtonWindow.NewLevel</span></tt></a>(variable,&nbsp;strong)</td>
 <td>Slot for &#8216;ValueChanged&#8217; signal of</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="artview.components.LevelButtonWindow.NewRadar.html#artview.components.LevelButtonWindow.NewRadar" title="artview.components.LevelButtonWindow.NewRadar"><tt class="xref py py-obj docutils literal"><span class="pre">LevelButtonWindow.NewRadar</span></tt></a>(variable,&nbsp;value,&nbsp;...)</td>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.LevelButtonWindow.NewRadar.html#artview.components.LevelButtonWindow.NewRadar" title="artview.components.LevelButtonWindow.NewRadar"><tt class="xref py py-obj docutils literal"><span class="pre">LevelButtonWindow.NewRadar</span></tt></a>(variable,&nbsp;strong)</td>
 <td>Slot for &#8216;ValueChanged&#8217; signal of</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="artview.components.LevelButtonWindow.SetLevelRadioButtonsGrid.html#artview.components.LevelButtonWindow.SetLevelRadioButtonsGrid" title="artview.components.LevelButtonWindow.SetLevelRadioButtonsGrid"><tt class="xref py py-obj docutils literal"><span class="pre">LevelButtonWindow.SetLevelRadioButtonsGrid</span></tt></a>()</td>
@@ -154,8 +154,8 @@ change value back to variable.</p>
 </table>
 <p class="rubric">Attributes</p>
 <dl class="attribute">
-<dt id="artview.components.LevelButtonWindow.Vcmap">
-<tt class="descname">Vcmap</tt><em class="property"> = None</em><a class="headerlink" href="#artview.components.LevelButtonWindow.Vcmap" title="Permalink to this definition">¶</a></dt>
+<dt id="artview.components.LevelButtonWindow.Vcolormap">
+<tt class="descname">Vcolormap</tt><em class="property"> = None</em><a class="headerlink" href="#artview.components.LevelButtonWindow.Vcolormap" title="Permalink to this definition">¶</a></dt>
 <dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a></p>
 </dd></dl>
 
@@ -258,14 +258,14 @@ plot_type.</p>
         <li class="right" >
           <a href="artview.components.Menu.subMenus.html" title="artview.components.Menu.subMenus"
              >previous</a> |</li>
-        <li><a href="../../index.html">ARTview 1.2.0.dev+a576859 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">ARTview 1.2.2.dev+2f32e51 documentation</a> &raquo;</li>
           <li><a href="../index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li>
           <li><a href="../components.html" >Main Components (<tt class="docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Dec 08, 2015.
+      Last updated on Feb 26, 2016.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>

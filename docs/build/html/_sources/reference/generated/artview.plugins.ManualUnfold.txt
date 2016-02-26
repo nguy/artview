@@ -14,11 +14,11 @@ artview.plugins.ManualUnfold
    .. autosummary::
       :toctree:
    
+         ManualUnfold.NewRadar
          ManualUnfold.foldBack
          ManualUnfold.getFieldNames
          ManualUnfold.guiStart
          ManualUnfold.negativeUnfold
-         ManualUnfold.newRadar
          ManualUnfold.positiveUnfold
          ManualUnfold.unfold
    

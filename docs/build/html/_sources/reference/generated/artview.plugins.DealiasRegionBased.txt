@@ -14,11 +14,11 @@ artview.plugins.DealiasRegionBased
    .. autosummary::
       :toctree:
    
+         DealiasRegionBased.NewRadar
          DealiasRegionBased.addGeneralOptions
          DealiasRegionBased.chooseRadar
          DealiasRegionBased.dealias_region_based
          DealiasRegionBased.guiStart
-         DealiasRegionBased.newRadar
    
    
 

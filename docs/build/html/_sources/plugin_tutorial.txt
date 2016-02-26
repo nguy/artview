@@ -144,11 +144,11 @@ Shared Variables
 
     .. code-block:: python
 
-        def newMyVar(self, var, value, strong):
+        def NewMyVar(self, var, strong):
 
     To define the slot of every shared variable define a dictionary named
     sharedVariables in ``__init__``. The key is the name of a variable
-    (e.g. ``"VmyVar"``) and the value its slot (e.g. ``self.newMyVar``). You
+    (e.g. ``"VmyVar"``) and the value its slot (e.g. ``self.ŃewMyVar``). You
     may also assign the value ``None`` to signal that the plug-in does not
     need to respond to "ValueChanged".
 
@@ -221,8 +221,8 @@ Graphical Start
       user a tree view of the current components and its shared variables,
       allowing the selection of one instance.
 
-    This is a more historical request, but as for now it is still useful and
-    therefore still mandatory.
+      This is a more historical request, but as for now it is still useful and
+      therefore still mandatory.
 
 
 Example
@@ -252,7 +252,7 @@ Example
                 else:
                     self.VmyVar = VmyVar
 
-                self.sharedVariables = {"VmyVar": self.newMyVar}
+                self.sharedVariables = {"VmyVar": self.NewMyVar}
                 self.connectAllVariables()
 
                 ################################
@@ -263,7 +263,7 @@ Example
                 #  but rather: self.VmyVar.change(value, False)
 
                 #  don`t do: self.VmyVar.emit(...)
-                #  but rather: self.newMyVar(...)
+                #  but rather: self.NewMyVar(...)
 
                 # show plugin
                 self.show()
@@ -272,9 +272,8 @@ Example
             #         Other Methods        #
             ################################
 
-            def newMyVar(self, variable, value, strong):
+            def NewMyVar(self, variable, strong):
                 print self.VmyVar.value  #  => "something else"
-                print value #  => "something else"
 
         _plugins=[MyPlugin]
 

@@ -1,6 +1,0 @@
-artview.plugins.FileList.guiStart
-=================================
-
-.. currentmodule:: artview.plugins
-
-.. automethod:: FileList.guiStart

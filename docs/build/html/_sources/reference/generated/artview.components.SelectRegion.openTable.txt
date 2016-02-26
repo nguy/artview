@@ -1,6 +1,0 @@
-artview.components.SelectRegion.openTable
-=========================================
-
-.. currentmodule:: artview.components
-
-.. automethod:: SelectRegion.openTable

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>artview.components.GridDisplay &mdash; ARTview 1.2.0.dev+a576859 documentation</title>
+    <title>artview.components.GridDisplay &mdash; ARTview 1.2.2.dev+2f32e51 documentation</title>
     
     <link rel="stylesheet" href="../../_static/scipy.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '1.2.0.dev+a576859',
+        VERSION:     '1.2.2.dev+2f32e51',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="ARTview 1.2.0.dev+a576859 documentation" href="../../index.html" />
+    <link rel="top" title="ARTview 1.2.2.dev+2f32e51 documentation" href="../../index.html" />
     <link rel="up" title="Main Components (artview.components)" href="../components.html" />
     <link rel="next" title="artview.components.GridDisplay.FieldSelectCmd" href="artview.components.GridDisplay.FieldSelectCmd.html" />
     <link rel="prev" title="artview.components.RadarDisplay.toolZoomPanCmd" href="artview.components.RadarDisplay.toolZoomPanCmd.html" /> 
@@ -48,7 +48,7 @@
         <li class="right" >
           <a href="artview.components.RadarDisplay.toolZoomPanCmd.html" title="artview.components.RadarDisplay.toolZoomPanCmd"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">ARTview 1.2.0.dev+a576859 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">ARTview 1.2.2.dev+2f32e51 documentation</a> &raquo;</li>
           <li><a href="../index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li>
           <li><a href="../components.html" accesskey="U">Main Components (<tt class="docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
       </ul>
@@ -63,12 +63,12 @@
 <h1>artview.components.GridDisplay<a class="headerlink" href="#artview-components-griddisplay" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="artview.components.GridDisplay">
-<em class="property">class </em><tt class="descclassname">artview.components.</tt><tt class="descname">GridDisplay</tt><big>(</big><em>Vgrid=None</em>, <em>Vfield=None</em>, <em>VlevelZ=None</em>, <em>VlevelY=None</em>, <em>VlevelX=None</em>, <em>Vlims=None</em>, <em>Vcmap=None</em>, <em>plot_type='gridZ'</em>, <em>name='Display'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/plot_grid.py#L28"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.GridDisplay" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">artview.components.</tt><tt class="descname">GridDisplay</tt><big>(</big><em>Vgrid=None</em>, <em>Vfield=None</em>, <em>VlevelZ=None</em>, <em>VlevelY=None</em>, <em>VlevelX=None</em>, <em>Vlimits=None</em>, <em>Vcolormap=None</em>, <em>plot_type='gridZ'</em>, <em>name='Display'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/plot_grid.py#L28"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.GridDisplay" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><tt class="xref py py-class docutils literal"><span class="pre">artview.core.core.Component</span></tt></a></p>
 <p>Class to create a display plot, using a Grid structure.</p>
 <dl class="method">
 <dt id="artview.components.GridDisplay.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>Vgrid=None</em>, <em>Vfield=None</em>, <em>VlevelZ=None</em>, <em>VlevelY=None</em>, <em>VlevelX=None</em>, <em>Vlims=None</em>, <em>Vcmap=None</em>, <em>plot_type='gridZ'</em>, <em>name='Display'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/plot_grid.py#L52"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.GridDisplay.__init__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__init__</tt><big>(</big><em>Vgrid=None</em>, <em>Vfield=None</em>, <em>VlevelZ=None</em>, <em>VlevelY=None</em>, <em>VlevelX=None</em>, <em>Vlimits=None</em>, <em>Vcolormap=None</em>, <em>plot_type='gridZ'</em>, <em>name='Display'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/plot_grid.py#L52"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.GridDisplay.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize the class to create display.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -98,12 +98,12 @@ plot_type=&#8221;gridY&#8221;. If None start with value zero.</p>
 <div><p>Signal variable for longitudinal level, only used if
 plot_type=&#8221;gridX&#8221;. If None start with value zero.</p>
 </div></blockquote>
-<p><strong>Vlims</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
+<p><strong>Vlimits</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
 <blockquote>
 <div><p>Limits signal variable.
 A value of None will instantiate a limits variable.</p>
 </div></blockquote>
-<p><strong>Vcmap</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
+<p><strong>Vcolormap</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><tt class="xref py py-class docutils literal"><span class="pre">Variable</span></tt></a> instance</p>
 <blockquote>
 <div><p>Colormap signal variable.
 A value of None will instantiate a colormap variable.</p>
@@ -148,19 +148,19 @@ change value back to variable.</p>
 <tr class="row-odd"><td><a class="reference internal" href="artview.components.GridDisplay.LevelSelectCmd.html#artview.components.GridDisplay.LevelSelectCmd" title="artview.components.GridDisplay.LevelSelectCmd"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.LevelSelectCmd</span></tt></a>(nlevel)</td>
 <td>Captures Level selection and update Level</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="artview.components.GridDisplay.NewCmap.html#artview.components.GridDisplay.NewCmap" title="artview.components.GridDisplay.NewCmap"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.NewCmap</span></tt></a>(variable,&nbsp;value,&nbsp;strong)</td>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.GridDisplay.NewColormap.html#artview.components.GridDisplay.NewColormap" title="artview.components.GridDisplay.NewColormap"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.NewColormap</span></tt></a>(variable,&nbsp;strong)</td>
 <td>Slot for &#8216;ValueChanged&#8217; signal of</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="artview.components.GridDisplay.NewField.html#artview.components.GridDisplay.NewField" title="artview.components.GridDisplay.NewField"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.NewField</span></tt></a>(variable,&nbsp;value,&nbsp;strong)</td>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.GridDisplay.NewField.html#artview.components.GridDisplay.NewField" title="artview.components.GridDisplay.NewField"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.NewField</span></tt></a>(variable,&nbsp;strong)</td>
 <td>Slot for &#8216;ValueChanged&#8217; signal of</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="artview.components.GridDisplay.NewLevel.html#artview.components.GridDisplay.NewLevel" title="artview.components.GridDisplay.NewLevel"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.NewLevel</span></tt></a>(variable,&nbsp;value,&nbsp;strong)</td>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.GridDisplay.NewGrid.html#artview.components.GridDisplay.NewGrid" title="artview.components.GridDisplay.NewGrid"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.NewGrid</span></tt></a>(variable,&nbsp;strong)</td>
 <td>Slot for &#8216;ValueChanged&#8217; signal of</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="artview.components.GridDisplay.NewLims.html#artview.components.GridDisplay.NewLims" title="artview.components.GridDisplay.NewLims"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.NewLims</span></tt></a>(variable,&nbsp;value,&nbsp;strong)</td>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.GridDisplay.NewLevel.html#artview.components.GridDisplay.NewLevel" title="artview.components.GridDisplay.NewLevel"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.NewLevel</span></tt></a>(variable,&nbsp;strong)</td>
 <td>Slot for &#8216;ValueChanged&#8217; signal of</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="artview.components.GridDisplay.Newgrid.html#artview.components.GridDisplay.Newgrid" title="artview.components.GridDisplay.Newgrid"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.Newgrid</span></tt></a>(variable,&nbsp;value,&nbsp;strong)</td>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.GridDisplay.NewLimits.html#artview.components.GridDisplay.NewLimits" title="artview.components.GridDisplay.NewLimits"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.NewLimits</span></tt></a>(variable,&nbsp;strong)</td>
 <td>Slot for &#8216;ValueChanged&#8217; signal of</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="artview.components.GridDisplay.addButtons.html#artview.components.GridDisplay.addButtons" title="artview.components.GridDisplay.addButtons"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.addButtons</span></tt></a>()</td>
@@ -182,7 +182,7 @@ change value back to variable.</p>
 <td>Return the bins values path.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="artview.components.GridDisplay.getPlotAxis.html#artview.components.GridDisplay.getPlotAxis" title="artview.components.GridDisplay.getPlotAxis"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.getPlotAxis</span></tt></a>()</td>
-<td>get <a class="reference external" href="http://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v1.5.0)"><tt class="xref py py-class docutils literal"><span class="pre">matplotlib.axes.Axes</span></tt></a> instance of main plot</td>
+<td>get <a class="reference external" href="http://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v1.5.1)"><tt class="xref py py-class docutils literal"><span class="pre">matplotlib.axes.Axes</span></tt></a> instance of main plot</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="artview.components.GridDisplay.getStatusBar.html#artview.components.GridDisplay.getStatusBar" title="artview.components.GridDisplay.getStatusBar"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.getStatusBar</span></tt></a>()</td>
 <td>get <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QStatusBar</span></tt> instance</td>
@@ -196,30 +196,33 @@ change value back to variable.</p>
 <tr class="row-odd"><td><a class="reference internal" href="artview.components.GridDisplay.keyPressEvent.html#artview.components.GridDisplay.keyPressEvent" title="artview.components.GridDisplay.keyPressEvent"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.keyPressEvent</span></tt></a>(event)</td>
 <td>Allow level adjustment via the Up-Down arrow keys.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="artview.components.GridDisplay.setUILayout.html#artview.components.GridDisplay.setUILayout" title="artview.components.GridDisplay.setUILayout"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.setUILayout</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.GridDisplay.parse_plot_type.html#artview.components.GridDisplay.parse_plot_type" title="artview.components.GridDisplay.parse_plot_type"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.parse_plot_type</span></tt></a>(plot_type)</td>
+<td>Parse Plot Type and change variables</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.GridDisplay.setUILayout.html#artview.components.GridDisplay.setUILayout" title="artview.components.GridDisplay.setUILayout"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.setUILayout</span></tt></a>()</td>
 <td>Setup the button/display UI layout.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="artview.components.GridDisplay.toolDefaultCmd.html#artview.components.GridDisplay.toolDefaultCmd" title="artview.components.GridDisplay.toolDefaultCmd"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.toolDefaultCmd</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.GridDisplay.toolDefaultCmd.html#artview.components.GridDisplay.toolDefaultCmd" title="artview.components.GridDisplay.toolDefaultCmd"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.toolDefaultCmd</span></tt></a>()</td>
 <td>Restore the Display defaults.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="artview.components.GridDisplay.toolResetCmd.html#artview.components.GridDisplay.toolResetCmd" title="artview.components.GridDisplay.toolResetCmd"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.toolResetCmd</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.GridDisplay.toolResetCmd.html#artview.components.GridDisplay.toolResetCmd" title="artview.components.GridDisplay.toolResetCmd"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.toolResetCmd</span></tt></a>()</td>
 <td>Reset tools via disconnect.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="artview.components.GridDisplay.toolSelectRegionCmd.html#artview.components.GridDisplay.toolSelectRegionCmd" title="artview.components.GridDisplay.toolSelectRegionCmd"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.toolSelectRegionCmd</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.GridDisplay.toolSelectRegionCmd.html#artview.components.GridDisplay.toolSelectRegionCmd" title="artview.components.GridDisplay.toolSelectRegionCmd"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.toolSelectRegionCmd</span></tt></a>()</td>
 <td>Creates and connects to Region of Interest instance.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="artview.components.GridDisplay.toolValueClickCmd.html#artview.components.GridDisplay.toolValueClickCmd" title="artview.components.GridDisplay.toolValueClickCmd"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.toolValueClickCmd</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.GridDisplay.toolValueClickCmd.html#artview.components.GridDisplay.toolValueClickCmd" title="artview.components.GridDisplay.toolValueClickCmd"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.toolValueClickCmd</span></tt></a>()</td>
 <td>Creates and connects to Point-and-click value retrieval</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="artview.components.GridDisplay.toolZoomPanCmd.html#artview.components.GridDisplay.toolZoomPanCmd" title="artview.components.GridDisplay.toolZoomPanCmd"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.toolZoomPanCmd</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.GridDisplay.toolZoomPanCmd.html#artview.components.GridDisplay.toolZoomPanCmd" title="artview.components.GridDisplay.toolZoomPanCmd"><tt class="xref py py-obj docutils literal"><span class="pre">GridDisplay.toolZoomPanCmd</span></tt></a>()</td>
 <td>Creates and connects to a Zoom/Pan instance.</td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Attributes</p>
 <dl class="attribute">
-<dt id="artview.components.GridDisplay.Vcmap">
-<tt class="descname">Vcmap</tt><em class="property"> = None</em><a class="headerlink" href="#artview.components.GridDisplay.Vcmap" title="Permalink to this definition">¶</a></dt>
+<dt id="artview.components.GridDisplay.Vcolormap">
+<tt class="descname">Vcolormap</tt><em class="property"> = None</em><a class="headerlink" href="#artview.components.GridDisplay.Vcolormap" title="Permalink to this definition">¶</a></dt>
 <dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a></p>
 </dd></dl>
 
@@ -333,14 +336,14 @@ change value back to variable.</p>
         <li class="right" >
           <a href="artview.components.RadarDisplay.toolZoomPanCmd.html" title="artview.components.RadarDisplay.toolZoomPanCmd"
              >previous</a> |</li>
-        <li><a href="../../index.html">ARTview 1.2.0.dev+a576859 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">ARTview 1.2.2.dev+2f32e51 documentation</a> &raquo;</li>
           <li><a href="../index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li>
           <li><a href="../components.html" >Main Components (<tt class="docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2015, Nick Guy.
-      Last updated on Dec 08, 2015.
+      Last updated on Feb 26, 2016.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
