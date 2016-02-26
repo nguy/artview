@@ -86,6 +86,7 @@ class FileNavigator(Component):
         self.NewFile(self.Vradar, True)
         self.NewFilelist(self.Vfilelist, True)
 
+        self.setWindowState(Qt.WindowActive)
         self.show()
 
     ######################

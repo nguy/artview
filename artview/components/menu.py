@@ -91,6 +91,8 @@ class Menu(Component):
         # Launch the GUI interface
         self.LaunchApp()
         self.resize(300, 180)
+#        self.raise_()
+#        self.activateWindow()
         self.show()
 
     def keyPressEvent(self, event):
