@@ -34,8 +34,7 @@ from .menu import Menu
 from .level import LevelButtonWindow
 from .field import FieldButtonWindow
 from .component_control import LinkSharedVariables
-from .select_region import SelectRegion as SelectRegion_dev
-from .select_region_old import SelectRegion
+from .select_region import SelectRegion
 from .plot_simple import PlotDisplay
 from .navigator import FileNavigator
 

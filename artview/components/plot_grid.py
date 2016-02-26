@@ -575,8 +575,8 @@ class GridDisplay(Component):
 
     def toolSelectRegionCmd(self):
         '''Creates and connects to Region of Interest instance.'''
-        from .select_region_old import SelectRegion
-        self.tools['select_region'] = SelectRegion(
+        from .display_select_region import DisplaySelectRegion
+        self.tools['select_region'] = DisplaySelectRegion(
             self.VplotAxes, self.VpathInteriorFunc, self.Vfield,
             name=self.name + " SelectRegion", parent=self)
 

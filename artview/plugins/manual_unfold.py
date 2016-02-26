@@ -225,7 +225,7 @@ class ManualUnfold(Component):
             "boundary is properly closed.<br><br>"
             "Select the desired unfolding to be performed.<br><br>"
             "For a demonstration, a "
-            "<a href='https://youtu.be/1ehZXbp7000'>Video Tutorial</a> "
+            "<a href='https://youtu.be/B_BmYV7GdCA'>Video Tutorial</a> "
             "has been created.<br>"
             )
         common.ShowLongTextHyperlinked(text)
