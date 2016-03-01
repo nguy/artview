@@ -1,0 +1,6 @@
+artview.plugins.DirectoryList.doubleClick
+=========================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: DirectoryList.doubleClick

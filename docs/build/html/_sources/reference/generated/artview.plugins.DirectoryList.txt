@@ -1,0 +1,34 @@
+artview.plugins.DirectoryList
+=============================
+
+.. currentmodule:: artview.plugins
+
+.. autoclass:: DirectoryList
+   :show-inheritance:
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+         DirectoryList.contextMenu
+         DirectoryList.doubleClick
+         DirectoryList.guiStart
+         DirectoryList.open
+         DirectoryList.open_with
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+   
+   
+   .. autoattribute:: Vgrid
+   .. autoattribute:: Vradar
+   
+   
+

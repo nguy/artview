@@ -1,0 +1,6 @@
+artview.components.GridDisplay.NewColormap
+==========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: GridDisplay.NewColormap

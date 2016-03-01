@@ -1,0 +1,6 @@
+artview.components.GridDisplay.NewLimits
+========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: GridDisplay.NewLimits

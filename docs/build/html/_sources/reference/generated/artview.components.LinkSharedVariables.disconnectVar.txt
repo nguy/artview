@@ -1,0 +1,6 @@
+artview.components.LinkSharedVariables.disconnectVar
+====================================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: LinkSharedVariables.disconnectVar

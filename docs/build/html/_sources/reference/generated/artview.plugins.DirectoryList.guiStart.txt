@@ -1,0 +1,6 @@
+artview.plugins.DirectoryList.guiStart
+======================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: DirectoryList.guiStart

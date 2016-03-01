@@ -1,0 +1,30 @@
+artview.components.LinkSharedVariables
+======================================
+
+.. currentmodule:: artview.components
+
+.. autoclass:: LinkSharedVariables
+   :show-inheritance:
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+         LinkSharedVariables.connectVar
+         LinkSharedVariables.disconnectVar
+         LinkSharedVariables.guiStart
+         LinkSharedVariables.linking
+         LinkSharedVariables.setComponent0
+         LinkSharedVariables.setComponent1
+         LinkSharedVariables.setupUi
+   
+   
+
+   
+   
+   
+

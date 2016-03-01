@@ -1,0 +1,6 @@
+artview.components.SelectRegion.removePolygon
+=============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: SelectRegion.removePolygon

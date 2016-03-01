@@ -1,0 +1,6 @@
+artview.components.SelectRegion.removeVertex
+============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: SelectRegion.removeVertex

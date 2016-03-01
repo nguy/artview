@@ -1,0 +1,6 @@
+artview.plugins.FileDetail.createShortUI
+========================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: FileDetail.createShortUI

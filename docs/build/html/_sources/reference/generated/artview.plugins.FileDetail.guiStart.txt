@@ -1,0 +1,6 @@
+artview.plugins.FileDetail.guiStart
+===================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: FileDetail.guiStart

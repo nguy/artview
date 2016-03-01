@@ -1,0 +1,6 @@
+artview.components.SelectRegion.update_points
+=============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: SelectRegion.update_points

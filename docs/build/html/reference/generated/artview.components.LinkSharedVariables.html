@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>artview.components.LinkSharedVariables &mdash; ARTview 1.2.3.dev+1e35d01 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/scipy.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.2.3.dev+1e35d01',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="ARTview 1.2.3.dev+1e35d01 documentation" href="../../index.html" />
+    <link rel="up" title="Main Components (artview.components)" href="../components.html" />
+    <link rel="next" title="artview.components.LinkSharedVariables.connectVar" href="artview.components.LinkSharedVariables.connectVar.html" />
+    <link rel="prev" title="artview.components.FieldButtonWindow.SetFieldRadioButtons" href="artview.components.FieldButtonWindow.SetFieldRadioButtons.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="artview.components.LinkSharedVariables.connectVar.html" title="artview.components.LinkSharedVariables.connectVar"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="artview.components.FieldButtonWindow.SetFieldRadioButtons.html" title="artview.components.FieldButtonWindow.SetFieldRadioButtons"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ARTview 1.2.3.dev+1e35d01 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li>
+          <li><a href="../components.html" accesskey="U">Main Components (<tt class="docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="artview-components-linksharedvariables">
+<h1>artview.components.LinkSharedVariables<a class="headerlink" href="#artview-components-linksharedvariables" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="artview.components.LinkSharedVariables">
+<em class="property">class </em><tt class="descclassname">artview.components.</tt><tt class="descname">LinkSharedVariables</tt><big>(</big><em>components=None</em>, <em>name='LinkSharedVariables'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/component_control.py#L13"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.LinkSharedVariables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><tt class="xref py py-class docutils literal"><span class="pre">artview.core.core.Component</span></tt></a></p>
+<p>Class instance for control variables shared between components.</p>
+<p>The user may select two components from a list. A radio menu is
+added for every common sharable variable. Each variable may be unlinked
+from similar instance in the other component.</p>
+<p>This is a powerful Component, multiple instances may conflict.</p>
+<dl class="method">
+<dt id="artview.components.LinkSharedVariables.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>components=None</em>, <em>name='LinkSharedVariables'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/component_control.py#L31"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.LinkSharedVariables.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the class to create the interface.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>[Optional]</strong> :</p>
+<p><strong>components</strong> : list of <a class="reference internal" href="artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><tt class="xref py py-class docutils literal"><span class="pre">Component</span></tt></a> instance</p>
+<blockquote>
+<div><p>Components to control. If None will use the global list present in
+artview.core.core.componentsList</p>
+</div></blockquote>
+<p><strong>name</strong> : string</p>
+<blockquote>
+<div><p>Field Radiobutton window name.</p>
+</div></blockquote>
+<p><strong>parent</strong> : PyQt instance</p>
+<blockquote class="last">
+<div><p>Parent instance to associate to this class.
+If None, then Qt owns, otherwise associated with parent PyQt
+instance.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.LinkSharedVariables.connectVar.html#artview.components.LinkSharedVariables.connectVar" title="artview.components.LinkSharedVariables.connectVar"><tt class="xref py py-obj docutils literal"><span class="pre">LinkSharedVariables.connectVar</span></tt></a>(var)</td>
+<td>Assign variable in component 0 to component 1.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.LinkSharedVariables.disconnectVar.html#artview.components.LinkSharedVariables.disconnectVar" title="artview.components.LinkSharedVariables.disconnectVar"><tt class="xref py py-obj docutils literal"><span class="pre">LinkSharedVariables.disconnectVar</span></tt></a>(var)</td>
+<td>Turn variable in component 1 independente of component 0.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.LinkSharedVariables.guiStart.html#artview.components.LinkSharedVariables.guiStart" title="artview.components.LinkSharedVariables.guiStart"><tt class="xref py py-obj docutils literal"><span class="pre">LinkSharedVariables.guiStart</span></tt></a>([parent])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.LinkSharedVariables.linking.html#artview.components.LinkSharedVariables.linking" title="artview.components.LinkSharedVariables.linking"><tt class="xref py py-obj docutils literal"><span class="pre">LinkSharedVariables.linking</span></tt></a>(var,&nbsp;state)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.LinkSharedVariables.setComponent0.html#artview.components.LinkSharedVariables.setComponent0" title="artview.components.LinkSharedVariables.setComponent0"><tt class="xref py py-obj docutils literal"><span class="pre">LinkSharedVariables.setComponent0</span></tt></a>(name)</td>
+<td>Set current component in first dropdown menu.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.LinkSharedVariables.setComponent1.html#artview.components.LinkSharedVariables.setComponent1" title="artview.components.LinkSharedVariables.setComponent1"><tt class="xref py py-obj docutils literal"><span class="pre">LinkSharedVariables.setComponent1</span></tt></a>(name)</td>
+<td>Set current component in second dropdown menu.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.LinkSharedVariables.setupUi.html#artview.components.LinkSharedVariables.setupUi" title="artview.components.LinkSharedVariables.setupUi"><tt class="xref py py-obj docutils literal"><span class="pre">LinkSharedVariables.setupUi</span></tt></a>()</td>
+<td>Build main layout.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="artview.components.FieldButtonWindow.SetFieldRadioButtons.html"
+                        title="previous chapter">artview.components.FieldButtonWindow.SetFieldRadioButtons</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="artview.components.LinkSharedVariables.connectVar.html"
+                        title="next chapter">artview.components.LinkSharedVariables.connectVar</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/reference/generated/artview.components.LinkSharedVariables.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="artview.components.LinkSharedVariables.connectVar.html" title="artview.components.LinkSharedVariables.connectVar"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="artview.components.FieldButtonWindow.SetFieldRadioButtons.html" title="artview.components.FieldButtonWindow.SetFieldRadioButtons"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ARTview 1.2.3.dev+1e35d01 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li>
+          <li><a href="../components.html" >Main Components (<tt class="docutils literal"><span class="pre">artview.components</span></tt>)</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Nick Guy.
+      Last updated on Feb 26, 2016.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

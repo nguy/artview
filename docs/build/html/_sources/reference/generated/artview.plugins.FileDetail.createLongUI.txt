@@ -1,0 +1,6 @@
+artview.plugins.FileDetail.createLongUI
+=======================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: FileDetail.createLongUI

@@ -1,0 +1,6 @@
+artview.plugins.FileDetail.showSaveDialog
+=========================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: FileDetail.showSaveDialog

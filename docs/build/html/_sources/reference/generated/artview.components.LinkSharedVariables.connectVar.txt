@@ -1,0 +1,6 @@
+artview.components.LinkSharedVariables.connectVar
+=================================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: LinkSharedVariables.connectVar

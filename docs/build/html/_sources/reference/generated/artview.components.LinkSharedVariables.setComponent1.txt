@@ -1,0 +1,6 @@
+artview.components.LinkSharedVariables.setComponent1
+====================================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: LinkSharedVariables.setComponent1

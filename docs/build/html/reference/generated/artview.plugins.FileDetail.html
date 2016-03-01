@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>artview.plugins.FileDetail &mdash; ARTview 1.2.3.dev+1e35d01 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/scipy.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.2.3.dev+1e35d01',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="ARTview 1.2.3.dev+1e35d01 documentation" href="../../index.html" />
+    <link rel="up" title="Plugins (artview.plugins)" href="../plugins.html" />
+    <link rel="next" title="artview.plugins.FileDetail.createLongUI" href="artview.plugins.FileDetail.createLongUI.html" />
+    <link rel="prev" title="artview.plugins.DirectoryList.open_with" href="artview.plugins.DirectoryList.open_with.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="artview.plugins.FileDetail.createLongUI.html" title="artview.plugins.FileDetail.createLongUI"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="artview.plugins.DirectoryList.open_with.html" title="artview.plugins.DirectoryList.open_with"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">ARTview 1.2.3.dev+1e35d01 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li>
+          <li><a href="../plugins.html" accesskey="U">Plugins (<tt class="docutils literal"><span class="pre">artview.plugins</span></tt>)</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="artview-plugins-filedetail">
+<h1>artview.plugins.FileDetail<a class="headerlink" href="#artview-plugins-filedetail" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="artview.plugins.FileDetail">
+<em class="property">class </em><tt class="descclassname">artview.plugins.</tt><tt class="descname">FileDetail</tt><big>(</big><em>dirIn=None</em>, <em>name='FileDetail'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/plugins/io.py#L202"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.plugins.FileDetail" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><tt class="xref py py-class docutils literal"><span class="pre">artview.core.core.Component</span></tt></a></p>
+<p>Open an interactive button driven file advancement.</p>
+<dl class="method">
+<dt id="artview.plugins.FileDetail.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>dirIn=None</em>, <em>name='FileDetail'</em>, <em>parent=None</em><big>)</big><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/plugins/io.py#L219"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.plugins.FileDetail.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the class to create the interface.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>[Optional]</strong> :</p>
+<p><strong>dirIn: string</strong> :</p>
+<blockquote>
+<div><p>Initial directory path to open.</p>
+</div></blockquote>
+<p><strong>name</strong> : string</p>
+<blockquote>
+<div><p>Window name.</p>
+</div></blockquote>
+<p><strong>parent</strong> : PyQt instance</p>
+<blockquote class="last">
+<div><p>Parent instance to associate to this class.
+If None, then Qt owns, otherwise associated with parent PyQt
+instance.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="artview.plugins.FileDetail.createLongUI.html#artview.plugins.FileDetail.createLongUI" title="artview.plugins.FileDetail.createLongUI"><tt class="xref py py-obj docutils literal"><span class="pre">FileDetail.createLongUI</span></tt></a>()</td>
+<td>Choose to save full information from Radar instance.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="artview.plugins.FileDetail.createShortUI.html#artview.plugins.FileDetail.createShortUI" title="artview.plugins.FileDetail.createShortUI"><tt class="xref py py-obj docutils literal"><span class="pre">FileDetail.createShortUI</span></tt></a>()</td>
+<td>Choose to save minimal information from Radar instance.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="artview.plugins.FileDetail.guiStart.html#artview.plugins.FileDetail.guiStart" title="artview.plugins.FileDetail.guiStart"><tt class="xref py py-obj docutils literal"><span class="pre">FileDetail.guiStart</span></tt></a>([parent])</td>
+<td>Graphical interface for starting this class.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="artview.plugins.FileDetail.showSaveDialog.html#artview.plugins.FileDetail.showSaveDialog" title="artview.plugins.FileDetail.showSaveDialog"><tt class="xref py py-obj docutils literal"><span class="pre">FileDetail.showSaveDialog</span></tt></a>(fsuggest,&nbsp;txt)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<dl class="attribute">
+<dt id="artview.plugins.FileDetail.Vgrid">
+<tt class="descname">Vgrid</tt><em class="property"> = None</em><a class="headerlink" href="#artview.plugins.FileDetail.Vgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="artview.plugins.FileDetail.Vradar">
+<tt class="descname">Vradar</tt><em class="property"> = None</em><a class="headerlink" href="#artview.plugins.FileDetail.Vradar" title="Permalink to this definition">¶</a></dt>
+<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><em>Shared Variables Table</em></a></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="artview.plugins.DirectoryList.open_with.html"
+                        title="previous chapter">artview.plugins.DirectoryList.open_with</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="artview.plugins.FileDetail.createLongUI.html"
+                        title="next chapter">artview.plugins.FileDetail.createLongUI</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/reference/generated/artview.plugins.FileDetail.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../../np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="artview.plugins.FileDetail.createLongUI.html" title="artview.plugins.FileDetail.createLongUI"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="artview.plugins.DirectoryList.open_with.html" title="artview.plugins.DirectoryList.open_with"
+             >previous</a> |</li>
+        <li><a href="../../index.html">ARTview 1.2.3.dev+1e35d01 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >ARTview (<tt class="docutils literal"><span class="pre">artview</span></tt>)</a> &raquo;</li>
+          <li><a href="../plugins.html" >Plugins (<tt class="docutils literal"><span class="pre">artview.plugins</span></tt>)</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Nick Guy.
+      Last updated on Feb 26, 2016.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,6 @@
+artview.components.GridDisplay.parse_plot_type
+==============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: GridDisplay.parse_plot_type
