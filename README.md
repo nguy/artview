@@ -13,7 +13,7 @@ You can interact with data files through "Plugins". Many functions from the Py-A
 package can be selected. In addition, ARTview plugins allow querying data by
 selecting regions or points visually.
 
-![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.27358.svg)](http://dx.doi.org/10.5281/zenodo.27358)
+[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.47224.svg)](http://dx.doi.org/10.5281/zenodo.47224)
 
 ![Screenshot](https://github.com/nguy/artview/blob/master/ARTView_Screenshot.png)
 
