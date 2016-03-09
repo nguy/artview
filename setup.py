@@ -52,9 +52,9 @@ LICENSE = 'BSD'
 CLASSIFIERS = filter(None, CLASSIFIERS.split('\n'))
 PLATFORMS = ["Linux", "Mac OS-X", "Unix"]
 MAJOR = 1
-MINOR = 2
-MICRO = 3
-ISRELEASED = True
+MINOR = 3
+MICRO = 0
+ISRELEASED = False
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 SCRIPTS = glob.glob('scripts/*') + ['scripts/artview']
 
