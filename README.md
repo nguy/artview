@@ -15,7 +15,7 @@ selecting regions or points visually.
 
 [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.47224.svg)](http://dx.doi.org/10.5281/zenodo.47224)
 
-![Screenshot](https://github.com/nguy/artview/blob/master/ARTView_Screenshot.png)
+![Screenshot](https://github.com/nguy/ARTview/blob/master/ARTview_Screenshot.png)
 
 ARTview highlights:
 
@@ -48,13 +48,13 @@ ARTview highlights:
     Write your own plugins to use.
 
 ## Links
-[Code repository](https://github.com/nguy/artview)
+[Code repository](https://github.com/nguy/ARTview)
 
-[Documentation](https://rawgit.com/nguy/artview/master/docs/build/html/index.html)
+[Documentation](https://rawgit.com/nguy/ARTview/master/docs/build/html/index.html)
 
-[User Forum](https://groups.google.com/forum/#!forum/artview-users)
+[User Forum](https://groups.google.com/forum/#!forum/ARTview-users)
 
-[Issues](https://github.com/nguy/artview/issues)
+[Issues](https://github.com/nguy/ARTview/issues)
 
 [Py-ART](https://github.com/ARM-DOE/pyart)
 
@@ -71,40 +71,40 @@ It has performed well in internal testing, but if you find bugs in
 there, we appreciate your help in finding and addressing them.
 
 ## Tutorials
-Paul Hein has put together a [brief introduction](http://radarmet.atmos.colostate.edu/software/artview/).
-Anderson Gama has made a [video introduction](https://www.youtube.com/watch?v=iaNoGZTUhg4) to ARTView 1.0
+Paul Hein has put together a [brief introduction](http://radarmet.atmos.colostate.edu/software/ARTview/).
+Anderson Gama has made a [video introduction](https://www.youtube.com/watch?v=iaNoGZTUhg4) to ARTview 1.0
 as well as [video tutorials](https://www.youtube.com/watch?v=B_BmYV7GdCA&list=PLCmWx9EHGvfIrvrYSTpHrEqdVVjvKi4SF)
-to ARTView 1.2.
+to ARTview 1.2.
 
 ## Install
 
-The easiest method for installing ARTView is to use the conda packages from
+The easiest method for installing ARTview is to use the conda packages from
 the latest release.  To do this you must download and install
-`Anaconda <http://continuum.io/downloads>`_ or
-`Miniconda <http://continuum.io/downloads>`_.
+[Anaconda](http://continuum.io/downloads) or
+[Miniconda](http://continuum.io/downloads).
 Then use the following command in a terminal or command prompt to install
-the latest version of ARTView::
+the latest version of ARTview::
 
     conda install -c jjhelmus artivew
 
-To update an older version of ARTView to the latest release use::
+To update an older version of ARTview to the latest release use::
 
-    conda update -c jjhelmus artview
+    conda update -c jjhelmus ARTview
 
 If you do not wish to use Anaconda or Miniconda as a Python environment or want
-to use the latest, unreleased version of ARTView see the section below on
+to use the latest, unreleased version of ARTview see the section below on
 **Installing from source**.
 
 ## Installing from source
 
-Installing ARTView from source is the only way to get the latest updates and
-enhancement to the software that have not yet made it into a release.
-The latest source code for ARTView can be obtained from the GitHub repository,
-https://github.com/nguy/artview.  Either download and unpack the
-`zip file <https://github.com/nguy/artview/archive/master.zip>`_ of
-the source code or use git to checkout the repository::
+Installing ARTview from source is the only way to get the latest updates and
+enhancements to the software that have not yet made it into a release.
+The latest source code for ARTview can be obtained from the GitHub repository,
+https://github.com/nguy/ARTview.  Either download and unpack the
+source code [zip file](https://github.com/nguy/ARTview/archive/master.zip) or
+use git to checkout the repository::
 
-    git clone https://github.com/nguy/artview.git
+    git clone https://github.com/nguy/ARTview.git
 
 To install in your home directory, use::
 
@@ -120,35 +120,35 @@ To install for all users on Unix/Linux::
 Either cd into the installed folder and run:
 
 ```python
-python artview -d /some/directory/you/want/to/point/to
+python ARTview -d /some/directory/you/want/to/point/to
 ```
 
 Or it can be run from anywhere with the following:
 
 ```python
-artview
+ARTview
 ```
 
 A specific file can be loaded:
 ```python
-artview -F /some/directory/you/want/to/point/to/filename
+ARTview -F /some/directory/you/want/to/point/to/filename
 ```
 
 A specific field (e.g. reflectivity) can be loaded:
 ```python
-artview -f 'reflectivity'
+ARTview -f 'reflectivity'
 ```
 
 Use a different start-up script with -s
 ```python
-artview -s radar
+ARTview -s radar
 ```
 There are several [predefined scripts](SCRIPTS.md) that you can use, but you
-can also [write your own](https://rawgit.com/nguy/artview/master/docs/build/html/script_tutorial.html).
+can also [write your own](https://rawgit.com/nguy/ARTview/master/docs/build/html/script_tutorial.html).
 
 To see other command line options:
 ```python
-artview -h
+ARTview -h
 ```
 
 ARTview should be able to recognize and correctly handle PPI, RHI and airborne files.
@@ -177,7 +177,7 @@ to match the kind of files used as well as persornal preferences.
 
 Developed on Python 2.7.7 and 2.7.9 :: Anaconda 2.0.1 and 2.1.0
 
-ARTView has been tested on:
+ARTview has been tested on:
 MacOSX 10.9.4, 10.10.2, 10.10.4
 Linux Debian (Jessie)
 Linux Red Hat (RHEL6)
@@ -188,8 +188,8 @@ work properly.
 
 ## User Forum
 
-For questions on the use of ARTView please write in the [mailing list](https://groups.google.com/forum/#!forum/artview-users),
-if you found any bug please report in the [Issue](https://github.com/nguy/artview/issues). We are thankful for all feedback.
+For questions on the use of ARTview please write in the [mailing list](https://groups.google.com/forum/#!forum/ARTview-users),
+or for a bug report please submit an [Issue](https://github.com/nguy/ARTview/issues). We appreciate all feedback.
 
 ## Contributors
 
@@ -199,12 +199,12 @@ if you found any bug please report in the [Issue](https://github.com/nguy/artvie
 
 Paul Hein
 
-Timothy Lang
-
 Jonathan Helmus
 
+Timothy Lang
+
 ## Disclaimer
-This is open source software and contributions are very welcome!
+This is open source software and we love contributions!
 This is not a primary project for any of the contributors, so please be patient
 if you have questions/suggestions.  In addition it needs to be stated that no
 responsibility is taken by the authors for any adverse effects.
