@@ -1,0 +1,102 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>ARTview by nguy</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>ARTview</h1>
+        <p>ARM Radar Toolkit Viewer</p>
+
+        <p class="view"><a href="https://github.com/nguy/artview">View the Project on GitHub <small>nguy/artview</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/nguy/artview/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/nguy/artview/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/nguy/artview">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h3>
+<a id="whats-this-artview-thing" class="anchor" href="#whats-this-artview-thing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>What's this ARTview thing?</h3>
+
+<p>ARTview is an interactive GUI viewer that is built on top of the <a href="https://github.com/ARM-DOE/pyart">Py-ART</a> toolkit for weather radar data. It offers the ability to visualize, query and edit data and is cross-platform compatible. All file types available in Py-ART can be opened with the ARTview browser.
+The intent of ARTview is to provide an easy interface for novice users of weather radar data as well as provide analytical and editing tools for advanced user by leveraging the quickly maturing Py-ART code base, as well as internal features unique to ARTview.</p>
+
+<h3>
+<a id="documentation" class="anchor" href="#documentation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Documentation</h3>
+
+<p>Documentation for ARTview can be found in the online <a href="https://rawgit.com/nguy/artview/master/docs/build/html/index.html">documentation</a> or using Python's built in help system. In addition, a <a href="http://radarmet.atmos.colostate.edu/software/artview/">brief introduction</a> is available as well as many <a href="https://www.youtube.com/watch?v=B_BmYV7GdCA&amp;list=PLCmWx9EHGvfIrvrYSTpHrEqdVVjvKi4SF">video tutorials</a>.</p>
+
+<h3>
+<a id="how-do-i-contribute" class="anchor" href="#how-do-i-contribute" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How do I contribute?</h3>
+
+<p>ARTview is an open source project that is keen on receiving contributions from users. A central idea in ARTview is provide "Plugins" that perform any sort of operation. Along with the package plugins, you can <a href="https://rawgit.com/nguy/artview/master/docs/build/html/plugin_tutorial.html">write your own plugin</a>. ARTview will automatically load this plugin at startup. If you think it's useful please send it to us (see Getting Help below) and it can be included in the next release. Another feature is <a href="https://rawgit.com/nguy/artview/master/docs/build/html/script_tutorial.html">building your own script</a> to have components start automatically.</p>
+
+<h3>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h3>
+
+<p>The easiest method for installing ARTview is to use the conda packages from the latest release.  To do this you must download and install <a href="http://continuum.io/downloads">Anaconda</a> or <a href="http://continuum.io/downloads">Miniconda</a>. Then use the following command in a terminal or command prompt to install the latest version of ARTview</p>
+
+<pre><code>conda install -c jjhelmus artivew
+</code></pre>
+
+<p>To update an older version of ARTview to the latest release use</p>
+
+<pre><code>conda update -c jjhelmus artview
+</code></pre>
+
+<p>Installing ARTview from source is the only way to get the latest updates and enhancements to the software that have not yet made it into official release. The latest source code for ARTview can be obtained from the GitHub repository (via download from links above) or use git to checkout the repository</p>
+
+<pre><code>git clone https://github.com/nguy/artview.git
+</code></pre>
+
+<p>To install in your home directory, use</p>
+
+<pre><code>python setup.py install --user
+</code></pre>
+
+<p>To install for all users on Unix/Linux</p>
+
+<pre><code>python setup.py build
+sudo python setup.py install
+</code></pre>
+
+<h3>
+<a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+
+<p><a href="https://github.com/gamaanderson">Anderson Gama</a></p>
+
+<p><a href="https://github.com/nguy">Nick Guy</a></p>
+
+<p>Jonathan Helmus</p>
+
+<p>Paul Hein</p>
+
+<p>Timothy Lang</p>
+
+<h3>
+<a id="getting-help" class="anchor" href="#getting-help" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Getting Help</h3>
+
+<p>ARTview has a <a href="https://groups.google.com/forum/#!forum/artview-users">mailing list</a> where you can ask questions and request help. If you find a bug or have a suggestion, please submit and <a href="https://github.com/nguy/artview/issues">Issue on Github</a>.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/nguy">nguy</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
