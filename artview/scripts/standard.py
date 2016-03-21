@@ -24,14 +24,15 @@ def run(DirIn=None, filename=None, field=None):
     """
     import sys
 
-    from ..core import Variable, QtGui, QtCore, checkifmac
+    from ..core import Variable, QtGui, QtCore
     from ..components import RadarDisplay, Menu, LevelButtonWindow, \
         LinkSharedVariables, SelectRegion
     from ._parse_field import _parse_field
     from ._common import startMainMenu
+    from .. import view
 
     app = QtGui.QApplication(sys.argv)
-    if checkifmac():
+    if view.checkifmac():
         app.setAttribute(QtCore.Qt.AA_MacPluginApplication, True)
 
     # start Menu and initiate Vradar
