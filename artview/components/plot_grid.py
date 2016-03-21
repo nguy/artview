@@ -247,6 +247,10 @@ class GridDisplay(Component):
             self.name)
         if aspect != self.ax.get_aspect():
             self.ax.set_aspect(aspect)
+            if self.plot_type == "gridZ":
+                import warnings
+                warnings.warn("Changing Aspect Radio does not work in Altitude"
+                    "Plot. This is a result of pyart forcing equal ratio.")
         if change == 1:
             self.Vcolormap.change(cmap)
             self.Vlimits.change(limits)
