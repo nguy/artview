@@ -9,6 +9,8 @@ Class instance to create Variables and establish change signals.
 # this should the only place with reference to PyQt4
 from PyQt4 import QtGui, QtCore
 import sys
+import os
+import platform
 
 # lets add some magic for the documentation
 QtCore.__doc__ = ("Qt backend to be used all over ARTview, now it is an "
@@ -269,3 +271,12 @@ class Component(QtGui.QMainWindow):
         componentsList.remove(self)
         self.disconnectAllVariables()
         super(Component, self).closeEvent(QCloseEvent)
+
+
+def checkifmac():
+    '''Check to see if operating MacOSX'''
+    ismac = False
+    if os.name == 'posix':
+        if platform.system().lower() == 'darwin':
+            ismac = True
+    return ismac
