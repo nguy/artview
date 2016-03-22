@@ -902,8 +902,8 @@ class RadarDisplay(Component):
             self.plot_type = "radarPpi"
         else:
             if 'platform_type' in radar.metadata:
-                if (radar.metadata['platform_type'] == 'aircraft_tail' or
-                        radar.metadata['platform_type'] == 'aircraft'):
+                if ('aircraft' in radar.metadata['platform_type'] or
+                    'aircraft_tail' in radar.metadata['platform_type']):
                     self.plot_type = "radarAirborne"
                 else:
                     self.plot_type = "radarRhi"
