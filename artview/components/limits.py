@@ -156,12 +156,20 @@ def limits_dialog(limits, cmap, aspect='auto', name=None):
 
     # Set up the Entry limits
     ent_dmin = QtGui.QLineEdit(LimsDialog)
+    ent_dmin.setToolTip('Minimum data value to display')
     ent_dmax = QtGui.QLineEdit(LimsDialog)
+    ent_dmax.setToolTip('Maximum data value to display')
     ent_xmin = QtGui.QLineEdit(LimsDialog)
+    ent_xmin.setToolTip('Minimum horizontal-axis value')
     ent_xmax = QtGui.QLineEdit(LimsDialog)
+    ent_xmax.setToolTip('Maximum horizontal-axis value')
     ent_ymin = QtGui.QLineEdit(LimsDialog)
+    ent_ymin.setToolTip('Minimum vertical-axis value')
     ent_ymax = QtGui.QLineEdit(LimsDialog)
+    ent_ymax.setToolTip('Maximum vertical-axis value')
     ent_aspect = QtGui.QLineEdit(LimsDialog)
+    ent_aspect.setToolTip('vertical-to-horizontal size display ratio, '
+        'also accepts auto and equal')
 
     # Input the current values
     ent_dmin.setText(str(cmap['vmin']))
