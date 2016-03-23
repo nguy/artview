@@ -229,11 +229,15 @@ class RadarDisplay(Component):
     def _open_LimsDialog(self):
         '''Open a dialog box to change display limits.'''
         from .limits import limits_dialog
-        limits, cmap, change = limits_dialog(
-            self.Vlimits.value, self.Vcolormap.value, self.name)
+        limits, cmap, aspect, change = limits_dialog(
+            self.Vlimits.value, self.Vcolormap.value, self.ax.get_aspect(),
+            self.name)
+        if aspect != self.ax.get_aspect():
+            self.ax.set_aspect(aspect)
         if change == 1:
             self.Vcolormap.change(cmap)
             self.Vlimits.change(limits)
+
 
     def _fillTiltBox(self):
         '''Fill in the Tilt Window Box with current elevation angles.'''
@@ -898,8 +902,8 @@ class RadarDisplay(Component):
             self.plot_type = "radarPpi"
         else:
             if 'platform_type' in radar.metadata:
-                if (radar.metadata['platform_type'] == 'aircraft_tail' or
-                        radar.metadata['platform_type'] == 'aircraft'):
+                if ('aircraft' in radar.metadata['platform_type'] or
+                    'aircraft_tail' in radar.metadata['platform_type']):
                     self.plot_type = "radarAirborne"
                 else:
                     self.plot_type = "radarRhi"
