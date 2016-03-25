@@ -67,6 +67,8 @@ def start():
     global app
     if app is None:
         app = QtGui.QApplication([])
+        if checkifmac():
+            app.setAttribute(QtCore.Qt.AA_MacPluginApplication, True)
 
     global MainMenu
     MainMenu = startMainMenu(os.getcwd(), False)
