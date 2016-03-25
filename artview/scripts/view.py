@@ -9,6 +9,7 @@ import sys
 from ..core import Variable, QtGui, QtCore
 from ..components import RadarDisplay, Menu
 from ._common import _add_all_advanced_tools, _parse_dir, _parse_field
+from .. import view
 
 
 def run(DirIn=None, filename=None, field=None):
@@ -18,6 +19,8 @@ def run(DirIn=None, filename=None, field=None):
     DirIn = _parse_dir(DirIn)
 
     app = QtGui.QApplication(sys.argv)
+    if view.checkifmac():
+        app.setAttribute(QtCore.Qt.AA_MacPluginApplication, True)
 
     # start Menu and initiate Vradar
     menu = Menu(DirIn, filename=False, mode=(), name="Menu")

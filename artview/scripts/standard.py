@@ -29,8 +29,11 @@ def run(DirIn=None, filename=None, field=None):
         LinkSharedVariables, SelectRegion
     from ._parse_field import _parse_field
     from ._common import startMainMenu
+    from .. import view
 
     app = QtGui.QApplication(sys.argv)
+    if view.checkifmac():
+        app.setAttribute(QtCore.Qt.AA_MacPluginApplication, True)
 
     # start Menu and initiate Vradar
     MainMenu = startMainMenu(DirIn, filename)

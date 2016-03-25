@@ -17,6 +17,7 @@ Utilities easily running ARTview from shell.
 """
 
 import os
+import platform
 import pyart
 
 from .core import Variable, QtGui, QtCore
@@ -66,6 +67,8 @@ def start():
     global app
     if app is None:
         app = QtGui.QApplication([])
+        if checkifmac():
+            app.setAttribute(QtCore.Qt.AA_MacPluginApplication, True)
 
     global MainMenu
     MainMenu = startMainMenu(os.getcwd(), False)
@@ -127,3 +130,12 @@ def addGrid(grid, field=reflectivity):
     displays.append(GridDisplay(
         Variable(grid), Variable(field), Variable(0), name="Display%i" % i,
         parent=MainMenu))
+
+
+def checkifmac():
+    '''Check to see if operating MacOSX'''
+    ismac = False
+    if os.name == 'posix':
+        if platform.system().lower() == 'darwin':
+            ismac = True
+    return ismac
