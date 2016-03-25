@@ -242,10 +242,13 @@ class GridDisplay(Component):
     def _open_LimsDialog(self):
         '''Open a dialog box to change display limits.'''
         from .limits import limits_dialog
-        limits, cmap, change = limits_dialog(self.Vlimits.value,
-                                             self.Vcolormap.value, self.name)
+        limits, cmap, aspect, change = limits_dialog(
+            self.Vlimits.value, self.Vcolormap.value, self.ax.get_aspect(),
+            self.name)
+        if aspect != self.ax.get_aspect():
+            self.ax.set_aspect(aspect)
         if change == 1:
-            self.Vcolormap.change(cmap, False)
+            self.Vcolormap.change(cmap)
             self.Vlimits.change(limits)
 
     def _fillLevelBox(self):

@@ -120,7 +120,7 @@ def _default_limits(field, plot_type):
 ###############################
 
 
-def limits_dialog(limits, cmap, name):
+def limits_dialog(limits, cmap, aspect='auto', name=None):
     '''Function to instantiate a Display Limits Window.
 
     Parameters::
@@ -152,14 +152,24 @@ def limits_dialog(limits, cmap, name):
     lab_xmax = QtGui.QLabel("X Max")
     lab_ymin = QtGui.QLabel("Y Min")
     lab_ymax = QtGui.QLabel("Y Max")
+    lab_aspect = QtGui.QLabel("Aspect Ratio")
 
     # Set up the Entry limits
     ent_dmin = QtGui.QLineEdit(LimsDialog)
+    ent_dmin.setToolTip('Minimum data value to display')
     ent_dmax = QtGui.QLineEdit(LimsDialog)
+    ent_dmax.setToolTip('Maximum data value to display')
     ent_xmin = QtGui.QLineEdit(LimsDialog)
+    ent_xmin.setToolTip('Minimum horizontal-axis value')
     ent_xmax = QtGui.QLineEdit(LimsDialog)
+    ent_xmax.setToolTip('Maximum horizontal-axis value')
     ent_ymin = QtGui.QLineEdit(LimsDialog)
+    ent_ymin.setToolTip('Minimum vertical-axis value')
     ent_ymax = QtGui.QLineEdit(LimsDialog)
+    ent_ymax.setToolTip('Maximum vertical-axis value')
+    ent_aspect = QtGui.QLineEdit(LimsDialog)
+    ent_aspect.setToolTip('vertical-to-horizontal size display ratio, '
+        'also accepts auto and equal')
 
     # Input the current values
     ent_dmin.setText(str(cmap['vmin']))
@@ -168,6 +178,7 @@ def limits_dialog(limits, cmap, name):
     ent_xmax.setText(str(limits['xmax']))
     ent_ymin.setText(str(limits['ymin']))
     ent_ymax.setText(str(limits['ymax']))
+    ent_aspect.setText(str(aspect))
 
     # Add to the layout
     gridLayout.addWidget(lab_dmin, 0, 0, 1, 1)
@@ -182,6 +193,8 @@ def limits_dialog(limits, cmap, name):
     gridLayout.addWidget(ent_ymin, 4, 1, 1, 1)
     gridLayout.addWidget(lab_ymax, 5, 0, 1, 1)
     gridLayout.addWidget(ent_ymax, 5, 1, 1, 1)
+    gridLayout.addWidget(lab_aspect, 6, 0, 1, 1)
+    gridLayout.addWidget(ent_aspect, 6, 1, 1, 1)
 
     gridLayout_2.addLayout(gridLayout, 0, 0, 1, 1)
     buttonBox = QtGui.QDialogButtonBox(LimsDialog)
@@ -207,6 +220,10 @@ def limits_dialog(limits, cmap, name):
         limits['xmax'] = float(ent_xmax.text())
         limits['ymin'] = float(ent_ymin.text())
         limits['ymax'] = float(ent_ymax.text())
+        try:
+            aspect = float(ent_aspect.text())
+        except ValueError:
+            aspect = ent_aspect.text()
         print(limits)
 
-    return limits, cmap, retval
+    return limits, cmap, aspect, retval

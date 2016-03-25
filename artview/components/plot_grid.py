@@ -242,10 +242,17 @@ class GridDisplay(Component):
     def _open_LimsDialog(self):
         '''Open a dialog box to change display limits.'''
         from .limits import limits_dialog
-        limits, cmap, change = limits_dialog(self.Vlimits.value,
-                                             self.Vcolormap.value, self.name)
+        limits, cmap, aspect, change = limits_dialog(
+            self.Vlimits.value, self.Vcolormap.value, self.ax.get_aspect(),
+            self.name)
+        if aspect != self.ax.get_aspect():
+            self.ax.set_aspect(aspect)
+            if self.plot_type == "gridZ":
+                import warnings
+                warnings.warn("Changing Aspect Radio does not work in Altitude"
+                    "Plot. This is a result of pyart forcing equal ratio.")
         if change == 1:
-            self.Vcolormap.change(cmap, False)
+            self.Vcolormap.change(cmap)
             self.Vlimits.change(limits)
 
     def _fillLevelBox(self):
@@ -351,14 +358,14 @@ class GridDisplay(Component):
 
         self.dispPlotType = dispmenu.addMenu("Change Plot Type")
         self.dispPlotType.setFocusPolicy(QtCore.Qt.NoFocus)
-        cmapAction = self.dispPlotType.addAction('Altitude Plot')
-        cmapAction.triggered[()].connect(lambda:
+        PlotTypeAction = self.dispPlotType.addAction('Altitude Plot')
+        PlotTypeAction.triggered[()].connect(lambda:
                                          self.change_plot_type('gridZ'))
-        cmapAction = self.dispPlotType.addAction('Longitudinal Plot')
-        cmapAction.triggered[()].connect(lambda:
+        PlotTypeAction = self.dispPlotType.addAction('Longitudinal Plot')
+        PlotTypeAction.triggered[()].connect(lambda:
                                          self.change_plot_type('gridY'))
-        cmapAction = self.dispPlotType.addAction('Latitudinal Plot')
-        cmapAction.triggered[()].connect(lambda:
+        PlotTypeAction = self.dispPlotType.addAction('Latitudinal Plot')
+        PlotTypeAction.triggered[()].connect(lambda:
                                          self.change_plot_type('gridX'))
 
         dispQuickSave = dispmenu.addAction("Quick Save Image")
