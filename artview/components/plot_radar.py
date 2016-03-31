@@ -477,7 +477,8 @@ class RadarDisplay(Component):
         * Update fields MenuBox
         * If strong update: update plot
         '''
-        self._set_default_cmap(strong=False)
+        if self.Vcolormap.value['lock'] is False:
+            self._set_default_cmap(strong=False)
         self.units = self._get_default_units()
         self.title = self._get_default_title()
         idx = self.fieldBox.findText(self.Vfield.value)
@@ -635,7 +636,8 @@ class RadarDisplay(Component):
             if self.tools[key] is not None:
                 self.tools[key].disconnect()
                 self.tools[key] = None
-        self._set_default_cmap()
+        if self.Vcolormap.value['lock'] is False:
+            self._set_default_cmap()
         self._set_default_limits()
 
     def getPathInteriorValues(self, paths):
@@ -927,6 +929,7 @@ class RadarDisplay(Component):
         cmap = pyart.config.get_field_colormap(self.Vfield.value)
         d = {}
         d['cmap'] = cmap
+        d['lock'] = False
         lims = pyart.config.get_field_limits(self.Vfield.value,
                                              self.Vradar.value,
                                              self.Vtilt.value)
