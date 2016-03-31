@@ -86,6 +86,10 @@ class Variable(QtCore.QObject):
         |           | current working   |(strings)                           |
         |           | directory         |                                    |
         +-----------+-------------------+------------------------------------+
+        |VRadarCol\ | Cache radars      |list of :py:class:`pyart.core.Radar`|
+        |lection    |                   |instances                           |
+        |           |                   |                                    |
+        +-----------+-------------------+------------------------------------+
 
     '''
 
