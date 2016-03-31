@@ -47,7 +47,7 @@ except:
 
 class DirectoryList(Component):
     '''
-    Open an interactive python console so the direct manipulation.
+    Open an directory view to open files.
     '''
 
     Vradar = None  #: see :ref:`shared_variable`
