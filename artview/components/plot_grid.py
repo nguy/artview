@@ -811,6 +811,13 @@ class GridDisplay(Component):
         cmap = self.Vcolormap.value
 
         self.display = pyart.graph.GridMapDisplay(self.Vgrid.value)
+
+
+        if 'norm' in cmap:
+            norm = cmap['norm']
+        else:
+            norm = None
+
         # Create Plot
         if self.plot_type == "gridZ":
             self.display.plot_basemap(
@@ -818,21 +825,21 @@ class GridDisplay(Component):
             self.basemap = self.display.get_basemap()
             self.plot = self.display.plot_grid(
                 self.Vfield.value, self.VlevelZ.value, vmin=cmap['vmin'],
-                vmax=cmap['vmax'], cmap=cmap['cmap'], colorbar_flag=False,
-                title=title, ax=self.ax, fig=self.fig)
+                vmax=cmap['vmax'], cmap=cmap['cmap'], norm=norm,
+                colorbar_flag=False, title=title, ax=self.ax, fig=self.fig)
         elif self.plot_type == "gridY":
             self.basemap = None
             self.plot = self.display.plot_latitudinal_level(
                 self.Vfield.value, self.VlevelY.value, vmin=cmap['vmin'],
-                vmax=cmap['vmax'], cmap=cmap['cmap'], colorbar_flag=False,
-                title=title, ax=self.ax, fig=self.fig)
+                vmax=cmap['vmax'], cmap=cmap['cmap'], norm=norm,
+                colorbar_flag=False, title=title, ax=self.ax, fig=self.fig)
             self.ax.set_aspect('auto')
         elif self.plot_type == "gridX":
             self.basemap = None
             self.plot = self.display.plot_longitudinal_level(
                 self.Vfield.value, self.VlevelX.value, vmin=cmap['vmin'],
-                vmax=cmap['vmax'], cmap=cmap['cmap'], colorbar_flag=False,
-                title=title, ax=self.ax, fig=self.fig)
+                vmax=cmap['vmax'], cmap=cmap['cmap'], norm=norm,
+                colorbar_flag=False, title=title, ax=self.ax, fig=self.fig)
             self.ax.set_aspect('auto')
 
         limits = self.Vlimits.value
@@ -844,8 +851,9 @@ class GridDisplay(Component):
         limits['ymax'] = y[1]
 
         self._update_axes()
-        norm = mlabNormalize(vmin=cmap['vmin'],
-                             vmax=cmap['vmax'])
+        if norm is None:
+            norm = mlabNormalize(vmin=cmap['vmin'],
+                                 vmax=cmap['vmax'])
         self.cbar = mlabColorbarBase(self.cax, cmap=cmap['cmap'],
                                      norm=norm, orientation='vertical')
         self.cbar.set_label(self.units)
