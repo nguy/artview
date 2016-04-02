@@ -192,7 +192,7 @@ def pre_instalation_tests():
     # test dependencies
     from pkg_resources import parse_version
     dependencies = {
-        'pyart': '1.5',
+        'pyart': '1.6',
         'matplotlib': '1.1.0',
         # 'mpl_toolkits.basemap': '0.99',
         }
