@@ -7,6 +7,7 @@ Common routines run throughout ARTView.
 # Load the needed packages
 from .core import QtGui, QtCore
 import numpy as np
+import os, glob
 
 ########################
 # Dialog methods #
@@ -321,3 +322,39 @@ def _array_stats(data):
     statdict['Variance'] = np.ma.var(data)
 
     return statdict
+
+
+########################
+#   Colormap methods   #
+########################
+
+class select_cmap(QtGui.QDialog):
+    def __init__(self):
+        '''Allow the user to select a colormap.'''
+        super(select_cmap, self).__init__()
+        self.layout = QtGui.QGridLayout(self)
+        self.setWindowTitle("Select Colormap")
+        # set window as modal
+        self.setWindowModality(QtCore.Qt.ApplicationModal)
+
+        parentdir = os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                                 os.pardir))
+        images = glob.glob(parentdir + "/icons/colormaps/*.png")
+
+        for i,path in enumerate(images):
+            name = path.split('/')[-1].split('.')[0]
+            button = QtGui.QPushButton(name)
+            self.layout.addWidget(button, 2*(i/3)+1, 2*(i%3))
+            button.clicked.connect(lambda ans,name=name: self.select(name))
+            label = QtGui.QLabel()
+            pixmap = QtGui.QPixmap(path)
+            label.setPixmap(pixmap)
+            label.setScaledContents(True)
+            self.layout.addWidget(label, 2*(i/3)+1, 2*(i%3)+1)
+
+        self.selection = None
+        self.exec_()
+
+    def select(self, name):
+        self.selection = name
+        self.done(QtGui.QDialog.Accepted)

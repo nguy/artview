@@ -58,6 +58,7 @@ class ColormapEdit(core.Component):
         self.ax = self.fig.add_axes([0.0, 0.0, 0.01, 0.01])
         self.cax = self.fig.add_axes([0, 0, 0.8, 1])
         self.canvas = FigureCanvasQTAgg(self.fig)
+        self.canvas.mpl_connect('button_press_event', self.select_cmap)
 
     def createUI(self):
         '''
@@ -89,6 +90,9 @@ class ColormapEdit(core.Component):
         self.lock_box.stateChanged.connect(self.update_colormap)
         self.layout.addWidget(self.lock_box, 6, 0, 1, 2)
 
+        self.select_button = QtGui.QPushButton("Select cmap")
+        self.select_button.clicked.connect(self.select_cmap)
+
         self.apply_button = QtGui.QPushButton("Apply")
         self.apply_button.clicked.connect(self.apply)
 
@@ -117,6 +121,7 @@ class ColormapEdit(core.Component):
 
         self.layout.addWidget(QtGui.QLabel("Normalize"), 0, 0, 1, 1)
         self.layout.addWidget(self.norm_type, 0, 1, 1, 3)
+        self.layout.addWidget(self.select_button, 1, 2, 1, 1)
 
         idx = self.norm_type.currentIndex()
         if idx in [0, 1, 2, 3, 4]:
@@ -228,6 +233,13 @@ class ColormapEdit(core.Component):
             self.cmap['norm'] = colors.BoundaryNorm(bounds,
                                                     ncolors=256)
         self.plot()
+
+    def select_cmap(self, post):
+        '''Select cmap from a list of pyart colormaps.'''
+        cmap = core.common.select_cmap().selection
+        if cmap is not None:
+            self.cmap['cmap'] = cmap
+            self.plot()
 
     def apply(self):
         '''Apply changes to shared colormap.'''
