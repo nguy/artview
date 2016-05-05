@@ -57,6 +57,8 @@ else:
     from . import scripts
     from . import parser
     from . import view
+    from .modes import modes
 
+    modes += plugins._modes
     # define standard execution
     run = scripts.scripts['standard']

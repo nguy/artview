@@ -112,6 +112,7 @@ def _default_limits(field, plot_type):
     cmap['vmin'] = vminmax[0]
     cmap['vmax'] = vminmax[1]
     cmap['cmap'] = CMAP
+    cmap['lock'] = False
 
     return limits, cmap
 
@@ -170,6 +171,8 @@ def limits_dialog(limits, cmap, aspect='auto', name=None):
     ent_aspect = QtGui.QLineEdit(LimsDialog)
     ent_aspect.setToolTip('vertical-to-horizontal size display ratio, '
         'also accepts auto and equal')
+    lock_box = QtGui.QCheckBox('lock colormap')
+    lock_box.setToolTip('Signalise components not to reset the colormap')
 
     # Input the current values
     ent_dmin.setText(str(cmap['vmin']))
@@ -179,6 +182,7 @@ def limits_dialog(limits, cmap, aspect='auto', name=None):
     ent_ymin.setText(str(limits['ymin']))
     ent_ymax.setText(str(limits['ymax']))
     ent_aspect.setText(str(aspect))
+    lock_box.setChecked(cmap['lock'])
 
     # Add to the layout
     gridLayout.addWidget(lab_dmin, 0, 0, 1, 1)
@@ -195,6 +199,7 @@ def limits_dialog(limits, cmap, aspect='auto', name=None):
     gridLayout.addWidget(ent_ymax, 5, 1, 1, 1)
     gridLayout.addWidget(lab_aspect, 6, 0, 1, 1)
     gridLayout.addWidget(ent_aspect, 6, 1, 1, 1)
+    gridLayout.addWidget(lock_box, 7, 0, 1, 2)
 
     gridLayout_2.addLayout(gridLayout, 0, 0, 1, 1)
     buttonBox = QtGui.QDialogButtonBox(LimsDialog)
@@ -216,6 +221,7 @@ def limits_dialog(limits, cmap, aspect='auto', name=None):
     if retval == 1:
         cmap['vmin'] = float(ent_dmin.text())
         cmap['vmax'] = float(ent_dmax.text())
+        cmap['lock'] = lock_box.isChecked()
         limits['xmin'] = float(ent_xmin.text())
         limits['xmax'] = float(ent_xmax.text())
         limits['ymin'] = float(ent_ymin.text())

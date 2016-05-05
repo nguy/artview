@@ -17,6 +17,7 @@ import sys
 
 thismodule = sys.modules[__name__]
 _plugins = {}
+_modes = []
 
 for module in os.listdir(os.path.dirname(__file__)):
     if module.startswith('_') or module[-3:] != '.py':
@@ -31,6 +32,8 @@ for module in os.listdir(os.path.dirname(__file__)):
         _plugins[plugin.__name__] = plugin
         # update docstring to add plugin
         __doc__ = __doc__ + """    %s\n""" % plugin.__name__
+    if hasattr(tmp,'_modes'):
+        _modes += tmp._modes
 
 del module
 del os

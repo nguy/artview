@@ -477,7 +477,8 @@ class RadarDisplay(Component):
         * Update fields MenuBox
         * If strong update: update plot
         '''
-        self._set_default_cmap(strong=False)
+        if self.Vcolormap.value['lock'] is False:
+            self._set_default_cmap(strong=False)
         self.units = self._get_default_units()
         self.title = self._get_default_title()
         idx = self.fieldBox.findText(self.Vfield.value)
@@ -635,7 +636,8 @@ class RadarDisplay(Component):
             if self.tools[key] is not None:
                 self.tools[key].disconnect()
                 self.tools[key] = None
-        self._set_default_cmap()
+        if self.Vcolormap.value['lock'] is False:
+            self._set_default_cmap()
         self._set_default_limits()
 
     def getPathInteriorValues(self, paths):
@@ -830,6 +832,11 @@ class RadarDisplay(Component):
         else:
             gatefilter = None
 
+        if 'norm' in cmap:
+            norm = cmap['norm']
+        else:
+            norm = None
+
         if self.plot_type == "radarAirborne":
             from pkg_resources import parse_version
             if parse_version(pyart.__version__) >= parse_version('1.6.0'):
@@ -842,7 +849,7 @@ class RadarDisplay(Component):
             self.plot = self.display.plot_sweep_grid(
                 self.Vfield.value, vmin=cmap['vmin'],
                 vmax=cmap['vmax'], colorbar_flag=False, cmap=cmap['cmap'],
-                mask_outside=True,
+                norm=norm, mask_outside=True,
                 gatefilter=gatefilter, ax=self.ax, fig=self.fig, title=title)
             self.display.plot_grid_lines()
 
@@ -851,7 +858,7 @@ class RadarDisplay(Component):
             # Create Plot
             self.plot = self.display.plot_ppi(
                 self.Vfield.value, self.Vtilt.value,
-                vmin=cmap['vmin'], vmax=cmap['vmax'],
+                vmin=cmap['vmin'], vmax=cmap['vmax'], norm=norm,
                 colorbar_flag=False, cmap=cmap['cmap'], mask_outside=True,
                 gatefilter=gatefilter, ax=self.ax, fig=self.fig, title=title)
             # Add range rings
@@ -865,7 +872,7 @@ class RadarDisplay(Component):
             # Create Plot
             self.plot = self.display.plot_rhi(
                 self.Vfield.value, self.Vtilt.value,
-                vmin=cmap['vmin'], vmax=cmap['vmax'],
+                vmin=cmap['vmin'], vmax=cmap['vmax'], norm=norm,
                 colorbar_flag=False, cmap=cmap['cmap'], mask_outside=True,
                 gatefilter=gatefilter, ax=self.ax, fig=self.fig, title=title)
             # Add range rings
@@ -873,8 +880,9 @@ class RadarDisplay(Component):
                 self.display.plot_range_rings(self.RNG_RINGS, ax=self.ax)
 
         self._update_axes()
-        norm = mlabNormalize(vmin=cmap['vmin'],
-                             vmax=cmap['vmax'])
+        if norm is None:
+            norm = mlabNormalize(vmin=cmap['vmin'],
+                                 vmax=cmap['vmax'])
         self.cbar = mlabColorbarBase(self.cax, cmap=cmap['cmap'],
                                      norm=norm, orientation='horizontal')
         self.cbar.set_label(self.units)
@@ -927,6 +935,7 @@ class RadarDisplay(Component):
         cmap = pyart.config.get_field_colormap(self.Vfield.value)
         d = {}
         d['cmap'] = cmap
+        d['lock'] = False
         lims = pyart.config.get_field_limits(self.Vfield.value,
                                              self.Vradar.value,
                                              self.Vtilt.value)
