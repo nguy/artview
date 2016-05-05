@@ -244,6 +244,7 @@ class ColormapEdit(core.Component):
     def apply(self):
         '''Apply changes to shared colormap.'''
         self.Vcolormap.change(self.cmap)
+        self.update_colormap()
 
     def get_bounds(self):
         return [float(ent.text()) for ent in reversed(self.ent_bounds)]
