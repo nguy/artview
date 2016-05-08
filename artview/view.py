@@ -62,7 +62,7 @@ def view(containers, field=reflectivity):
     execute()
 
 
-def start():
+def start(DirIn=os.getcwd(), filename=False):
     ''' Start Qt Application and :py:class:`~artview.components.Menu` '''
     global app
     if app is None:
@@ -71,7 +71,7 @@ def start():
             app.setAttribute(QtCore.Qt.AA_MacPluginApplication, True)
 
     global MainMenu
-    MainMenu = startMainMenu(os.getcwd(), False)
+    MainMenu = startMainMenu(DirIn, filename)
 
     # resize menu
     menu_width = 300

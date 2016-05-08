@@ -301,8 +301,10 @@ grid_mode = (
 
 _modes = [
     {'label': 'Edit Colormap (radar)',
+     'group': 'graph',
      'action': radar_mode},
     {'label': 'Edit Colormap (grid)',
+     'group': 'graph',
      'action': grid_mode},
     ]
 

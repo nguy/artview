@@ -240,6 +240,16 @@ class Menu(Component):
                 menus = {}
         return menu.addAction(*args)
 
+    def addMenuSeparator(self, position, *args):
+        menu, menus = self.menus()
+        for key in position:
+            if key in menus:
+                menu, menus = menus[key]
+            else:
+                menu = menu.addMenu(key)
+                menus = {}
+        return menu.addSeparator(*args)
+
     def CreateMenu(self):
         '''Create the main menubar.'''
         self.menubar = self.menuBar()
