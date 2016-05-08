@@ -71,8 +71,7 @@ def startMainMenu(DirIn=None, filename=None):
 
     MainMenu = Menu(DirIn, filename, mode=("Radar", "Grid"))
 
-    if True:
-    #try:
+    try:
         from ..modes import modes
         group_names = [m['group'] for m in modes]
         seen = set()
@@ -88,10 +87,9 @@ def startMainMenu(DirIn=None, filename=None):
                 else:
                     MainMenu.addMenuAction(("File",), action)
             MainMenu.addMenuSeparator(("Modes",))
-
-#    except:
-#        import warnings
-#        warnings.warn("Loading Modes Fail")
+    except:
+        import warnings
+        warnings.warn("Loading Modes Fail")
 
     _add_all_advanced_tools(MainMenu)
 
