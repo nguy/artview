@@ -31,13 +31,8 @@ def run(DirIn=None, filename=None, field=None):
     from ._common import startMainMenu
     from .. import view
 
-    app = QtGui.QApplication(sys.argv)
-    if view.checkifmac():
-        app.setAttribute(QtCore.Qt.AA_MacPluginApplication, True)
-
-    # start Menu and initiate Vradar
-    MainMenu = startMainMenu(DirIn, filename)
-    Vradar = MainMenu.Vradar
+    view.start(DirIn, filename)
+    Vradar = view.MainMenu.Vradar
 
     # handle input
     if field is None:
@@ -50,9 +45,9 @@ def run(DirIn=None, filename=None, field=None):
     # start Displays
     Vtilt = Variable(0)
     plot1 = RadarDisplay(Vradar, Variable(field), Vtilt, name="Display1",
-                         parent=MainMenu)
+                         parent=view.MainMenu)
     plot2 = RadarDisplay(Vradar, Variable(field), Vtilt, name="Display2",
-                         parent=MainMenu)
+                         parent=view.MainMenu)
 
     # start ComponentsControl
     control = LinkSharedVariables()
@@ -60,7 +55,7 @@ def run(DirIn=None, filename=None, field=None):
     control.setComponent1(plot2.name)
 
     # add control to Menu
-    MainMenu.addLayoutWidget(control)
+    view.MainMenu.addLayoutWidget(control)
 
     # Replace in Screen
     desktop_rect = QtGui.QDesktopWidget().screenGeometry()
@@ -71,13 +66,13 @@ def run(DirIn=None, filename=None, field=None):
     menu_width = 500
     menu_height = 180
 
-    MainMenu.setGeometry(0, 0, menu_width, menu_height)
+    view.MainMenu.setGeometry(0, 0, menu_width, menu_height)
 
     plot_size = min(height-60-menu_height, width/2) - 50
     plot1.setGeometry(0, height-plot_size, plot_size, plot_size)
     plot2.setGeometry(width/2, height-plot_size, plot_size, plot_size)
 
     # start program
-    app.exec_()
+    view.execute()
     print("You used ARTView. What you think and what you need of ARTView? "
           "Send your comment to artview-users@googlegroups.com")

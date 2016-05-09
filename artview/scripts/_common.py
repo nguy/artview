@@ -73,16 +73,20 @@ def startMainMenu(DirIn=None, filename=None):
 
     try:
         from ..modes import modes
-        for mode in modes:
-            action = QtGui.QAction(mode['label'], MainMenu)
-            action.triggered[()].connect(
-                lambda mode=mode: MainMenu.change_mode(mode['action']))
-            if (mode['label'] != 'Directory View' and
-                mode['label'] != 'File details' and
-                mode['label'] != 'File navigator'):
-                MainMenu.addMenuAction(("Modes",), action)
-            else:
-                MainMenu.addMenuAction(("File",), action)
+        group_names = [m['group'] for m in modes]
+        seen = set()
+        group_names = [x for x in group_names if x not in seen and not seen.add(x)]
+        groups = [[m for m in modes if m['group']==name] for name in group_names]
+        for group in groups:
+            for mode in group:
+                action = QtGui.QAction(mode['label'], MainMenu)
+                action.triggered[()].connect(
+                    lambda mode=mode: MainMenu.change_mode(mode['action']))
+                if mode['group'] != 'io':
+                    MainMenu.addMenuAction(("Modes",), action)
+                else:
+                    MainMenu.addMenuAction(("File",), action)
+            MainMenu.addMenuSeparator(("Modes",))
     except:
         import warnings
         warnings.warn("Loading Modes Fail")
