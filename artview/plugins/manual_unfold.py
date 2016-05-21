@@ -181,6 +181,7 @@ class ManualUnfold(Component):
         if 'valid_max' not in radar.fields[corrVel]:
             radar.fields[corrVel]['valid_max'] = 1.5 * nyquist
         self.lockNyquist = True
+        self.Vradar.value.changed = True
         self.Vradar.update(strong_update)
 
         # save for undoing
@@ -205,6 +206,7 @@ class ManualUnfold(Component):
         data = data - 2 * unfold * nyquist
         radar.fields[corrVel]['data'] = data
         self.lockNyquist = True
+        self.Vradar.value.changed = True
         self.Vradar.update()
 
     def _displayHelp(self):
@@ -240,7 +242,8 @@ class ManualUnfold(Component):
 
         if strong and not self.lockNyquist:
             nyquist_vel = self.Vradar.value.get_nyquist_vel(0, True)
-            self.nyquistVelocity.setValue(nyquist_vel)
+            if nyquist_vel > 0:
+                self.nyquistVelocity.setValue(nyquist_vel)
         elif self.lockNyquist:
             self.lockNyquist = False
 

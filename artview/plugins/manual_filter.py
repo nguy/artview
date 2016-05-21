@@ -164,6 +164,7 @@ class ManualFilter(Component):
         data.mask[mask_ray, mask_range] = True
         self.Vradar.value.fields[self.Vfield.value]['data'] = data
 
+        self.Vradar.value.changed = True
         self.Vradar.update()
 
     def removeFromRadar(self):
@@ -180,6 +181,7 @@ class ManualFilter(Component):
             data.mask[mask_ray, mask_range] = True
             self.Vradar.value.fields[field]['data'] = data
 
+        self.Vradar.value.changed = True
         self.Vradar.update()
 
     def reset(self):

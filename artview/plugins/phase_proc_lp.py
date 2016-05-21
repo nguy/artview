@@ -296,6 +296,7 @@ class PhaseProcLp(Component):
         # add fields and update
         self.Vradar.value.add_field(reproc_phase_name, reproc_phase, True)
         self.Vradar.value.add_field(sob_kdp_name, sob_kdp, True)
+        self.Vradar.value.changed = True
         self.Vradar.update(strong_update)
         print("Correction took %fs" % (t1-t0))
 
