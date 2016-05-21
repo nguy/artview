@@ -55,6 +55,9 @@ class Menu(Component):
         a menubar for the program.
         '''
         super(Menu, self).__init__(name=name, parent=parent)
+        self.setSizePolicy(QtGui.QSizePolicy.Maximum,QtGui.QSizePolicy.Maximum)
+        self.sizePolicy().setHorizontalStretch(0)
+        self.sizePolicy().setVerticalStretch(0)
 
         # Set some parameters
         if pathDir is None:

@@ -47,12 +47,16 @@ class LinkSharedVariables(Component):
 
         '''
         super(LinkSharedVariables, self).__init__(name=name, parent=parent)
+        self.setSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Fixed)
+        self.sizePolicy().setHorizontalStretch(0)
+        self.sizePolicy().setVerticalStretch(0)
+
         self.central_widget = QtGui.QWidget()
         self.setCentralWidget(self.central_widget)
         self.layout = QtGui.QGridLayout(self.central_widget)
 
         self.groupBox = QtGui.QGroupBox("Manage how variables are shared"
-                                        "between components")
+                                        " between components")
         # self.groupBox.setCheckable(True)
         self.layout.addWidget(self.groupBox, 0, 0, 1, -1)
 
@@ -79,6 +83,9 @@ class LinkSharedVariables(Component):
         self.setupUi()
 
         self.show()
+
+    def sizeHint(self):
+        return self.minimumSize()
 
     def _setVariables(self):
         '''Determine common variables to both components.'''
@@ -126,16 +133,20 @@ class LinkSharedVariables(Component):
                 self._addRadioButton(var, idx)
 
             self.linkingLayout.addWidget(QtGui.QLabel('Linking from'),
-                                         0, 0, 1, 2)
-            self.linkingLayout.addWidget(self.combo1, 0, 2, 1, 1)
-            self.linkingLayout.addWidget(QtGui.QLabel('to'), 0, 3, 1, 1)
-            self.linkingLayout.addWidget(self.combo0, 0, 4, 1, 1)
+                                         0, 0, 1, 1)
+            self.linkingLayout.addWidget(self.combo1, 0, 1, 1, 1)
+            self.linkingLayout.addWidget(QtGui.QLabel('to'), 1, 0, 1, 1)
+            self.linkingLayout.addWidget(self.combo0, 1, 1, 1, 1)
         else:
             self.linkingLayout.addWidget(self.combo0, 0, 0)
             self.linkingLayout.addWidget(QtGui.QLabel('and'), 0, 1)
             self.linkingLayout.addWidget(self.combo1, 0, 2)
             self.linkingLayout.addWidget(QtGui.QLabel('have no common shared'
-                                                      'variables'), 0, 3)
+                                                      'variables'), 1, 0, 1, 3)
+
+        line = QtGui.QFrame(self)
+        line.setFrameStyle(QtGui.QFrame.HLine)
+        self.linkingLayout.addWidget(line, 2, 0, 1 , -1)
 
     def linking(self, var, state):
         if state == 0:
@@ -157,8 +168,8 @@ class LinkSharedVariables(Component):
             link.setDisabled(True)
 
         self.linkingLayout.addWidget(QtGui.QLabel(var[1::] + ' '),
-                                     idx+1, 1, 1, 2)
-        self.linkingLayout.addWidget(link, idx+1, 3, 1, 2)
+                                     idx+3, 0, 1, 1)
+        self.linkingLayout.addWidget(link, idx+3, 1, 1, 1)
 
         link.stateChanged.connect(partial(self.linking, var))
 

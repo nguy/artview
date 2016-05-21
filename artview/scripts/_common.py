@@ -5,11 +5,11 @@ auxiliary functions for scripts
 """
 import pyart
 from ..components import (Menu, RadarDisplay, GridDisplay, LinkSharedVariables,
-                          SelectRegion, PointsDisplay)
+                          SelectRegion, PointsDisplay, Window)
 from ..core import QtGui, QtCore
 
 
-def _add_all_advanced_tools(menu):
+def _add_all_advanced_tools(menu, submenu="File"):
 
     # add grafical starts
     for comp in [LinkSharedVariables, RadarDisplay, GridDisplay,
@@ -17,7 +17,7 @@ def _add_all_advanced_tools(menu):
         action = QtGui.QAction(comp.__name__, menu)
         action.triggered[()].connect(
             lambda comp=comp: menu.startComponent(comp))
-        menu.addMenuAction(("File", "Plugins", ), action)
+        menu.addMenuAction((submenu, "Plugins", ), action)
 
     # add all plugins to grafical start
     try:
@@ -26,7 +26,7 @@ def _add_all_advanced_tools(menu):
             action = QtGui.QAction(plugin.__name__, menu)
             action.triggered[()].connect(
                 lambda plugin=plugin: menu.startComponent(plugin))
-            menu.addMenuAction(("File", "Plugins", ), action)
+            menu.addMenuAction((submenu, "Plugins", ), action)
     except:
         import traceback
         print(traceback.format_exc())
@@ -99,3 +99,39 @@ def startMainMenu(DirIn=None, filename=None):
     menu_height = 180
 
     MainMenu.setGeometry(0, 0, menu_width, menu_height)
+
+
+
+
+def startMainWindow(DirIn=None, filename=None):
+
+    MainWindow = Window()
+
+
+    if True:
+    #try:
+        from ..modes import modes
+        group_names = [m['group'] for m in modes]
+        seen = set()
+        group_names = [x for x in group_names if x not in seen and not seen.add(x)]
+        groups = [[m for m in modes if m['group']==name] for name in group_names]
+        for group in groups:
+            for mode in group:
+                action = QtGui.QAction(mode['label'], MainWindow)
+                action.triggered[()].connect(
+                    lambda mode=mode: MainWindow.changeMode(mode['action']))
+                MainWindow.addMenuAction(("Modes",), action)
+            MainWindow.addMenuSeparator(("Modes",))
+    #except:
+    else:
+        import warnings
+        warnings.warn("Loading Modes Fail")
+
+    _add_all_advanced_tools(MainWindow, "ARTView")
+
+    return MainWindow
+    # resize menu
+    menu_width = 300
+    menu_height = 180
+
+    MainWindow.setGeometry(0, 0, menu_width, menu_height)
