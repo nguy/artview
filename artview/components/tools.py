@@ -283,6 +283,9 @@ http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-
         xdata = event.xdata  # get event x location
         ydata = event.ydata  # get event y location
 
+        if (xdata is None) or (ydata is None):
+            return
+
         if event.button == 'down':
             # deal with zoom in
             scale_factor = 1 / self.base_scale
