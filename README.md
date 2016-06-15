@@ -203,6 +203,9 @@ Jonathan Helmus
 
 Timothy Lang
 
+## Acknowledgements
+We would like to thank members of [conda-forge](https://github.com/conda-forge) for ensuring a working artview-feedstock for distribution.
+
 ## Disclaimer
 This is open source software and we love contributions!
 This is not a primary project for any of the contributors, so please be patient
