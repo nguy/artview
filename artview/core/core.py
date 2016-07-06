@@ -75,6 +75,10 @@ class Variable(QtCore.QObject):
         |Vgatefilter| Hold pyart        |:py:class:`pyart.filters.GateFilter`|
         |           | GateFilter        |instance or None                    |
         +-----------+-------------------+------------------------------------+
+        |Vplotedges | Hold plot edges   |                                    |
+        |           | attribute, use    |                                    |
+        |           | gate edges bool   |                                    |
+        +-----------+-------------------+------------------------------------+
         |VplotAxes  | Hold axes of      |:py:class:`matplotlib.axes.Axes`    |
         |           | Matplotlib figure |instance or None                    |
         +-----------+-------------------+------------------------------------+
