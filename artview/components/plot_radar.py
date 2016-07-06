@@ -37,7 +37,6 @@ class RadarDisplay(Component):
     Vlimits = None  #: see :ref:`shared_variable`
     Vcolormap = None  #: see :ref:`shared_variable`
     Vgatefilter = None  #: see :ref:`shared_variable`
-    VignoreEdges = None #: see :ref:`shared_variable`
     VplotAxes = None  #: see :ref:`shared_variable` (no internal use)
     VpathInteriorFunc = None  #: see :ref:`shared_variable` (no internal use)
 
@@ -49,7 +48,7 @@ class RadarDisplay(Component):
         return self(**args), True
 
     def __init__(self, Vradar=None, Vfield=None, Vtilt=None, Vlimits=None,
-                 Vcolormap=None, Vgatefilter=None, VignoreEdges=None,
+                 Vcolormap=None, Vgatefilter=None,
                  name="RadarDisplay", parent=None):
         '''
         Initialize the class to create display.
@@ -71,9 +70,6 @@ class RadarDisplay(Component):
             A value of None will instantiate a colormap variable.
         Vgatefilter : :py:class:`~artview.core.core.Variable` instance
             Gatefilter signal variable.
-            A value of None will instantiate a empty variable.
-        VignoreEdges : :py:class:`~artview.core.core.Variable` instance
-            IgnoreEdges signal variable.
             A value of None will instantiate a empty variable.
         name : string
             Display window name.
@@ -116,11 +112,6 @@ class RadarDisplay(Component):
         else:
             self.Vgatefilter = Vgatefilter
 
-        if VignoreEdges is None:
-            self.VignoreEdges = Variable(None)
-        else:
-            self.VignoreEdges = VignoreEdges
-
         self.VpathInteriorFunc = Variable(self.getPathInteriorValues)
         self.VplotAxes = Variable(None)
 
@@ -130,7 +121,6 @@ class RadarDisplay(Component):
                                 "Vlimits": self.NewLims,
                                 "Vcolormap": self.NewCmap,
                                 "Vgatefilter": self.NewGatefilter,
-                                "VignoreEdges": self.NewIgnoreEdges,
                                 "VpathInteriorFunc": None,
                                 "VplotAxes": None}
 
@@ -293,9 +283,9 @@ class RadarDisplay(Component):
     def _IgnoreEdgesToggleAction(self):
         '''Define action for IgnoreEdgesToggle menu selection.'''
         if self.ignoreEdgesToggle.isChecked():
-            self.VignoreEdges.change(False)
+            self.ignoreEdges = False
         else:
-            self.VignoreEdges.change(True)
+            self.ignoreEdges = True
         self._update_plot()
 
     def _title_input(self):
@@ -538,18 +528,6 @@ class RadarDisplay(Component):
         '''
         Slot for 'ValueChanged' signal of
         :py:class:`Vgatefilter <artview.core.core.Variable>`.
-
-        This will:
-
-        * If strong update: update plot
-        '''
-        if strong:
-            self._update_plot()
-
-    def NewIgnoreEdges(self, variable, strong):
-        '''
-        Slot for 'ValueChanged' signal of
-        :py:class:`VignoreEdges <artview.core.core.Variable>`.
 
         This will:
 
@@ -862,11 +840,14 @@ class RadarDisplay(Component):
         title = self.title
         limits = self.Vlimits.value
         cmap = self.Vcolormap.value
-        ignoreEdges = self.VignoreEdges.value
         if self.gatefilterToggle.isChecked():
             gatefilter = self.Vgatefilter.value
         else:
             gatefilter = None
+        if self.ignoreEdgesToggle.isChecked():
+            ignoreEdges = False
+        else:
+            ignoreEdges = True
 
         if 'norm' in cmap:
             norm = cmap['norm']
