@@ -114,6 +114,7 @@ class RadarDisplay(Component):
 
         self.VpathInteriorFunc = Variable(self.getPathInteriorValues)
         self.VplotAxes = Variable(None)
+        self.VpyartDisplay = Variable(None)
 
         self.sharedVariables = {"Vradar": self.NewRadar,
                                 "Vfield": self.NewField,
@@ -122,7 +123,8 @@ class RadarDisplay(Component):
                                 "Vcolormap": self.NewCmap,
                                 "Vgatefilter": self.NewGatefilter,
                                 "VpathInteriorFunc": None,
-                                "VplotAxes": None}
+                                "VplotAxes": None,
+                                "VpyartDisplay": self._update_axes}
 
         # Connect the components
         self.connectAllVariables()
@@ -854,9 +856,9 @@ class RadarDisplay(Component):
             self.display.plot_grid_lines()
 
         elif self.plot_type == "radarPpi":
-            self.display = pyart.graph.RadarDisplay(self.Vradar.value)
+            self.display = pyart.graph.RadarMapDisplay(self.Vradar.value)
             # Create Plot
-            self.plot = self.display.plot_ppi(
+            self.plot = self.display.plot_ppi_map(
                 self.Vfield.value, self.Vtilt.value,
                 vmin=cmap['vmin'], vmax=cmap['vmax'], norm=norm,
                 colorbar_flag=False, cmap=cmap['cmap'], mask_outside=True,
@@ -889,6 +891,7 @@ class RadarDisplay(Component):
 
 #        print "Plotting %s field, Tilt %d in %s" % (
 #            self.Vfield.value, self.Vtilt.value+1, self.name)
+        self.VpyartDisplay.value=self.display
         self.canvas.draw()
 
     def _update_axes(self):
