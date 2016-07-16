@@ -48,8 +48,8 @@ class RadarDisplay(Component):
         return self(**args), True
 
     def __init__(self, Vradar=None, Vfield=None, Vtilt=None, Vlimits=None,
-                 Vcolormap=None, Vgatefilter=None, name="RadarDisplay",
-                 parent=None):
+                 Vcolormap=None, Vgatefilter=None,
+                 name="RadarDisplay", parent=None):
         '''
         Initialize the class to create display.
 
@@ -282,6 +282,14 @@ class RadarDisplay(Component):
             self.gatefilterToggle.setText("GateFilter Off")
         self._update_plot()
 
+    def _IgnoreEdgesToggleAction(self):
+        '''Define action for IgnoreEdgesToggle menu selection.'''
+        if self.ignoreEdgesToggle.isChecked():
+            self.ignoreEdges = False
+        else:
+            self.ignoreEdges = True
+        self._update_plot()
+
     def _title_input(self):
         '''Retrieve new plot title.'''
         val, entry = common.string_dialog_with_reset(
@@ -343,6 +351,11 @@ class RadarDisplay(Component):
             triggered=self._GateFilterToggleAction)
         dispmenu.addAction(self.gatefilterToggle)
         self.gatefilterToggle.setChecked(True)
+        self.ignoreEdgesToggle = QtGui.QAction(
+            'Ignore Edges', dispmenu, checkable=True,
+            triggered=self._IgnoreEdgesToggleAction)
+        dispmenu.addAction(self.ignoreEdgesToggle)
+        self.ignoreEdgesToggle.setChecked(False)
         dispTitle = dispmenu.addAction("Change Title")
         dispTitle.setToolTip("Change plot title")
         dispUnit = dispmenu.addAction("Change Units")
@@ -833,6 +846,10 @@ class RadarDisplay(Component):
             gatefilter = self.Vgatefilter.value
         else:
             gatefilter = None
+        if self.ignoreEdgesToggle.isChecked():
+            ignoreEdges = False
+        else:
+            ignoreEdges = True
 
         if 'norm' in cmap:
             norm = cmap['norm']
@@ -852,7 +869,8 @@ class RadarDisplay(Component):
                 self.Vfield.value, vmin=cmap['vmin'],
                 vmax=cmap['vmax'], colorbar_flag=False, cmap=cmap['cmap'],
                 norm=norm, mask_outside=True,
-                gatefilter=gatefilter, ax=self.ax, fig=self.fig, title=title)
+                edges=ignoreEdges, gatefilter=gatefilter,
+                ax=self.ax, fig=self.fig, title=title)
             self.display.plot_grid_lines()
 
         elif self.plot_type == "radarPpi":
@@ -862,7 +880,8 @@ class RadarDisplay(Component):
                 self.Vfield.value, self.Vtilt.value,
                 vmin=cmap['vmin'], vmax=cmap['vmax'], norm=norm,
                 colorbar_flag=False, cmap=cmap['cmap'], mask_outside=True,
-                gatefilter=gatefilter, ax=self.ax, fig=self.fig, title=title)
+                edges=ignoreEdges, gatefilter=gatefilter,
+                ax=self.ax, fig=self.fig, title=title)
             # Add range rings
             if self.RngRing:
                 self.display.plot_range_rings(self.RNG_RINGS, ax=self.ax)
@@ -876,7 +895,8 @@ class RadarDisplay(Component):
                 self.Vfield.value, self.Vtilt.value,
                 vmin=cmap['vmin'], vmax=cmap['vmax'], norm=norm,
                 colorbar_flag=False, cmap=cmap['cmap'], mask_outside=True,
-                gatefilter=gatefilter, ax=self.ax, fig=self.fig, title=title)
+                edges=ignoreEdges, gatefilter=gatefilter,
+                ax=self.ax, fig=self.fig, title=title)
             # Add range rings
             if self.RngRing:
                 self.display.plot_range_rings(self.RNG_RINGS, ax=self.ax)
