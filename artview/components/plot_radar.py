@@ -124,7 +124,7 @@ class RadarDisplay(Component):
                                 "Vgatefilter": self.NewGatefilter,
                                 "VpathInteriorFunc": None,
                                 "VplotAxes": None,
-                                "VpyartDisplay": self.newDisplay}
+                                "VpyartDisplay": self.NewDisplay}
 
         # Connect the components
         self.connectAllVariables()
@@ -564,7 +564,7 @@ class RadarDisplay(Component):
             self._update_plot()
             self._update_infolabel()
 
-    def newDisplay(self, variable, strong):
+    def NewDisplay(self, variable, strong):
         '''
         Slot for 'ValueChanged' signal of
         :py:class:`VpyartDisplay <artview.core.core.Variable>`.
@@ -576,7 +576,7 @@ class RadarDisplay(Component):
         '''
         if strong:
             self._update_plot()
-        else: #  updata_plot already redraw
+        else: #  update_plot already redraw
             self.canvas.draw()
 
     def TiltSelectCmd(self, ntilt):
@@ -702,7 +702,7 @@ class RadarDisplay(Component):
         from .tools import interior_radar
         radar = self.Vradar.value
         tilt = self.Vtilt.value
-        if radar is None or not self.display:
+        if radar is None or not self.VpyartDisplay.value:
             return None
 
         try:
@@ -715,10 +715,10 @@ class RadarDisplay(Component):
 
         for path in paths:
             try:
-                x, y, z = self.display._get_x_y_z(
+                x, y, z = self.VpyartDisplay.value._get_x_y_z(
                     tilt, False, True)
             except:
-                x, y, z = self.display._get_x_y_z(
+                x, y, z = self.VpyartDisplay.value._get_x_y_z(
                     self.Vfield.value, tilt, False, True)
             if self.plot_type == "radarAirborne":
                 _xy = np.empty(shape=(x.size, 2))
@@ -1042,7 +1042,7 @@ class RadarDisplay(Component):
     ########################
     def _quick_savefile(self, PTYPE=IMAGE_EXT):
         '''Save the current display via PyArt interface.'''
-        imagename = self.display.generate_filename(
+        imagename = self.VpyartDisplay.value.generate_filename(
             self.Vfield.value, self.Vtilt.value, ext=IMAGE_EXT)
         self.canvas.print_figure(os.path.join(os.getcwd(), imagename), dpi=DPI)
         self.statusbar.showMessage(
@@ -1050,7 +1050,7 @@ class RadarDisplay(Component):
 
     def _savefile(self, PTYPE=IMAGE_EXT):
         '''Save the current display using PyQt dialog interface.'''
-        PBNAME = self.display.generate_filename(
+        PBNAME = self.VpyartDisplay.value.generate_filename(
             self.Vfield.value, self.Vtilt.value, ext=IMAGE_EXT)
         file_choices = "PNG (*.png)|*.png"
         path = unicode(QtGui.QFileDialog.getSaveFileName(
