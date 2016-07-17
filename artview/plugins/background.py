@@ -5,6 +5,7 @@ backgroud.py
 # Load the needed packages
 
 import pyart
+import numpy as np
 from netCDF4 import Dataset
 from matplotlib.colors import LightSource
 from mpl_toolkits.basemap import shiftgrid, cm
@@ -25,11 +26,11 @@ class TopographyBackground(Component):
     def guiStart(self, parent=None):
         '''Graphical interface for starting this class.'''
         kwargs, independent = \
-            common._SimplePluginStart("TopograpyBackground").startDisplay()
+            common._SimplePluginStart("TopographyBackground").startDisplay()
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
-    def __init__(self, VpyartDisplay=None, name="TopograpyBackground", parent=None):
+    def __init__(self, VpyartDisplay=None, name="TopographyBackground", parent=None):
         '''Initialize the class to create the interface.
 
         Parameters
@@ -104,7 +105,7 @@ class TopographyBackground(Component):
 
         etopodata = Dataset(str(self.lineEdit.text()))
 
-        topoin = etopodata.variables['ROSE'][:]
+        topoin = np.maximum(0, etopodata.variables['ROSE'][:])
         lons = etopodata.variables['ETOPO05_X'][:]
         lats = etopodata.variables['ETOPO05_Y'][:]
         # shift data so lons go from -180 to 180 instead of 20 to 380.
@@ -126,11 +127,11 @@ class TopographyBackground(Component):
         ls = LightSource(azdeg = 90, altdeg = 20)
         # convert data to rgb array including shading from light source.
         # (must specify color map)
-        rgb = ls.shade(topodat, cm.GMT_haxby)
+        rgb = ls.shade(topodat, cm.GMT_relief)
         im = m.imshow(rgb)
 
-        self.VpyartDisplay.update()
+        self.VpyartDisplay.update(strong=False)
 
 
 
-_plugins = [TopograpyBackground]
+_plugins = [TopographyBackground]

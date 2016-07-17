@@ -173,6 +173,15 @@ navigate_mode = (
     ]
 )
 
+topography_mode = (
+    [Menu, RadarDisplay, TopographyBackground],
+    [
+        ((0, 'Vradar'), (1, 'Vradar')),
+        ((1, 'VpyartDisplay'), (2, 'VpyartDisplay')),
+        ]
+    )
+
+
 modes = [
     {'label': 'Add RadarDisplay',
      'group': 'graph',
@@ -210,4 +219,7 @@ modes = [
     {'label': 'Directory View',
      'group': 'io',
      'action': filelist_mode},
+    {'label': 'Add Topographic Background',
+     'group': 'graph',
+     'action': topography_mode},
     ]
