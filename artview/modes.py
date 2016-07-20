@@ -164,6 +164,16 @@ filedetail_mode = (
     ]
 )
 
+despeckle_mode = (
+    [Menu, RadarDisplay, Despeckle],
+    [
+        ((0, 'Vradar'), (1, 'Vradar')),
+        ((1, 'Vradar'), (2, 'Vradar')),
+        ((1, 'Vfield'), (2, 'Vfield')),
+        ((1, 'Vgatefilter'), (2, 'Vgatefilter')),
+    ]
+)
+
 navigate_mode = (
     [Menu, FileNavigator],
     [
@@ -195,6 +205,9 @@ modes = [
     {'label': 'Manually unfold velocity',
      'group': 'correct',
      'action': manual_unfold_mode},
+    {'label': 'Despeckle Radar',
+     'group': 'correct',
+     'action': despeckle_mode},
     {'label': 'Query a selectable region of interest ',
      'group': 'select',
      'action': select_region_mode},
