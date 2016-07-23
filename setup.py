@@ -55,6 +55,7 @@ MAJOR = 1
 MINOR = 3
 MICRO = 3
 ISRELEASED = False
+ISPROFILING = False
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 SCRIPTS = glob.glob('scripts/*') + ['scripts/artview']
 
@@ -104,6 +105,7 @@ version = '%(version)s'
 full_version = '%(full_version)s'
 git_revision = '%(git_revision)s'
 release = %(isrelease)s
+profiling = %(isprofiling)s
 
 if not release:
     version = full_version
