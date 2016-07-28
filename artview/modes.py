@@ -181,6 +181,15 @@ topography_mode = (
         ]
     )
 
+background_mode = (
+    [Menu, RadarDisplay, ImageBackground],
+    [
+        ((0, 'Vradar'), (1, 'Vradar')),
+        ((1, 'VpyartDisplay'), (2, 'VpyartDisplay')),
+        ((1, 'Vradar'), (2, 'Vradar')),
+        ((1, 'VplotAxes'), (2, 'VplotAxes')),
+        ]
+    )
 
 modes = [
     {'label': 'Add RadarDisplay',
@@ -222,4 +231,7 @@ modes = [
     {'label': 'Add Topographic Background',
      'group': 'graph',
      'action': topography_mode},
+    {'label': 'Add Image to Background',
+     'group': 'graph',
+     'action': background_mode},
     ]
