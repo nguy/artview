@@ -286,34 +286,32 @@ class ImageBackground(Component):
         y0 = float(str(self.y0_lineEdit.text()))
         dx = float(str(self.dx_lineEdit.text()))
         dy = float(str(self.dy_lineEdit.text()))
-        print "original",x0,y0,dx,dy
-        print display
+        aspect = ax.get_aspect()
         if isinstance(display, pyart.graph.RadarMapDisplay):
             m = self.VpyartDisplay.value.basemap
             x0, y0 = m(x0,y0)
             dx *= 1000
             dy *= 1000
-            print "radarmap",x0,y0,dx,dy
-            im = ax.imshow(img, extent=(x0-dx/2, x0+dx/2, y0-dy/2, y0+dy/2))
+            im = ax.imshow(img, extent=(x0-dx/2, x0+dx/2, y0-dy/2, y0+dy/2),
+                           aspect=aspect)
         elif isinstance(display, pyart.graph.RadarDisplay):
             radar = self.Vradar.value
             lat_radar = float(radar.latitude['data'][0])
             lon_radar = float(radar.longitude['data'][0])
-            print lat_radar,lon_radar
             x0, y0 = pyart.core.geographic_to_cartesian(
                 x0, y0, {'proj': 'pyart_aeqd',
                          'lon_0': lon_radar, 'lat_0': lat_radar})
             x0 = x0[0]
             y0 = y0[0]
-            print "radar",x0,y0,dx,dy
-            im = ax.imshow(img, extent=(x0-dx/2, x0+dx/2, y0-dy/2, y0+dy/2))
+            im = ax.imshow(img, extent=(x0-dx/2, x0+dx/2, y0-dy/2, y0+dy/2),
+                           aspect=aspect)
         elif isinstance(display, pyart.graph.GridMapDisplay):
             m = self.VpyartDisplay.value.basemap
             x0, y0 = m(x0,y0)
             dx *= 1000
             dy *= 1000
-            print "gridmap",x0,y0,dx,dy
-            im = ax.imshow(img, extent=(x0-dx/2, x0+dx/2, y0-dy/2, y0+dy/2))
+            im = ax.imshow(img, extent=(x0-dx/2, x0+dx/2, y0-dy/2, y0+dy/2),
+                           aspect=aspect)
 
 
         self.VpyartDisplay.update(strong=False)
