@@ -64,6 +64,7 @@ class Despeckle(Component):
 #        self.layout.addWidget(self.lineEdit, 0, 1)
 
         self.despeckleButton = QtGui.QPushButton("Despeckle")
+        self.despeckleButton.setToolTip("Create gatefilter of speckles")
         self.despeckleButton.clicked.connect(self.despeckle)
         self.layout.addWidget(self.despeckleButton, 0, 0)
 
@@ -156,8 +157,11 @@ class Despeckle(Component):
         gatefilter = self.Vgatefilter.value
 
         # ask for name
-        objects = str(common.string_dialog("objects", "",
-                                           "Enter Field Name:")[0])
+        objects = str(common.string_dialog(
+            "objects", "Enter Field Name",
+            "This will add a new field to the radar, where bins are numbered\n" +
+            "according to the connected component it makes part of." +
+            "\n\nEnter Field Name:")[0])
         strong_update = False
         if objects == '':
             return
