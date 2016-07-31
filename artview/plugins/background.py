@@ -15,7 +15,6 @@ from mpl_toolkits.basemap import shiftgrid, cm
 import sys
 import os
 
-
 from ..core import Component, Variable, common, QtGui, QtCore, componentsList
 
 
@@ -65,6 +64,7 @@ class TopographyBackground(Component):
         self.applyButton = QtGui.QPushButton("Apply")
         self.applyButton.clicked.connect(self.apply)
         self.layout.addWidget(self.applyButton, 0, 3)
+        self.current_open = None
 
         if VpyartDisplay is None:
             self.VpyartDisplay = Variable(None)
@@ -87,6 +87,7 @@ class TopographyBackground(Component):
             self.lineEdit.setText(filename)
 
     def apply(self):
+        common.ShowQuestion
         display = self.VpyartDisplay.value
         if (isinstance(display, pyart.graph.RadarMapDisplay) or
             isinstance(display, pyart.graph.GridMapDisplay)):
@@ -104,11 +105,20 @@ class TopographyBackground(Component):
                 self.name)
             return
 
-        etopodata = Dataset(str(self.lineEdit.text()))
+        filename = str(self.lineEdit.text())
+        if filename != self.current_open:
+            if filename.startswith("http"):
+                resp = common.ShowQuestion(
+                    "Loading a file from the internet may take long." + 
+                    " Are you sure you want to continue?")
+                if resp != QtGui.QMessageBox.Ok:
+                    return
+            self.etopodata = Dataset(filename)
+            self.current_open = filename
 
-        topoin = np.maximum(0, etopodata.variables['ROSE'][:])
-        lons = etopodata.variables['ETOPO05_X'][:]
-        lats = etopodata.variables['ETOPO05_Y'][:]
+        topoin = np.maximum(0, self.etopodata.variables['ROSE'][:])
+        lons = self.etopodata.variables['ETOPO05_X'][:]
+        lats = self.etopodata.variables['ETOPO05_Y'][:]
         # shift data so lons go from -180 to 180 instead of 20 to 380.
         topoin,lons = shiftgrid(180.,topoin,lons,start=False)
 
@@ -132,7 +142,6 @@ class TopographyBackground(Component):
         im = m.imshow(rgb)
 
         self.VpyartDisplay.update(strong=False)
-
 
 
 class ImageBackground(Component):
