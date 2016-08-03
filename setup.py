@@ -134,7 +134,8 @@ if not release:
         a.write(cnt % {'version': VERSION,
                        'full_version': FULLVERSION,
                        'git_revision': GIT_REVISION,
-                       'isrelease': str(ISRELEASED)})
+                       'isrelease': str(ISRELEASED),
+                       'isprofiling': str(ISPROFILING)})
     finally:
         a.close()
 
