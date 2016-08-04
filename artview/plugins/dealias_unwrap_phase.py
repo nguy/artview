@@ -220,6 +220,7 @@ class DealiasUnwrapPhase(Component):
 
         # add fields and update
         self.Vradar.value.add_field(name, field, True)
+        self.Vradar.value.changed = True
         self.Vradar.update(strong_update)
         print("Correction took %fs" % (t1-t0))
 

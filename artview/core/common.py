@@ -54,6 +54,23 @@ def ShowQuestion(msg):
 
     return response
 
+def ShowQuestionYesNo(msg):
+    '''
+    Show a Question message with yes no.
+
+    Parameters::
+    ----------
+    msg - string
+        Message to display in MessageBox.
+    '''
+    Dialog = QtGui.QDialog()
+    response = QtGui.QMessageBox.question(
+        Dialog, "Question", msg,
+        QtGui.QMessageBox.Yes, QtGui.QMessageBox.No,
+        QtGui.QMessageBox.Cancel)
+
+    return response
+
 
 def ShowLongText(msg, modal=True, set_html=False):
     '''

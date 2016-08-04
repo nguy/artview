@@ -68,6 +68,7 @@ class Menu(Component):
         for m in mode:
             self.mode.append(m.lower())
         self.Vradar = Vradar
+        self.current_container = self.Vradar
         self.Vgrid = Vgrid
         self.Vfilelist = Vfilelist
         self.sharedVariables = {"Vradar": None,
@@ -102,9 +103,22 @@ class Menu(Component):
         '''Change data file with left and right arrow keys.'''
         if event.key() == QtCore.Qt.Key_Right:
             # Menu control the file and open the radar
+            resp = True
+            if hasattr(self.current_container.value, 'changed') and self.current_container.value.changed:
+                resp = common.ShowQuestionYesNo("Save changes before moving to next File?")
+                if resp == QtGui.QMessageBox.Yes:
+                    self.saveCurrent()
+                elif resp != QtGui.QMessageBox.No:
+                    return
             self.AdvanceFileSelect(self.fileindex + 1)
         elif event.key() == QtCore.Qt.Key_Left:
             # Menu control the file and open the radar
+            if hasattr(self.current_container.value, 'changed') and self.current_container.value.changed:
+                resp = common.ShowQuestionYesNo("Save changes before moving to next File?")
+                if resp == QtGui.QMessageBox.Yes:
+                    self.saveCurrent()
+                elif resp != QtGui.QMessageBox.No:
+                    return
             self.AdvanceFileSelect(self.fileindex - 1)
         else:
             QtGui.QWidget.keyPressEvent(self, event)
@@ -152,6 +166,12 @@ class Menu(Component):
         else:
             self.filename = filename
             self._openfile()
+
+    def saveCurrent(self):
+        if self.current_container == self.Vradar:
+            self.saveRadar()
+        elif self.current_container == self.Vgrid:
+            self.saveGrid()
 
     def saveRadar(self):
         '''
@@ -615,6 +635,7 @@ class Menu(Component):
                 # Add the filename for Display
                 radar.filename = self.filename
                 self.Vradar.change(radar)
+                self.current_container = self.Vradar
                 return
             except:
                 try:
@@ -622,6 +643,7 @@ class Menu(Component):
                     # Add the filename for Display
                     radar.filename = self.filename
                     self.Vradar.change(radar)
+                    self.current_container = self.Vradar
                     return
                 except:
                     import traceback
@@ -632,11 +654,13 @@ class Menu(Component):
                 grid = pyart.io.read_grid(
                     self.filename, delay_field_loading=True)
                 self.Vgrid.change(grid)
+                self.current_container = self.Vgrid
                 return
             except:
                 try:
                     grid = pyart.io.read_grid(self.filename)
                     self.Vgrid.change(grid)
+                    self.current_container = self.Vgrid
                     return
                 except:
                     import traceback

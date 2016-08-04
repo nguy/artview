@@ -139,7 +139,7 @@ class RadarCollectionView(Component):
     def open(self, path):
         '''Open file.'''
         # try several open
-        print ("open: %s" % path)
+        print("open: %s" % path)
         self.filename = str(path)
         try:
             radar = pyart.io.read(self.filename, delay_field_loading=True)
@@ -186,7 +186,7 @@ class RadarCollectionView(Component):
 
     def collectionContextMenu(self, pos):
         '''Contruct right-click menu.'''
-        print "menu"
+        print("menu")
         menu = QtGui.QMenu(self)
         index = self.collectionView.currentIndex().row()
         action = QtGui.QAction("remove", self)
