@@ -114,6 +114,7 @@ class RadarDisplay(Component):
 
         self.VpathInteriorFunc = Variable(self.getPathInteriorValues)
         self.VplotAxes = Variable(None)
+        self.VpyartDisplay = Variable(None)
 
         self.sharedVariables = {"Vradar": self.NewRadar,
                                 "Vfield": self.NewField,
@@ -122,7 +123,8 @@ class RadarDisplay(Component):
                                 "Vcolormap": self.NewCmap,
                                 "Vgatefilter": self.NewGatefilter,
                                 "VpathInteriorFunc": None,
-                                "VplotAxes": None}
+                                "VplotAxes": None,
+                                "VpyartDisplay": self.NewDisplay}
 
         # Connect the components
         self.connectAllVariables()
@@ -288,6 +290,11 @@ class RadarDisplay(Component):
             self.ignoreEdges = True
         self._update_plot()
 
+    def _UseMapToggleAction(self):
+        '''Define action for IgnoreEdgesToggle menu selection.'''
+        self._check_file_type()
+        self._update_display()
+
     def _title_input(self):
         '''Retrieve new plot title.'''
         val, entry = common.string_dialog_with_reset(
@@ -354,6 +361,11 @@ class RadarDisplay(Component):
             triggered=self._IgnoreEdgesToggleAction)
         dispmenu.addAction(self.ignoreEdgesToggle)
         self.ignoreEdgesToggle.setChecked(False)
+        self.useMapToggle = QtGui.QAction(
+            'use MapDisplay', dispmenu, checkable=True,
+            triggered=self._UseMapToggleAction)
+        dispmenu.addAction(self.useMapToggle)
+        self.useMapToggle.setChecked(False)
         dispTitle = dispmenu.addAction("Change Title")
         dispTitle.setToolTip("Change plot title")
         dispUnit = dispmenu.addAction("Change Units")
@@ -475,7 +487,7 @@ class RadarDisplay(Component):
         self.units = self._get_default_units()
         self.title = self._get_default_title()
         if strong:
-            self._update_plot()
+            self._update_display()
             self._update_infolabel()
 
     def NewField(self, variable, strong):
@@ -551,6 +563,21 @@ class RadarDisplay(Component):
         if strong:
             self._update_plot()
             self._update_infolabel()
+
+    def NewDisplay(self, variable, strong):
+        '''
+        Slot for 'ValueChanged' signal of
+        :py:class:`VpyartDisplay <artview.core.core.Variable>`.
+
+        This will:
+
+        * If strong update: update plot
+        * redraw canvas
+        '''
+        if strong:
+            self._update_plot()
+        else: #  update_plot already redraw
+            self.canvas.draw()
 
     def TiltSelectCmd(self, ntilt):
         '''
@@ -675,7 +702,7 @@ class RadarDisplay(Component):
         from .tools import interior_radar
         radar = self.Vradar.value
         tilt = self.Vtilt.value
-        if radar is None or not self.display:
+        if radar is None or not self.VpyartDisplay.value:
             return None
 
         try:
@@ -688,10 +715,10 @@ class RadarDisplay(Component):
 
         for path in paths:
             try:
-                x, y, z = self.display._get_x_y_z(
+                x, y, z = self.VpyartDisplay.value._get_x_y_z(
                     tilt, False, True)
             except:
-                x, y, z = self.display._get_x_y_z(
+                x, y, z = self.VpyartDisplay.value._get_x_y_z(
                     self.Vfield.value, tilt, False, True)
             if self.plot_type == "radarAirborne":
                 _xy = np.empty(shape=(x.size, 2))
@@ -812,6 +839,20 @@ class RadarDisplay(Component):
         # Add the widget to the canvas
         self.layout.addWidget(self.canvas, 1, 0, 7, 6)
 
+    def _update_display(self):
+        if self.plot_type == "radarAirborne":
+            from pkg_resources import parse_version
+            if parse_version(pyart.__version__) >= parse_version('1.6.0'):
+                display = pyart.graph.AirborneRadarDisplay(
+                    self.Vradar.value)
+        elif self.plot_type == "radarPpiMap":
+            display = pyart.graph.RadarMapDisplay(self.Vradar.value)
+        elif self.plot_type == "radarPpi":
+            display = pyart.graph.RadarDisplay(self.Vradar.value)
+        elif self.plot_type == "radarRhi":
+            display = pyart.graph.RadarDisplay(self.Vradar.value)
+        self.VpyartDisplay.change(display)
+
     def _update_plot(self):
         '''Draw/Redraw the plot.'''
 
@@ -840,6 +881,7 @@ class RadarDisplay(Component):
         title = self.title
         limits = self.Vlimits.value
         cmap = self.Vcolormap.value
+        display = self.VpyartDisplay.value
         if self.gatefilterToggle.isChecked():
             gatefilter = self.Vgatefilter.value
         else:
@@ -855,26 +897,22 @@ class RadarDisplay(Component):
             norm = None
 
         if self.plot_type == "radarAirborne":
-            from pkg_resources import parse_version
-            if parse_version(pyart.__version__) >= parse_version('1.6.0'):
-                self.display = pyart.graph.AirborneRadarDisplay(
-                    self.Vradar.value)
-            else:
-                self.display = pyart.graph.RadarDisplay_Airborne(
-                    self.Vradar.value)
-
-            self.plot = self.display.plot_sweep_grid(
+            self.plot = display.plot_sweep_grid(
                 self.Vfield.value, vmin=cmap['vmin'],
                 vmax=cmap['vmax'], colorbar_flag=False, cmap=cmap['cmap'],
                 norm=norm, mask_outside=True,
                 edges=ignoreEdges, gatefilter=gatefilter,
                 ax=self.ax, fig=self.fig, title=title)
-            self.display.plot_grid_lines()
+            display.plot_grid_lines()
 
-        elif self.plot_type == "radarPpi":
-            self.display = pyart.graph.RadarDisplay(self.Vradar.value)
+        elif self.plot_type == "radarPpi" or self.plot_type == "radarPpiMap":
             # Create Plot
-            self.plot = self.display.plot_ppi(
+            if self.useMapToggle.isChecked():
+                plot_ppi = display.plot_ppi_map
+            else:
+                plot_ppi = display.plot_ppi
+
+            self.plot = plot_ppi(
                 self.Vfield.value, self.Vtilt.value,
                 vmin=cmap['vmin'], vmax=cmap['vmax'], norm=norm,
                 colorbar_flag=False, cmap=cmap['cmap'], mask_outside=True,
@@ -882,14 +920,13 @@ class RadarDisplay(Component):
                 ax=self.ax, fig=self.fig, title=title)
             # Add range rings
             if self.RngRing:
-                self.display.plot_range_rings(self.RNG_RINGS, ax=self.ax)
+                display.plot_range_rings(self.RNG_RINGS, ax=self.ax)
             # Add radar location
-            self.display.plot_cross_hair(5., ax=self.ax)
+            display.plot_cross_hair(5., ax=self.ax)
 
         elif self.plot_type == "radarRhi":
-            self.display = pyart.graph.RadarDisplay(self.Vradar.value)
             # Create Plot
-            self.plot = self.display.plot_rhi(
+            self.plot = display.plot_rhi(
                 self.Vfield.value, self.Vtilt.value,
                 vmin=cmap['vmin'], vmax=cmap['vmax'], norm=norm,
                 colorbar_flag=False, cmap=cmap['cmap'], mask_outside=True,
@@ -897,7 +934,7 @@ class RadarDisplay(Component):
                 ax=self.ax, fig=self.fig, title=title)
             # Add range rings
             if self.RngRing:
-                self.display.plot_range_rings(self.RNG_RINGS, ax=self.ax)
+                display.plot_range_rings(self.RNG_RINGS, ax=self.ax)
 
         self._update_axes()
         if norm is None:
@@ -927,7 +964,10 @@ class RadarDisplay(Component):
         radar = self.Vradar.value
         old_plot_type = self.plot_type
         if radar.scan_type != 'rhi':
-            self.plot_type = "radarPpi"
+            if self.useMapToggle.isChecked():
+                self.plot_type = "radarPpiMap"
+            else:
+                self.plot_type = "radarPpi"
         else:
             if 'platform_type' in radar.metadata:
                 if ('aircraft' in radar.metadata['platform_type'] or
@@ -1002,7 +1042,7 @@ class RadarDisplay(Component):
     ########################
     def _quick_savefile(self, PTYPE=IMAGE_EXT):
         '''Save the current display via PyArt interface.'''
-        imagename = self.display.generate_filename(
+        imagename = self.VpyartDisplay.value.generate_filename(
             self.Vfield.value, self.Vtilt.value, ext=IMAGE_EXT)
         self.canvas.print_figure(os.path.join(os.getcwd(), imagename), dpi=DPI)
         self.statusbar.showMessage(
@@ -1010,7 +1050,7 @@ class RadarDisplay(Component):
 
     def _savefile(self, PTYPE=IMAGE_EXT):
         '''Save the current display using PyQt dialog interface.'''
-        PBNAME = self.display.generate_filename(
+        PBNAME = self.VpyartDisplay.value.generate_filename(
             self.Vfield.value, self.Vtilt.value, ext=IMAGE_EXT)
         file_choices = "PNG (*.png)|*.png"
         path = unicode(QtGui.QFileDialog.getSaveFileName(

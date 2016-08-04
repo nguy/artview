@@ -90,7 +90,10 @@ class Variable(QtCore.QObject):
         |lection    |                   |instances                           |
         |           |                   |                                    |
         +-----------+-------------------+------------------------------------+
-
+        |VpyartDis\ | Hold pyart display| instance of one of the classes     |
+        |play       | instances         | in :py:mod:`pyart.graph`           |
+        |           |                   |                                    |
+        +-----------+-------------------+------------------------------------+
     '''
 
     value = None  #: Value of the Variable
