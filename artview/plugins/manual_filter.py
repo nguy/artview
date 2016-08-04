@@ -159,10 +159,11 @@ class ManualFilter(Component):
         mask_ray = self.Vpoints.value.axes['ray_index']['data'][:]
         mask_range = self.Vpoints.value.axes['range_index']['data'][:]
 
-        data = np.ma.array(
-            self.Vradar.value.fields[self.Vfield.value]['data'])
-        data.mask[mask_ray, mask_range] = True
-        self.Vradar.value.fields[self.Vfield.value]['data'] = data
+        data = self.Vradar.value.fields[self.Vfield.value]['data']
+        mask = np.ma.getmaskarray(data)
+        mask[mask_ray, mask_range] = True
+        self.Vradar.value.fields[self.Vfield.value]['data'] = np.ma.array(data,
+                                                                    mask=mask)
 
         self.Vradar.value.changed = True
         self.Vradar.update()
@@ -177,9 +178,11 @@ class ManualFilter(Component):
         mask_range = self.Vpoints.value.axes['range_index']['data'][:]
 
         for field in self.Vradar.value.fields.keys():
-            data = np.ma.array(self.Vradar.value.fields[field]['data'])
-            data.mask[mask_ray, mask_range] = True
-            self.Vradar.value.fields[field]['data'] = data
+            data = self.Vradar.value.fields[field]['data']
+            mask = np.ma.getmaskarray(data)
+            mask[mask_ray, mask_range] = True
+            self.Vradar.value.fields[field]['data'] = np.ma.array(data,
+                                                                  mask=mask)
 
         self.Vradar.value.changed = True
         self.Vradar.update()
