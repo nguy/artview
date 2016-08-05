@@ -244,7 +244,7 @@ modes = [
     {'label': 'Add Topographic Background',
      'group': 'graph',
      'action': topography_mode},
-    {'label': 'Add Image to Background',
-     'group': 'graph',
-     'action': background_mode},
+#    {'label': 'Add Image to Background',
+#     'group': 'graph',
+#     'action': background_mode},
     ]

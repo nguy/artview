@@ -23,7 +23,7 @@ def test_matplotlib_qt_backend():
         else:
             using = QtCore.__name__.split('.')[0]
             expect = QtCore4.__name__.split('.')[0]
-            print ("... test FAIL\n" +
+            print ("... Qt test FAILURE\n" +
                    "    Matplotlib is using %s\n" % using +
                    "    It must use %s\n" % expect +
                    "    Possible reasons for that are that " +
@@ -33,7 +33,8 @@ def test_matplotlib_qt_backend():
     except:
         import traceback
         print(traceback.format_exc())
-        print ("... Test fail is an expected way! We would like to know why, "
+        print ("... If you experience this test failure, it may be an "
+               "expected! We would like to know why, "
                "please report in 'https://github.com/nguy/artview/issues'")
         return None
 

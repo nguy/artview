@@ -11,7 +11,7 @@ from ..core import QtGui, QtCore
 
 def _add_all_advanced_tools(menu):
 
-    # add grafical starts
+    # add graphical starts
     for comp in [LinkSharedVariables, RadarDisplay, GridDisplay,
                  SelectRegion, PointsDisplay]:
         action = QtGui.QAction(comp.__name__, menu)
@@ -19,7 +19,7 @@ def _add_all_advanced_tools(menu):
             lambda comp=comp: menu.startComponent(comp))
         menu.addMenuAction(("File", "Plugins", ), action)
 
-    # add all plugins to grafical start
+    # add all plugins to graphical start
     try:
         from .. import plugins
         for plugin in plugins._plugins.values():
