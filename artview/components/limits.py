@@ -19,7 +19,7 @@ def _default_limits(field, plot_type):
         Field name to use for initialization (e.g. 'reflectivity').
 
     [Optional]
-    plot_type - "radarPpi", "radarRhi", "radarAirborne" or None
+    plot_type - "radarPpi", "radarPpiMap", "radarRhi", "radarAirborne" or None
         plto_type of the plot
 
     Notes::
@@ -49,19 +49,31 @@ def _default_limits(field, plot_type):
     PPI_XRNG = (-150., 150.)
     PPI_YRNG = (-150., 150.)
 
+    # X, Y range and size for PPI file types
+    MAP_XRNG = (-150000., 150000.)
+    MAP_YRNG = (-150000., 150000.)
+
     # X, Y range and size for RHI file types
     RHI_XRNG = (0., 150.)
     RHI_YRNG = (0., 20.)
 
     # Set size of plot
-    XRNG = PPI_XRNG
-    YRNG = PPI_YRNG
-    if plot_type == "radarAirborne":
+    if plot_type == "radarPpi":
+        XRNG = PPI_XRNG
+        YRNG = PPI_YRNG
+    elif plot_type == "radarPpiMap":
+        XRNG = MAP_XRNG
+        YRNG = MAP_YRNG
+    elif plot_type == "radarAirborne":
         XRNG = AIR_XRNG
         YRNG = AIR_YRNG
-    if plot_type == "radarRhi":
+    elif plot_type == "radarRhi":
         XRNG = RHI_XRNG
         YRNG = RHI_YRNG
+    else:
+        XRNG = PPI_XRNG
+        YRNG = PPI_YRNG
+
 
     name = pyart.config.get_field_name
 
