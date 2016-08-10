@@ -647,16 +647,10 @@ class RadarDisplay(Component):
 
     def toolValueClickCmd(self):
         '''Creates and connects to Point-and-click value retrieval'''
-        if self.plot_type == 'radarPpi':
-            from .tools import ValueClick
-            self.tools['valueclick'] = ValueClick(
-                self.Vradar, self.Vtilt, self.Vfield,
-                self.units, self.ax, self.statusbar, parent=self.parent)
-            self.tools['valueclick'].connect()
-        else:
-            import warnings
-            warnings.warn("valueclick not implemented for airborne or rhi",
-                          NotImplementedError)
+        from .tools import ValueClick
+        self.tools['valueclick'] = ValueClick(
+            self, name=self.name + "ValueClick", parent=self.parent)
+        self.tools['valueclick'].connect()
 
     def toolSelectRegionCmd(self):
         '''Creates and connects to Region of Interest instance'''
@@ -980,6 +974,7 @@ class RadarDisplay(Component):
 
         if self.plot_type != old_plot_type:
             print("Changed Scan types, reinitializing")
+            self.toolResetCmd()
             self._set_default_limits()
             self._update_fig_ax()
 
@@ -1082,6 +1077,10 @@ class RadarDisplay(Component):
     def getRadar(self):
         ''' get current radar '''
         return self.Vradar.value
+
+    def getTilt(self):
+        ''' get current tilt '''
+        return self.Vtilt.value
 
 
 class _DisplayStart(QtGui.QDialog):
