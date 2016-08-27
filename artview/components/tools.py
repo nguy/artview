@@ -78,8 +78,7 @@ class ValueClick(QtGui.QMainWindow):
     '''
     Class for retrieving value by mouse click on display.
     '''
-    def __init__(self, Vradar, Vtilt, Vfield, units, ax, statusbar,
-                 name="ValueClick", parent=None):
+    def __init__(self, display, name="ValueClick", parent=None):
         '''
         Initialize the class to display mouse click value data on display.
 
@@ -111,18 +110,20 @@ class ValueClick(QtGui.QMainWindow):
         This class records the values at the point selected by mouse click and
         displays in the statusbar.
         '''
-        super(ValueClick, self).__init__(parent)
+        super(ValueClick, self).__init__(parent=parent)
+
         self.parent = parent
         self.name = name
-        self.Vradar = Vradar
-        self.Vtilt = Vtilt
-        self.Vfield = Vfield
-        self.units = units
-        self.ax = ax
-        self.statusbar = statusbar
-        self.fig = ax.get_figure()
+        self.Vradar = display.Vradar
+        self.Vtilt = display.Vtilt
+        self.Vfield = display.Vfield
+        self.units = display.getUnits()
+        self.ax = display.getPlotAxis()
+        self.statusbar = display.getStatusBar()
+        self.fig = self.ax.get_figure()
+        self.plot_type = display.plot_type
         QtCore.QObject.connect(
-            Vradar, QtCore.SIGNAL("ValueChanged"), self.NewRadar)
+            self.Vradar, QtCore.SIGNAL("ValueChanged"), self.NewRadar)
 
         self.msg = "Click to display value"
 
@@ -135,59 +136,69 @@ class ValueClick(QtGui.QMainWindow):
         '''Get value at the point selected by mouse click.'''
         xdata = event.xdata  # get event x location
         ydata = event.ydata  # get event y location
-        if (xdata is None) or (ydata is None):
+        if ((xdata is None) or (ydata is None) or
+            (self.Vradar.value is None)):
             self.msg = "Please choose point inside plot area"
-        elif self.Vradar.value is None:
-            az = np.arctan2(xdata, ydata) * 180. / np.pi
-            if az < 0:
-                az = az + 360.
-            rng = np.sqrt(xdata * xdata + ydata * ydata)
-            # TJL - Attempt to pep8 this overlong string
-            msg1 = 'x = %4.2f, y = %4.2f, ' % (xdata, ydata)
-            msg2 = 'Azimuth = %4.2f deg., Range = %4.3f km' % (az, rng)
-            self.msg = msg1 + msg2
         else:
             az = np.arctan2(xdata, ydata) * 180. / np.pi
             radar = self.Vradar.value  # keep equations clean
             if az < 0:
                 az = az + 360.
             rng = np.sqrt(xdata*xdata + ydata*ydata)
-            # TJL - Attempt to pep8 this overlong string
-            msg1 = 'x = %4.2f, y = %4.2f, ' % (xdata, ydata)
-            msg2 = 'Azimuth = %4.2f deg., Range = %4.3f km' % (az, rng)
-            self.msg = msg1 + msg2
 
             azindex = np.argmin(np.abs(
                 radar.azimuth['data'][radar.sweep_start_ray_index['data'][
                     self.Vtilt.value]:radar.sweep_end_ray_index['data'][
-                    self.Vtilt.value]+1]-az)) + \
+                    self.Vtilt.value] + 1] - az)) + \
                 radar.sweep_start_ray_index['data'][self.Vtilt.value]
             if azindex == radar.sweep_end_ray_index['data'][self.Vtilt.value]:
                 if az < 10:
                     az = az + 360.
                 if np.abs(
                         radar.azimuth['data'][radar.sweep_start_ray_index[
-                        'data'][self.Vtilt.value]]+360.-az) < \
+                        'data'][self.Vtilt.value]] + 360. - az) < \
                         np.abs(radar.azimuth['data'][
                         radar.sweep_end_ray_index['data'][
-                        self.Vtilt.value]]-az):
+                        self.Vtilt.value]] - az):
                     azindex = \
                         radar.sweep_start_ray_index['data'][self.Vtilt.value]
                 else:
                     azindex = \
                         radar.sweep_end_ray_index['data'][self.Vtilt.value]
 
-            rngindex = np.argmin(np.abs(radar.range['data']-rng*1000.))
-            # TJL - Attempt to pep8 this overlong string
-            msg1 = 'x = %4.2f, y = %4.2f, ' % (xdata, ydata)
-            msg2 = 'Azimuth = %4.2f deg., Range = %4.3f km, ' % \
-                (radar.azimuth['data'][azindex],
-                 radar.range['data'][rngindex]/1000.)
-            msg3 = '%s = %4.2f %s' % (
-                self.Vfield.value,
-                radar.fields[self.Vfield.value]['data'][azindex][rngindex],
-                self.units)
-            self.msg = msg1 + msg2 + msg3
+            rngindex = np.argmin(np.abs(radar.range['data'] - rng*1000.))
+            if self.plot_type == 'radarPpi':
+                msg1 = 'x = %4.2f, y = %4.2f, ' % (xdata, ydata)
+                msg2 = 'Azimuth = %4.2f deg., Range = %4.3f km, ' % (
+                    radar.azimuth['data'][azindex],
+                    radar.range['data'][rngindex]/1000.)
+                msg3 = '%s = %4.2f %s' % (
+                    self.Vfield.value,
+                    radar.fields[self.Vfield.value]['data'][azindex][rngindex],
+                    self.units)
+                self.msg = msg1 + msg2 + msg3
+            elif self.plot_type == 'radarRhi':
+                msg1 = 'x = %4.2f, y = %4.2f, ' % (xdata, ydata)
+                msg2 = 'Range = %4.3f km, ' % (
+                    radar.range['data'][rngindex]/1000.)
+                msg3 = '%s = %4.2f %s' % (
+                    self.Vfield.value,
+                    radar.fields[self.Vfield.value]['data'][azindex][rngindex],
+                    self.units)
+                self.msg = msg1 + msg2 + msg3
+            elif self.plot_type == 'radarAirborne':
+                rotind = np.argmin(np.abs(radar.rotation['data'] - az))
+                msg1 = 'x = %4.2f, y = %4.2f, ' % (xdata, ydata)
+                msg2 = 'Angle of Rotation = %4.2f deg., Range = %4.3f km, ' % (
+                    radar.rotation['data'][rotind],
+                    radar.range['data'][rngindex]/1000.)
+                msg3 = '%s = %4.2f %s' % (
+                    self.Vfield.value,
+                    radar.fields[self.Vfield.value]['data'][rotind][rngindex],
+                    self.units)
+                self.msg = msg1 + msg2 + msg3
+            else:
+                raise ValueError("Plot type not currently supported...")
         self.statusbar.showMessage(self.msg)
 
     def disconnect(self):
@@ -197,7 +208,6 @@ class ValueClick(QtGui.QMainWindow):
     def NewRadar(self, variable, strong=False):
         '''Update the display list when radar variable is changed.'''
         print("In NewRadar")
-
 ##########################
 # Zoom/Pan Class Methods #
 ##########################

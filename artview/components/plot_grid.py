@@ -132,13 +132,15 @@ class GridDisplay(Component):
 
         self.VpathInteriorFunc = Variable(self.getPathInteriorValues)
         self.VplotAxes = Variable(None)
+        self.VpyartDisplay = Variable(None)
 
         self.sharedVariables = {"Vgrid": self.NewGrid,
                                 "Vfield": self.NewField,
                                 "Vlimits": self.NewLimits,
                                 "Vcolormap": self.NewColormap,
                                 "VpathInteriorFunc": None,
-                                "VplotAxes": None}
+                                "VplotAxes": None,
+                                "VpyartDisplay": self.NewDisplay}
 
         self.parse_plot_type(plot_type)
 
@@ -477,7 +479,8 @@ class GridDisplay(Component):
         self.units = self._get_default_units()
         self.title = self._get_default_title()
         if strong:
-            self._update_plot()
+            display = pyart.graph.GridMapDisplay(self.Vgrid.value)
+            self.VpyartDisplay.change(display)
             self._update_infolabel()
 
     def NewField(self, variable, strong):
@@ -541,6 +544,21 @@ class GridDisplay(Component):
         if strong:
             self._update_plot()
             self._update_infolabel()
+
+    def NewDisplay(self, variable, strong):
+        '''
+        Slot for 'ValueChanged' signal of
+        :py:class:`VpyartDisplay <artview.core.core.Variable>`.
+
+        This will:
+
+        * If strong update: update plot
+        * redraw canvas
+        '''
+        if strong:
+            self._update_plot()
+        else: #  updata_plot already redraw
+            self.canvas.draw()
 
     def LevelSelectCmd(self, nlevel):
         '''
@@ -809,9 +827,7 @@ class GridDisplay(Component):
         title = self.title
         limits = self.Vlimits.value
         cmap = self.Vcolormap.value
-
-        self.display = pyart.graph.GridMapDisplay(self.Vgrid.value)
-
+        display = self.VpyartDisplay.value
 
         if 'norm' in cmap:
             norm = cmap['norm']
@@ -820,23 +836,23 @@ class GridDisplay(Component):
 
         # Create Plot
         if self.plot_type == "gridZ":
-            self.display.plot_basemap(
+            display.plot_basemap(
                 self.lat_lines, self.lon_lines, ax=self.ax)
-            self.basemap = self.display.get_basemap()
-            self.plot = self.display.plot_grid(
+            self.basemap = display.get_basemap()
+            self.plot = display.plot_grid(
                 self.Vfield.value, self.VlevelZ.value, vmin=cmap['vmin'],
                 vmax=cmap['vmax'], cmap=cmap['cmap'], norm=norm,
                 colorbar_flag=False, title=title, ax=self.ax, fig=self.fig)
         elif self.plot_type == "gridY":
             self.basemap = None
-            self.plot = self.display.plot_latitudinal_level(
+            self.plot = display.plot_latitudinal_level(
                 self.Vfield.value, self.VlevelY.value, vmin=cmap['vmin'],
                 vmax=cmap['vmax'], cmap=cmap['cmap'], norm=norm,
                 colorbar_flag=False, title=title, ax=self.ax, fig=self.fig)
             self.ax.set_aspect('auto')
         elif self.plot_type == "gridX":
             self.basemap = None
-            self.plot = self.display.plot_longitudinal_level(
+            self.plot = display.plot_longitudinal_level(
                 self.Vfield.value, self.VlevelX.value, vmin=cmap['vmin'],
                 vmax=cmap['vmax'], cmap=cmap['cmap'], norm=norm,
                 colorbar_flag=False, title=title, ax=self.ax, fig=self.fig)
@@ -1007,7 +1023,7 @@ class GridDisplay(Component):
 
     def _quick_savefile(self, PTYPE=IMAGE_EXT):
         '''Save the current display via PyArt interface.'''
-        imagename = self.display.generate_filename(
+        imagename = self.VpyartDisplay.value.generate_filename(
             self.Vfield.value, self.Vlevel.value, ext=IMAGE_EXT)
         self.canvas.print_figure(os.path.join(os.getcwd(), imagename),
                                  dpi=DPI)
@@ -1016,7 +1032,7 @@ class GridDisplay(Component):
 
     def _savefile(self, PTYPE=IMAGE_EXT):
         '''Save the current display using PyQt dialog interface.'''
-        imagename = self.display.generate_filename(
+        imagename = self.VpyartDisplay.value.generate_filename(
             self.Vfield.value, self.Vlevel.value, ext=IMAGE_EXT)
         file_choices = "PNG (*.png)|*.png"
         path = unicode(QtGui.QFileDialog.getSaveFileName(
