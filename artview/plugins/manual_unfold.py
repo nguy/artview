@@ -79,38 +79,44 @@ class ManualUnfold(Component):
 
         self.velField = QtGui.QLineEdit(
             pyart.config.get_field_name('velocity'))
-        self.layout.addWidget(QtGui.QLabel("vel_field"), 0, 0)
-        self.layout.addWidget(self.velField, 0, 1)
+        self.layout.addWidget(QtGui.QLabel("vel_field:"), 0, 0)
+        self.layout.addWidget(self.velField, 1, 0)
 
         self.corrVelField = QtGui.QLineEdit(
             pyart.config.get_field_name('corrected_velocity'))
-        self.layout.addWidget(QtGui.QLabel("corr_vel_field"), 1, 0)
-        self.layout.addWidget(self.corrVelField, 1, 1)
+        self.layout.addWidget(QtGui.QLabel("corr_vel_field:"), 2, 0)
+        self.layout.addWidget(self.corrVelField, 3, 0)
 
         self.nyquistVelocity = QtGui.QDoubleSpinBox()
         self.nyquistVelocity.setRange(-1, 1000)
         self.nyquistVelocity.setValue(-1)
-        self.layout.addWidget(QtGui.QLabel("nyquist_velocity"), 2, 0)
-        self.layout.addWidget(self.nyquistVelocity, 2, 1)
+        self.layout.addWidget(QtGui.QLabel("nyquist_velocity:"), 4, 0)
+        self.layout.addWidget(self.nyquistVelocity, 5, 0)
 
         self.positiveButton = QtGui.QPushButton("Unfold Positive Values")
         self.positiveButton.clicked.connect(self.positiveUnfold)
-        self.layout.addWidget(self.positiveButton, 3, 1)
+        self.layout.addWidget(self.positiveButton, 6, 0)
 
         self.negativeButton = QtGui.QPushButton("Unfold Negative Values")
         self.negativeButton.clicked.connect(self.negativeUnfold)
-        self.layout.addWidget(self.negativeButton, 4, 1)
+        self.layout.addWidget(self.negativeButton, 7, 0)
 
         # list for undoing: (unfold matriz, nyquist_vel)
         self.unfoldList = collections.deque(maxlen=30)
         self.foldButton = QtGui.QPushButton("Fold Back")
         self.foldButton.clicked.connect(self.foldBack)
-        self.layout.addWidget(self.foldButton, 5, 1)
+        self.layout.addWidget(self.foldButton, 8, 0)
 
         self.buttonHelp = QtGui.QPushButton("Help")
         self.buttonHelp.setToolTip("About using Manual Unfold")
         self.buttonHelp.clicked.connect(self._displayHelp)
-        self.layout.addWidget(self.buttonHelp, 6, 1)
+        self.layout.addWidget(self.buttonHelp, 9, 0)
+
+        #empty space at the bottom
+        self.layout.addItem(QtGui.QSpacerItem(
+            0, 0, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding),
+                            10, 0)
+
 
         self.NewRadar(None, True)
         self.show()

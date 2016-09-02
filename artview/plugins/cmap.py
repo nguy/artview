@@ -58,6 +58,8 @@ class ColormapEdit(core.Component):
         self.ax = self.fig.add_axes([0.0, 0.0, 0.01, 0.01])
         self.cax = self.fig.add_axes([0, 0, 0.8, 1])
         self.canvas = FigureCanvasQTAgg(self.fig)
+        print "canvas,", self.canvas.sizePolicy().verticalPolicy()
+        self.canvas.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         self.canvas.mpl_connect('button_press_event', self.select_cmap)
 
     def createUI(self):
@@ -119,23 +121,23 @@ class ColormapEdit(core.Component):
                 self.layout.removeWidget(widget)
                 widget.setParent(None)
 
-        self.layout.addWidget(QtGui.QLabel("Normalize"), 0, 0, 1, 1)
-        self.layout.addWidget(self.norm_type, 0, 1, 1, 3)
-        self.layout.addWidget(self.select_button, 1, 2, 1, 1)
+        self.layout.addWidget(QtGui.QLabel("Normalize:"), 1, 0, 1, 1)
+        self.layout.addWidget(self.norm_type, 2, 0, 1, 2)
+        self.layout.addWidget(self.select_button, 0, 0, 1, 2)
 
         idx = self.norm_type.currentIndex()
         if idx in [0, 1, 2, 3, 4]:
-            self.layout.addWidget(QtGui.QLabel("Vmax"), 1, 0, 1, 1)
-            self.layout.addWidget(self.ent_vmax, 1, 1, 1, 1)
+            self.layout.addWidget(QtGui.QLabel("Vmax"), 3, 0, 1, 1)
+            self.layout.addWidget(self.ent_vmax, 3, 1, 1, 1)
 
             self.layout.addWidget(QtGui.QLabel("Vmin"), 5, 0, 1, 1)
             self.layout.addWidget(self.ent_vmin, 5, 1, 1, 1)
 
-            self.layout.addWidget(self.canvas, 2, 2, 3, 1)
+            self.layout.addWidget(self.canvas, 4, 0, 1, 2)
 
         if idx in [0, 1, 2]:
             self.layout.addWidget(self.lock_box, 6, 0, 1, 2)
-            self.layout.addWidget(self.apply_button, 6, 2, 1, 1)
+            self.layout.addWidget(self.apply_button, 7, 0, 1, 2)
         elif idx == 3:
             self.layout.addWidget(QtGui.QLabel("linthresh"), 6, 0, 1, 1)
             self.layout.addWidget(self.ent_linthresh, 6, 1, 1, 1)
@@ -144,24 +146,24 @@ class ColormapEdit(core.Component):
             self.layout.addWidget(self.ent_linscale, 7, 1, 1, 1)
 
             self.layout.addWidget(self.lock_box, 8, 0, 1, 2)
-            self.layout.addWidget(self.apply_button, 8, 2, 1, 1)
+            self.layout.addWidget(self.apply_button, 9, 0, 1, 2)
         elif idx == 4:
             self.layout.addWidget(QtGui.QLabel("gamma"), 6, 0, 1, 1)
             self.layout.addWidget(self.ent_gamma, 6, 1, 1, 1)
 
             self.layout.addWidget(self.lock_box, 7, 0, 1, 2)
-            self.layout.addWidget(self.apply_button, 7, 2, 1, 1)
+            self.layout.addWidget(self.apply_button, 8, 0, 1, 2)
         elif idx ==5:
             count=0
             for ent in self.ent_bounds:
-                self.layout.addWidget(ent, 2 * count + 1, 0, 1, 2)
+                self.layout.addWidget(ent, 2 * count + 3, 0, 1, 1)
                 count += 1
 
-            self.layout.addWidget(self.canvas, 2, 2, 2 * count - 3, 1)
-            self.layout.addWidget(self.add_button, 2 * count, 0, 1, 1)
-            self.layout.addWidget(self.remove_button, 2 * count, 1, 1, 1)
-            self.layout.addWidget(self.lock_box, 2 * count + 1, 0, 1, 2)
-            self.layout.addWidget(self.apply_button, 2 * count + 1, 2, 1, 1)
+            self.layout.addWidget(self.canvas, 4, 1, 2 * count - 3, 1)
+            self.layout.addWidget(self.add_button, 2 * count + 2, 0, 1, 1)
+            self.layout.addWidget(self.remove_button, 2 * count + 2, 1, 1, 1)
+            self.layout.addWidget(self.lock_box, 2 * count + 3, 0, 1, 2)
+            self.layout.addWidget(self.apply_button, 2 * count + 4, 0, 1, 2)
 
     def plot(self):
         '''Replot the colorbar.'''

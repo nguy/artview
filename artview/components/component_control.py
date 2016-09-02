@@ -66,6 +66,9 @@ class LinkSharedVariables(Component):
         self.helpButton = QtGui.QPushButton("Help")
         self.helpButton.clicked.connect(self._displayHelp)
         self.layout.addWidget(self.helpButton, 1, 0, 1, -1)
+        self.layout.addItem(QtGui.QSpacerItem(
+            0, 0, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding),
+                            2, 0, 1, -1)
 
         if components is None:
             self.components = componentsList

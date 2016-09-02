@@ -190,7 +190,7 @@ class Window(Component):
                     widget.update()
 
     def addWindow(self):
-        window()
+        Window()
 
     ######################
     # Menu build methods #

@@ -246,40 +246,37 @@ class FileDetail(Component):
 
         # Set the layout
         self.generalLayout = QtGui.QVBoxLayout()
-        self.generalLayout.addWidget(self.createShortUI())
-        self.generalLayout.addWidget(self.createLongUI())
+        self.generalLayout.addWidget(self.createUI())
 
         self.layout.addLayout(self.generalLayout, 0, 0, 1, 2)
 
         self.show()
 
-    def createShortUI(self):
+    def createUI(self):
         '''
         Choose to save minimal information from Radar instance.
         '''
-        groupBox = QtGui.QGroupBox("Output Short Radar Text Information")
+        groupBox = QtGui.QGroupBox("Output Radar Information")
         gBox_layout = QtGui.QGridLayout()
 
-        self.RadarShortButton = QtGui.QPushButton("Save Short Info File")
-        self.RadarShortButton.setStatusTip('Save Short Radar Structure Info')
-        self.RadarShortButton.clicked.connect(self._get_RadarShortInfo)
-        gBox_layout.addWidget(self.RadarShortButton, 0, 0, 1, 1)
+        self.RadarShowShortButton = QtGui.QPushButton("Show Short Info File")
+        self.RadarShowShortButton.setStatusTip('Show Short Radar Structure Info')
+        self.RadarShowShortButton.clicked.connect(self._show_RadarShortInfo)
+        gBox_layout.addWidget(self.RadarShowShortButton, 0, 0, 1, 1)
 
-        groupBox.setLayout(gBox_layout)
+        self.RadarSaveShortButton = QtGui.QPushButton("Save Short Info File")
+        self.RadarSaveShortButton.setStatusTip('Save Short Radar Structure Info')
+        self.RadarSaveShortButton.clicked.connect(self._save_RadarShortInfo)
+        gBox_layout.addWidget(self.RadarSaveShortButton, 1, 0, 1, 1)
 
-        return groupBox
+        self.RadarSaveLongButton = QtGui.QPushButton("Save Long Info File")
+        self.RadarSaveLongButton.setStatusTip('Save Long Radar Structure Info')
+        self.RadarSaveLongButton.clicked.connect(self._get_RadarLongInfo)
+        gBox_layout.addWidget(self.RadarSaveLongButton, 2, 0, 1, 1)
 
-    def createLongUI(self):
-        '''
-        Choose to save full information from Radar instance.
-        '''
-        groupBox = QtGui.QGroupBox("Output Long Radar Text Information")
-        gBox_layout = QtGui.QGridLayout()
-
-        self.RadarLongButton = QtGui.QPushButton("Save Long Info File")
-        self.RadarLongButton.setStatusTip('Save Long Radar Structure Info')
-        self.RadarLongButton.clicked.connect(self._get_RadarLongInfo)
-        gBox_layout.addWidget(self.RadarLongButton, 0, 0, 1, 1)
+        gBox_layout.addItem(QtGui.QSpacerItem(
+            0, 0, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding),
+                            3, 0)
 
         groupBox.setLayout(gBox_layout)
 
@@ -383,7 +380,15 @@ class FileDetail(Component):
                  ('Number of gates: %s\n' % ngates) +
                  ('Number of sweeps: %s\n' % nsweeps))
 
+        return txOut
+
+    def _save_RadarShortInfo(self):
+        txOut = self._get_RadarShortInfo()
         self.showSaveDialog('short_radar_info.txt', txOut)
+
+    def _show_RadarShortInfo(self):
+        txOut = self._get_RadarShortInfo()
+        common.ShowLongText(txOut)
 
     def showSaveDialog(self, fsuggest, txt):
 
