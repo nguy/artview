@@ -223,6 +223,70 @@ def string_dialog_with_reset(stringIn, title, msg, reset=None):
 
     return stringOut, entry
 
+##################
+# Option methods #
+##################
+
+def get_options(options, values):
+    dialog = QtGui.QDialog()
+    gridLayout = QtGui.QGridLayout(dialog)
+    keys = [a[0] for a in options]
+    entrys = {}
+    for i, key in enumerate(keys):
+        if options[i][1] in (str, int, float):
+            gridLayout.addWidget(QtGui.QLabel(key), i, 0, 1, 1)
+            entrys[key] = QtGui.QLineEdit(str(values[key]), dialog)
+            gridLayout.addWidget(entrys[key], i, 1, 1, 1)
+        elif options[i][1] is bool:
+            entrys[key] = QtGui.QCheckBox(key)
+            gridLayout.addWidget(entrys[key], i, 1, 1, 1)
+            entrys[key].setChecked(values[key])
+        elif isinstance(options[i][1], tuple):
+            entrys[key] = QtGui.QComboBox()
+            entrys[key].addItems(options[i][1])
+            gridLayout.addWidget(entrys[key], i, 1, 1, 1)
+            entrys[key].setCurrentIndex(options[i][1].index(values[key]))
+
+    buttonBox = QtGui.QDialogButtonBox(dialog)
+    buttonBox.setOrientation(QtCore.Qt.Horizontal)
+    buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
+                                QtGui.QDialogButtonBox.Ok)
+    gridLayout.addWidget(buttonBox, i+1, 0, 1, -1)
+
+    # Connect the signals from OK and Cancel buttons
+    buttonBox.accepted.connect(dialog.accept)
+    buttonBox.rejected.connect(dialog.reject)
+
+    entry = dialog.exec_()
+
+    if entry == QtGui.QDialog.Accepted:
+        out = {}
+        for option in options:
+            key = option[0]
+            opt = option[1]
+            try:
+                if opt == str:
+                    out[key] = str(entrys[key].text())
+                elif opt == int:
+                    out[key] = int(entrys[key].text())
+                elif opt == float:
+                    out[key] = float(entrys[key].text())
+                elif opt == bool:
+                    out[key] = entrys[key].isChecked()
+                elif isinstance(opt, tuple):
+                    out[key] = opt[entrys[key].currentIndex()]
+            except:
+                if len(option) > 2:
+                    out[key] = option[2]
+                else:
+                    out[key] = values[key]
+    else:
+        out = values.copy()
+
+    return out
+
+
+
 ########################
 # Start methods #
 ########################

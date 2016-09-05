@@ -9,7 +9,7 @@ import sys
 
 from ..core import Variable, QtGui, QtCore, componentsList
 from ..components import RadarDisplay, Menu, LevelButtonWindow, \
-    LinkSharedVariables, SelectRegion, Window
+    LinkSharedVariables, SelectRegion, Window, FileNavigator
 from ._parse_field import _parse_field
 from ._common import startMainMenu
 from .. import view
@@ -299,7 +299,7 @@ def run(DirIn=None, filename=None, field=None):
     if DirIn is None:  # avoid reference to path while building documentation
         DirIn = os.getcwd()
 
-    menu = Menu(DirIn, filename)
+    menu = FileNavigator()
 
     Vradar = menu.Vradar
 
