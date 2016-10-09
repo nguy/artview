@@ -551,7 +551,7 @@ class GridDisplay(Component):
 
     def toolZoomPanCmd(self):
         '''Creates and connects to a Zoom/Pan instance.'''
-        from .tools import ZoomPan
+        from .toolbox import ZoomPan
         scale = 1.1
         self.tools['zoompan'] = ZoomPan(
             self.Vlimits, self.ax,
@@ -573,8 +573,8 @@ class GridDisplay(Component):
 
     def toolResetCmd(self):
         '''Reset tools via disconnect.'''
-        from . import tools
-        self.tools = tools.reset_tools(self.tools)
+        from . import toolbox
+        self.tools = toolbox.reset_tools(self.tools)
 
     def toolDefaultCmd(self):
         '''Restore the Display defaults.'''
@@ -606,7 +606,7 @@ class GridDisplay(Component):
         -----
             If Vgrid.value is None, returns None
         '''
-        from .tools import interior_grid
+        from .toolbox import interior_grid
         grid = self.Vgrid.value
         if grid is None:
             return None
@@ -704,7 +704,7 @@ class GridDisplay(Component):
         -----
             If Vgrid.value is None, returns None
         '''
-        from .tools import nearest_point_grid
+        from .toolbox import nearest_point_grid
         grid = self.Vgrid.value
 
         # map center

@@ -15,7 +15,7 @@ class ValueClick(Component):
         '''
         Initialize the class to pick value from display.
 
-        Parameters::
+        Parameters
         ----------
         display - ARTview Display
             Display instance to associate ValueClick.

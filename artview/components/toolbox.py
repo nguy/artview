@@ -1,7 +1,7 @@
 """
 tools.py
 
-Routines and class instances to create tools for the ToolBox in Display.
+Routines and class instances to create tools for the Display ToolBox.
 """
 
 # Load the needed packages
@@ -24,20 +24,18 @@ warnings.filterwarnings('ignore', category=UserWarning, append=True)
 
 
 def restore_default_display(tooldict, field, scan_type):
-    '''Restore the Display defaults.
+    '''
+    Disconnect all tools and resets limits and colormap to default.
 
     Parameters
     ----------
-    tooldict - dictionary
+    tooldict : dict
         A dictionary of tool instances.
-    field - string
+    field : str
         Name of field to display.
-    scan_type - "ppi", "rhi", "airborne" or None
+    scan_type : str
         Scan type for radar file.
-
-    Notes
-    -----
-    Disconnects all tools and resets limits and colormap to default.
+        "ppi", "rhi", "airborne" or None
     '''
     import warnings
     warnings.warn("this function is deprecated")
@@ -49,19 +47,16 @@ def restore_default_display(tooldict, field, scan_type):
 
 
 def reset_tools(tooldict):
-    '''Reset the Tools dictionary.
+    '''
+    Disconnects all tools.
 
     Parameters
     ----------
-    tooldict - dictionary
+    tooldict : dict
         A dictionary of tool instances.
-
-    Notes
-    -----
-    Disconnects all tools.
     '''
     import warnings
-    warnings.warn("this function is deprecated")
+    warnings.warn("This function is deprecated")
     for tool in tooldict:
         if tooldict[tool] is not None:
             tooldict[tool].disconnect()
@@ -69,9 +64,9 @@ def reset_tools(tooldict):
 
     return tooldict
 
-##################################
-# Mouse Click Value Class Method #
-##################################
+####################################
+#  Mouse Click Value Class Method  #
+####################################
 
 
 class ValueClick(QtGui.QMainWindow):
@@ -82,30 +77,20 @@ class ValueClick(QtGui.QMainWindow):
         '''
         Initialize the class to display mouse click value data on display.
 
-        Parameters::
+        Parameters
         ----------
-        Vradar - Variable instance
-            Radar signal variable to be used.
-        Vtilt - Variable instance
-            Tilt signal variable to be used.
-        Vfield - Variable instance
-            Field signal variable to be used.
-        units - string
-            Units of field variable.
-        ax - Matplotlib axis instance
-            Axis instance to use.
-        statusbar - Qt StatusBar() instance
-            Display point value message via this interface.
+        display : ARTview Display instance
+            Display to engage ValueClick.
 
         [Optional]
-        name - string
+        name : str
             Field Radiobutton window name.
-        parent - PyQt instance
+        parent : PyQt instance
             Parent instance to associate to ZoomPan instance.
             If None, then Qt owns, otherwise associated with parent PyQt
             instance.
 
-        Notes::
+        Notes
         -----
         This class records the values at the point selected by mouse click and
         displays in the statusbar.
@@ -226,7 +211,7 @@ http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-
         '''
         Initialize the class to create the interface.
 
-        Parameters::
+        Parameters
         ----------
         Vlimits - Variable instance
             Limits signal variable to be used.
@@ -243,7 +228,7 @@ http://stackoverflow.com/questions/11551049/matplotlib-plot-zooming-with-scroll-
             If None, then Qt owns, otherwise associated with parent PyQt
             instance.
 
-        Notes::
+        Notes
         -----
         This class records the selected button and passes the
         change value back to variable.
