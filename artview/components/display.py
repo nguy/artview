@@ -189,46 +189,51 @@ class ImageTextBox(core.Component):
         self._check_entries()
         self.choice = self._get_entries()
 
+        # Create the text instance
         # Add to list if new instance or overwrite if present
         if self.choice['text'] not in self.display.disp_text.keys():
-            print("Text not found")
+            self.choice['instance'] = self.display.ax.text(
+                self.choice['xpos'], self.choice['ypos'],
+                self.choice['text'], style=self.choice['style'],
+                color=self.choice['col'], fontsize=self.choice['size'])
             self.dispCombo.addItem(self.choice['text'])
             self.dispChoiceList.append(self.choice)
             self.dispCombo.setCurrentIndex(self.dispCombo.count() - 1)
         else:
             print("Overwriting text")
             select = self.dispCombo.findText(self.choice['text'])
-            self.dispCombo.setCurrentIndex(select)
+            try:
+                self.dispChoiceList[select]['instance'].remove()
+            except:
+                print("No instance found")
+            self.choice['instance'] = self.display.ax.text(
+                self.choice['xpos'], self.choice['ypos'],
+                self.choice['text'], style=self.choice['style'],
+                color=self.choice['col'], fontsize=self.choice['size'])
             self.dispChoiceList[select] = self.choice
+            self.dispCombo.setCurrentIndex(select)
         # Write the updated text item to the Display Text instance
         self.display.disp_text[self.choice['text']] = self.choice
 
-        # Plot the text on Display
-        self.display.ax.text(self.choice['xpos'], self.choice['ypos'],
-                        self.choice['text'],
-                        style=self.choice['style'],
-                        color=self.choice['col'],
-                        fontsize=self.choice['size'])
-
+        # Redraw the canvas to place new text
         self.display.fig.canvas.draw()
-#        print(self.display.disp_text.keys())
 
     def delDispText(self):
         '''Delete selected Display text boxes.'''
         self.choice_key = str(self.ent_tex.text())
-#        if self.choice_key in self.display.disp_text.keys():
         if self.dispCombo.currentText() in self.display.disp_text.keys():
             del self.display.disp_text[self.choice_key]
 
         delselect = self.dispCombo.findText(self.choice_key)
         if delselect != -1:
+            self.dispChoiceList[delselect]['instance'].remove()
             del self.dispChoiceList[delselect]
             self.dispCombo.removeItem(delselect)
+            self.display.fig.canvas.draw()
 
         self.choice = self._blank_entries()
         self.dispCombo.setCurrentIndex(0)
         self._rebuild_entry()
-##        self.display._update_plot()##NG
 
     def clrDispText(self):
         '''Clear all Display text boxes.'''
@@ -237,9 +242,10 @@ class ImageTextBox(core.Component):
         # Delete each entry, need to reverse indices
         for i in range(self.dispCombo.count())[::-1]:
             if i > 0:
-                print(i)
+                self.dispChoiceList[i]['instance'].remove()
                 del self.dispChoiceList[i]
                 self.dispCombo.removeItem(i)
+        self.display.fig.canvas.draw()
         self.dispCombo.setCurrentIndex(0)
         self._rebuild_entry()
 ##        self.display._update_plot()##NG

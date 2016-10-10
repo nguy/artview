@@ -318,12 +318,6 @@ class RadarDisplay(Component):
         '''Add a text box to display.'''
         from .display import ImageTextBox
         itext = ImageTextBox(self)
-##        if aspect != self.ax.get_aspect():
-##            self.ax.set_aspect(aspect)
-##        if change == 1:
-##            self.Vcolormap.change(cmap)
-##            self.Vlimits.change(limits)
-        pass
 
     def _open_tiltbuttonwindow(self):
         '''Open a TiltButtonWindow instance.'''
