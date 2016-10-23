@@ -10,7 +10,7 @@ import pyart
 import numpy as np
 from netCDF4 import Dataset
 from matplotlib.colors import LightSource
-from mpl_toolkits.basemap import shiftgrid, cm
+
 
 import sys
 import os
@@ -87,6 +87,7 @@ class TopographyBackground(Component):
             self.lineEdit.setText(filename)
 
     def apply(self):
+        from mpl_toolkits.basemap import shiftgrid, cm
         common.ShowQuestion
         display = self.VpyartDisplay.value
         if (isinstance(display, pyart.graph.RadarMapDisplay) or

@@ -14,7 +14,7 @@ except:
 
 def main(argv):
     if profiling:
-        import cProfile, pstats, StringIO
+        import cProfile, pstats
         pr = cProfile.Profile()
         pr.enable()
 
