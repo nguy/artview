@@ -17,7 +17,7 @@ sys.path.insert(0, path)
 
 import artview
 
-from ..core import Component, Variable, common, QtGui, QtCore
+from ..core import Component, Variable, common, QtWidgets, QtCore
 
 # get list of read functions
 import inspect
@@ -78,10 +78,13 @@ class DirectoryList(Component):
             instance.
         '''
         super(DirectoryList, self).__init__(name=name, parent=parent)
-        self.listView = QtGui.QListView()
+        self.listView = QtWidgets.QListView()
 
         # set up listView
-        model = QtGui.QFileSystemModel()
+        try:
+            model = QtGui.QFileSystemModel()
+        except: # PyQt5
+            model = QtCore.QFileSystemModel()
         model.setFilter(QtCore.QDir.AllEntries |
                         QtCore.QDir.AllDirs |
                         QtCore.QDir.NoDot)
@@ -165,11 +168,11 @@ class DirectoryList(Component):
 
     def contextMenu(self, pos):
         '''Contruct right-click menu.'''
-        menu = QtGui.QMenu(self)
+        menu = QtWidgets.QMenu(self)
         index = self.listView.currentIndex()
         path = str(self.listView.model().filePath(index))
         for func in read_functions:
-            action = QtGui.QAction("Open with: %s" % func.__name__, self)
+            action = QtWidgets.QAction("Open with: %s" % func.__name__, self)
             # lambda inside loop: problem with variable capturing
             if func not in broken_read_functions:
                 f = lambda boo, func=func: self.open_with(func, path)
@@ -232,9 +235,9 @@ class FileDetail(Component):
             instance.
         '''
         super(FileDetail, self).__init__(name=name, parent=parent)
-        self.central_widget = QtGui.QWidget()
+        self.central_widget = QtWidgets.QWidget()
         self.setCentralWidget(self.central_widget)
-        self.layout = QtGui.QGridLayout(self.central_widget)
+        self.layout = QtWidgets.QGridLayout(self.central_widget)
 
         # Set up signal, so that DISPLAY can react to
         # changes in radar or gatefilter shared variables
@@ -245,7 +248,7 @@ class FileDetail(Component):
         self.connectAllVariables()
 
         # Set the layout
-        self.generalLayout = QtGui.QVBoxLayout()
+        self.generalLayout = QtWidgets.QVBoxLayout()
         self.generalLayout.addWidget(self.createShortUI())
         self.generalLayout.addWidget(self.createLongUI())
 
@@ -257,10 +260,10 @@ class FileDetail(Component):
         '''
         Choose to save minimal information from Radar instance.
         '''
-        groupBox = QtGui.QGroupBox("Output Short Radar Text Information")
-        gBox_layout = QtGui.QGridLayout()
+        groupBox = QtWidgets.QGroupBox("Output Short Radar Text Information")
+        gBox_layout = QtWidgets.QGridLayout()
 
-        self.RadarShortButton = QtGui.QPushButton("Save Short Info File")
+        self.RadarShortButton = QtWidgets.QPushButton("Save Short Info File")
         self.RadarShortButton.setStatusTip('Save Short Radar Structure Info')
         self.RadarShortButton.clicked.connect(self._get_RadarShortInfo)
         gBox_layout.addWidget(self.RadarShortButton, 0, 0, 1, 1)
@@ -273,10 +276,10 @@ class FileDetail(Component):
         '''
         Choose to save full information from Radar instance.
         '''
-        groupBox = QtGui.QGroupBox("Output Long Radar Text Information")
-        gBox_layout = QtGui.QGridLayout()
+        groupBox = QtWidgets.QGroupBox("Output Long Radar Text Information")
+        gBox_layout = QtWidgets.QGridLayout()
 
-        self.RadarLongButton = QtGui.QPushButton("Save Long Info File")
+        self.RadarLongButton = QtWidgets.QPushButton("Save Long Info File")
         self.RadarLongButton.setStatusTip('Save Long Radar Structure Info')
         self.RadarLongButton.clicked.connect(self._get_RadarLongInfo)
         gBox_layout.addWidget(self.RadarLongButton, 0, 0, 1, 1)
@@ -287,7 +290,7 @@ class FileDetail(Component):
 
     def _get_RadarLongInfo(self):
         '''Print out the radar info to text box.'''
-        path = QtGui.QFileDialog.getSaveFileName(
+        path = QtWidgets.QFileDialog.getSaveFileName(
             self, 'Save Text File',
             QtCore.QString('long_radar_info.txt'), 'TXT(*.txt)')
 
@@ -387,7 +390,7 @@ class FileDetail(Component):
 
     def showSaveDialog(self, fsuggest, txt):
 
-        path = QtGui.QFileDialog.getSaveFileName(
+        path = QtWidgets.QFileDialog.getSaveFileName(
             self, 'Save Text File', QtCore.QString(fsuggest), 'TXT(*.txt)')
 
         with open(path, "w") as text_file:

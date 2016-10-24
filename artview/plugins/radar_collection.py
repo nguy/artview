@@ -17,7 +17,7 @@ sys.path.insert(0, path)
 
 import artview
 
-from ..core import Component, Variable, common, QtGui, QtCore
+from ..core import Component, Variable, common, QtWidgets, QtCore
 
 # get list of read functions
 import inspect
@@ -81,11 +81,14 @@ class RadarCollectionView(Component):
             instance.
         '''
         super(RadarCollectionView, self).__init__(name=name, parent=parent)
-        self.directoryView = QtGui.QListView()
-        self.collectionView = QtGui.QListView()
+        self.directoryView = QtWidgets.QListView()
+        self.collectionView = QtWidgets.QListView()
 
         # set up directoryView
-        directoryModel = QtGui.QFileSystemModel()
+        try:
+            directoryModel = QtGui.QFileSystemModel()
+        except: # PyQt5
+            directoryModel = QtCore.QFileSystemModel()
         directoryModel.setFilter(QtCore.QDir.AllEntries |
                                  QtCore.QDir.AllDirs |
                                  QtCore.QDir.NoDot)
@@ -101,16 +104,19 @@ class RadarCollectionView(Component):
         #self.directoryView.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
 
         # set up collectionView
-        collectionModel = QtGui.QStringListModel()
+        try:
+            collectionModel = QtGui.QStringListModel()
+        except: # PyQt5
+            collectionModel = QtCore.QStringListModel()
         self.collectionView.setModel(collectionModel)
         self.collectionView.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.collectionView.customContextMenuRequested.connect(
             self.collectionContextMenu)
 
         # setup widget
-        self.central_widget = QtGui.QWidget()
+        self.central_widget = QtWidgets.QWidget()
         self.setCentralWidget(self.central_widget)
-        self.layout = QtGui.QGridLayout(self.central_widget)
+        self.layout = QtWidgets.QGridLayout(self.central_widget)
         self.layout.addWidget(self.directoryView, 0, 0)
         self.layout.addWidget(self.collectionView, 0, 1)
         #self.directoryView.customContextMenuRequested.connect(
@@ -170,11 +176,11 @@ class RadarCollectionView(Component):
 
     def directoryContextMenu(self, pos):
         '''Contruct right-click menu.'''
-        menu = QtGui.QMenu(self)
+        menu = QtWidgets.QMenu(self)
         index = self.directoryView.currentIndex()
         path = str(self.directoryView.model().filePath(index))
         for func in read_functions:
-            action = QtGui.QAction("Open with: %s" % func.__name__, self)
+            action = QtWidgets.QAction("Open with: %s" % func.__name__, self)
             # lambda inside loop: problem with variable capturing
             if func not in broken_read_functions:
                 f = lambda boo, func=func: self.open_with(func, path)
@@ -187,9 +193,9 @@ class RadarCollectionView(Component):
     def collectionContextMenu(self, pos):
         '''Contruct right-click menu.'''
         print("menu")
-        menu = QtGui.QMenu(self)
+        menu = QtWidgets.QMenu(self)
         index = self.collectionView.currentIndex().row()
-        action = QtGui.QAction("remove", self)
+        action = QtWidgets.QAction("remove", self)
         f = lambda : self.remove_radar(index)
         action.triggered.connect(f)
         menu.addAction(action)

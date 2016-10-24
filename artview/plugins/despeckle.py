@@ -15,7 +15,8 @@ import numpy as np
 import os
 
 
-from ..core import Component, Variable, common, QtGui, QtCore, componentsList
+from ..core import (Component, Variable, common, QtWidgets, QtCore, QtGui,
+                    componentsList)
 
 
 class Despeckle(Component):
@@ -52,18 +53,18 @@ class Despeckle(Component):
             instance.
         '''
         super(Despeckle, self).__init__(name=name, parent=parent)
-        self.central_widget = QtGui.QWidget()
+        self.central_widget = QtWidgets.QWidget()
         self.setCentralWidget(self.central_widget)
-        self.layout = QtGui.QGridLayout(self.central_widget)
+        self.layout = QtWidgets.QGridLayout(self.central_widget)
 
-#        self.layout.addWidget(QtGui.QLabel("Etopo file:"), 0, 0)
+#        self.layout.addWidget(QtWidgets.QLabel("Etopo file:"), 0, 0)
 
-#        self.lineEdit = QtGui.QLineEdit(
+#        self.lineEdit = QtWidgets.QLineEdit(
 #            "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/etopo5.nc",
 #            self)
 #        self.layout.addWidget(self.lineEdit, 0, 1)
 
-        self.despeckleButton = QtGui.QPushButton("Despeckle")
+        self.despeckleButton = QtWidgets.QPushButton("Despeckle")
         self.despeckleButton.setToolTip("Create gatefilter of speckles")
         self.despeckleButton.clicked.connect(self.despeckle)
         self.layout.addWidget(self.despeckleButton, 0, 0)
@@ -72,20 +73,20 @@ class Despeckle(Component):
                                                  os.pardir))
         config_icon = QtGui.QIcon(os.sep.join([parentdir, 'icons',
                                               "categories-applications-system-icon.png"]))
-        self.configButton = QtGui.QPushButton(config_icon,"")
+        self.configButton = QtWidgets.QPushButton(config_icon,"")
         self.layout.addWidget(self.configButton, 0, 1)
-        self.configMenu = QtGui.QMenu(self)
+        self.configMenu = QtWidgets.QMenu(self)
         self.configButton.setMenu(self.configMenu)
         self.fieldMenu = self.configMenu.addMenu("field")
 
-        self.configMenu.addAction(QtGui.QAction("Set Parameters", self,
+        self.configMenu.addAction(QtWidgets.QAction("Set Parameters", self,
                                                 triggered=self.setParameters))
         self.parameters = {'threshold_min': -100.,
                            'threshold_max': 'Inf',
                            'size': 10,
                            'delta': 5}
 
-        action = QtGui.QAction("Add Object Field", self,
+        action = QtWidgets.QAction("Add Object Field", self,
                                triggered=self.addObjectsField)
         action.setToolTip("Identify Object and add as field to radar")
         self.configMenu.addAction(action)
@@ -93,7 +94,7 @@ class Despeckle(Component):
         self.layout.setColumnStretch(0, 1)
 
 
-#        self.applyButton = QtGui.QPushButton("Apply")
+#        self.applyButton = QtWidgets.QPushButton("Apply")
 #        self.applyButton.clicked.connect(self.apply)
 #        self.layout.addWidget(self.applyButton, 0, 3)
 
@@ -169,7 +170,7 @@ class Despeckle(Component):
             resp = common.ShowQuestion(
                 "Field %s already exists! Do you want to over write it?" %
                 objects)
-            if resp != QtGui.QMessageBox.Ok:
+            if resp != QtWidgets.QMessageBox.Ok:
                 return
             else:
                 strong_update = True
@@ -204,7 +205,7 @@ class Despeckle(Component):
             fields = []
         else:
             fields = self.Vradar.value.fields.keys()
-        self.field_radio_group = QtGui.QActionGroup(self, exclusive=True)
+        self.field_radio_group = QtWidgets.QActionGroup(self, exclusive=True)
         self.field_actions = {}
         self.fieldMenu.clear()
         for field in fields:
@@ -229,47 +230,47 @@ class Despeckle(Component):
 
     def setParameters(self):
         '''Open set parameters dialog.'''
-        dialog = QtGui.QDialog()
+        dialog = QtWidgets.QDialog()
         dialog.setObjectName("Despeckle Parameters Dialog")
         dialog.setWindowModality(QtCore.Qt.WindowModal)
         dialog.setWindowTitle("Despeckle Parameters Dialog")
 
         # Setup window layout
-        gridLayout_2 = QtGui.QGridLayout(dialog)
-        gridLayout = QtGui.QGridLayout()
+        gridLayout_2 = QtWidgets.QGridLayout(dialog)
+        gridLayout = QtWidgets.QGridLayout()
 
         # Add to the layout
-        gridLayout.addWidget(QtGui.QLabel("threshold min"), 0, 0)
-        ent_threshold_min = QtGui.QLineEdit(dialog)
+        gridLayout.addWidget(QtWidgets.QLabel("threshold min"), 0, 0)
+        ent_threshold_min = QtWidgets.QLineEdit(dialog)
         ent_threshold_min.setToolTip("Minimum data value")
         ent_threshold_min.setText(str(self.parameters['threshold_min']))
         gridLayout.addWidget(ent_threshold_min, 0, 1,)
 
-        gridLayout.addWidget(QtGui.QLabel("threshold max"), 1, 0)
-        ent_threshold_max = QtGui.QLineEdit(dialog)
+        gridLayout.addWidget(QtWidgets.QLabel("threshold max"), 1, 0)
+        ent_threshold_max = QtWidgets.QLineEdit(dialog)
         ent_threshold_max.setToolTip("Maximum data value")
         ent_threshold_max.setText(str(self.parameters['threshold_max']))
         gridLayout.addWidget(ent_threshold_max, 1, 1)
 
-        gridLayout.addWidget(QtGui.QLabel("Speckle size"), 2, 0)
-        ent_size = QtGui.QLineEdit(dialog)
+        gridLayout.addWidget(QtWidgets.QLabel("Speckle size"), 2, 0)
+        ent_size = QtWidgets.QLineEdit(dialog)
         ent_size.setToolTip("Number of contiguous gates in an object,"
                             "below which it is a speckle.")
         ent_size.setText(str(self.parameters['size']))
         gridLayout.addWidget(ent_size, 2, 1)
 
-        gridLayout.addWidget(QtGui.QLabel("delta"), 3, 0)
-        ent_delta = QtGui.QLineEdit(dialog)
+        gridLayout.addWidget(QtWidgets.QLabel("delta"), 3, 0)
+        ent_delta = QtWidgets.QLineEdit(dialog)
         ent_delta.setToolTip(
             "Size of allowable gap near PPI edges, in deg")
         ent_delta.setText(str(self.parameters['delta']))
         gridLayout.addWidget(ent_delta, 3, 1)
 
         gridLayout_2.addLayout(gridLayout, 0, 0, 1, 1)
-        buttonBox = QtGui.QDialogButtonBox(dialog)
+        buttonBox = QtWidgets.QDialogButtonBox(dialog)
         buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
-                                    QtGui.QDialogButtonBox.Ok)
+        buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel |
+                                    QtWidgets.QDialogButtonBox.Ok)
         gridLayout_2.addWidget(buttonBox, 1, 0, 1, 1)
 
         dialog.setLayout(gridLayout_2)

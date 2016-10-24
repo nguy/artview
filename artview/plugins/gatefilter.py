@@ -9,7 +9,7 @@ import numpy as np
 import pyart
 import time
 
-from ..core import Component, Variable, common, QtGui, QtCore, componentsList
+from ..core import Component, Variable, common, QtWidgets, QtCore, componentsList
 from ..components import RadarDisplay
 
 
@@ -49,9 +49,9 @@ class GateFilter(Component):
             If None, then Qt owns, otherwise associated w/ parent PyQt instance
         '''
         super(GateFilter, self).__init__(name=name, parent=parent)
-        self.central_widget = QtGui.QWidget()
+        self.central_widget = QtWidgets.QWidget()
         self.setCentralWidget(self.central_widget)
-        self.layout = QtGui.QGridLayout(self.central_widget)
+        self.layout = QtWidgets.QGridLayout(self.central_widget)
 
         # Set up signal, so that DISPLAY can react to
         # changes in radar or gatefilter shared variables
@@ -81,7 +81,7 @@ class GateFilter(Component):
                           "outside": "exclude_outside",
                           }
 
-        self.generalLayout = QtGui.QVBoxLayout()
+        self.generalLayout = QtWidgets.QVBoxLayout()
         # Set the Variable layout
         self.generalLayout.addWidget(self.createVarUI())
         self.generalLayout.addWidget(self.createFilterBox())
@@ -100,11 +100,11 @@ class GateFilter(Component):
         Mount the Variable layout.
         User may select another Display
         '''
-        groupBox = QtGui.QGroupBox("Variable Input")
-        gBox_layout = QtGui.QGridLayout()
+        groupBox = QtWidgets.QGroupBox("Variable Input")
+        gBox_layout = QtWidgets.QGridLayout()
 
-        self.dispCombo = QtGui.QComboBox()
-        gBox_layout.addWidget(QtGui.QLabel("Select Display Link"), 0, 0)
+        self.dispCombo = QtWidgets.QComboBox()
+        gBox_layout.addWidget(QtWidgets.QLabel("Select Display Link"), 0, 0)
         gBox_layout.addWidget(self.dispCombo, 0, 1, 1, 1)
 
         self.DispChoiceList = []
@@ -123,29 +123,29 @@ class GateFilter(Component):
 
     def createButtonUI(self):
         '''Mount the Action layout.'''
-        groupBox = QtGui.QGroupBox("Select Action")
-        gBox_layout = QtGui.QGridLayout()
+        groupBox = QtWidgets.QGroupBox("Select Action")
+        gBox_layout = QtWidgets.QGridLayout()
 
-        self.helpButton = QtGui.QPushButton("Help")
+        self.helpButton = QtWidgets.QPushButton("Help")
         self.helpButton.clicked.connect(self._displayHelp)
         gBox_layout.addWidget(self.helpButton, 0, 0, 1, 1)
 
-        self.scriptButton = QtGui.QPushButton("Show Script")
+        self.scriptButton = QtWidgets.QPushButton("Show Script")
         self.scriptButton.clicked.connect(self.showScript)
         self.scriptButton.setToolTip('Display relevant python script')
         gBox_layout.addWidget(self.scriptButton, 0, 1, 1, 1)
 
-        self.saveButton = QtGui.QPushButton("Save File")
+        self.saveButton = QtWidgets.QPushButton("Save File")
         self.saveButton.clicked.connect(self.saveRadar)
         self.saveButton.setToolTip('Save cfRadial data file')
         gBox_layout.addWidget(self.saveButton, 0, 2, 1, 1)
 
-        self.restoreButton = QtGui.QPushButton("Restore to Original")
+        self.restoreButton = QtWidgets.QPushButton("Restore to Original")
         self.restoreButton.clicked.connect(self.restoreRadar)
         self.restoreButton.setToolTip('Remove applied filters')
         gBox_layout.addWidget(self.restoreButton, 0, 3, 1, 1)
 
-        self.filterButton = QtGui.QPushButton("Filter")
+        self.filterButton = QtWidgets.QPushButton("Filter")
         self.filterButton.clicked.connect(self.apply_filters)
         self.filterButton.setToolTip('Make Filter')
         gBox_layout.addWidget(self.filterButton, 0, 4, 1, 1)
@@ -163,16 +163,16 @@ class GateFilter(Component):
         loval = []
         hival = []
 
-        groupBox = QtGui.QGroupBox("Filter Design - Exclude gates "
+        groupBox = QtWidgets.QGroupBox("Filter Design - Exclude gates "
                                    "via the following statements")
         # groupBox.setFlat(True)
-        gBox_layout = QtGui.QGridLayout()
+        gBox_layout = QtWidgets.QGridLayout()
 
-        gBox_layout.addWidget(QtGui.QLabel("Activate\nFilter"), 0, 0, 1, 1)
-        gBox_layout.addWidget(QtGui.QLabel("Variable"), 0, 1, 1, 1)
-        gBox_layout.addWidget(QtGui.QLabel("Operation"), 0, 2, 1, 1)
-        gBox_layout.addWidget(QtGui.QLabel("Value 1"), 0, 3, 1, 1)
-        gBox_layout.addWidget(QtGui.QLabel("Value 2\nFor outside/inside"),
+        gBox_layout.addWidget(QtWidgets.QLabel("Activate\nFilter"), 0, 0, 1, 1)
+        gBox_layout.addWidget(QtWidgets.QLabel("Variable"), 0, 1, 1, 1)
+        gBox_layout.addWidget(QtWidgets.QLabel("Operation"), 0, 2, 1, 1)
+        gBox_layout.addWidget(QtWidgets.QLabel("Value 1"), 0, 3, 1, 1)
+        gBox_layout.addWidget(QtWidgets.QLabel("Value 2\nFor outside/inside"),
                               0, 4, 1, 1)
 
         groupBox.setLayout(gBox_layout)
@@ -181,11 +181,11 @@ class GateFilter(Component):
 
         if self.Vradar.value is not None:
             for nn, field in enumerate(self.Vradar.value.fields.keys()):
-                chkactive.append(QtGui.QCheckBox())
+                chkactive.append(QtWidgets.QCheckBox())
                 chkactive[nn].setChecked(False)
-                fldlab.append(QtGui.QLabel(field))
-                loval.append(QtGui.QLineEdit(""))
-                hival.append(QtGui.QLineEdit(""))
+                fldlab.append(QtWidgets.QLabel(field))
+                loval.append(QtWidgets.QLineEdit(""))
+                hival.append(QtWidgets.QLineEdit(""))
                 operator.append(self.set_operator_menu())
 
                 gBox_layout.addWidget(chkactive[nn], nn+1, 0, 1, 1)
@@ -289,10 +289,10 @@ class GateFilter(Component):
 
     def set_operator_menu(self):
         '''Set the field operators choice.'''
-        opBox = QtGui.QComboBox()
+        opBox = QtWidgets.QComboBox()
         opBox.setFocusPolicy(QtCore.Qt.NoFocus)
         opBox.setToolTip("Select filter operator.\n")
-        opBox_layout = QtGui.QVBoxLayout()
+        opBox_layout = QtWidgets.QVBoxLayout()
         for op in self.operators.keys():
             opBox.addItem(op)
         opBox.setLayout(opBox_layout)
@@ -327,7 +327,7 @@ class GateFilter(Component):
     def saveRadar(self):
         '''Open a dialog box to save radar file.'''
         dirIn, fname = os.path.split(self.Vradar.value.filename)
-        filename = QtGui.QFileDialog.getSaveFileName(
+        filename = QtWidgets.QFileDialog.getSaveFileName(
             self, 'Save Radar File', dirIn)
         filename = str(filename)
         if filename == '' or self.Vradar.value is None:
@@ -522,10 +522,10 @@ class GateFilter(Component):
 _plugins = [GateFilter]
 
 
-class MyQCheckBox(QtGui.QCheckBox):
+class MyQCheckBox(QtWidgets.QCheckBox):
 
     def __init__(self, *args, **kwargs):
-        QtGui.QCheckBox.__init__(self, *args, **kwargs)
+        QtWidgets.QCheckBox.__init__(self, *args, **kwargs)
         self.is_modifiable = True
         self.clicked.connect(self.value_change_slot)
 

@@ -7,7 +7,7 @@ Starts SelectRegion and Gatefilter.
 import os
 import sys
 
-from ..core import Variable, QtGui
+from ..core import Variable, QtWidgets
 from ..components import RadarDisplay, Menu, SelectRegion
 from ..plugins import GateFilter
 from ._common import _parse_dir, _parse_field
@@ -19,7 +19,7 @@ def run(DirIn=None, filename=None, field=None):
     """
     DirIn = _parse_dir(DirIn)
 
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
 
     # start Menu and initiate Vradar
     menu = Menu(DirIn, filename, mode=("Radar",), name="Menu")
