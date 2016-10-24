@@ -7,14 +7,18 @@ Class instance to create Variables and establish change signals.
 
 # Load the needed packages
 # this should the only place with reference to PyQt4
-from PyQt4 import QtGui, QtCore
+try:
+    from PyQt4 import QtGui, QtCore
+    QtWidgets = QtGui
+except:
+    from PyQt5 import QtWidgets, QtCore, QtGui
 import sys
 
 # lets add some magic for the documentation
-QtCore.__doc__ = ("Qt backend to be used all over ARTview, now it is an "
-                  "alias to :py:mod:`PyQt4.QtCore`")
-QtGui.__doc__ = ("Qt backend to be used all over ARTview, now it is an "
-                 "alias to :py:mod:`PyQt4.QtGui`")
+QtCore.__doc__ = ("Qt backend to be used all over ARTview")
+QtGui.__doc__ = ("Qt backend to be used all over ARTview`")
+QtWidgets.__doc__ = ("Qt backend to be used all over ARTview`, "
+                     "for PyQt4 is a copy of QtGui")
 
 # keep track of all components, this is not fundamental, but may be useful
 # for some control utilities
@@ -97,6 +101,7 @@ class Variable(QtCore.QObject):
     '''
 
     value = None  #: Value of the Variable
+    valueChanged = QtCore.pyqtSignal(QtCore.QObject, bool, name='ValueChanged')
 
     def __init__(self, value=None):
         QtCore.QObject.__init__(self)
@@ -131,7 +136,7 @@ class Variable(QtCore.QObject):
         The arguments of the emitted signal are (self, value, strong).
         '''
         self.value = value
-        self.emit(QtCore.SIGNAL("ValueChanged"), self, strong)
+        self.valueChanged.emit(self, strong)
 
     def update(self, strong=True):
         '''
@@ -143,7 +148,7 @@ class Variable(QtCore.QObject):
         strong : bool, optional
             Define if this is a strong or weak change.
         '''
-        self.emit(QtCore.SIGNAL("ValueChanged"), self, strong)
+        self.valueChanged.emit(self, strong)
 
 
 class ComponentsList(QtCore.QObject):
@@ -152,6 +157,8 @@ class ComponentsList(QtCore.QObject):
     Methods 'append' and 'remove' are provided and emit signals,
     direct access to the list is allowed with 'ComponentList.list',
     but not recommended.'''
+    componentAppended = QtCore.pyqtSignal(object, name="ComponentAppended")
+    componentRemoved = QtCore.pyqtSignal(object, name="ComponentRemoved")
 
     def __init__(self):
         super(ComponentsList, self).__init__()
@@ -159,11 +166,11 @@ class ComponentsList(QtCore.QObject):
 
     def append(self, item):
         self.list.append(item)
-        self.emit(QtCore.SIGNAL("ComponentAppended"), item)
+        self.componentAppended.emit(item)
 
     def remove(self, item):
         self.list.remove(item)
-        self.emit(QtCore.SIGNAL("ComponentRemoved"), item)
+        self.componentRemoved.emit(item)
 
     def index(self, item):
         return self.list.index(item)
@@ -198,7 +205,7 @@ def suggestName(comp):
     return name
 
 
-class Component(QtGui.QMainWindow):
+class Component(QtWidgets.QMainWindow):
     '''
     Abstract class for an ARTview component.
     '''
@@ -242,8 +249,7 @@ class Component(QtGui.QMainWindow):
         sharedVariables dictionary.'''
         if var in self.sharedVariables:
             if self.sharedVariables[var] is not None:
-                QtCore.QObject.connect(
-                    getattr(self, var), QtCore.SIGNAL("ValueChanged"),
+                getattr(self, var).valueChanged.connect(
                     self.sharedVariables[var])
         else:
             raise ValueError("Variable %s is not a shared variable of %s"
@@ -254,8 +260,7 @@ class Component(QtGui.QMainWindow):
         sharedVariables dictionary.'''
         if var in self.sharedVariables:
             if self.sharedVariables[var] is not None:
-                QtCore.QObject.disconnect(
-                    getattr(self, var), QtCore.SIGNAL("ValueChanged"),
+                getattr(self, var).valueChanged.disconnect(
                     self.sharedVariables[var])
         else:
             raise ValueError("Variable %s is not a shared variable of %s"

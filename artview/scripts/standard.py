@@ -24,7 +24,7 @@ def run(DirIn=None, filename=None, field=None):
     """
     import sys
 
-    from ..core import Variable, QtGui, QtCore
+    from ..core import Variable, QtWidgets, QtCore
     from ..components import RadarDisplay, Menu, LevelButtonWindow, \
         LinkSharedVariables, SelectRegion
     from ._parse_field import _parse_field
@@ -58,7 +58,7 @@ def run(DirIn=None, filename=None, field=None):
     view.MainMenu.addLayoutWidget(control)
 
     # Replace in Screen
-    desktop_rect = QtGui.QDesktopWidget().screenGeometry()
+    desktop_rect = QtWidgets.QDesktopWidget().screenGeometry()
 
     height = desktop_rect.height()
     width = desktop_rect.width()

@@ -8,7 +8,7 @@ from functools import partial
 import pyart
 import time
 
-from ..core import Component, Variable, common, QtGui, QtCore, VariableChoose
+from ..core import Component, Variable, common, QtWidgets, QtCore, VariableChoose
 
 
 class Mapper(Component):
@@ -46,9 +46,9 @@ class Mapper(Component):
             If None, then Qt owns, otherwise associated w/ parent PyQt instance
         '''
         super(Mapper, self).__init__(name=name, parent=parent)
-        self.central_widget = QtGui.QWidget()
+        self.central_widget = QtWidgets.QWidget()
         self.setCentralWidget(self.central_widget)
-        self.layout = QtGui.QVBoxLayout(self.central_widget)
+        self.layout = QtWidgets.QVBoxLayout(self.central_widget)
 
         if Vradar is None:
             self.Vradar = Variable(None)
@@ -63,12 +63,12 @@ class Mapper(Component):
                                 "Vgrid": None}
         self.connectAllVariables()
 
-        self.generalLayout = QtGui.QGridLayout()
-        self.especificLayout = QtGui.QGridLayout()
+        self.generalLayout = QtWidgets.QGridLayout()
+        self.especificLayout = QtWidgets.QGridLayout()
         self.layout.addLayout(self.generalLayout)
         self.layout.addLayout(self.especificLayout)
 
-        self.button = QtGui.QPushButton("Map")
+        self.button = QtWidgets.QPushButton("Map")
         self.button.clicked.connect(self.grid_from_radars)
         self.button.setToolTip('Execute pyart.map.grid_from_radars')
         self.layout.addWidget(self.button)
@@ -81,49 +81,49 @@ class Mapper(Component):
 
     def addGeneralOptions(self):
         '''Mount Options Layout for :py:func:`~pyart.map.grid_from_radars`'''
-        self.generalLayout.addWidget(QtGui.QLabel("Z"), 0, 1, 1, 2)
-        self.generalLayout.addWidget(QtGui.QLabel("Y"), 0, 3, 1, 2)
-        self.generalLayout.addWidget(QtGui.QLabel("X"), 0, 5, 1, 2)
+        self.generalLayout.addWidget(QtWidgets.QLabel("Z"), 0, 1, 1, 2)
+        self.generalLayout.addWidget(QtWidgets.QLabel("Y"), 0, 3, 1, 2)
+        self.generalLayout.addWidget(QtWidgets.QLabel("X"), 0, 5, 1, 2)
 
-        self.gridShapeZ = QtGui.QSpinBox()
+        self.gridShapeZ = QtWidgets.QSpinBox()
         self.gridShapeZ.setRange(0, 1000000)
         self.gridShapeZ.setValue(1)
-        self.gridShapeY = QtGui.QSpinBox()
+        self.gridShapeY = QtWidgets.QSpinBox()
         self.gridShapeY.setRange(0, 1000000)
         self.gridShapeY.setValue(500)
-        self.gridShapeX = QtGui.QSpinBox()
+        self.gridShapeX = QtWidgets.QSpinBox()
         self.gridShapeX.setRange(0, 1000000)
         self.gridShapeX.setValue(500)
-        self.generalLayout.addWidget(QtGui.QLabel("grid_shape"), 1, 0)
+        self.generalLayout.addWidget(QtWidgets.QLabel("grid_shape"), 1, 0)
         self.generalLayout.addWidget(self.gridShapeZ, 1, 1, 1, 2)
         self.generalLayout.addWidget(self.gridShapeY, 1, 3, 1, 2)
         self.generalLayout.addWidget(self.gridShapeX, 1, 5, 1, 2)
 
-        self.gridLimitsZmin = QtGui.QDoubleSpinBox()
+        self.gridLimitsZmin = QtWidgets.QDoubleSpinBox()
         self.gridLimitsZmin.setRange(-41000000, 41000000)
         self.gridLimitsZmin.setSingleStep(1000)
         self.gridLimitsZmin.setValue(2000)
-        self.gridLimitsZmax = QtGui.QDoubleSpinBox()
+        self.gridLimitsZmax = QtWidgets.QDoubleSpinBox()
         self.gridLimitsZmax.setRange(-41000000, 41000000)
         self.gridLimitsZmax.setSingleStep(1000)
         self.gridLimitsZmax.setValue(3000)
-        self.gridLimitsYmin = QtGui.QDoubleSpinBox()
+        self.gridLimitsYmin = QtWidgets.QDoubleSpinBox()
         self.gridLimitsYmin.setRange(-41000000, 41000000)
         self.gridLimitsYmin.setSingleStep(1000)
         self.gridLimitsYmin.setValue(-250000)
-        self.gridLimitsYmax = QtGui.QDoubleSpinBox()
+        self.gridLimitsYmax = QtWidgets.QDoubleSpinBox()
         self.gridLimitsYmax.setRange(-41000000, 41000000)
         self.gridLimitsYmax.setSingleStep(1000)
         self.gridLimitsYmax.setValue(250000)
-        self.gridLimitsXmin = QtGui.QDoubleSpinBox()
+        self.gridLimitsXmin = QtWidgets.QDoubleSpinBox()
         self.gridLimitsXmin.setRange(-41000000, 41000000)
         self.gridLimitsXmin.setSingleStep(1000)
         self.gridLimitsXmin.setValue(-250000)
-        self.gridLimitsXmax = QtGui.QDoubleSpinBox()
+        self.gridLimitsXmax = QtWidgets.QDoubleSpinBox()
         self.gridLimitsXmax.setRange(-41000000, 41000000)
         self.gridLimitsXmax.setSingleStep(1000)
         self.gridLimitsXmax.setValue(250000)
-        self.generalLayout.addWidget(QtGui.QLabel("grid_limits"), 2, 0)
+        self.generalLayout.addWidget(QtWidgets.QLabel("grid_limits"), 2, 0)
         self.generalLayout.addWidget(self.gridLimitsZmin, 2, 1)
         self.generalLayout.addWidget(self.gridLimitsZmax, 2, 2)
         self.generalLayout.addWidget(self.gridLimitsYmin, 2, 3)
@@ -131,10 +131,10 @@ class Mapper(Component):
         self.generalLayout.addWidget(self.gridLimitsXmin, 2, 5)
         self.generalLayout.addWidget(self.gridLimitsXmax, 2, 6)
 
-        self.griddingAlgo = QtGui.QComboBox()
+        self.griddingAlgo = QtWidgets.QComboBox()
         self.griddingAlgo.addItem('map_to_grid')
         self.griddingAlgo.addItem('map_gates_to_grid')
-        self.generalLayout.addWidget(QtGui.QLabel("gridding_algo"), 3, 0)
+        self.generalLayout.addWidget(QtWidgets.QLabel("gridding_algo"), 3, 0)
         self.generalLayout.addWidget(self.griddingAlgo, 3, 1, 1, 6)
 
         self.griddingAlgo.currentIndexChanged[str].connect(
@@ -160,90 +160,90 @@ class Mapper(Component):
         self._fieldsOptions()
         self._interpolationOptions()
 
-        self.copyFieldData = QtGui.QCheckBox("copy_field_data")
+        self.copyFieldData = QtWidgets.QCheckBox("copy_field_data")
         self.copyFieldData.setChecked(True)
         self.especificLayout.addWidget(self.copyFieldData, 11, 1, 1, 2)
 
-        self.algorithm = QtGui.QComboBox()
+        self.algorithm = QtWidgets.QComboBox()
         self.algorithm.addItem('kd_tree')
         self.algorithm.addItem('ball_tree')
         self.algorithm.setCurrentIndex(0)
-        self.especificLayout.addWidget(QtGui.QLabel("algorithm"), 12, 0)
+        self.especificLayout.addWidget(QtWidgets.QLabel("algorithm"), 12, 0)
         self.especificLayout.addWidget(self.algorithm, 12, 1, 1, 2)
 
-        self.leafsize = QtGui.QSpinBox()
+        self.leafsize = QtWidgets.QSpinBox()
         self.leafsize.setRange(0, 1000000)
         self.leafsize.setValue(10)
-        self.especificLayout.addWidget(QtGui.QLabel("leafsize"), 13, 0)
+        self.especificLayout.addWidget(QtWidgets.QLabel("leafsize"), 13, 0)
         self.especificLayout.addWidget(self.leafsize, 13, 1, 1, 2)
 
     def _fieldsOptions(self):
         '''Mount Options Layout related to field.'''
-        self.gridOriginLat = QtGui.QDoubleSpinBox()
+        self.gridOriginLat = QtWidgets.QDoubleSpinBox()
         self.gridOriginLat.setRange(-90, 90)
         self.gridOriginLat.setDecimals(8)
-        self.gridOriginLon = QtGui.QDoubleSpinBox()
+        self.gridOriginLon = QtWidgets.QDoubleSpinBox()
         self.gridOriginLon.setRange(-180, 180)
         self.gridOriginLon.setDecimals(8)
-        self.especificLayout.addWidget(QtGui.QLabel("grid_origin"), 0, 0)
+        self.especificLayout.addWidget(QtWidgets.QLabel("grid_origin"), 0, 0)
         self.especificLayout.addWidget(self.gridOriginLat, 0, 1)
         self.especificLayout.addWidget(self.gridOriginLon, 0, 2)
 
-        self.gridOriginAlt = QtGui.QDoubleSpinBox()
+        self.gridOriginAlt = QtWidgets.QDoubleSpinBox()
         self.gridOriginAlt.setRange(0, 20000)
-        self.especificLayout.addWidget(QtGui.QLabel("grid_origin_alt"), 1, 0)
+        self.especificLayout.addWidget(QtWidgets.QLabel("grid_origin_alt"), 1, 0)
         self.especificLayout.addWidget(self.gridOriginAlt, 1, 1, 1, 2)
 
-        self.fieldsbutton = QtGui.QToolButton(self)
+        self.fieldsbutton = QtWidgets.QToolButton(self)
         self.fieldsbutton.setText('Select Fields')
-        self.fieldsmenu = QtGui.QMenu(self)
+        self.fieldsmenu = QtWidgets.QMenu(self)
         self.fieldsbutton.setMenu(self.fieldsmenu)
-        self.fieldsbutton.setPopupMode(QtGui.QToolButton.InstantPopup)
+        self.fieldsbutton.setPopupMode(QtWidgets.QToolButton.InstantPopup)
         self.especificLayout.addWidget(self.fieldsbutton, 2, 1, 1, 2)
 
-        self.reflFilterFlag = QtGui.QCheckBox("refl_filter_flag")
+        self.reflFilterFlag = QtWidgets.QCheckBox("refl_filter_flag")
         self.reflFilterFlag.setChecked(True)
         self.especificLayout.addWidget(self.reflFilterFlag, 3, 1, 1, 2)
 
-        self.reflField = QtGui.QLineEdit("reflectivity")
-        self.especificLayout.addWidget(QtGui.QLabel("refl_field"), 4, 0)
+        self.reflField = QtWidgets.QLineEdit("reflectivity")
+        self.especificLayout.addWidget(QtWidgets.QLabel("refl_field"), 4, 0)
         self.especificLayout.addWidget(self.reflField, 4, 1, 1, 2)
 
-        self.maxRefl = QtGui.QDoubleSpinBox()
+        self.maxRefl = QtWidgets.QDoubleSpinBox()
         self.maxRefl.setRange(-1000, 1000)
         self.maxRefl.setValue(100)
-        self.especificLayout.addWidget(QtGui.QLabel("max_refl"), 5, 0)
+        self.especificLayout.addWidget(QtWidgets.QLabel("max_refl"), 5, 0)
         self.especificLayout.addWidget(self.maxRefl, 5, 1, 1, 2)
 
     def _interpolationOptions(self):
         '''Mount Options Layout related to interpolation.'''
-        self.mapRoi = QtGui.QCheckBox("map_roi")
+        self.mapRoi = QtWidgets.QCheckBox("map_roi")
         self.mapRoi.setChecked(True)
         self.especificLayout.addWidget(self.mapRoi, 6, 1, 1, 2)
 
-        self.weightingFunction = QtGui.QComboBox()
+        self.weightingFunction = QtWidgets.QComboBox()
         self.weightingFunction.addItem('Barnes')
         self.weightingFunction.addItem('Cressman')
         self.weightingFunction.setCurrentIndex(0)
         self.especificLayout.addWidget(
-            QtGui.QLabel("weighting_function"), 7, 0)
+            QtWidgets.QLabel("weighting_function"), 7, 0)
         self.especificLayout.addWidget(self.weightingFunction, 7, 1, 1, 2)
 
-        self.toa = QtGui.QDoubleSpinBox()
+        self.toa = QtWidgets.QDoubleSpinBox()
         self.toa.setRange(0, 30000)
         self.toa.setValue(17000)
         self.toa.setSingleStep(1000)
-        self.especificLayout.addWidget(QtGui.QLabel("toa"), 8, 0)
+        self.especificLayout.addWidget(QtWidgets.QLabel("toa"), 8, 0)
         self.especificLayout.addWidget(self.toa, 8, 1, 1, 2)
 
-        self.roiFunc = QtGui.QComboBox()
+        self.roiFunc = QtWidgets.QComboBox()
         self.roiFunc.addItem('constant')
         self.roiFunc.addItem('dist')
         self.roiFunc.addItem('dist_beam')
-        self.especificLayout.addWidget(QtGui.QLabel("roi_func"), 9, 0)
+        self.especificLayout.addWidget(QtWidgets.QLabel("roi_func"), 9, 0)
         self.especificLayout.addWidget(self.roiFunc, 9, 1, 1, 2)
 
-        self.roiFuncLayout = QtGui.QGridLayout()
+        self.roiFuncLayout = QtWidgets.QGridLayout()
         self.especificLayout.addLayout(self.roiFuncLayout, 10, 0, 1, 3)
 
         self.roiFunc.currentIndexChanged[str].connect(self._roiFuncOptions)
@@ -261,66 +261,66 @@ class Mapper(Component):
 
     def constantRoiOptions(self):
         '''Mount Options Layout for constant radius of influence.'''
-        self.constantRoi = QtGui.QDoubleSpinBox()
+        self.constantRoi = QtWidgets.QDoubleSpinBox()
         self.constantRoi.setRange(0, 30000)
         self.constantRoi.setValue(500)
         self.constantRoi.setSingleStep(100)
-        self.roiFuncLayout.addWidget(QtGui.QLabel("constant_roi"), 0, 0)
+        self.roiFuncLayout.addWidget(QtWidgets.QLabel("constant_roi"), 0, 0)
         self.roiFuncLayout.addWidget(self.constantRoi, 0, 1, 1, 2)
 
     def distRoiOptions(self):
         '''Mount Options Layout for dist radius of influence.'''
-        self.zFactor = QtGui.QDoubleSpinBox()
+        self.zFactor = QtWidgets.QDoubleSpinBox()
         self.zFactor.setRange(0, 30000)
         self.zFactor.setValue(0.05)
         self.zFactor.setSingleStep(0.01)
         self.zFactor.setDecimals(3)
-        self.roiFuncLayout.addWidget(QtGui.QLabel("z_factor"), 0, 0)
+        self.roiFuncLayout.addWidget(QtWidgets.QLabel("z_factor"), 0, 0)
         self.roiFuncLayout.addWidget(self.zFactor, 0, 1, 1, 2)
 
-        self.xyFactor = QtGui.QDoubleSpinBox()
+        self.xyFactor = QtWidgets.QDoubleSpinBox()
         self.xyFactor.setRange(0, 30000)
         self.xyFactor.setValue(0.02)
         self.xyFactor.setSingleStep(0.01)
         self.xyFactor.setDecimals(3)
-        self.roiFuncLayout.addWidget(QtGui.QLabel("xy_factor"), 1, 0)
+        self.roiFuncLayout.addWidget(QtWidgets.QLabel("xy_factor"), 1, 0)
         self.roiFuncLayout.addWidget(self.xyFactor, 1, 1, 1, 2)
 
-        self.minRadius = QtGui.QDoubleSpinBox()
+        self.minRadius = QtWidgets.QDoubleSpinBox()
         self.minRadius.setRange(0, 30000)
         self.minRadius.setValue(500)
         self.minRadius.setSingleStep(100)
-        self.roiFuncLayout.addWidget(QtGui.QLabel("min_radius"), 2, 0)
+        self.roiFuncLayout.addWidget(QtWidgets.QLabel("min_radius"), 2, 0)
         self.roiFuncLayout.addWidget(self.minRadius, 2, 1, 1, 2)
 
     def distBeamRoiOptions(self):
         '''Mount Options Layout for dist beam radius of influence.'''
-        self.hFactor = QtGui.QDoubleSpinBox()
+        self.hFactor = QtWidgets.QDoubleSpinBox()
         self.hFactor.setRange(0, 30000)
         self.hFactor.setValue(1.0)
         self.hFactor.setSingleStep(0.1)
-        self.roiFuncLayout.addWidget(QtGui.QLabel("h_factor"), 0, 0)
+        self.roiFuncLayout.addWidget(QtWidgets.QLabel("h_factor"), 0, 0)
         self.roiFuncLayout.addWidget(self.hFactor, 0, 1, 1, 2)
 
-        self.nb = QtGui.QDoubleSpinBox()
+        self.nb = QtWidgets.QDoubleSpinBox()
         self.nb.setRange(0, 30000)
         self.nb.setValue(1.5)
         self.nb.setSingleStep(0.1)
-        self.roiFuncLayout.addWidget(QtGui.QLabel("nb"), 1, 0)
+        self.roiFuncLayout.addWidget(QtWidgets.QLabel("nb"), 1, 0)
         self.roiFuncLayout.addWidget(self.nb, 1, 1, 1, 2)
 
-        self.bsp = QtGui.QDoubleSpinBox()
+        self.bsp = QtWidgets.QDoubleSpinBox()
         self.bsp.setRange(0, 30000)
         self.bsp.setValue(1.0)
         self.bsp.setSingleStep(0.1)
-        self.roiFuncLayout.addWidget(QtGui.QLabel("bsp"), 2, 0)
+        self.roiFuncLayout.addWidget(QtWidgets.QLabel("bsp"), 2, 0)
         self.roiFuncLayout.addWidget(self.bsp, 2, 1, 1, 2)
 
-        self.minRadius = QtGui.QDoubleSpinBox()
+        self.minRadius = QtWidgets.QDoubleSpinBox()
         self.minRadius.setRange(0, 30000)
         self.minRadius.setValue(500)
         self.minRadius.setSingleStep(100)
-        self.roiFuncLayout.addWidget(QtGui.QLabel("min_radius"), 3, 0)
+        self.roiFuncLayout.addWidget(QtWidgets.QLabel("min_radius"), 3, 0)
         self.roiFuncLayout.addWidget(self.minRadius, 3, 1, 1, 2)
 
     def NewRadar(self, variable, strong):

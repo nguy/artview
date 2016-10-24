@@ -5,7 +5,7 @@ Routines used for modifying limits via Display window.
 """
 
 # Load the needed packages
-from ..core import QtGui, QtCore
+from ..core import QtWidgets, QtCore
 import pyart
 
 
@@ -147,43 +147,43 @@ def limits_dialog(limits, cmap, aspect='auto', name=None):
     -----
     Returns a dictionary of display limits.
     '''
-    LimsDialog = QtGui.QDialog()
+    LimsDialog = QtWidgets.QDialog()
     LimsDialog.setObjectName("Limits Dialog")
     LimsDialog.setWindowModality(QtCore.Qt.WindowModal)
     LimsDialog.setWindowTitle(name+" Limits Entry")
 
     # Setup window layout
-    gridLayout_2 = QtGui.QGridLayout(LimsDialog)
+    gridLayout_2 = QtWidgets.QGridLayout(LimsDialog)
     gridLayout_2.setObjectName("gridLayout_2")
-    gridLayout = QtGui.QGridLayout()
+    gridLayout = QtWidgets.QGridLayout()
     gridLayout.setObjectName("gridLayout")
 
     # Set up the Labels for entry
-    lab_dmin = QtGui.QLabel("Data Min")
-    lab_dmax = QtGui.QLabel("Data Max")
-    lab_xmin = QtGui.QLabel("X Min")
-    lab_xmax = QtGui.QLabel("X Max")
-    lab_ymin = QtGui.QLabel("Y Min")
-    lab_ymax = QtGui.QLabel("Y Max")
-    lab_aspect = QtGui.QLabel("Aspect Ratio")
+    lab_dmin = QtWidgets.QLabel("Data Min")
+    lab_dmax = QtWidgets.QLabel("Data Max")
+    lab_xmin = QtWidgets.QLabel("X Min")
+    lab_xmax = QtWidgets.QLabel("X Max")
+    lab_ymin = QtWidgets.QLabel("Y Min")
+    lab_ymax = QtWidgets.QLabel("Y Max")
+    lab_aspect = QtWidgets.QLabel("Aspect Ratio")
 
     # Set up the Entry limits
-    ent_dmin = QtGui.QLineEdit(LimsDialog)
+    ent_dmin = QtWidgets.QLineEdit(LimsDialog)
     ent_dmin.setToolTip('Minimum data value to display')
-    ent_dmax = QtGui.QLineEdit(LimsDialog)
+    ent_dmax = QtWidgets.QLineEdit(LimsDialog)
     ent_dmax.setToolTip('Maximum data value to display')
-    ent_xmin = QtGui.QLineEdit(LimsDialog)
+    ent_xmin = QtWidgets.QLineEdit(LimsDialog)
     ent_xmin.setToolTip('Minimum horizontal-axis value')
-    ent_xmax = QtGui.QLineEdit(LimsDialog)
+    ent_xmax = QtWidgets.QLineEdit(LimsDialog)
     ent_xmax.setToolTip('Maximum horizontal-axis value')
-    ent_ymin = QtGui.QLineEdit(LimsDialog)
+    ent_ymin = QtWidgets.QLineEdit(LimsDialog)
     ent_ymin.setToolTip('Minimum vertical-axis value')
-    ent_ymax = QtGui.QLineEdit(LimsDialog)
+    ent_ymax = QtWidgets.QLineEdit(LimsDialog)
     ent_ymax.setToolTip('Maximum vertical-axis value')
-    ent_aspect = QtGui.QLineEdit(LimsDialog)
+    ent_aspect = QtWidgets.QLineEdit(LimsDialog)
     ent_aspect.setToolTip('vertical-to-horizontal size display ratio, '
         'also accepts auto and equal')
-    lock_box = QtGui.QCheckBox('lock colormap')
+    lock_box = QtWidgets.QCheckBox('lock colormap')
     lock_box.setToolTip('Signalise components not to reset the colormap')
 
     # Input the current values
@@ -214,10 +214,10 @@ def limits_dialog(limits, cmap, aspect='auto', name=None):
     gridLayout.addWidget(lock_box, 7, 0, 1, 2)
 
     gridLayout_2.addLayout(gridLayout, 0, 0, 1, 1)
-    buttonBox = QtGui.QDialogButtonBox(LimsDialog)
+    buttonBox = QtWidgets.QDialogButtonBox(LimsDialog)
     buttonBox.setOrientation(QtCore.Qt.Horizontal)
-    buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
-                                 QtGui.QDialogButtonBox.Ok)
+    buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel |
+                                 QtWidgets.QDialogButtonBox.Ok)
     buttonBox.setObjectName("buttonBox")
     gridLayout_2.addWidget(buttonBox, 1, 0, 1, 1)
 

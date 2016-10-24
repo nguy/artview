@@ -10,12 +10,12 @@ import pyart
 import numpy as np
 from netCDF4 import Dataset
 from matplotlib.colors import LightSource
-from mpl_toolkits.basemap import shiftgrid, cm
+
 
 import sys
 import os
 
-from ..core import Component, Variable, common, QtGui, QtCore, componentsList
+from ..core import Component, Variable, common, QtWidgets, QtCore, componentsList
 
 
 class TopographyBackground(Component):
@@ -47,21 +47,21 @@ class TopographyBackground(Component):
             instance.
         '''
         super(TopographyBackground, self).__init__(name=name, parent=parent)
-        self.central_widget = QtGui.QWidget()
+        self.central_widget = QtWidgets.QWidget()
         self.setCentralWidget(self.central_widget)
-        self.layout = QtGui.QGridLayout(self.central_widget)
+        self.layout = QtWidgets.QGridLayout(self.central_widget)
 
-        self.layout.addWidget(QtGui.QLabel("Etopo file:"), 0, 0)
+        self.layout.addWidget(QtWidgets.QLabel("Etopo file:"), 0, 0)
 
-        self.lineEdit = QtGui.QLineEdit(
+        self.lineEdit = QtWidgets.QLineEdit(
             "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/etopo5.nc",
             self)
         self.layout.addWidget(self.lineEdit, 0, 1)
 
-        self.searchButton = QtGui.QPushButton("Search")
+        self.searchButton = QtWidgets.QPushButton("Search")
         self.searchButton.clicked.connect(self.search)
         self.layout.addWidget(self.searchButton, 0, 2)
-        self.applyButton = QtGui.QPushButton("Apply")
+        self.applyButton = QtWidgets.QPushButton("Apply")
         self.applyButton.clicked.connect(self.apply)
         self.layout.addWidget(self.applyButton, 0, 3)
         self.current_open = None
@@ -78,7 +78,7 @@ class TopographyBackground(Component):
     def search(self):
         '''Open a dialog box to choose file.'''
 
-        filename = QtGui.QFileDialog.getOpenFileName(
+        filename = QtWidgets.QFileDialog.getOpenFileName(
             self, 'Choose file', os.getcwd())
         filename = str(filename)
         if filename == '':
@@ -87,6 +87,7 @@ class TopographyBackground(Component):
             self.lineEdit.setText(filename)
 
     def apply(self):
+        from mpl_toolkits.basemap import shiftgrid, cm
         common.ShowQuestion
         display = self.VpyartDisplay.value
         if (isinstance(display, pyart.graph.RadarMapDisplay) or
@@ -111,7 +112,7 @@ class TopographyBackground(Component):
                 resp = common.ShowQuestion(
                     "Loading a file from the internet may take long." + 
                     " Are you sure you want to continue?")
-                if resp != QtGui.QMessageBox.Ok:
+                if resp != QtWidgets.QMessageBox.Ok:
                     return
             self.etopodata = Dataset(filename)
             self.current_open = filename
@@ -173,32 +174,32 @@ class ImageBackground(Component):
             instance.
         '''
         super(ImageBackground, self).__init__(name=name, parent=parent)
-        self.central_widget = QtGui.QWidget()
+        self.central_widget = QtWidgets.QWidget()
         self.setCentralWidget(self.central_widget)
-        self.layout = QtGui.QGridLayout(self.central_widget)
+        self.layout = QtWidgets.QGridLayout(self.central_widget)
 
-        self.layout.addWidget(QtGui.QLabel("Image file:"), 0, 0)
+        self.layout.addWidget(QtWidgets.QLabel("Image file:"), 0, 0)
 
-        self.lineEdit = QtGui.QLineEdit("", self)
+        self.lineEdit = QtWidgets.QLineEdit("", self)
         self.layout.addWidget(self.lineEdit, 0, 1, 1, 3)
 
-        self.searchButton = QtGui.QPushButton("Search")
+        self.searchButton = QtWidgets.QPushButton("Search")
         self.searchButton.clicked.connect(self.search)
         self.layout.addWidget(self.searchButton, 0, 4)
-        self.applyButton = QtGui.QPushButton("Apply")
+        self.applyButton = QtWidgets.QPushButton("Apply")
         self.applyButton.clicked.connect(self.apply)
         self.layout.addWidget(self.applyButton, 0, 5)
 
-        self.layout.addWidget(QtGui.QLabel(u"Center (°):"), 1, 0)
-        self.x0_lineEdit = QtGui.QLineEdit("",self)
+        self.layout.addWidget(QtWidgets.QLabel(u"Center (°):"), 1, 0)
+        self.x0_lineEdit = QtWidgets.QLineEdit("",self)
         self.layout.addWidget(self.x0_lineEdit, 1, 1)
-        self.y0_lineEdit = QtGui.QLineEdit("",self)
+        self.y0_lineEdit = QtWidgets.QLineEdit("",self)
         self.layout.addWidget(self.y0_lineEdit, 1, 2)
 
-        self.layout.addWidget(QtGui.QLabel("Size (km):"), 1, 3)
-        self.dx_lineEdit = QtGui.QLineEdit("",self)
+        self.layout.addWidget(QtWidgets.QLabel("Size (km):"), 1, 3)
+        self.dx_lineEdit = QtWidgets.QLineEdit("",self)
         self.layout.addWidget(self.dx_lineEdit, 1, 4)
-        self.dy_lineEdit = QtGui.QLineEdit("",self)
+        self.dy_lineEdit = QtWidgets.QLineEdit("",self)
         self.layout.addWidget(self.dy_lineEdit, 1, 5)
 
         if VpyartDisplay is None:
@@ -220,7 +221,7 @@ class ImageBackground(Component):
     def search(self):
         '''Open a dialog box to choose file.'''
 
-        filename = QtGui.QFileDialog.getOpenFileName(
+        filename = QtWidgets.QFileDialog.getOpenFileName(
             self, 'Choose file', os.getcwd())
         filename = str(filename)
         if filename == '':
