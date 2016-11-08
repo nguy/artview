@@ -118,8 +118,7 @@ def startMainWindow(DirIn=None, filename=None):
         for group in groups:
             for mode in group:
                 action = QtGui.QAction(mode['label'], MainWindow)
-                action.triggered[()].connect(
-                    lambda mode=mode: MainWindow.changeMode(mode['action']))
+                action.triggered[()].connect(mode['action'])
                 MainWindow.addMenuAction(("Modes",), action)
             MainWindow.addMenuSeparator(("Modes",))
     #except:

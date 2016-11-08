@@ -287,19 +287,24 @@ class ColormapEdit(core.Component):
 
 _plugins = [ColormapEdit]
 
-radar_mode = (
-    [components.Menu, components.RadarDisplay, ColormapEdit],
-    [
-        ((1, 'Vcolormap'), (2, 'Vcolormap')),
-        ]
-    )
 
-grid_mode = (
-    [components.Menu, components.GridDisplay, ColormapEdit],
-    [
-        ((1, 'Vcolormap'), (2, 'Vcolormap')),
-        ]
-    )
+def radar_mode():
+    from ..modes import change_mode
+    change_mode(
+        [components.FileNavigator, components.RadarDisplay, ColormapEdit],
+        [
+            ((1, 'Vcolormap'), (2, 'Vcolormap')),
+            ]
+        )
+
+def grid_mode():
+    from ..modes import change_mode
+    change_mode(
+        [components.FileNavigator, components.GridDisplay, ColormapEdit],
+        [
+            ((1, 'Vcolormap'), (2, 'Vcolormap')),
+            ]
+        )
 
 _modes = [
     {'label': 'Edit Colormap (radar)',
