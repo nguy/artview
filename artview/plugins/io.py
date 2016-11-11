@@ -216,14 +216,19 @@ class FileDetail(Component):
         return self(**kwargs), independent
         return self(), False
 
-    def __init__(self, dirIn=None, name="FileDetail", parent=None):
+    def __init__(self, Vradar=None, Vgrid=None, name="FileDetail",
+                 parent=None):
         '''Initialize the class to create the interface.
 
         Parameters
         ----------
         [Optional]
-        dirIn: string
-            Initial directory path to open.
+        Vradar : :py:class:`~artview.core.core.Variable` instance
+            Radar signal variable.
+            A value of None initializes an empty Variable.
+        Vgrid : :py:class:`~artview.core.core.Variable` instance
+            Grid signal variable.
+            A value of None initializes an empty Variable.
         name : string
             Window name.
         parent : PyQt instance
@@ -238,17 +243,23 @@ class FileDetail(Component):
 
         # Set up signal, so that DISPLAY can react to
         # changes in radar or gatefilter shared variables
-        self.Vradar = Variable(None)
-        self.Vgrid = Variable(None)
+        if Vradar is None:
+            self.Vradar = Variable(None)
+        else:
+            self.Vradar = Vradar
+        if Vgrid is None:
+            self.Vgrid = Variable(None)
+        else:
+            self.Vgrid = Vgrid
         self.sharedVariables = {"Vradar": None,
                                 "Vgrid": None}
         self.connectAllVariables()
 
         # Set the layout
-        self.generalLayout = QtGui.QVBoxLayout()
-        self.generalLayout.addWidget(self.createUI())
+        #self.generalLayout = QtGui.QVBoxLayout()
+        self.layout.addWidget(self.createUI(),0,0)
 
-        self.layout.addLayout(self.generalLayout, 0, 0, 1, 2)
+        #self.layout.addLayout(self.generalLayout, 0, 0, 1, 2)
 
         self.show()
 
@@ -256,29 +267,15 @@ class FileDetail(Component):
         '''
         Choose to save minimal information from Radar instance.
         '''
-        groupBox = QtGui.QGroupBox("Output Radar Information")
-        gBox_layout = QtGui.QGridLayout()
+        self.button = QtGui.QPushButton("Radar Info")
+        self.menu = QtGui.QMenu()
 
-        self.RadarShowShortButton = QtGui.QPushButton("Show Short Info File")
-        self.RadarShowShortButton.setStatusTip('Show Short Radar Structure Info')
-        self.RadarShowShortButton.clicked.connect(self._show_RadarShortInfo)
-        gBox_layout.addWidget(self.RadarShowShortButton, 0, 0, 1, 1)
+        self.button.setMenu(self.menu)
+        self.menu.addAction("Show Short Info File", self._show_RadarShortInfo)
+        self.menu.addAction("Save Short Info File", self._save_RadarShortInfo)
+        self.menu.addAction("Save Long Info File", self._get_RadarLongInfo)
+        return self.button
 
-        self.RadarSaveShortButton = QtGui.QPushButton("Save Short Info File")
-        self.RadarSaveShortButton.setStatusTip('Save Short Radar Structure Info')
-        self.RadarSaveShortButton.clicked.connect(self._save_RadarShortInfo)
-        gBox_layout.addWidget(self.RadarSaveShortButton, 1, 0, 1, 1)
-
-        self.RadarSaveLongButton = QtGui.QPushButton("Save Long Info File")
-        self.RadarSaveLongButton.setStatusTip('Save Long Radar Structure Info')
-        self.RadarSaveLongButton.clicked.connect(self._get_RadarLongInfo)
-        gBox_layout.addWidget(self.RadarSaveLongButton, 2, 0, 1, 1)
-
-        gBox_layout.addItem(QtGui.QSpacerItem(
-            0, 0, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding),
-                            3, 0)
-
-        groupBox.setLayout(gBox_layout)
 
         return groupBox
 

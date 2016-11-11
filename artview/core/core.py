@@ -10,6 +10,10 @@ Class instance to create Variables and establish change signals.
 from PyQt4 import QtGui, QtCore
 import sys
 
+
+QtWidgets = QtGui
+
+
 # lets add some magic for the documentation
 QtCore.__doc__ = ("Qt backend to be used all over ARTview, now it is an "
                   "alias to :py:mod:`PyQt4.QtCore`")

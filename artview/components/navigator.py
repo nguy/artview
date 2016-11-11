@@ -34,22 +34,42 @@ class FileNavigator(Component):
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
-    def __init__(self, Vradar=None, Vgrid=None, Vfilelist=None,
-                 name="FileNavigator", parent=None):
+    def __init__(self, pathDir=None, filename=None, Vradar=None, Vgrid=None,
+                 Vfilelist=None, name="FileNavigator", parent=None):
         '''Initialize the class to create the interface.
 
         Parameters
         ----------
+        [Optional]
+        pathDir : string
+            Input directory path to open. If None user current directory
+        filename : string, False or None
+            File to open as first. None will open file dialog. False will
+            open no file.
+        Vradar : :py:class:`~artview.core.core.Variable` instance
+            Radar signal variable.
+            A value of None initializes an empty Variable.
+        Vgrid : :py:class:`~artview.core.core.Variable` instance
+            Grid signal variable.
+            A value of None initializes an empty Variable.
+        mode : list
+            List with strings "Radar" or "Grid". Determine which type of files
+            will be open
         name : string
-            FileNavigator instance window name.
+            Menu name.
         parent : PyQt instance
-            Parent instance to associate to this class.
-            If None, then Qt owns, otherwise associated w/ parent PyQt instance
+            Parent instance to associate to menu.
+            If None, then Qt owns, otherwise associated with parent PyQt
+            instance.
         '''
         super(FileNavigator, self).__init__(name=name, parent=parent)
         self.central_widget = QtGui.QWidget()
         self.setCentralWidget(self.central_widget)
         self.layout = QtGui.QGridLayout(self.central_widget)
+
+        if pathDir is None:
+            pathDir = os.getcwd()
+        self.fileindex = 0
 
         # Set up signal, so that DISPLAY can react to
         # changes in radar or gatefilter shared variables
@@ -65,8 +85,6 @@ class FileNavigator(Component):
             self.Vfilelist = Variable([])
         else:
             self.Vfilelist = Vfilelist
-        self.filename = ""
-        self.fileindex = 0
 
         self.sharedVariables = {"Vradar": self.NewFile,
                                 "Vgrid": self.NewFile,
@@ -76,6 +94,15 @@ class FileNavigator(Component):
 
         # Set up the Display layout
         self.createUI()
+
+        self.filename = ''
+        if Vradar is None and Vgrid is None:
+            if filename is None:
+                self._openfile(filename)
+            elif filename is not False:
+                self._openfile(filename)
+
+        self.directoryAction.setText(pathDir)
 
         self.NewFile(self.Vradar, True)
         self.NewFilelist(self.Vfilelist, True)
@@ -93,7 +120,6 @@ class FileNavigator(Component):
         parentdir = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                  os.pardir))
 
-        self.navtoolbar = QtGui.QToolBar()
         pixfirst = QtGui.QPixmap(os.sep.join([parentdir, 'icons',
                                               "arrow_go_first_icon.png"]))
         pixprev = QtGui.QPixmap(os.sep.join([parentdir, 'icons',
@@ -104,30 +130,32 @@ class FileNavigator(Component):
                                              "arrow_go_last_icon.png"]))
         pixconfig = QtGui.QPixmap(os.sep.join(
             [parentdir, 'icons',
-            "categories-applications-system-icon.png"]))
-        self.act_first = self.navtoolbar.addAction(
-            QtGui.QIcon(pixfirst),
-            "First file:",
-            self.goto_first_file)
-        self.act_prev = self.navtoolbar.addAction(
-            QtGui.QIcon(pixprev),
-            "Previous file:",
-            self.goto_prev_file)
-        self.act_next = self.navtoolbar.addAction(
-            QtGui.QIcon(pixnext),
-            "Next file:",
-            self.goto_next_file)
-        self.act_last = self.navtoolbar.addAction(
-            QtGui.QIcon(pixlast),
-            "Last file:",
-            self.goto_last_file)
-
-        self.layout.addWidget(self.navtoolbar, 0, 0)
+            "save_icon.png"]))
 
         self.configButton = QtGui.QPushButton(QtGui.QIcon(pixconfig),"")
-        self.layout.addWidget(self.configButton, 0, 1)
+        self.layout.addWidget(self.configButton, 0, 0)
 
-        self.configMenu = QtGui.QMenu(self)
+        self.act_first = QtGui.QToolButton()
+        self.act_first.setIcon(QtGui.QIcon(pixfirst))
+        self.act_first.clicked.connect(self.goto_first_file)
+        self.layout.addWidget(self.act_first, 0, 1)
+
+        self.act_prev = QtGui.QToolButton()
+        self.act_prev.setIcon(QtGui.QIcon(pixprev))
+        self.act_prev.clicked.connect(self.goto_prev_file)
+        self.layout.addWidget(self.act_prev, 0, 2)
+
+        self.act_next = QtGui.QToolButton()
+        self.act_next.setIcon(QtGui.QIcon(pixnext))
+        self.act_next.clicked.connect(self.goto_next_file)
+        self.layout.addWidget(self.act_next, 0, 3)
+
+        self.act_last = QtGui.QToolButton()
+        self.act_last.setIcon(QtGui.QIcon(pixlast))
+        self.act_last.clicked.connect(self.goto_last_file)
+        self.layout.addWidget(self.act_last, 0, 4)
+
+        self.configMenu = QtGui.QMenu()
         self.configButton.setMenu(self.configMenu)
         self.directoryMenu = self.configMenu.addMenu("Directory:")
         self.directoryAction = self.directoryMenu.addAction("")
@@ -138,13 +166,17 @@ class FileNavigator(Component):
                                triggered=lambda: self._openfile())
         self.configMenu.addAction(action)
 
-       # action = QtGui.QAction("Save Radar", self,
-        #                       triggered=self._save_radar)
-        #self.configMenu.addAction(action)
+        self.saveRadarAction = QtGui.QAction("Save Radar", self,
+                                             triggered=self.saveRadar)
+        if self.Vradar.value is None:
+            self.saveRadarAction.setEnabled(False)
+        self.configMenu.addAction(self.saveRadarAction)
 
-        #action = QtGui.QAction("Save Grid", self,
-         #                      triggered=self._save_grid)
-        #self.configMenu.addAction(action)
+        self.saveGridAction = QtGui.QAction("Save Grid", self,
+                                            triggered=self.saveGrid)
+        if self.Vgrid.value is None:
+            self.saveGridAction.setEnabled(False)
+        self.configMenu.addAction(self.saveGridAction)
 
         action = QtGui.QAction("Help", self,
                                triggered=self._show_help)
@@ -152,7 +184,7 @@ class FileNavigator(Component):
 
         self.layout.addItem(QtGui.QSpacerItem(
             0, 0, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding),
-                            0, 2)
+                            0, 5)
 
     ######################
     #   Update Methods   #
@@ -255,9 +287,10 @@ class FileNavigator(Component):
         if filename is None:
             dirIn = str(self.directoryAction.text())
             filename = str(QtGui.QFileDialog.getOpenFileName(
-                self, 'Open file', dirIn))
+                None, 'Open file', dirIn))
+            if filename == '':
+                return
             self.filename = filename
-        print(filename)
         print("Opening file " + filename)
 
         # Read the data from file
@@ -268,14 +301,14 @@ class FileNavigator(Component):
             radar = pyart.io.read(filename, delay_field_loading=True)
             # Add the filename for Display
             radar.filename = filename
-            self.Vradar.change(radar)
+            self.replaceRadar(radar)
             return
         except:
             try:
                 radar = pyart.io.read(filename)
                 # Add the filename for Display
                 radar.filename = filename
-                self.Vradar.change(radar)
+                self.replaceRadar(radar)
                 return
             except:
                 import traceback
@@ -285,12 +318,12 @@ class FileNavigator(Component):
         try:
             grid = pyart.io.read_grid(
                 filename, delay_field_loading=True)
-            self.Vgrid.change(grid)
+            self.replaceGrid(grid)
             return
         except:
             try:
                 grid = pyart.io.read_grid(filename)
-                self.Vgrid.change(grid)
+                self.replaceGrid(grid)
                 return
             except:
                 import traceback
@@ -328,6 +361,63 @@ class FileNavigator(Component):
             else:
                 self.fileindex = self.Vfilelist.value.index(self.filename)
                 self._update_tools()
+        if variable == self.Vradar:
+            self.saveRadarAction.setEnabled(variable.value is not None)
+        else:
+            self.saveGridAction.setEnabled(variable.value is not None)
+
+    def replaceRadar(self, radar):
+        '''Replace current radar, warning for data lost.'''
+        if hasattr(self.Vradar.value, 'changed') and self.Vradar.value.changed:
+            resp = common.ShowQuestionYesNo("Save changes before moving to next File?")
+            if resp == QtGui.QMessageBox.Yes:
+                self.Vradar.change(radar)
+            elif resp != QtGui.QMessageBox.No:
+                return
+        else:
+            self.Vradar.change(radar)
+
+    def replaceGrid(self, grid):
+        '''Replace current grid, warning for data lost.'''
+        if hasattr(self.Vgrid.value, 'changed') and self.Vgrid.value.changed:
+            resp = common.ShowQuestionYesNo("Save changes before moving to next File?")
+            if resp == QtGui.QMessageBox.Yes:
+                self.Vgrid.change(grid)
+            elif resp != QtGui.QMessageBox.No:
+                return
+        else:
+            self.Vgrid.change(grid)
+
+    def saveRadar(self):
+        '''
+        Open a dialog box to save radar file.
+
+        Parameters
+        ----------
+        input : Vradar instance
+            Optional parameter to allow access from
+            other ARTView plugins, etc.
+        '''
+        filename = QtGui.QFileDialog.getSaveFileName(
+            self, 'Save Radar File', str(self.directoryAction.text()))
+        filename = str(filename)
+        if filename == '' or self.Vradar.value is None:
+            return
+        else:
+            pyart.io.write_cfradial(filename, self.Vradar.value)
+            print("Saved %s" % (filename))
+
+    def saveGrid(self):
+        '''Open a dialog box to save grid file.'''
+
+        filename = QtGui.QFileDialog.getSaveFileName(
+            self, 'Save grid File', str(self.directoryAction.text()))
+        filename = str(filename)
+        if filename == '' or self.Vgrid.value is None:
+            return
+        else:
+            pyart.io.write_grid(filename, self.Vgrid.value)
+
 
 class FileNavigator_old(Component):
     '''
@@ -606,14 +696,14 @@ class FileNavigator_old(Component):
             radar = pyart.io.read(filename, delay_field_loading=True)
             # Add the filename for Display
             radar.filename = filename
-            self.Vradar.change(radar)
+            self.replaceGrid(radar)
             return
         except:
             try:
                 radar = pyart.io.read(filename)
                 # Add the filename for Display
                 radar.filename = filename
-                self.Vradar.change(radar)
+                self.replaceGrid(radar)
                 return
             except:
                 import traceback
@@ -623,12 +713,12 @@ class FileNavigator_old(Component):
         try:
             grid = pyart.io.read_grid(
                 filename, delay_field_loading=True)
-            self.Vgrid.change(grid)
+            self.replaceGrid(grid)
             return
         except:
             try:
                 grid = pyart.io.read_grid(filename)
-                self.Vgrid.change(grid)
+                self.replaceGrid(grid)
                 return
             except:
                 import traceback

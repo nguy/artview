@@ -49,7 +49,7 @@ class PhaseProcLp(Component):
         self.setCentralWidget(self.central_widget)
         self.layout = QtGui.QGridLayout(self.central_widget)
 
-        self.despeckleButton = QtGui.QPushButton("Correct")
+        self.despeckleButton = QtGui.QPushButton("PhaseProcLp")
         self.despeckleButton.clicked.connect(self.phase_proc_lp)
         self.layout.addWidget(self.despeckleButton, 0, 0)
 

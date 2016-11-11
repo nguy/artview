@@ -28,7 +28,7 @@ class DealiasUnwrapPhase(Component):
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
-    def __init__(self, Vradar=None,  # Vgatefilter=None,
+    def __init__(self, Vradar=None, Vgatefilter=None,
                  name="DealiasUnwrapPhase", parent=None):
         '''Initialize the class to create the interface.
 
@@ -49,7 +49,7 @@ class DealiasUnwrapPhase(Component):
         self.setCentralWidget(self.central_widget)
         self.layout = QtGui.QGridLayout(self.central_widget)
 
-        self.despeckleButton = QtGui.QPushButton("Correct")
+        self.despeckleButton = QtGui.QPushButton("DealiasUnwrapPhase")
         self.despeckleButton.clicked.connect(self.dealias_unwrap_phase)
         self.layout.addWidget(self.despeckleButton, 0, 0)
 
@@ -97,6 +97,11 @@ class DealiasUnwrapPhase(Component):
             self.Vradar = Variable(None)
         else:
             self.Vradar = Vradar
+
+        if Vgatefilter is None:
+            self.Vgatefilter = Variable(None)
+        else:
+            self.Vgatefilter = Vgatefilter
 
         self.sharedVariables = {"Vradar": None,
                                 "Vgatefilter": None}

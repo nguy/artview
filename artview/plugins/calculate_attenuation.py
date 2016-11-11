@@ -51,7 +51,7 @@ class CalculateAttenuation(Component):
         self.setCentralWidget(self.central_widget)
         self.layout = QtGui.QGridLayout(self.central_widget)
 
-        self.despeckleButton = QtGui.QPushButton("Correct")
+        self.despeckleButton = QtGui.QPushButton("CalculateAttenuation")
         self.despeckleButton.clicked.connect(self.calculate_attenuation)
         self.layout.addWidget(self.despeckleButton, 0, 0)
 

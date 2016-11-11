@@ -29,7 +29,7 @@ class DealiasRegionBased(Component):
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
-    def __init__(self, Vradar=None,  # Vgatefilter=None,
+    def __init__(self, Vradar=None, Vgatefilter=None,
                  name="DealiasRegionBased", parent=None):
         '''Initialize the class to create the interface.
 
@@ -50,7 +50,7 @@ class DealiasRegionBased(Component):
         self.setCentralWidget(self.central_widget)
         self.layout = QtGui.QGridLayout(self.central_widget)
 
-        self.despeckleButton = QtGui.QPushButton("Correct")
+        self.despeckleButton = QtGui.QPushButton("DealiasRegionBased")
         self.despeckleButton.clicked.connect(self.dealias_region_based)
         self.layout.addWidget(self.despeckleButton, 0, 0)
 
@@ -102,6 +102,11 @@ class DealiasRegionBased(Component):
             self.Vradar = Variable(None)
         else:
             self.Vradar = Vradar
+
+        if Vgatefilter is None:
+            self.Vgatefilter = Variable(None)
+        else:
+            self.Vgatefilter = Vgatefilter
 
         self.sharedVariables = {"Vradar": None,
                                 "Vgatefilter": None}

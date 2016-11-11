@@ -101,10 +101,12 @@ class Despeckle(Component):
             self.Vradar = Variable(None)
         else:
             self.Vradar = Vradar
+
         if Vfield is None:
             self.Vfield = Variable('')
         else:
             self.Vfield = Vfield
+
         if Vgatefilter is None:
             self.Vgatefilter = Variable(None)
         else:

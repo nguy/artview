@@ -31,7 +31,7 @@ else:
     from .plot_grid_legacy import GridDisplay
 from .plot_points import PointsDisplay
 from .menu import Menu
-from .window import Window
+from .window import Window, LayoutComponent
 from .level import LevelButtonWindow
 from .field import FieldButtonWindow
 from .component_control import LinkSharedVariables

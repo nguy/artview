@@ -373,44 +373,7 @@ class Menu(Component):
         ----------
         new_mode: see file artview/modes.py for documentation on modes
         '''
-        components = new_mode[0][:]
-        links = new_mode[1]
-        static_comp_list = componentsList[:]
-        # find already running components
-        for i, component in enumerate(components):
-            flag = False
-            for j, comp in enumerate(static_comp_list):
-                if isinstance(comp, component):
-                    components[i] = static_comp_list.pop(j)
-                    flag = True
-                    break
-            if not flag:
-                # if there is no component open
-                print("starting component: %s" % component.__name__)
-                from ..core.core import suggestName
-                name = suggestName(components[i])
-                components[i] = components[i](name=name, parent=self)
-                self.addLayoutWidget(components[i])
-
-        for link in links:
-            dest = getattr(components[link[0][0]], link[0][1])
-            orin = getattr(components[link[1][0]], link[1][1])
-            if dest is orin:
-                # already linked
-                pass
-            else:
-                # not linked, link
-                print("linking %s.%s to %s.%s" %
-                      (components[link[1][0]].name, link[1][1],
-                       components[link[0][0]].name, link[0][1]))
-                # Disconect old Variable
-                components[link[1][0]].disconnectSharedVariable(link[1][1])
-                # comp1.var = comp0.var
-                setattr(components[link[1][0]], link[1][1], dest)
-                # Connect new Variable
-                components[link[1][0]].connectSharedVariable(link[1][1])
-                # Emit change signal
-                dest.update()
+        new_mode()
 
     def addFileAdvanceMenu(self):
         '''

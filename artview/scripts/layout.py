@@ -9,7 +9,9 @@ import sys
 
 from ..core import Variable, QtGui, QtCore, componentsList
 from ..components import RadarDisplay, Menu, LevelButtonWindow, \
-    LinkSharedVariables, SelectRegion, Window, FileNavigator
+    LinkSharedVariables, SelectRegion, Window, FileNavigator, \
+    LayoutComponent
+from ..plugins import FileDetail
 from ._parse_field import _parse_field
 from ._common import startMainMenu
 from .. import view
@@ -36,9 +38,15 @@ def run(DirIn=None, filename=None, field=None):
     if DirIn is None:  # avoid reference to path while building documentation
         DirIn = os.getcwd()
 
-    menu = FileNavigator()
+    menu = LayoutComponent(name="Menu")
+    navigator = FileNavigator(DirIn, filename)
 
-    Vradar = menu.Vradar
+    menu.layout.addWidget(navigator, 0, 0)
+    menu.layout.addWidget(FileDetail(Vradar=navigator.Vradar,
+                                     Vgrid=navigator.Vgrid), 0, 1)
+    menu.layout.setColumnStretch(2, 1)
+
+    Vradar = navigator.Vradar
 
     # handle input
     if field is None:
@@ -66,6 +74,7 @@ def run(DirIn=None, filename=None, field=None):
 
     window.layoutTree[(0,1,0)].addTab(control,control.name)
     window.layoutTree[(0,0)].addTab(menu,menu.name)
+    window.layoutTree[(0,0)].tabBar().setVisible(False)
     window.layoutTree[(0,1,1)].addTab(plot1,plot1.name)
     window.layoutTree[(0,1,1)].addTab(plot2,plot2.name)
 

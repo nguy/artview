@@ -130,14 +130,14 @@ class Mapper(Component):
 
         self.despeckleButton = QtGui.QPushButton("Map")
         self.despeckleButton.clicked.connect(self.grid_from_radars)
-        self.layout.addWidget(self.despeckleButton, 3, 0, 1, 6)
+        self.layout.addWidget(self.despeckleButton, 7, 0, 1, 2)
 
         parentdir = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                  os.pardir))
         config_icon = QtGui.QIcon(os.sep.join(
             [parentdir, 'icons', "categories-applications-system-icon.png"]))
         self.configButton = QtGui.QPushButton(config_icon,"")
-        self.layout.addWidget(self.configButton, 3, 6)
+        self.layout.addWidget(self.configButton, 7, 2)
         self.configMenu = QtGui.QMenu(self)
         self.configButton.setMenu(self.configMenu)
 
@@ -151,9 +151,9 @@ class Mapper(Component):
         self.configMenu.addAction(QtGui.QAction("Help", self,
                                                 triggered=self._displayHelp))
 
-        self.layout.addWidget(QtGui.QLabel("Z"), 0, 1, 1, 2)
-        self.layout.addWidget(QtGui.QLabel("Y"), 0, 3, 1, 2)
-        self.layout.addWidget(QtGui.QLabel("X"), 0, 5, 1, 2)
+        self.layout.addWidget(QtGui.QLabel("Z"), 1, 0, 2, 1)
+        self.layout.addWidget(QtGui.QLabel("Y"), 3, 0, 2, 1)
+        self.layout.addWidget(QtGui.QLabel("X"), 5, 0, 2, 1)
 
         self.gridShapeZ = QtGui.QSpinBox()
         self.gridShapeZ.setRange(0, 1000000)
@@ -164,10 +164,10 @@ class Mapper(Component):
         self.gridShapeX = QtGui.QSpinBox()
         self.gridShapeX.setRange(0, 1000000)
         self.gridShapeX.setValue(500)
-        self.layout.addWidget(QtGui.QLabel("grid_shape"), 1, 0)
-        self.layout.addWidget(self.gridShapeZ, 1, 1, 1, 2)
-        self.layout.addWidget(self.gridShapeY, 1, 3, 1, 2)
-        self.layout.addWidget(self.gridShapeX, 1, 5, 1, 2)
+        self.layout.addWidget(QtGui.QLabel("grid_shape"), 0, 1)
+        self.layout.addWidget(self.gridShapeZ, 1, 1, 2, 1)
+        self.layout.addWidget(self.gridShapeY, 3, 1, 2, 1)
+        self.layout.addWidget(self.gridShapeX, 5, 1, 2, 1)
 
         self.gridLimitsZmin = QtGui.QDoubleSpinBox()
         self.gridLimitsZmin.setRange(-41000000, 41000000)
@@ -193,15 +193,17 @@ class Mapper(Component):
         self.gridLimitsXmax.setRange(-41000000, 41000000)
         self.gridLimitsXmax.setSingleStep(1000)
         self.gridLimitsXmax.setValue(250000)
-        self.layout.addWidget(QtGui.QLabel("grid_limits"), 2, 0)
-        self.layout.addWidget(self.gridLimitsZmin, 2, 1)
+        self.layout.addWidget(QtGui.QLabel("grid_limits (m)"), 0, 2)
+        self.layout.addWidget(self.gridLimitsZmin, 1, 2)
         self.layout.addWidget(self.gridLimitsZmax, 2, 2)
-        self.layout.addWidget(self.gridLimitsYmin, 2, 3)
-        self.layout.addWidget(self.gridLimitsYmax, 2, 4)
-        self.layout.addWidget(self.gridLimitsXmin, 2, 5)
-        self.layout.addWidget(self.gridLimitsXmax, 2, 6)
+        self.layout.addWidget(self.gridLimitsYmin, 3, 2)
+        self.layout.addWidget(self.gridLimitsYmax, 4, 2)
+        self.layout.addWidget(self.gridLimitsXmin, 5, 2)
+        self.layout.addWidget(self.gridLimitsXmax, 6, 2)
 
-        self.layout.setRowStretch(4, 1)
+        self.layout.setRowStretch(8, 1)
+        self.layout.setColumnStretch(1, 1)
+        self.layout.setColumnStretch(2, 1)
 
     def grid_from_radars(self):
         '''Mount Options and execute :py:func:`~pyart.correct.grid_from_radars`.

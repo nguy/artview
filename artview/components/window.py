@@ -10,7 +10,8 @@ import os
 import sys
 import glob
 
-from ..core import Variable, Component, common, QtGui, QtCore, componentsList
+from ..core import (Variable, Component, common, QtGui, QtCore, componentsList,
+                    QtWidgets)
 
 class Window(Component):
     '''Class to be Main Window'''
@@ -396,7 +397,10 @@ class View(QtGui.QTabWidget):
     def minimumSizeHint(self):
         if self.currentWidget() is not None:
             hint = self.currentWidget().minimumSizeHint()
-            tabHint = self.tabBar().minimumSizeHint()
+            if self.tabBar().isVisible():
+                tabHint = self.tabBar().minimumSizeHint()
+            else:
+                tabHint = QtCore.QSize(0, 0)
             hint.setHeight(hint.height() + tabHint.height())
             hint.setWidth(max(hint.width(), tabHint.width()))
         else:
@@ -425,9 +429,9 @@ class View(QtGui.QTabWidget):
         else:
             return super(View, self).maximumSizeHint()
 
-
     def minimumSize(self):
         return self.minimumSizeHint()
+
     def mousePressEvent(self, event):
         super(View,self).mousePressEvent(event)
         self.setCurrent()
@@ -447,7 +451,7 @@ class View(QtGui.QTabWidget):
 
     def dragEnterEvent(self, event):
         source = event.source()
-        if source.__class__ == View:
+        if source.__class__ == View and self.tabBar().isVisible():
             event.accept()
         else:
             event.ignore()
@@ -540,3 +544,28 @@ class TabBar(QtGui.QTabBar):
             pos = mouseEvent.pos()
             if (self.pos-pos).manhattanLength() > 10:
                 self.dragStart.emit(self.tabAt(self.pos))
+
+class LayoutComponent(Component):
+    '''Class to be Main Window'''
+
+    def __init__(self, name="Layout", parent=None):
+        '''
+        Initialize the class to create the interface.
+
+        Parameters
+        ----------
+        [Optional]
+        name : string
+            Window name.
+        parent : PyQt instance
+            Parent instance to associate to menu.
+            If None, then Qt owns, otherwise associated with parent PyQt
+            instance.
+
+        '''
+        super(LayoutComponent, self).__init__(name=name, parent=parent)
+        widget = QtWidgets.QWidget()
+        self.layout = QtGui.QGridLayout()
+        widget.setLayout(self.layout)
+        self.setCentralWidget(widget)
+

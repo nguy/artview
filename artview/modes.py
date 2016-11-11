@@ -2,6 +2,7 @@
 from .components import *
 from .plugins import *
 from .core import componentsList
+from .core import QtWidgets, QtGui
 
 def change_mode(components, links):
         ''' Open and connect new components to satisfy mode.
@@ -16,7 +17,6 @@ def change_mode(components, links):
             origin and destination of the linking process, and
             `var_name` is the respective shared variable name.
         '''
-        components = components[:]
         static_comp_list = componentsList[:]
 
         for j, comp in enumerate(static_comp_list):
@@ -120,16 +120,31 @@ def compare_fields_mode():
 
 def corrections_mode():
     change_mode(
-        [FileNavigator, RadarDisplay, DealiasRegionBased, DealiasUnwrapPhase,
-            PhaseProcLp, CalculateAttenuation],
-        [
-            ((0, 'Vradar'), (1, 'Vradar')),
-            ((1, 'Vradar'), (2, 'Vradar')),
-            ((1, 'Vradar'), (3, 'Vradar')),
-            ((1, 'Vradar'), (4, 'Vradar')),
-            ((1, 'Vradar'), (5, 'Vradar')),
-            ]
+        [FileNavigator, RadarDisplay],
+        [((0, 'Vradar'), (1, 'Vradar')),]
         )
+
+    static_comp_list = componentsList[:]
+    for j, comp in enumerate(static_comp_list):
+        if isinstance(comp, Window):
+            window = comp
+        elif isinstance(comp, RadarDisplay):
+            display = comp
+
+    widget = LayoutComponent(name="Corrections")
+    window.addComponent(widget)
+
+    widget.layout.addWidget(DealiasRegionBased(
+        Vradar=display.Vradar, Vgatefilter=display.Vgatefilter), 0, 0)
+    widget.layout.addWidget(DealiasUnwrapPhase(
+        Vradar=display.Vradar, Vgatefilter=display.Vgatefilter), 1, 0)
+    widget.layout.addWidget(PhaseProcLp(Vradar=display.Vradar), 2, 0)
+    widget.layout.addWidget(CalculateAttenuation(Vradar=display.Vradar), 3, 0)
+    widget.layout.addWidget(Despeckle(
+        Vradar=display.Vradar, Vgatefilter=display.Vgatefilter,
+        Vfield=display.Vfield), 4, 0)
+
+    widget.layout.setRowStretch(5, 1)
 
 def gatefilter_mode():
     change_mode(
@@ -295,9 +310,9 @@ modes = [
     {'label': 'Manually unfold velocity',
      'group': 'correct',
      'action': manual_unfold_mode},
-    {'label': 'Despeckle Radar',
-     'group': 'correct',
-     'action': despeckle_mode},
+#    {'label': 'Despeckle Radar',
+#     'group': 'correct',
+#     'action': despeckle_mode},
     {'label': 'Query a selectable region of interest ',
      'group': 'select',
      'action': select_region_mode},
