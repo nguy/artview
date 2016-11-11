@@ -10,7 +10,8 @@ from .. import core
 from datetime import datetime as dt
 
 
-class ImageTextBox(core.Component):
+#class ImageTextBox(core.Component):
+class ImageTextBox(QtGui.QMainWindow):
     '''
     Interface for executing :py:class:`ImageTextBox`.
     '''
@@ -28,7 +29,7 @@ class ImageTextBox(core.Component):
             Parent instance to associate to this class.
             If None, then Qt owns, otherwise associated w/ parent PyQt instance
         '''
-        super(ImageTextBox, self).__init__(name=name, parent=parent)
+        super(ImageTextBox, self).__init__(parent=parent)
         self.central_widget = QtGui.QWidget()
         self.setCentralWidget(self.central_widget)
         self.layout = QtGui.QGridLayout(self.central_widget)
@@ -67,7 +68,7 @@ class ImageTextBox(core.Component):
 
         # Add the Add Text option to top of list
         self.dispCombo.addItem('Add Text')
-        self.dispChoiceList.append(self._blank_entries())
+        self.dispChoiceList.append(self._init_entries())
 
         # Fill in the rest of the list with existing text boxes
         for tx_inst in self.display.disp_text.keys():
@@ -160,13 +161,11 @@ class ImageTextBox(core.Component):
 
     def chooseText(self, selection):
         '''Get Display Text.'''
-##        selection = self.dispCombo.currentIndex()
         self.choice_key = str(self.dispCombo.currentText())
         self.choice = self.dispChoiceList[selection]
-        self._rebuild_entry()
+##        self._rebuild_entry()
 
         self.dispCombo.setCurrentIndex(selection)
-##        print(selection)
 
     def _displayHelp(self):
         '''Display help.'''
@@ -174,9 +173,10 @@ class ImageTextBox(core.Component):
             "<b>Using the ImageTextBox window</b><br><br>"
             "<i>Choose an existing Text box:</i><br>"
             "  1. Select instance from drop-down list.<br>"
-            "  2. Modify exisint instance by changing values in "
+            "  2. Modify exising instance by changing values in "
             "     Text Value and Position. Click Update to save.<br>"
             "  3. Create a new Text box by choosing Add Text from drop-down."
+            "     Modify default values provided. Click Update to save."
             "<br>"
             "  4. Delete an instance by selecting and click Delete Text.<br>"
             "  5. Clear all instances by clicking Clear All Text.<br>"
@@ -213,6 +213,7 @@ class ImageTextBox(core.Component):
             self.dispChoiceList[select] = self.choice
             self.dispCombo.setCurrentIndex(select)
         # Write the updated text item to the Display Text instance
+        ## NG Modify to use a more unique identifier than text ##
         self.display.disp_text[self.choice['text']] = self.choice
 
         # Redraw the canvas to place new text
@@ -231,14 +232,14 @@ class ImageTextBox(core.Component):
             self.dispCombo.removeItem(delselect)
             self.display.fig.canvas.draw()
 
-        self.choice = self._blank_entries()
+        self.choice = self._init_entries()
         self.dispCombo.setCurrentIndex(0)
         self._rebuild_entry()
 
     def clrDispText(self):
         '''Clear all Display text boxes.'''
         self.display.disp_text = {}
-        self.choice = self._blank_entries()
+        self.choice = self._init_entries()
         # Delete each entry, need to reverse indices
         for i in range(self.dispCombo.count())[::-1]:
             if i > 0:
@@ -247,8 +248,7 @@ class ImageTextBox(core.Component):
                 self.dispCombo.removeItem(i)
         self.display.fig.canvas.draw()
         self.dispCombo.setCurrentIndex(0)
-        self._rebuild_entry()
-##        self.display._update_plot()##NG
+##        self._rebuild_entry()
 
     #####################
     #   Entry Methods   #
@@ -263,27 +263,28 @@ class ImageTextBox(core.Component):
         self.ent_texsz.setText(str(self.choice['size']))
         self.ent_texst.setText(str(self.choice['style']))
 
-    def _blank_entries(self):
+    def _init_entries(self):
         '''Initialize Add Text Instance.'''
-        blank_text = {'text': '', 'xpos': '', 'ypos': '',
-                      'col': '', 'size': '', 'style': ''}
+        blank_text = {'text': 'NewText', 'xpos': 0.0, 'ypos': 0.0,
+                      'col': 'black', 'size': 24, 'style': 'normal'}
         return blank_text
 
     def _check_entries(self):
         '''Check that entries are valid.'''
         #NG Put in warnings?
         if not isinstance(str(self.ent_tex.text()), str):
-            print('Label Text must be string entry')
+            core.common.ShowWarning('Label Text must be string entry')
         if not isinstance(float(self.ent_xpos.text()), float):
-            print('X-Coord must be float value')
+            core.common.ShowWarning('X-Coord must be float value')
         if not isinstance(float(self.ent_ypos.text()), float):
-            print('Y-Coord must be float value')
+            core.common.ShowWarning('Y-Coord must be float value')
         if not isinstance(str(self.ent_texc.text()), str):
-            print('Color must be a valid string ')
-        if not isinstance(str(self.ent_texsz.text()), int):
-            print('Text size must be integer value')
+            core.common.ShowWarning('Color must be a valid string ')
+        if not isinstance(int(self.ent_texsz.text()), int):
+            core.common.ShowWarning('Text size must be integer value')
         if str(self.ent_texst.text()) not in ['normal', 'italic', 'oblique']:
-            print('Text Style must be normal, italic, or oblique')
+            core.common.ShowWarning(
+                'Text Style must be normal, italic, or oblique')
 
     def _get_entries(self):
         '''Get the entry values and put in dictionary.'''

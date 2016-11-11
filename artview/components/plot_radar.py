@@ -16,7 +16,7 @@ from matplotlib.colors import Normalize as mlabNormalize
 from matplotlib.colorbar import ColorbarBase as mlabColorbarBase
 from matplotlib.pyplot import cm
 
-from ..core import Variable, Component, common, VariableChoose, QtGui, QtCore
+from ..core import (Variable, Component, common, VariableChoose, QtGui, QtCore)
 from ..core.points import Points
 
 # Save image file type and DPI (resolution)
@@ -317,7 +317,8 @@ class RadarDisplay(Component):
     def _add_ImageText(self):
         '''Add a text box to display.'''
         from .display import ImageTextBox
-        itext = ImageTextBox(self)
+        itext = ImageTextBox(self, parent=self.parent)
+        return itext
 
     def _open_tiltbuttonwindow(self):
         '''Open a TiltButtonWindow instance.'''
