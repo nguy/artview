@@ -1,5 +1,5 @@
 """
-display.py
+image_text.py
 
 Routines for Display modifications and additions.
 """
@@ -10,7 +10,6 @@ from .. import core
 from datetime import datetime as dt
 
 
-#class ImageTextBox(core.Component):
 class ImageTextBox(QtGui.QMainWindow):
     '''
     Interface for executing :py:class:`ImageTextBox`.
@@ -38,7 +37,6 @@ class ImageTextBox(QtGui.QMainWindow):
 
         self.generalLayout = QtGui.QVBoxLayout()
         # Set the Variable layout
-#        self.generalLayout.addWidget(self.TextUI())
         self.generalLayout.addWidget(self.ButtonUI(), 2)
         self.generalLayout.addWidget(self.EntryUI(), 1)
         self.generalLayout.addWidget(self.TextUI(), 0)
@@ -163,7 +161,6 @@ class ImageTextBox(QtGui.QMainWindow):
         '''Get Display Text.'''
         self.choice_key = str(self.dispCombo.currentText())
         self.choice = self.dispChoiceList[selection]
-##        self._rebuild_entry()
 
         self.dispCombo.setCurrentIndex(selection)
 
