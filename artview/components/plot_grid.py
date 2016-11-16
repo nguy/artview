@@ -163,6 +163,9 @@ class GridDisplay(Component):
         # Create tool dictionary
         self.tools = {}
 
+        # Create display image text dictionary
+        self.disp_text = {}
+
         # Set up Default limits and cmap
         if Vlimits is None:
             self._set_default_limits(strong=False)
@@ -312,6 +315,12 @@ class GridDisplay(Component):
             self.units = val
             self._update_plot()
 
+    def _add_ImageText(self):
+        '''Add a text box to display.'''
+        from .display import ImageTextBox
+        itext = ImageTextBox(self, parent=self.parent)
+        return itext
+
     def _open_levelbuttonwindow(self):
         '''Open a LevelButtonWindow instance.'''
         from .level import LevelButtonWindow
@@ -370,6 +379,8 @@ class GridDisplay(Component):
         PlotTypeAction.triggered[()].connect(lambda:
                                          self.change_plot_type('gridX'))
 
+        self.dispImageText = dispmenu.addAction("Add Text to Image")
+        self.dispImageText.setToolTip("Add Text Box to Image")
         dispQuickSave = dispmenu.addAction("Quick Save Image")
         dispQuickSave.setShortcut("Ctrl+D")
         dispQuickSave.setToolTip(
@@ -381,6 +392,7 @@ class GridDisplay(Component):
         dispLimits.triggered[()].connect(self._open_LimsDialog)
         dispTitle.triggered[()].connect(self._title_input)
         dispUnit.triggered[()].connect(self._units_input)
+        self.dispImageText.triggered[()].connect(self._add_ImageText)
         dispQuickSave.triggered[()].connect(self._quick_savefile)
         dispSaveFile.triggered[()].connect(self._savefile)
 
