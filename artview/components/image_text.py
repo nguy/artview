@@ -1,6 +1,5 @@
 """
 image_text.py
-
 Routines for Display modifications and additions.
 """
 
@@ -18,7 +17,6 @@ class ImageTextBox(QtGui.QMainWindow):
     def __init__(self, display,
                  name="ImageTextBox", parent=None):
         '''Initialize the class to create the interface.
-
         Parameters
         ----------
         [Optional]
@@ -44,6 +42,8 @@ class ImageTextBox(QtGui.QMainWindow):
 
         self.layout.addLayout(self.generalLayout, 0, 0, 1, 2)
 
+        self.chooseText(0)
+        
         self.show()
 
     ######################
@@ -67,6 +67,7 @@ class ImageTextBox(QtGui.QMainWindow):
         # Add the Add Text option to top of list
         self.dispCombo.addItem('Add Text')
         self.dispChoiceList.append(self._init_entries())
+        self.choice = self.dispChoiceList[0]
 
         # Fill in the rest of the list with existing text boxes
         for tx_inst in self.display.disp_text.keys():
@@ -74,7 +75,7 @@ class ImageTextBox(QtGui.QMainWindow):
             self.dispChoiceList.append(self.display.disp_text[tx_inst])
         self.dispCombo.setCurrentIndex(0)
 
-        self.dispCombo.currentIndexChanged.connect(self.chooseText)
+        self.dispCombo.activated.connect(self.chooseText)
         groupBox.setLayout(gBox_layout)
         return groupBox
 
@@ -161,8 +162,7 @@ class ImageTextBox(QtGui.QMainWindow):
         '''Get Display Text.'''
         self.choice_key = str(self.dispCombo.currentText())
         self.choice = self.dispChoiceList[selection]
-
-        self.dispCombo.setCurrentIndex(selection)
+        self._rebuild_entry()
 
     def _displayHelp(self):
         '''Display help.'''
@@ -196,6 +196,7 @@ class ImageTextBox(QtGui.QMainWindow):
             self.dispCombo.addItem(self.choice['text'])
             self.dispChoiceList.append(self.choice)
             self.dispCombo.setCurrentIndex(self.dispCombo.count() - 1)
+            self.chooseText(self.dispCombo.count() - 1)
         else:
             print("Overwriting text")
             select = self.dispCombo.findText(self.choice['text'])
@@ -209,6 +210,7 @@ class ImageTextBox(QtGui.QMainWindow):
                 color=self.choice['col'], fontsize=self.choice['size'])
             self.dispChoiceList[select] = self.choice
             self.dispCombo.setCurrentIndex(select)
+            self.chooseText(select)
         # Write the updated text item to the Display Text instance
         ## NG Modify to use a more unique identifier than text ##
         self.display.disp_text[self.choice['text']] = self.choice
@@ -229,9 +231,8 @@ class ImageTextBox(QtGui.QMainWindow):
             self.dispCombo.removeItem(delselect)
             self.display.fig.canvas.draw()
 
-        self.choice = self._init_entries()
         self.dispCombo.setCurrentIndex(0)
-        self._rebuild_entry()
+        self.chooseText(0)
 
     def clrDispText(self):
         '''Clear all Display text boxes.'''
@@ -245,6 +246,7 @@ class ImageTextBox(QtGui.QMainWindow):
                 self.dispCombo.removeItem(i)
         self.display.fig.canvas.draw()
         self.dispCombo.setCurrentIndex(0)
+        self.chooseText(0)
 ##        self._rebuild_entry()
 
     #####################
