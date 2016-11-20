@@ -19,22 +19,34 @@ import artview
 from ..core import Component, Variable, common, QtGui, QtCore, componentsList
 
 class Field():
+''' Imprement array like acess to field variable and send update signal to 
+radar if the field is changed.'''
 
     def __init__(self, Vradar, field_name):
+        '''
+        Parameters
+        ----------
+        Vradar : :py:class:`~artview.core.core.Variable` instance
+            Radar signal variable.
+        field_name : string
+            Name of field in the radar
+        '''
         self._Vradar = Vradar
         self._field = Vradar.value.fields[field_name]
         self._field_name = field_name
         self.auto_update = True
 
     def update(self):
+        '''send update signal to Vradar.'''
         self._Vradar.update()
 
     def _update(self):
+        '''Call update if auto_update == True'''
         if self.auto_update:
             self.update()
 
     def __str__(self):
-        # this will be class be the print function
+        # this will be class print function
         # not sure what to put here, I could be interesting
         # to display some data
         raise NotImplemented
@@ -289,8 +301,12 @@ class LocalEnvoriment(dict):
         for field in Vradar.value.fields.keys():
             self.__setitem__(field, Field(Vradar, field))
         self.__setitem__("add_field", self.add_field)
+        self.__setitem__("py_help", help)
+        self.__setitem__("help", self.help)
 
     def __setitem__(self, key, value):
+        '''method called by self[key] = value,
+        re-implement to avoid field overwrite.'''
         if key in self:
             old = self[key]
             if isinstance(old, Field):
@@ -306,12 +322,26 @@ class LocalEnvoriment(dict):
             super(LocalEnvoriment, self).__setitem__(key, value)
 
     def __delitem__(self, key):
+        '''method called by del self[key],
+        re-implement to properly remove field from radar.'''
         if key in self.Vradar.fields:
             del self.Vradar.value.fields[key]
             self.Vradar.update()
         super(LocalEnvoriment, self).__delitem__(key)
 
     def add_field(self, field_name, attr={}):
+        '''
+        Add field to current radar. Field must already exist in the Envoriment.
+
+        Parameters
+        ----------
+
+        field_name: string
+            Name of the field. Is must already exist in the envoriment under
+            the form of a numpy array or a field class
+        attr: dict
+            Dictionary of field attributs
+        '''
         radar = self.Vradar.value
         if sys.version_info[0] == 3:
             # python3
@@ -341,7 +371,25 @@ class LocalEnvoriment(dict):
             self[field_name] = Field(self.Vradar, field_name)
         self.Vradar.update()
 
-
+    def help(self):
+        '''Display help informations'''
+        print("radar terminal help, if you want python help try py_help()\n\n")
+        help_text = (
+            "## Interactive field manipulation console.\n"
+            "##\n"
+            "## Work with fields are if they were numpy arrays.\n"
+            "##\n"
+            "## This is a python console, so you can do any normal programming,\n"
+            "## for instance dir() to show current defined variables.\n"
+            "## \n"
+            "## We also have the field of the current radar set up as variables.\n"
+            "## You may manipulate then as numpy arrays.\n"
+            "## \n"
+            "## You are also allowed to create new fields, for that assigne a\n"
+            "## numpy array to the variable with the name you want for the field\n"
+            "## and run add_field( field_name ) to add that field to the radar\n"
+            )
+        print(help_text)
 
 class RadarTerminal(Component):
     '''
@@ -370,6 +418,7 @@ class RadarTerminal(Component):
             instance.
         '''
         super(RadarTerminal, self).__init__(name=name, parent=parent)
+        self.isRunning = False
 
         self.Vradar = Variable(None)
         self.sharedVariables = {"Vradar": None}
@@ -380,36 +429,50 @@ class RadarTerminal(Component):
         self.setCentralWidget(self.central_widget)
         self.layout = QtGui.QGridLayout(self.central_widget)
         self.button = QtGui.QPushButton("Interactive Console")
-        self.button.clicked.connect(self.runCode)
+        self.button.clicked.connect(self.buttonClicked)
         self.layout.addWidget(self.button, 0, 0)
         self.layout.addWidget(
             QtGui.QLabel("WARNING: never run this if you don't\n" +
                          "have acess to the running terminal."), 1, 0)
         self.show()
 
+    def buttonClicked(self):
+        '''Slot for button: clicked.'''
+        if self.isRunning:
+            #self.console.push('exit()\n')
+            self.button.setText("Interactive Console")
+            self.isRunning = False
+        else:
+            self.runCode()
+            #self.button.setText("Stop Console")
+
     def runCode(self):
         '''Use :py:func:`code.interact` to acess python terminal'''
-        # separe in thread to allow conflict with running Qt Application
+        # separe in thread to avoid conflict with running Qt Application
         if self.Vradar.value is None:
             common.ShowWarning("No Radar linked, aborting!")
             return
         import threading
-        banner = ("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
-            "\nHELLO: this is an iteractive python console so you can\n"
-            "edit your radar field while running the GUI.\n"
-            "It uses some python Magic so you can have fun.\n\n"
-            )
         env = LocalEnvoriment(self.Vradar)
         env["np"] = np
         env["pyart"] = pyart
-        self.thread = threading.Thread(
-            target=code.interact,
-            kwargs={'banner': banner,
-                    'readfunc': None,
-                    'local': env}
+        print env.keys()
+        banner = ("\n\n"
+            "## Interactive field manipulation console\n"
+            "##\n"
+            "## Work with fields are if they were numpy arrays.\n"
+            "##\n"
+            "## Call help() for more\n"
             )
+        self.console = code.InteractiveConsole(env)
+        self.thread = threading.Thread(
+            target=self.console.interact,
+            kwargs={'banner': banner},
+            )
+        self.thread.daemon=True
         self.thread.start()
-        # thread.join()
+        #self.isRunning = True
+
 
 
 _plugins = [RadarTerminal]
