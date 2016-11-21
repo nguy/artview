@@ -317,7 +317,7 @@ class GridDisplay(Component):
 
     def _add_ImageText(self):
         '''Add a text box to display.'''
-        from .display import ImageTextBox
+        from .image_text import ImageTextBox
         itext = ImageTextBox(self, parent=self.parent)
         return itext
 

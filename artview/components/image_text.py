@@ -43,7 +43,7 @@ class ImageTextBox(QtGui.QMainWindow):
         self.layout.addLayout(self.generalLayout, 0, 0, 1, 2)
 
         self.chooseText(0)
-        
+
         self.show()
 
     ######################
@@ -162,6 +162,7 @@ class ImageTextBox(QtGui.QMainWindow):
         '''Get Display Text.'''
         self.choice_key = str(self.dispCombo.currentText())
         self.choice = self.dispChoiceList[selection]
+        self.dispCombo.setCurrentIndex(selection)
         self._rebuild_entry()
 
     def _displayHelp(self):
@@ -231,7 +232,7 @@ class ImageTextBox(QtGui.QMainWindow):
             self.dispCombo.removeItem(delselect)
             self.display.fig.canvas.draw()
 
-        self.dispCombo.setCurrentIndex(0)
+##        self.dispCombo.setCurrentIndex(0)
         self.chooseText(0)
 
     def clrDispText(self):
@@ -245,9 +246,8 @@ class ImageTextBox(QtGui.QMainWindow):
                 del self.dispChoiceList[i]
                 self.dispCombo.removeItem(i)
         self.display.fig.canvas.draw()
-        self.dispCombo.setCurrentIndex(0)
+##        self.dispCombo.setCurrentIndex(0)
         self.chooseText(0)
-##        self._rebuild_entry()
 
     #####################
     #   Entry Methods   #
@@ -270,7 +270,6 @@ class ImageTextBox(QtGui.QMainWindow):
 
     def _check_entries(self):
         '''Check that entries are valid.'''
-        #NG Put in warnings?
         if not isinstance(str(self.ent_tex.text()), str):
             core.common.ShowWarning('Label Text must be string entry')
         if not isinstance(float(self.ent_xpos.text()), float):
