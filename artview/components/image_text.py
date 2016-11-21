@@ -213,7 +213,6 @@ class ImageTextBox(QtGui.QMainWindow):
             self.dispCombo.setCurrentIndex(select)
             self.chooseText(select)
         # Write the updated text item to the Display Text instance
-        ## NG Modify to use a more unique identifier than text ##
         self.display.disp_text[self.choice['text']] = self.choice
 
         # Redraw the canvas to place new text
@@ -232,7 +231,6 @@ class ImageTextBox(QtGui.QMainWindow):
             self.dispCombo.removeItem(delselect)
             self.display.fig.canvas.draw()
 
-##        self.dispCombo.setCurrentIndex(0)
         self.chooseText(0)
 
     def clrDispText(self):
@@ -246,7 +244,6 @@ class ImageTextBox(QtGui.QMainWindow):
                 del self.dispChoiceList[i]
                 self.dispCombo.removeItem(i)
         self.display.fig.canvas.draw()
-##        self.dispCombo.setCurrentIndex(0)
         self.chooseText(0)
 
     #####################
