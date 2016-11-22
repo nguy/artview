@@ -572,6 +572,7 @@ class RadarDisplay(Component):
         # +1 since the first one is "Tilt Window"
         self.tiltBox.setCurrentIndex(self.Vtilt.value+1)
         if strong:
+            self.title = self._get_default_title()
             self._update_plot()
             self._update_infolabel()
 
