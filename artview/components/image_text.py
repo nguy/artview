@@ -113,7 +113,6 @@ class ImageTextBox(QtGui.QMainWindow):
         # groupBox.setFlat(True)
         gBox_layout = QtGui.QGridLayout()
 
-
         # Set up the Labels for entry
         tex = QtGui.QLabel("Label Text")
         xpos = QtGui.QLabel("X-Coord")
@@ -134,7 +133,8 @@ class ImageTextBox(QtGui.QMainWindow):
         self.ent_texsz = QtGui.QLineEdit('')
         self.ent_texsz.setToolTip('Label text font size')
         self.ent_texst = QtGui.QLineEdit('')
-        self.ent_texst.setToolTip('Label text font style: normal, italic, or bold')
+        self.ent_texst.setToolTip('Label text font style: normal, '
+                                  'italic, or bold')
 
         # Add the Label and Entry fields to layout
         gBox_layout.addWidget(tex, 0, 0, 1, 1)

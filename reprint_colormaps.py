@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import pyart
 
 cmap_list = ["pyart_" + m for m in pyart.graph.cm.datad
-                         if not m.endswith("_r")]
+             if not m.endswith("_r")]
 nrows = len(cmap_list)
 gradient = np.linspace(0, 1, 256)
 gradient = np.vstack((gradient, gradient))
@@ -21,7 +21,7 @@ for ax, name in zip(axes, cmap_list):
     x_text = pos[0] - 0.01
     y_text = pos[1] + pos[3]/2.
     fig.text(x_text, y_text, name, va='center', ha='right', fontsize=10)
-    axl.append((ax,name))
+    axl.append((ax, name))
 
 # Turn off *all* ticks & spines, not just the ones with colormaps.
 for ax in axes:
@@ -29,6 +29,7 @@ for ax in axes:
 
 for ax, name in axl:
     extent = ax.get_window_extent().transformed(fig.dpi_scale_trans.inverted())
-    fig.savefig('artview/icons/colormaps/%s.png' % name, dpi=20, bbox_inches=extent)
+    fig.savefig(
+        'artview/icons/colormaps/%s.png' % name, dpi=20, bbox_inches=extent)
 
 fig.show()

@@ -7,7 +7,8 @@ Common routines run throughout ARTView.
 # Load the needed packages
 from .core import QtGui, QtCore
 import numpy as np
-import os, glob
+import os
+import glob
 
 ########################
 # Dialog methods #
@@ -53,6 +54,7 @@ def ShowQuestion(msg):
         print("Warning Discarded!")
 
     return response
+
 
 def ShowQuestionYesNo(msg):
     '''
@@ -358,16 +360,16 @@ class select_cmap(QtGui.QDialog):
                                                  os.pardir))
         images = glob.glob(parentdir + "/icons/colormaps/*.png")
 
-        for i,path in enumerate(images):
+        for i, path in enumerate(images):
             name = path.split('/')[-1].split('.')[0]
             button = QtGui.QPushButton(name)
-            self.layout.addWidget(button, 2*(i/3)+1, 2*(i%3))
-            button.clicked.connect(lambda ans,name=name: self.select(name))
+            self.layout.addWidget(button, 2 * (i/3) + 1, 2 * (i % 3))
+            button.clicked.connect(lambda ans, name=name: self.select(name))
             label = QtGui.QLabel()
             pixmap = QtGui.QPixmap(path)
             label.setPixmap(pixmap)
             label.setScaledContents(True)
-            self.layout.addWidget(label, 2*(i/3)+1, 2*(i%3)+1)
+            self.layout.addWidget(label, 2 * (i/3) + 1, 2 * (i % 3) + 1)
 
         self.selection = None
         self.exec_()

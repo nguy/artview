@@ -74,7 +74,6 @@ def _default_limits(field, plot_type):
         XRNG = PPI_XRNG
         YRNG = PPI_YRNG
 
-
     name = pyart.config.get_field_name
 
     # Check the field and apply the proper limits
@@ -182,7 +181,7 @@ def limits_dialog(limits, cmap, aspect='auto', name=None):
     ent_ymax.setToolTip('Maximum vertical-axis value')
     ent_aspect = QtGui.QLineEdit(LimsDialog)
     ent_aspect.setToolTip('vertical-to-horizontal size display ratio, '
-        'also accepts auto and equal')
+                          'also accepts auto and equal')
     lock_box = QtGui.QCheckBox('lock colormap')
     lock_box.setToolTip('Signalise components not to reset the colormap')
 

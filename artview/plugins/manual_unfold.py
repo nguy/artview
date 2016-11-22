@@ -17,7 +17,7 @@ sys.path.insert(0, path)
 
 import artview
 
-from ..core import Component, Variable, common, QtGui, QtCore, componentsList
+from ..core import (Component, Variable, common, QtGui, QtCore, componentsList)
 
 
 class ManualUnfold(Component):
