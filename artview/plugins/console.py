@@ -58,14 +58,14 @@ class AccessTerminal(Component):
         self.show()
 
     def runCode(self):
-        '''Use :py:func:`code.interact` to acess python terminal'''
+        '''Use :py:func:`code.interact` to access python terminal'''
         # separe in thread to allow conflict with running Qt Application
         import threading
         banner = (
             "\nHELLO: this is an iteractive python console so you can\n"
             "access ARTview functions while running the GUI and manipulate "
             "the data directly.\n\n"
-            " You have acess to three variables:\n"
+            " You have access to three variables:\n"
             "    'components': A list of all running components\n"
             "    'pyart': Python-ARM Radar Toolkit.\n"
             "    'artview': ARM Radar Toolkit Viewer\n\n"
