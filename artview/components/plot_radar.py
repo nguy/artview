@@ -16,7 +16,7 @@ from matplotlib.colors import Normalize as mlabNormalize
 from matplotlib.colorbar import ColorbarBase as mlabColorbarBase
 from matplotlib.pyplot import cm
 
-from ..core import Variable, Component, common, VariableChoose, QtGui, QtCore
+from ..core import (Variable, Component, common, VariableChoose, QtGui, QtCore)
 from ..core.points import Points
 
 # Save image file type and DPI (resolution)
@@ -148,6 +148,9 @@ class RadarDisplay(Component):
 
         # Create tool dictionary
         self.tools = {}
+
+        # Create display image text dictionary
+        self.disp_text = {}
 
         # Set up Default limits and cmap
         if Vlimits is None:
@@ -311,6 +314,12 @@ class RadarDisplay(Component):
             self.units = val
             self._update_plot()
 
+    def _add_ImageText(self):
+        '''Add a text box to display.'''
+        from .image_text import ImageTextBox
+        itext = ImageTextBox(self, parent=self.parent)
+        return itext
+
     def _open_tiltbuttonwindow(self):
         '''Open a TiltButtonWindow instance.'''
         from .level import LevelButtonWindow
@@ -362,7 +371,7 @@ class RadarDisplay(Component):
         dispmenu.addAction(self.ignoreEdgesToggle)
         self.ignoreEdgesToggle.setChecked(False)
         self.useMapToggle = QtGui.QAction(
-            'use MapDisplay', dispmenu, checkable=True,
+            'Use MapDisplay', dispmenu, checkable=True,
             triggered=self._UseMapToggleAction)
         dispmenu.addAction(self.useMapToggle)
         self.useMapToggle.setChecked(False)
@@ -376,6 +385,8 @@ class RadarDisplay(Component):
         self.dispCmap = dispmenu.addAction("Change Colormap")
         self.dispCmapmenu = QtGui.QMenu("Change Cmap")
         self.dispCmapmenu.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.dispImageText = dispmenu.addAction("Add Text to Image")
+        self.dispImageText.setToolTip("Add Text Box to Image")
         dispQuickSave = dispmenu.addAction("Quick Save Image")
         dispQuickSave.setShortcut("Ctrl+D")
         dispQuickSave.setToolTip(
@@ -387,6 +398,7 @@ class RadarDisplay(Component):
         dispLimits.triggered[()].connect(self._open_LimsDialog)
         dispTitle.triggered[()].connect(self._title_input)
         dispUnit.triggered[()].connect(self._units_input)
+        self.dispImageText.triggered[()].connect(self._add_ImageText)
         dispQuickSave.triggered[()].connect(self._quick_savefile)
         dispSaveFile.triggered[()].connect(self._savefile)
 
@@ -638,7 +650,7 @@ class RadarDisplay(Component):
 
     def toolZoomPanCmd(self):
         '''Creates and connects to a Zoom/Pan instance.'''
-        from .tools import ZoomPan
+        from .toolbox import ZoomPan
         scale = 1.1
         self.tools['zoompan'] = ZoomPan(
             self.Vlimits, self.ax,
@@ -647,7 +659,7 @@ class RadarDisplay(Component):
 
     def toolValueClickCmd(self):
         '''Creates and connects to Point-and-click value retrieval'''
-        from .tools import ValueClick
+        from .toolbox import ValueClick
         self.tools['valueclick'] = ValueClick(
             self, name=self.name + "ValueClick", parent=self.parent)
         self.tools['valueclick'].connect()
@@ -661,8 +673,8 @@ class RadarDisplay(Component):
 
     def toolResetCmd(self):
         '''Reset tools via disconnect.'''
-        from . import tools
-        self.tools = tools.reset_tools(self.tools)
+        from . import toolbox
+        self.tools = toolbox.reset_tools(self.tools)
 
     def toolDefaultCmd(self):
         '''Restore the Display defaults.'''
@@ -693,7 +705,7 @@ class RadarDisplay(Component):
         -----
             If Vradar.value is None, returns None
         '''
-        from .tools import interior_radar
+        from .toolbox import interior_radar
         radar = self.Vradar.value
         tilt = self.Vtilt.value
         if radar is None or not self.VpyartDisplay.value:

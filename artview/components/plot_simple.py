@@ -268,7 +268,7 @@ class PlotDisplay(Component):
 
 #    def toolZoomPanCmd(self):
 #        '''Creates and connects to a Zoom/Pan instance.'''
-#        from .tools import ZoomPan
+#        from .toolbox import ZoomPan
 #        scale = 1.1
 #        self.tools['zoompan'] = ZoomPan(
 #            self.limits, self.ax,
