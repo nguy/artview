@@ -243,7 +243,6 @@ class RadarDisplay(Component):
             self.Vcolormap.change(cmap)
             self.Vlimits.change(limits)
 
-
     def _fillTiltBox(self):
         '''Fill in the Tilt Window Box with current elevation angles.'''
         self.tiltBox.clear()
@@ -573,6 +572,7 @@ class RadarDisplay(Component):
         # +1 since the first one is "Tilt Window"
         self.tiltBox.setCurrentIndex(self.Vtilt.value+1)
         if strong:
+            self.title = self._get_default_title()
             self._update_plot()
             self._update_infolabel()
 
@@ -583,12 +583,12 @@ class RadarDisplay(Component):
 
         This will:
 
-        * If strong update: update plot
-        * redraw canvas
+        * If strong update: update plot (redraws)
+        * else redraw canvas
         '''
         if strong:
             self._update_plot()
-        else: #  update_plot already redraw
+        else:
             self.canvas.draw()
 
     def TiltSelectCmd(self, ntilt):

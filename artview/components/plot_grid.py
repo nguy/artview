@@ -254,7 +254,8 @@ class GridDisplay(Component):
             self.ax.set_aspect(aspect)
             if self.plot_type == "gridZ":
                 import warnings
-                warnings.warn("Changing Aspect Radio does not work in Altitude"
+                warnings.warn(
+                    "Changing Aspect Radio does not work in Altitude"
                     "Plot. This is a result of pyart forcing equal ratio.")
         if change == 1:
             self.Vcolormap.change(cmap)
@@ -370,14 +371,14 @@ class GridDisplay(Component):
         self.dispPlotType = dispmenu.addMenu("Change Plot Type")
         self.dispPlotType.setFocusPolicy(QtCore.Qt.NoFocus)
         PlotTypeAction = self.dispPlotType.addAction('Altitude Plot')
-        PlotTypeAction.triggered[()].connect(lambda:
-                                         self.change_plot_type('gridZ'))
+        PlotTypeAction.triggered[()].connect(
+            lambda: self.change_plot_type('gridZ'))
         PlotTypeAction = self.dispPlotType.addAction('Longitudinal Plot')
-        PlotTypeAction.triggered[()].connect(lambda:
-                                         self.change_plot_type('gridY'))
+        PlotTypeAction.triggered[()].connect(
+            lambda: self.change_plot_type('gridY'))
         PlotTypeAction = self.dispPlotType.addAction('Latitudinal Plot')
-        PlotTypeAction.triggered[()].connect(lambda:
-                                         self.change_plot_type('gridX'))
+        PlotTypeAction.triggered[()].connect(
+            lambda: self.change_plot_type('gridX'))
 
         self.dispImageText = dispmenu.addAction("Add Text to Image")
         self.dispImageText.setToolTip("Add Text Box to Image")
@@ -554,6 +555,7 @@ class GridDisplay(Component):
         # +1 since the first one is "Level Window"
         self.levelBox.setCurrentIndex(variable.value+1)
         if strong:
+            self.title = self._get_default_title()
             self._update_plot()
             self._update_infolabel()
 
@@ -565,11 +567,11 @@ class GridDisplay(Component):
         This will:
 
         * If strong update: update plot
-        * redraw canvas
+        * else redraw canvas
         '''
         if strong:
             self._update_plot()
-        else: #  updata_plot already redraw
+        else:
             self.canvas.draw()
 
     def LevelSelectCmd(self, nlevel):

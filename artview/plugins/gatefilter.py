@@ -230,31 +230,6 @@ class GateFilter(Component):
     def _displayHelp(self):
         '''Display Py-Art's docstring for help.'''
         text = (
-#             "**Using the GateFilter window**\n"
-#             "Choose a filter:\n"
-#             "  1. Select an operation and value(s) to exclude.\n"
-#             "       Notes: 'outside' masks values less than 'Value 1' and "
-#             "greater than 'Value 2.'\n"
-#             "              'inside' masks values greater than 'Value 1' and "
-#             "less than 'Value 2.'\n"
-#             "              For other operations only 'Value 1 is used.\n"
-#             "  2. Check the 'Activate Filter' box to apply the filter.\n"
-#             "  3. Click the 'Filter' button.\n"
-#             "  4. GateFilter needs to be activated in the Display to see the "
-#             "results. It is turned on by default. To check see "
-#             "'Display Options' dropdown menu on the Display of interest.\n\n"
-#             "Change Radar variables:\n"
-#             "  Click the 'Find Variable', select variable.\n\n"
-#             "Show Python script for batching:\n"
-#             "  Click the 'Show Script' button.\n\n"
-#             "The following information is from the PyArt documentation.\n\n"
-#             "WARNING: By saving the file, the mask associated with the data "
-#             "values may be modfidied. The data itself does not change.\n\n"
-#             "**GateFilter**\n" +
-#             pyart.filters.GateFilter.__doc__ +
-#             "\n\n"
-#             "**GateFilter.exclude_below**\n" +
-#             pyart.filters.GateFilter.exclude_below.__doc__)
             "<b>Using the GateFilter window</b><br><br>"
             "<i>Choose a filter:</i><br>"
             "  1. Select an operation and value(s) to exclude.<br>"

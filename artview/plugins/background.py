@@ -10,7 +10,6 @@ import pyart
 import numpy as np
 from netCDF4 import Dataset
 from matplotlib.colors import LightSource
-from mpl_toolkits.basemap import shiftgrid, cm
 
 import sys
 import os
@@ -31,7 +30,8 @@ class TopographyBackground(Component):
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
-    def __init__(self, VpyartDisplay=None, name="TopographyBackground", parent=None):
+    def __init__(self, VpyartDisplay=None, name="TopographyBackground",
+                 parent=None):
         '''Initialize the class to create the interface.
 
         Parameters
@@ -87,6 +87,7 @@ class TopographyBackground(Component):
             self.lineEdit.setText(filename)
 
     def apply(self):
+        from mpl_toolkits.basemap import shiftgrid, cm
         common.ShowQuestion
         display = self.VpyartDisplay.value
         if (isinstance(display, pyart.graph.RadarMapDisplay) or
@@ -109,7 +110,7 @@ class TopographyBackground(Component):
         if filename != self.current_open:
             if filename.startswith("http"):
                 resp = common.ShowQuestion(
-                    "Loading a file from the internet may take long." + 
+                    "Loading a file from the internet may take long." +
                     " Are you sure you want to continue?")
                 if resp != QtGui.QMessageBox.Ok:
                     return
@@ -120,7 +121,7 @@ class TopographyBackground(Component):
         lons = self.etopodata.variables['ETOPO05_X'][:]
         lats = self.etopodata.variables['ETOPO05_Y'][:]
         # shift data so lons go from -180 to 180 instead of 20 to 380.
-        topoin,lons = shiftgrid(180.,topoin,lons,start=False)
+        topoin, lons = shiftgrid(180., topoin, lons, start=False)
 
         # plot topography/bathymetry as an image.
 
@@ -129,13 +130,14 @@ class TopographyBackground(Component):
         # use major and minor sphere radii from WGS84 ellipsoid.
         m = self.VpyartDisplay.value.basemap
         # transform to nx x ny regularly spaced 5km native projection grid
-        nx = int((m.xmax-m.xmin)/500.)+1; ny = int((m.ymax-m.ymin)/500.)+1
-        topodat = m.transform_scalar(topoin,lons,lats,nx,ny)
+        nx = int((m.xmax - m.xmin)/500.) + 1
+        ny = int((m.ymax - m.ymin)/500.) + 1
+        topodat = m.transform_scalar(topoin, lons, lats, nx, ny)
         # plot image over map with imshow.
 
         # draw coastlines and political boundaries.
 
-        ls = LightSource(azdeg = 90, altdeg = 20)
+        ls = LightSource(azdeg=90, altdeg=20)
         # convert data to rgb array including shading from light source.
         # (must specify color map)
         rgb = ls.shade(topodat, cm.GMT_relief)
@@ -157,7 +159,8 @@ class ImageBackground(Component):
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
-    def __init__(self, VpyartDisplay=None, name="ImageBackground", parent=None):
+    def __init__(self, VpyartDisplay=None, name="ImageBackground",
+                 parent=None):
         '''Initialize the class to create the interface.
 
         Parameters
@@ -190,15 +193,15 @@ class ImageBackground(Component):
         self.layout.addWidget(self.applyButton, 0, 5)
 
         self.layout.addWidget(QtGui.QLabel(u"Center (°):"), 1, 0)
-        self.x0_lineEdit = QtGui.QLineEdit("",self)
+        self.x0_lineEdit = QtGui.QLineEdit("", self)
         self.layout.addWidget(self.x0_lineEdit, 1, 1)
-        self.y0_lineEdit = QtGui.QLineEdit("",self)
+        self.y0_lineEdit = QtGui.QLineEdit("", self)
         self.layout.addWidget(self.y0_lineEdit, 1, 2)
 
         self.layout.addWidget(QtGui.QLabel("Size (km):"), 1, 3)
-        self.dx_lineEdit = QtGui.QLineEdit("",self)
+        self.dx_lineEdit = QtGui.QLineEdit("", self)
         self.layout.addWidget(self.dx_lineEdit, 1, 4)
-        self.dy_lineEdit = QtGui.QLineEdit("",self)
+        self.dy_lineEdit = QtGui.QLineEdit("", self)
         self.layout.addWidget(self.dy_lineEdit, 1, 5)
 
         if VpyartDisplay is None:
@@ -213,7 +216,7 @@ class ImageBackground(Component):
         self.sharedVariables = {"VpyartDisplay": None,
                                 "VplotAxes": None,
                                 "Vradar": self.NewRadar,
-                                "Vgrid": self.NewGrid,}
+                                "Vgrid": self.NewGrid, }
 
         self.show()
 
@@ -255,7 +258,7 @@ class ImageBackground(Component):
             x = grid.x['data']
             y = grid.y['data']
             projparams = grid.get_projparams()
-            lon,lat = pyart.core.cartesian_vectors_to_geographic(
+            lon, lat = pyart.core.cartesian_vectors_to_geographic(
                 (x[-1]+x[0])/2, (y[-1]+y[0])/2, projparams)
             self.x0_lineEdit.setText("%.6f" % lon)
             self.y0_lineEdit.setText("%.6f" % lat)
@@ -271,8 +274,8 @@ class ImageBackground(Component):
                 self.name)
             return
         elif (isinstance(display, pyart.graph.RadarMapDisplay) or
-            isinstance(display, pyart.graph.GridMapDisplay) or
-            isinstance(display, pyart.graph.RadarDisplay)):
+              isinstance(display, pyart.graph.GridMapDisplay) or
+              isinstance(display, pyart.graph.RadarDisplay)):
             pass
         else:
             common.ShowWarning(
@@ -289,7 +292,7 @@ class ImageBackground(Component):
                 self.name)
         import matplotlib.image as mpimg
 
-        img=mpimg.imread(str(self.lineEdit.text()))
+        img = mpimg.imread(str(self.lineEdit.text()))
 
         x0 = float(str(self.x0_lineEdit.text()))
         y0 = float(str(self.y0_lineEdit.text()))
@@ -298,7 +301,7 @@ class ImageBackground(Component):
         aspect = ax.get_aspect()
         if isinstance(display, pyart.graph.RadarMapDisplay):
             m = self.VpyartDisplay.value.basemap
-            x0, y0 = m(x0,y0)
+            x0, y0 = m(x0, y0)
             dx *= 1000
             dy *= 1000
             im = ax.imshow(img, extent=(x0-dx/2, x0+dx/2, y0-dy/2, y0+dy/2),
@@ -316,15 +319,13 @@ class ImageBackground(Component):
                            aspect=aspect)
         elif isinstance(display, pyart.graph.GridMapDisplay):
             m = self.VpyartDisplay.value.basemap
-            x0, y0 = m(x0,y0)
+            x0, y0 = m(x0, y0)
             dx *= 1000
             dy *= 1000
             im = ax.imshow(img, extent=(x0-dx/2, x0+dx/2, y0-dy/2, y0+dy/2),
                            aspect=aspect)
 
-
         self.VpyartDisplay.update(strong=False)
-
 
 
 _plugins = [TopographyBackground, ImageBackground]
