@@ -167,6 +167,9 @@ class GridDisplay(Component):
         # Create tool dictionary
         self.tools = {}
 
+        # Create display image text dictionary
+        self.disp_text = {}
+
         # Set up Default limits and cmap
         if Vlimits is None:
             self._set_default_limits(strong=False)
@@ -255,7 +258,8 @@ class GridDisplay(Component):
             self.ax.set_aspect(aspect)
             if self.plot_type == "gridZ":
                 import warnings
-                warnings.warn("Changing Aspect Radio does not work in Altitude"
+                warnings.warn(
+                    "Changing Aspect Radio does not work in Altitude"
                     "Plot. This is a result of pyart forcing equal ratio.")
         if change == 1:
             self.Vcolormap.change(cmap)
@@ -316,6 +320,12 @@ class GridDisplay(Component):
             self.units = val
             self._update_plot()
 
+    def _add_ImageText(self):
+        '''Add a text box to display.'''
+        from .image_text import ImageTextBox
+        itext = ImageTextBox(self, parent=self.parent)
+        return itext
+
     def _open_levelbuttonwindow(self):
         '''Open a LevelButtonWindow instance.'''
         from .level import LevelButtonWindow
@@ -365,15 +375,17 @@ class GridDisplay(Component):
         self.dispPlotType = dispmenu.addMenu("Change Plot Type")
         self.dispPlotType.setFocusPolicy(QtCore.Qt.NoFocus)
         PlotTypeAction = self.dispPlotType.addAction('Altitude Plot')
-        PlotTypeAction.triggered.connect(lambda:
-                                         self.change_plot_type('gridZ'))
+        PlotTypeAction.triggered.connect(
+            lambda: self.change_plot_type('gridZ'))
         PlotTypeAction = self.dispPlotType.addAction('Longitudinal Plot')
-        PlotTypeAction.triggered.connect(lambda:
-                                         self.change_plot_type('gridY'))
+        PlotTypeAction.triggered.connect(
+            lambda: self.change_plot_type('gridY'))
         PlotTypeAction = self.dispPlotType.addAction('Latitudinal Plot')
-        PlotTypeAction.triggered.connect(lambda:
-                                         self.change_plot_type('gridX'))
+        PlotTypeAction.triggered.connect(
+            lambda: self.change_plot_type('gridX'))
 
+        self.dispImageText = dispmenu.addAction("Add Text to Image")
+        self.dispImageText.setToolTip("Add Text Box to Image")
         dispQuickSave = dispmenu.addAction("Quick Save Image")
         dispQuickSave.setShortcut("Ctrl+D")
         dispQuickSave.setToolTip(
@@ -385,6 +397,7 @@ class GridDisplay(Component):
         dispLimits.triggered.connect(self._open_LimsDialog)
         dispTitle.triggered.connect(self._title_input)
         dispUnit.triggered.connect(self._units_input)
+        self.dispImageText.triggered.connect(self._add_ImageText)
         dispQuickSave.triggered.connect(self._quick_savefile)
         dispSaveFile.triggered.connect(self._savefile)
 
@@ -546,6 +559,7 @@ class GridDisplay(Component):
         # +1 since the first one is "Level Window"
         self.levelBox.setCurrentIndex(variable.value+1)
         if strong:
+            self.title = self._get_default_title()
             self._update_plot()
             self._update_infolabel()
 
@@ -557,11 +571,11 @@ class GridDisplay(Component):
         This will:
 
         * If strong update: update plot
-        * redraw canvas
+        * else redraw canvas
         '''
         if strong:
             self._update_plot()
-        else: #  updata_plot already redraw
+        else:
             self.canvas.draw()
 
     def LevelSelectCmd(self, nlevel):
@@ -590,7 +604,7 @@ class GridDisplay(Component):
 
     def toolZoomPanCmd(self):
         '''Creates and connects to a Zoom/Pan instance.'''
-        from .tools import ZoomPan
+        from .toolbox import ZoomPan
         scale = 1.1
         self.tools['zoompan'] = ZoomPan(
             self.Vlimits, self.ax,
@@ -612,8 +626,8 @@ class GridDisplay(Component):
 
     def toolResetCmd(self):
         '''Reset tools via disconnect.'''
-        from . import tools
-        self.tools = tools.reset_tools(self.tools)
+        from . import toolbox
+        self.tools = toolbox.reset_tools(self.tools)
 
     def toolDefaultCmd(self):
         '''Restore the Display defaults.'''
@@ -645,7 +659,7 @@ class GridDisplay(Component):
         -----
             If Vgrid.value is None, returns None
         '''
-        from .tools import interior_grid
+        from .toolbox import interior_grid
         grid = self.Vgrid.value
         if grid is None:
             return None
@@ -743,7 +757,7 @@ class GridDisplay(Component):
         -----
             If Vgrid.value is None, returns None
         '''
-        from .tools import nearest_point_grid
+        from .toolbox import nearest_point_grid
         grid = self.Vgrid.value
 
         # map center

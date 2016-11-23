@@ -162,8 +162,8 @@ class ManualFilter(Component):
         data = self.Vradar.value.fields[self.Vfield.value]['data']
         mask = np.ma.getmaskarray(data)
         mask[mask_ray, mask_range] = True
-        self.Vradar.value.fields[self.Vfield.value]['data'] = np.ma.array(data,
-                                                                    mask=mask)
+        self.Vradar.value.fields[self.Vfield.value]['data'] = np.ma.array(
+            data, mask=mask)
 
         self.Vradar.value.changed = True
         self.Vradar.update()

@@ -101,8 +101,10 @@ class Menu(Component):
         if event.key() == QtCore.Qt.Key_Right:
             # Menu control the file and open the radar
             resp = True
-            if hasattr(self.current_container.value, 'changed') and self.current_container.value.changed:
-                resp = common.ShowQuestionYesNo("Save changes before moving to next File?")
+            if (hasattr(self.current_container.value, 'changed') and
+                self.current_container.value.changed):
+                resp = common.ShowQuestionYesNo(
+                    "Save changes before moving to next File?")
                 if resp == QtWidgets.QMessageBox.Yes:
                     self.saveCurrent()
                 elif resp != QtWidgets.QMessageBox.No:
@@ -110,8 +112,10 @@ class Menu(Component):
             self.AdvanceFileSelect(self.fileindex + 1)
         elif event.key() == QtCore.Qt.Key_Left:
             # Menu control the file and open the radar
-            if hasattr(self.current_container.value, 'changed') and self.current_container.value.changed:
-                resp = common.ShowQuestionYesNo("Save changes before moving to next File?")
+            if (hasattr(self.current_container.value, 'changed') and
+                self.current_container.value.changed):
+                resp = common.ShowQuestionYesNo(
+                    "Save changes before moving to next File?")
                 if resp == QtWidgets.QMessageBox.Yes:
                     self.saveCurrent()
                 elif resp != QtWidgets.QMessageBox.No:

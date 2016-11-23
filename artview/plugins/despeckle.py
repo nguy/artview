@@ -1,4 +1,4 @@
- 
+
 """
 despeckle.py
 """
@@ -7,11 +7,11 @@ despeckle.py
 
 import pyart
 import numpy as np
-#from netCDF4 import Dataset
-#from matplotlib.colors import LightSource
-#from mpl_toolkits.basemap import shiftgrid, cm
+# from netCDF4 import Dataset
+# from matplotlib.colors import LightSource
+# from mpl_toolkits.basemap import shiftgrid, cm
 
-#import sys
+# import sys
 import os
 
 
@@ -71,9 +71,10 @@ class Despeckle(Component):
 
         parentdir = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                  os.pardir))
-        config_icon = QtGui.QIcon(os.sep.join([parentdir, 'icons',
-                                              "categories-applications-system-icon.png"]))
-        self.configButton = QtWidgets.QPushButton(config_icon,"")
+        config_icon = QtGui.QIcon(
+            os.sep.join([parentdir, 'icons',
+                        "categories-applications-system-icon.png"]))
+        self.configButton = QtWidgets.QPushButton(config_icon, "")
         self.layout.addWidget(self.configButton, 0, 1)
         self.configMenu = QtWidgets.QMenu(self)
         self.configButton.setMenu(self.configMenu)
@@ -160,8 +161,8 @@ class Despeckle(Component):
         # ask for name
         objects = str(common.string_dialog(
             "objects", "Enter Field Name",
-            "This will add a new field to the radar, where bins are numbered\n" +
-            "according to the connected component it makes part of." +
+            "This will add a new field to the radar, where bins are \n" +
+            "numbered according to the connected component it makes part of." +
             "\n\nEnter Field Name:")[0])
         strong_update = False
         if objects == '':
@@ -270,7 +271,7 @@ class Despeckle(Component):
         buttonBox = QtWidgets.QDialogButtonBox(dialog)
         buttonBox.setOrientation(QtCore.Qt.Horizontal)
         buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel |
-                                    QtWidgets.QDialogButtonBox.Ok)
+                                     QtWidgets.QDialogButtonBox.Ok)
         gridLayout_2.addWidget(buttonBox, 1, 0, 1, 1)
 
         dialog.setLayout(gridLayout_2)
@@ -282,7 +283,7 @@ class Despeckle(Component):
         if retval == 1:
             self.parameters['threshold_min'] = float(ent_threshold_min.text())
             threshold_max = ent_threshold_max.text()
-            if threshold_max=='Inf':
+            if threshold_max == 'Inf':
                 self.parameters['threshold_max'] = 'Inf'
             else:
                 self.parameters['threshold_max'] = str(threshold_max)

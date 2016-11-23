@@ -13,7 +13,7 @@ def _default_limits(field, plot_type):
     '''
     Initialize limits to default program values.
 
-    Parameters::
+    Parameters
     ----------
     field - string
         Field name to use for initialization (e.g. 'reflectivity').
@@ -22,7 +22,7 @@ def _default_limits(field, plot_type):
     plot_type - "radarPpi", "radarPpiMap", "radarRhi", "radarAirborne" or None
         plto_type of the plot
 
-    Notes::
+    Notes
     -----
     Returns a dictionary of display limits and colormap instance.
     '''
@@ -73,7 +73,6 @@ def _default_limits(field, plot_type):
     else:
         XRNG = PPI_XRNG
         YRNG = PPI_YRNG
-
 
     name = pyart.config.get_field_name
 
@@ -136,14 +135,14 @@ def _default_limits(field, plot_type):
 def limits_dialog(limits, cmap, aspect='auto', name=None):
     '''Function to instantiate a Display Limits Window.
 
-    Parameters::
+    Parameters
     ----------
     limits - dict
         Dictionary containing display limits.
     name - string
         Window name to add as prefix in window title.
 
-    Notes::
+    Notes
     -----
     Returns a dictionary of display limits.
     '''
@@ -182,7 +181,7 @@ def limits_dialog(limits, cmap, aspect='auto', name=None):
     ent_ymax.setToolTip('Maximum vertical-axis value')
     ent_aspect = QtWidgets.QLineEdit(LimsDialog)
     ent_aspect.setToolTip('vertical-to-horizontal size display ratio, '
-        'also accepts auto and equal')
+                          'also accepts auto and equal')
     lock_box = QtWidgets.QCheckBox('lock colormap')
     lock_box.setToolTip('Signalise components not to reset the colormap')
 

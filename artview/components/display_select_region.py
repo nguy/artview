@@ -49,7 +49,7 @@ class DisplaySelectRegion(Component):
 
     @classmethod
     def guiStart(self, parent=None):
-        #args, independent = _SelectRegionStart().startDisplay()
+        # args, independent = _SelectRegionStart().startDisplay()
         # XXX _SelectRegionStart need updating
         return self(parent=parent), False
 
@@ -184,7 +184,7 @@ class DisplaySelectRegion(Component):
                 path = Path(self.verts)
 
                 # Inform via status bar
-                #self.statusbar.showMessage("Closed Region")
+                # self.statusbar.showMessage("Closed Region")
 
                 # Create Points object
                 func = self.VpathInteriorFunc.value
@@ -235,7 +235,8 @@ class DisplaySelectRegion(Component):
         self.buttonResetSelectRegion = QtWidgets.QPushButton('Reset Region', self)
         self.buttonResetSelectRegion.setToolTip("Clear the Region")
         self.saveButton = QtWidgets.QPushButton("Save File", self)
-        self.saveButton.setToolTip("Save modified radar instance to cfradial file")
+        self.saveButton.setToolTip("Save modified radar instance to "
+                                   "cfradial file")
         self.buttonHelp = QtWidgets.QPushButton('Help', self)
         self.buttonHelp.setToolTip("About using DisplaySelectRegion")
         self.buttonViewTable.clicked.connect(self.viewTable)
@@ -264,7 +265,8 @@ class DisplaySelectRegion(Component):
     def _displayHelp(self):
         ''' Launch pop-up help window.'''
         text = (
-            "<b>Using the Display Region of Interest (DisplaySelectRegion) Tool</b><br><br>"
+            "<b>Using the Display Region of Interest (DisplaySelectRegion) "
+            "Tool</b><br><br>"
             "<i>Purpose</i>:<br>"
             "Draw a path in the display window using the Mouse.<br><br>"
             "<i>Functions</i>:<br>"
@@ -295,8 +297,8 @@ class DisplaySelectRegion(Component):
         points = self.Vpoints.value
         if points is not None:
             fsuggest = ('SelectRegion_' + self.Vfield.value + '_' +
-                str(points.axes['x_disp']['data'][:].mean()) + '_' +
-                str(points.axes['y_disp']['data'][:].mean())+'.csv')
+                        str(points.axes['x_disp']['data'][:].mean()) + '_' +
+                        str(points.axes['y_disp']['data'][:].mean())+'.csv')
             path = QtWidgets.QFileDialog.getSaveFileName(
                 self, 'Save CSV Table File', fsuggest, 'CSV(*.csv)')
             if not path.isEmpty():
@@ -327,7 +329,7 @@ class DisplaySelectRegion(Component):
 
             # Renew region variables, etc.
             self._initialize_SelectRegion_vars()
-        #self.statusbar.showMessage("Select Region with Mouse")
+        # self.statusbar.showMessage("Select Region with Mouse")
         else:
             print("No Region Selection to clear")
         self.Vpoints.change(None)
@@ -396,7 +398,6 @@ class DisplaySelectRegion(Component):
                     radar.fields[field]['data'].mask = np.logical_or(
                         self.Vgatefilter.value._gate_excluded,
                         radar.fields[field]['data'].mask)
-            #self.Vradar.update(True)
             pyart.io.write_cfradial(filename, radar)
             print("Saved %s" % (filename))
 
@@ -415,7 +416,8 @@ class DisplaySelectRegion(Component):
         '''Mount Options and execute
         :py:func:`~pyart.filters.GateFilter`.
         Mask the selected points.
-        Vgatefilter is updated, strong or weak depending on overwriting old fields.
+        Vgatefilter is updated, strong or weak depending on
+        overwriting old fields.
         '''
         mask_ray = self.Vpoints.value.axes['ray_index']['data'][:]
         mask_range = self.Vpoints.value.axes['range_index']['data'][:]
@@ -437,6 +439,7 @@ class DisplaySelectRegion(Component):
 
         print(np.sum(mask))
         print(np.sum(self.Vgatefilter.value._gate_excluded))
+
 
 class _SelectRegionStart(QtWidgets.QDialog):
     '''

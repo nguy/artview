@@ -20,6 +20,7 @@ from .. import core, components
 gradient = np.linspace(0, 1, 256)
 gradient = np.vstack((gradient, gradient))
 
+
 class ColormapEdit(core.Component):
 
     @classmethod
@@ -153,8 +154,8 @@ class ColormapEdit(core.Component):
 
             self.layout.addWidget(self.lock_box, 7, 0, 1, 2)
             self.layout.addWidget(self.apply_button, 7, 2, 1, 1)
-        elif idx ==5:
-            count=0
+        elif idx == 5:
+            count = 0
             for ent in self.ent_bounds:
                 self.layout.addWidget(ent, 2 * count + 1, 0, 1, 2)
                 count += 1
@@ -194,7 +195,8 @@ class ColormapEdit(core.Component):
             else:
                 norm = None
             im = self.ax.imshow(gradient, aspect='auto', cmap=cmap['cmap'],
-                                vmin=cmap['vmin'], vmax=cmap['vmax'], norm=norm)
+                                vmin=cmap['vmin'], vmax=cmap['vmax'],
+                                norm=norm)
             plt.colorbar(im, cax=self.cax)
 
         self.canvas.draw()
@@ -309,4 +311,3 @@ _modes = [
      'group': 'graph',
      'action': grid_mode},
     ]
-

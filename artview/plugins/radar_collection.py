@@ -61,7 +61,7 @@ class RadarCollectionView(Component):
         return self(**kwargs), independent
         return self(), False
 
-    def __init__(self, dirIn=None,VradarCollection=None ,
+    def __init__(self, dirIn=None, VradarCollection=None ,
                  name="RadarCollectionView", parent=None):
         '''Initialize the class to create the interface.
 
@@ -101,7 +101,7 @@ class RadarCollectionView(Component):
         # self.clicked.connect(self.test)
         self.directoryView.doubleClicked.connect(self.doubleClick)
         # context (right-click) menu
-        #self.directoryView.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        # self.directoryView.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
 
         # set up collectionView
         try:
@@ -119,7 +119,7 @@ class RadarCollectionView(Component):
         self.layout = QtWidgets.QGridLayout(self.central_widget)
         self.layout.addWidget(self.directoryView, 0, 0)
         self.layout.addWidget(self.collectionView, 0, 1)
-        #self.directoryView.customContextMenuRequested.connect(
+        # self.directoryView.customContextMenuRequested.connect(
         #    self.directoryContextMenu)
         if VradarCollection:
             self.VradarCollection = VradarCollection
@@ -167,7 +167,6 @@ class RadarCollectionView(Component):
                 print(traceback.format_exc())
                 radar_warning = True
 
-
         if grid_warning or radar_warning:
             msg = "Py-ART didn't recognize this file!"
             common.ShowWarning(msg)
@@ -196,7 +195,7 @@ class RadarCollectionView(Component):
         menu = QtWidgets.QMenu(self)
         index = self.collectionView.currentIndex().row()
         action = QtWidgets.QAction("remove", self)
-        f = lambda : self.remove_radar(index)
+        f = lambda: self.remove_radar(index)
         action.triggered.connect(f)
         menu.addAction(action)
         menu.exec_(self.collectionView.mapToGlobal(pos))
