@@ -555,6 +555,7 @@ class GridDisplay(Component):
         # +1 since the first one is "Level Window"
         self.levelBox.setCurrentIndex(variable.value+1)
         if strong:
+            self.title = self._get_default_title()
             self._update_plot()
             self._update_infolabel()
 
