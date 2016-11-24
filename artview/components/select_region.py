@@ -13,7 +13,7 @@ from matplotlib.lines import Line2D
 import csv
 
 from ..core import (Variable, Component, common, VariableChoose,
-                    componentsList, QtGui, QtCore)
+                    componentsList, QtWidgets, QtCore)
 from ..core.points import Points
 
 
@@ -223,19 +223,19 @@ class SelectRegion(Component):
         Open and Save Table methods borrowed from:
         http://stackoverflow.com/questions/12608835/writing-a-qtablewidget-to-a-csv-or-xls
         '''
-        self.SelectRegionbox = QtGui.QGroupBox("Region of Interest Selection")
-        self.rBox_layout = QtGui.QVBoxLayout(self.SelectRegionbox)
+        self.SelectRegionbox = QtWidgets.QGroupBox("Region of Interest Selection")
+        self.rBox_layout = QtWidgets.QVBoxLayout(self.SelectRegionbox)
         self.SelectRegionbox.setLayout(self.rBox_layout)
         self.setCentralWidget(self.SelectRegionbox)
 
         # Add buttons for functionality
-        self.buttonResetSelectRegion = QtGui.QPushButton('Reset Region', self)
+        self.buttonResetSelectRegion = QtWidgets.QPushButton('Reset Region', self)
         self.buttonResetSelectRegion.setToolTip("Clear the Region")
-        self.buttonHelp = QtGui.QPushButton('Help', self)
+        self.buttonHelp = QtWidgets.QPushButton('Help', self)
         self.buttonHelp.setToolTip("About using SelectRegion")
-        self.buttonRemovePoly = QtGui.QPushButton('Remove Polygon', self)
+        self.buttonRemovePoly = QtWidgets.QPushButton('Remove Polygon', self)
         self.buttonRemovePoly.setToolTip("Remove last Polygon")
-        self.buttonRemoveVertex = QtGui.QPushButton('Remove Vertex', self)
+        self.buttonRemoveVertex = QtWidgets.QPushButton('Remove Vertex', self)
         self.buttonRemoveVertex.setToolTip("Remove last Vertex")
         self.buttonResetSelectRegion.clicked.connect(self.resetSelectRegion)
         self.buttonHelp.clicked.connect(self._displayHelp)
@@ -249,8 +249,8 @@ class SelectRegion(Component):
         self.rBox_layout.addWidget(self.buttonHelp)
 
         #empty space at the bottom
-        self.rBox_layout.addItem(QtGui.QSpacerItem(
-            0, 0, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding))
+        self.rBox_layout.addItem(QtWidgets.QSpacerItem(
+            0, 0, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding))
 
 
     def removePolygon(self):

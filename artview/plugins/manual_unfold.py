@@ -17,7 +17,8 @@ sys.path.insert(0, path)
 
 import artview
 
-from ..core import Component, Variable, common, QtGui, QtCore, componentsList
+from ..core import (Component, Variable, common, QtCore,
+                    QtGui, QtWidgets, componentsList)
 
 
 class ManualUnfold(Component):
@@ -73,48 +74,48 @@ class ManualUnfold(Component):
                                 "Vpoints": None}
         self.connectAllVariables()
 
-        self.central_widget = QtGui.QWidget()
+        self.central_widget = QtWidgets.QWidget()
         self.setCentralWidget(self.central_widget)
-        self.layout = QtGui.QGridLayout(self.central_widget)
+        self.layout = QtWidgets.QGridLayout(self.central_widget)
 
-        self.velField = QtGui.QLineEdit(
+        self.velField = QtWidgets.QLineEdit(
             pyart.config.get_field_name('velocity'))
-        self.layout.addWidget(QtGui.QLabel("vel_field:"), 0, 0)
+        self.layout.addWidget(QtWidgets.QLabel("vel_field:"), 0, 0)
         self.layout.addWidget(self.velField, 1, 0)
 
-        self.corrVelField = QtGui.QLineEdit(
+        self.corrVelField = QtWidgets.QLineEdit(
             pyart.config.get_field_name('corrected_velocity'))
-        self.layout.addWidget(QtGui.QLabel("corr_vel_field:"), 2, 0)
+        self.layout.addWidget(QtWidgets.QLabel("corr_vel_field:"), 2, 0)
         self.layout.addWidget(self.corrVelField, 3, 0)
 
-        self.nyquistVelocity = QtGui.QDoubleSpinBox()
+        self.nyquistVelocity = QtWidgets.QDoubleSpinBox()
         self.nyquistVelocity.setRange(-1, 1000)
         self.nyquistVelocity.setValue(-1)
-        self.layout.addWidget(QtGui.QLabel("nyquist_velocity:"), 4, 0)
+        self.layout.addWidget(QtWidgets.QLabel("nyquist_velocity:"), 4, 0)
         self.layout.addWidget(self.nyquistVelocity, 5, 0)
 
-        self.positiveButton = QtGui.QPushButton("Unfold Positive Values")
+        self.positiveButton = QtWidgets.QPushButton("Unfold Positive Values")
         self.positiveButton.clicked.connect(self.positiveUnfold)
         self.layout.addWidget(self.positiveButton, 6, 0)
 
-        self.negativeButton = QtGui.QPushButton("Unfold Negative Values")
+        self.negativeButton = QtWidgets.QPushButton("Unfold Negative Values")
         self.negativeButton.clicked.connect(self.negativeUnfold)
         self.layout.addWidget(self.negativeButton, 7, 0)
 
         # list for undoing: (unfold matriz, nyquist_vel)
         self.unfoldList = collections.deque(maxlen=30)
-        self.foldButton = QtGui.QPushButton("Fold Back")
+        self.foldButton = QtWidgets.QPushButton("Fold Back")
         self.foldButton.clicked.connect(self.foldBack)
         self.layout.addWidget(self.foldButton, 8, 0)
 
-        self.buttonHelp = QtGui.QPushButton("Help")
+        self.buttonHelp = QtWidgets.QPushButton("Help")
         self.buttonHelp.setToolTip("About using Manual Unfold")
         self.buttonHelp.clicked.connect(self._displayHelp)
         self.layout.addWidget(self.buttonHelp, 9, 0)
 
         #empty space at the bottom
-        self.layout.addItem(QtGui.QSpacerItem(
-            0, 0, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding),
+        self.layout.addItem(QtWidgets.QSpacerItem(
+            0, 0, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding),
                             10, 0)
 
 

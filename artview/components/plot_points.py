@@ -8,15 +8,19 @@ import numpy as np
 import os
 import pyart
 
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as \
-    NavigationToolbar
+from matplotlib.backends import pylab_setup
+backend = pylab_setup()[0]
+FigureCanvasQTAgg = backend.FigureCanvasQTAgg
+NavigationToolbar = backend.NavigationToolbar2QT
+#from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
+#from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as \
+#    NavigationToolbar
 from matplotlib.figure import Figure
 from matplotlib.colors import Normalize as mlabNormalize
 from matplotlib.colorbar import ColorbarBase as mlabColorbarBase
 from matplotlib.pyplot import cm
 
-from ..core import Variable, Component, common, VariableChoose, QtGui, QtCore
+from ..core import Variable, Component, common, VariableChoose, QtWidgets, QtCore
 
 # Save image file type and DPI (resolution)
 IMAGE_EXT = 'png'
@@ -135,10 +139,10 @@ class PointsDisplay(Component):
     def LaunchGUI(self):
         '''Launches a GUI interface.'''
         # Create layout
-        self.layout = QtGui.QVBoxLayout()
+        self.layout = QtWidgets.QVBoxLayout()
 
         # Create the widget
-        self.central_widget = QtGui.QWidget()
+        self.central_widget = QtWidgets.QWidget()
         self.setCentralWidget(self.central_widget)
         self._set_figure_canvas()
 
@@ -249,10 +253,10 @@ class PointsDisplay(Component):
     def _fill_histogram_menu(self):
         '''Create the Display Options Button menu.'''
 
-        self.dispButton = QtGui.QPushButton("Display Options")
+        self.dispButton = QtWidgets.QPushButton("Display Options")
         self.dispButton.setToolTip("Adjust display properties")
         self.dispButton.setFocusPolicy(QtCore.Qt.NoFocus)
-        dispmenu = QtGui.QMenu(self)
+        dispmenu = QtWidgets.QMenu(self)
         dispLimits = self.displayMenu.addAction("Adjust Display Limits")
         dispLimits.setToolTip("Set data, X, and Y range limits")
 #        dispTitle = dispmenu.addAction("Change Title")
@@ -450,9 +454,9 @@ class PointsDisplay(Component):
                 for stat in SelectRegionstats:
                     text += ("<i>%s</i>: %5.2f<br>" %
                              (stat, SelectRegionstats[stat]))
-                self.statistics = QtGui.QDialog()
-                layout = QtGui.QGridLayout(self.statistics)
-                self.statistics = QtGui.QTextEdit("")
+                self.statistics = QtWidgets.QDialog()
+                layout = QtWidgets.QGridLayout(self.statistics)
+                self.statistics = QtWidgets.QTextEdit("")
                 self.statistics.setAcceptRichText(True)
                 self.statistics.setReadOnly(True)
                 self.statistics.setText(text)
@@ -539,7 +543,7 @@ class PointsDisplay(Component):
     def _savefile(self, PTYPE=IMAGE_EXT):
         '''Save the current display using PyQt dialog interface.'''
         file_choices = "PNG (*.png)|*.png"
-        path = unicode(QtGui.QFileDialog.getSaveFileName(
+        path = unicode(QtWidgets.QFileDialog.getSaveFileName(
             self, 'Save file', ' ', file_choices))
         if path:
             self.canvas.print_figure(path, dpi=DPI)
@@ -547,7 +551,7 @@ class PointsDisplay(Component):
 
     def openTable(self):
         '''Open a saved table of SelectRegion points from a CSV file.'''
-        path = QtGui.QFileDialog.getOpenFileName(
+        path = QtWidgets.QFileDialog.getOpenFileName(
             self, 'Open File', '', 'CSV(*.csv)')
         if path == '':
             return
@@ -561,7 +565,7 @@ class PointsDisplay(Component):
             fsuggest = ('SelectRegion_' + self.Vfield.value + '_' +
                         str(points.axes['x_disp']['data'][:].mean()) + '_' +
                         str(points.axes['y_disp']['data'][:].mean())+'.csv')
-            path = QtGui.QFileDialog.getSaveFileName(
+            path = QtWidgets.QFileDialog.getSaveFileName(
                 self, 'Save CSV Table File', fsuggest, 'CSV(*.csv)')
             if not path.isEmpty():
                 write_points_csv(path, points)

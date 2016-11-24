@@ -15,7 +15,7 @@ import numpy as np
 import pyart
 import time
 
-from ..core import Component, Variable, common, QtGui, QtCore
+from ..core import Component, Variable, common, QtWidgets, QtCore, QtGui
 
 class FileNavigator(Component):
     '''
@@ -63,9 +63,9 @@ class FileNavigator(Component):
             instance.
         '''
         super(FileNavigator, self).__init__(name=name, parent=parent)
-        self.central_widget = QtGui.QWidget()
+        self.central_widget = QtWidgets.QWidget()
         self.setCentralWidget(self.central_widget)
-        self.layout = QtGui.QGridLayout(self.central_widget)
+        self.layout = QtWidgets.QGridLayout(self.central_widget)
 
         if pathDir is None:
             pathDir = os.getcwd()
@@ -132,58 +132,58 @@ class FileNavigator(Component):
             [parentdir, 'icons',
             "save_icon.png"]))
 
-        self.configButton = QtGui.QPushButton(QtGui.QIcon(pixconfig),"")
+        self.configButton = QtWidgets.QPushButton(QtGui.QIcon(pixconfig),"")
         self.layout.addWidget(self.configButton, 0, 0)
 
-        self.act_first = QtGui.QToolButton()
+        self.act_first = QtWidgets.QToolButton()
         self.act_first.setIcon(QtGui.QIcon(pixfirst))
         self.act_first.clicked.connect(self.goto_first_file)
         self.layout.addWidget(self.act_first, 0, 1)
 
-        self.act_prev = QtGui.QToolButton()
+        self.act_prev = QtWidgets.QToolButton()
         self.act_prev.setIcon(QtGui.QIcon(pixprev))
         self.act_prev.clicked.connect(self.goto_prev_file)
         self.layout.addWidget(self.act_prev, 0, 2)
 
-        self.act_next = QtGui.QToolButton()
+        self.act_next = QtWidgets.QToolButton()
         self.act_next.setIcon(QtGui.QIcon(pixnext))
         self.act_next.clicked.connect(self.goto_next_file)
         self.layout.addWidget(self.act_next, 0, 3)
 
-        self.act_last = QtGui.QToolButton()
+        self.act_last = QtWidgets.QToolButton()
         self.act_last.setIcon(QtGui.QIcon(pixlast))
         self.act_last.clicked.connect(self.goto_last_file)
         self.layout.addWidget(self.act_last, 0, 4)
 
-        self.configMenu = QtGui.QMenu()
+        self.configMenu = QtWidgets.QMenu()
         self.configButton.setMenu(self.configMenu)
         self.directoryMenu = self.configMenu.addMenu("Directory:")
         self.directoryAction = self.directoryMenu.addAction("")
         self.fileMenu = self.configMenu.addMenu("File:")
         self.fileAction = self.fileMenu.addAction("")
 
-        action = QtGui.QAction("Open", self,
+        action = QtWidgets.QAction("Open", self,
                                triggered=lambda: self._openfile())
         self.configMenu.addAction(action)
 
-        self.saveRadarAction = QtGui.QAction("Save Radar", self,
+        self.saveRadarAction = QtWidgets.QAction("Save Radar", self,
                                              triggered=self.saveRadar)
         if self.Vradar.value is None:
             self.saveRadarAction.setEnabled(False)
         self.configMenu.addAction(self.saveRadarAction)
 
-        self.saveGridAction = QtGui.QAction("Save Grid", self,
+        self.saveGridAction = QtWidgets.QAction("Save Grid", self,
                                             triggered=self.saveGrid)
         if self.Vgrid.value is None:
             self.saveGridAction.setEnabled(False)
         self.configMenu.addAction(self.saveGridAction)
 
-        action = QtGui.QAction("Help", self,
+        action = QtWidgets.QAction("Help", self,
                                triggered=self._show_help)
         self.configMenu.addAction(action)
 
-        self.layout.addItem(QtGui.QSpacerItem(
-            0, 0, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding),
+        self.layout.addItem(QtWidgets.QSpacerItem(
+            0, 0, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding),
                             0, 5)
 
     ######################
@@ -286,10 +286,13 @@ class FileNavigator(Component):
         '''Open a file via a file selection window.'''
         if filename is None:
             dirIn = str(self.directoryAction.text())
-            filename = str(QtGui.QFileDialog.getOpenFileName(
-                None, 'Open file', dirIn))
+            filename = QtWidgets.QFileDialog.getOpenFileName(
+                None, 'Open file', dirIn)
+            if isinstance(filename, tuple): # PyQt5
+                filename = filename[0]
             if filename == '':
                 return
+            filename = str(filename)
             self.filename = filename
         print("Opening file " + filename)
 
@@ -370,9 +373,9 @@ class FileNavigator(Component):
         '''Replace current radar, warning for data lost.'''
         if hasattr(self.Vradar.value, 'changed') and self.Vradar.value.changed:
             resp = common.ShowQuestionYesNo("Save changes before moving to next File?")
-            if resp == QtGui.QMessageBox.Yes:
+            if resp == QtWidgets.QMessageBox.Yes:
                 self.Vradar.change(radar)
-            elif resp != QtGui.QMessageBox.No:
+            elif resp != QtWidgets.QMessageBox.No:
                 return
         else:
             self.Vradar.change(radar)
@@ -381,9 +384,9 @@ class FileNavigator(Component):
         '''Replace current grid, warning for data lost.'''
         if hasattr(self.Vgrid.value, 'changed') and self.Vgrid.value.changed:
             resp = common.ShowQuestionYesNo("Save changes before moving to next File?")
-            if resp == QtGui.QMessageBox.Yes:
+            if resp == QtWidgets.QMessageBox.Yes:
                 self.Vgrid.change(grid)
-            elif resp != QtGui.QMessageBox.No:
+            elif resp != QtWidgets.QMessageBox.No:
                 return
         else:
             self.Vgrid.change(grid)
@@ -398,8 +401,10 @@ class FileNavigator(Component):
             Optional parameter to allow access from
             other ARTView plugins, etc.
         '''
-        filename = QtGui.QFileDialog.getSaveFileName(
+        filename = QtWidgets.QFileDialog.getSaveFileName(
             self, 'Save Radar File', str(self.directoryAction.text()))
+        if isinstance(filename, tuple): # PyQt5
+            filename = filename[0]
         filename = str(filename)
         if filename == '' or self.Vradar.value is None:
             return
@@ -410,8 +415,10 @@ class FileNavigator(Component):
     def saveGrid(self):
         '''Open a dialog box to save grid file.'''
 
-        filename = QtGui.QFileDialog.getSaveFileName(
+        filename = QtWidgets.QFileDialog.getSaveFileName(
             self, 'Save grid File', str(self.directoryAction.text()))
+        if isinstance(filename, tuple): # PyQt5
+            filename = filename[0]
         filename = str(filename)
         if filename == '' or self.Vgrid.value is None:
             return
@@ -449,9 +456,9 @@ class FileNavigator_old(Component):
             If None, then Qt owns, otherwise associated w/ parent PyQt instance
         '''
         super(FileNavigator_old, self).__init__(name=name, parent=parent)
-        self.central_widget = QtGui.QWidget()
+        self.central_widget = QtWidgets.QWidget()
         self.setCentralWidget(self.central_widget)
-        self.layout = QtGui.QGridLayout(self.central_widget)
+        self.layout = QtWidgets.QGridLayout(self.central_widget)
 
         # Set up signal, so that DISPLAY can react to
         # changes in radar or gatefilter shared variables
@@ -477,7 +484,7 @@ class FileNavigator_old(Component):
         self.connectAllVariables()
 
         # Set up the Display layout
-        self.generalLayout = QtGui.QVBoxLayout()
+        self.generalLayout = QtWidgets.QVBoxLayout()
         self.generalLayout.addWidget(self.createNavToolbar())
         self.generalLayout.addWidget(self.createInfoUI())
         self.generalLayout.addWidget(self.createHelpUI())
@@ -497,26 +504,26 @@ class FileNavigator_old(Component):
 
     def createNavButtonUI(self):
         '''Mount the file navigation buttons.'''
-        groupBox = QtGui.QGroupBox("File Navigation")
-        gBox_layout = QtGui.QGridLayout()
+        groupBox = QtWidgets.QGroupBox("File Navigation")
+        gBox_layout = QtWidgets.QGridLayout()
 
-        self.firstbutton = QtGui.QPushButton("First")
+        self.firstbutton = QtWidgets.QPushButton("First")
         self.firstbutton.setToolTip("Load first file in directory")
         self.firstbutton.clicked.connect(self.goto_first_file)
         gBox_layout.addWidget(self.firstbutton, 0, 0, 1, 1)
 
-        self.prevbutton = QtGui.QPushButton("Previous")
+        self.prevbutton = QtWidgets.QPushButton("Previous")
         self.prevbutton.setToolTip("Load previous file")
         self.prevbutton.setIconSize(QtCore.QSize(32, 32))
         self.prevbutton.clicked.connect(self.goto_prev_file)
         gBox_layout.addWidget(self.prevbutton, 0, 1, 1, 1)
 
-        self.nextbutton = QtGui.QPushButton("Next")
+        self.nextbutton = QtWidgets.QPushButton("Next")
         self.nextbutton.setToolTip("Load next file")
         self.nextbutton.clicked.connect(self.goto_next_file)
         gBox_layout.addWidget(self.nextbutton, 0, 2, 1, 1)
 
-        self.lastbutton = QtGui.QPushButton("Last")
+        self.lastbutton = QtWidgets.QPushButton("Last")
         self.lastbutton.setToolTip("Load last file in directory")
         self.lastbutton.clicked.connect(self.goto_last_file)
         gBox_layout.addWidget(self.lastbutton, 0, 3, 1, 1)
@@ -529,10 +536,10 @@ class FileNavigator_old(Component):
         '''Mount the file navigation toolbar.'''
         parentdir = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                  os.pardir))
-        groupBox = QtGui.QGroupBox("File Navigation")
-        gBox_layout = QtGui.QGridLayout()
+        groupBox = QtWidgets.QGroupBox("File Navigation")
+        gBox_layout = QtWidgets.QGridLayout()
 
-        self.navtoolbar = QtGui.QToolBar()
+        self.navtoolbar = QtWidgets.QToolBar()
         pixfirst = QtGui.QPixmap(os.sep.join([parentdir, 'icons',
                                               "arrow_go_first_icon.png"]))
         pixprev = QtGui.QPixmap(os.sep.join([parentdir, 'icons',
@@ -565,14 +572,14 @@ class FileNavigator_old(Component):
 
     def createInfoUI(self):
         '''Mount the information text.'''
-        groupBox = QtGui.QGroupBox("File Information")
-        gBox_layout = QtGui.QGridLayout()
+        groupBox = QtWidgets.QGroupBox("File Information")
+        gBox_layout = QtWidgets.QGridLayout()
 
-        self.infodir = QtGui.QLabel("Directory:")
+        self.infodir = QtWidgets.QLabel("Directory:")
         self.infodir.setStyleSheet('font: italic 12px')
         gBox_layout.addWidget(self.infodir, 0, 0, 1, 1)
 
-        self.infofile = QtGui.QLabel("File:")
+        self.infofile = QtWidgets.QLabel("File:")
         self.infofile.setStyleSheet('font: italic 12px')
         gBox_layout.addWidget(self.infofile, 1, 0, 1, 1)
 
@@ -582,8 +589,8 @@ class FileNavigator_old(Component):
 
     def createHelpUI(self):
         '''Mount the help text.'''
-        groupBox = QtGui.QGroupBox("Help")
-        gBox_layout = QtGui.QGridLayout()
+        groupBox = QtWidgets.QGroupBox("Help")
+        gBox_layout = QtWidgets.QGridLayout()
 
         helptext = ("Use Icons above for navigation.<br>"
                     "By linking/unliking the radar variables in the<br>"
@@ -591,7 +598,7 @@ class FileNavigator_old(Component):
                     "you can<br>"
                     "control which Display is navigated."
                     )
-        self.help = QtGui.QLabel(helptext)
+        self.help = QtWidgets.QLabel(helptext)
         self.infodir.setStyleSheet('font: italic 12px')
         gBox_layout.addWidget(self.help, 0, 0, 1, 1)
 

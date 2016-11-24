@@ -7,7 +7,7 @@ This is the default start for ARTView
 import os
 import sys
 
-from ..core import Variable, QtGui, QtCore, componentsList
+from ..core import Variable, QtGui, QtCore, QtWidgets, componentsList
 from ..components import RadarDisplay, Menu, LevelButtonWindow, \
     LinkSharedVariables, SelectRegion, Window, FileNavigator, \
     LayoutComponent
@@ -39,6 +39,7 @@ def run(DirIn=None, filename=None, field=None):
         DirIn = os.getcwd()
 
     menu = LayoutComponent(name="Menu")
+    menu.layout.setContentsMargins(0,0,0,0)
     navigator = FileNavigator(DirIn, filename)
 
     menu.layout.addWidget(navigator, 0, 0)
@@ -74,6 +75,7 @@ def run(DirIn=None, filename=None, field=None):
 
     window.layoutTree[(0,1,0)].addTab(control,control.name)
     window.layoutTree[(0,0)].addTab(menu,menu.name)
+    #window.layoutTree[(0,0)].flag = True
     window.layoutTree[(0,0)].tabBar().setVisible(False)
     window.layoutTree[(0,1,1)].addTab(plot1,plot1.name)
     window.layoutTree[(0,1,1)].addTab(plot2,plot2.name)
@@ -86,7 +88,7 @@ def run(DirIn=None, filename=None, field=None):
     window.layoutTree[(0,1,1)].sizePolicy().setVerticalStretch(3)
 
     window.showMaximized()
-    geom =  QtGui.QDesktopWidget().screenGeometry()
+    geom =  QtWidgets.QDesktopWidget().screenGeometry()
     window.layoutTree[(0,)].setSizes([window.layoutTree[(0,0)].minimumSize().height(),geom.height()-window.layoutTree[(0,0)].minimumSize().height()])
     window.layoutTree[(0,1)].setSizes([window.layoutTree[(0,1,0)].minimumSize().width(),geom.width()-window.layoutTree[(0,1,0)].minimumSize().width()])
 

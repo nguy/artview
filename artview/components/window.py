@@ -57,7 +57,7 @@ class Window(Component):
         self.widgets = {}
         self.currentMindex = ()
         self.layoutTree = {}
-        root_spliter = QtGui.QSplitter(self)
+        root_spliter = QtWidgets.QSplitter(self)
         self.setCentralWidget(root_spliter)
         self.layoutTree[()] = root_spliter
         root_spliter.setOrientation(QtCore.Qt.Horizontal)
@@ -82,6 +82,7 @@ class Window(Component):
         if midx is None:
             midx = self.currentMindex
         self.layoutTree[midx].addTab(component, component.name)
+        self.layoutTree[midx].tabBar().setVisible(True)
 
     def splitVertical(self):
         if (self.currentMindex is None or
@@ -90,7 +91,7 @@ class Window(Component):
             self.addView()
             return
         widget = self.layoutTree[self.currentMindex]
-        splitter = QtGui.QSplitter()
+        splitter = QtWidgets.QSplitter()
         splitter.setOrientation(QtCore.Qt.Horizontal)
         splitter.insertWidget(0, widget)
         self.layoutTree[self.currentMindex] = splitter
@@ -106,7 +107,7 @@ class Window(Component):
             self.addView()
             return
         widget = self.layoutTree[self.currentMindex]
-        splitter = QtGui.QSplitter()
+        splitter = QtWidgets.QSplitter()
         splitter.setOrientation(QtCore.Qt.Vertical)
         splitter.insertWidget(0, widget)
         self.layoutTree[self.currentMindex] = splitter
@@ -117,7 +118,7 @@ class Window(Component):
 
     def addView(self):
         widget = View()
-        QtCore.QObject.connect(widget, QtCore.SIGNAL("turnCurrent"), self.widgetTurnCurrent)
+        widget.turnCurrent.connect(self.widgetTurnCurrent)
 
         if self.currentMindex is None:
             self.currentMindex = ()
@@ -133,7 +134,7 @@ class Window(Component):
         self.removeMindex(self.currentMindex)
 
     def removeMindex(self, midx):
-        print "close:  ", midx
+        print("close:  ", midx)
         if midx == ():
             self.setCurrentMindex(())
             return
@@ -141,12 +142,12 @@ class Window(Component):
         widget.setParent(None)
         widget.close()
         widget.deleteLater()
-        print midx[:-1], "count  ", self.layoutTree[midx[:-1]].count()
+        print(midx[:-1], "count  ", self.layoutTree[midx[:-1]].count())
         if self.layoutTree[midx[:-1]].count() == 0:
             self.removeMindex(midx[:-1])
         else:
             l = [i for i in self.layoutTree if i[:-1]==midx[:-1] and i!=midx and i!=()]
-            print l
+            print(l)
             if l:
                 self.setCurrentMindex(l[0])
             else:
@@ -172,8 +173,8 @@ class Window(Component):
             bar.setVisible(True)
 
     def widgetTurnCurrent(self, widget):
-        for midx,w in self.layoutTree.iteritems():
-            if w == widget:
+        for midx in self.layoutTree.keys():
+            if self.layoutTree[midx] == widget:
                 self.setCurrentMindex(midx)
                 return
 
@@ -181,7 +182,8 @@ class Window(Component):
         if midx == self.currentMindex:
             return
         self.currentMindex = midx
-        for key, widget in self.layoutTree.iteritems():
+        for key in self.layoutTree.keys():
+            widget = self.layoutTree[key]
             if key == midx:
                 widget.isCurrent = True
                 widget.update()
@@ -245,7 +247,7 @@ class Window(Component):
         layoutmenu.addAction('Close Inactive Views', self.closeInactiveView)
 
 
-        action = QtGui.QAction('New Window', self)
+        action = QtWidgets.QAction('New Window', self)
         action.triggered.connect(self.addWindow)
         layoutmenu.addAction(action)
 
@@ -254,19 +256,19 @@ class Window(Component):
         menu = self.menubar.addMenu('ARTView')
 
         # Create About ARTView action
-        aboutApp = QtGui.QAction('ARTView...', self)
+        aboutApp = QtWidgets.QAction('ARTView...', self)
         aboutApp.setStatusTip('About ARTview')
         aboutApp.triggered.connect(self._about)
         menu.addAction(aboutApp)
 
         # Create Plugin Help action
-        pluginHelp = QtGui.QAction('Plugin Help', self)
+        pluginHelp = QtWidgets.QAction('Plugin Help', self)
         pluginHelp.setStatusTip('More information about Plugins')
         pluginHelp.triggered.connect(self._get_pluginhelp)
         menu.addAction(pluginHelp)
 
         # Create Close ARTView action
-        exitApp = QtGui.QAction('Close', self)
+        exitApp = QtWidgets.QAction('Close', self)
         exitApp.setShortcut('Ctrl+Q')
         exitApp.setStatusTip('Exit ARTview')
         exitApp.triggered.connect(self.close)
@@ -371,7 +373,8 @@ class Window(Component):
         common.ShowLongText(text)
 
 
-class View(QtGui.QTabWidget):
+class View(QtWidgets.QTabWidget):
+    turnCurrent = QtCore.pyqtSignal(QtWidgets.QTabWidget, name="turnCurrent")
     isCurrent = False
     fix = False
 
@@ -386,11 +389,11 @@ class View(QtGui.QTabWidget):
         self.setTabsClosable(True)
         self.tabCloseRequested.connect(self.closeTab)
         #self.setMinimumSize(80,40)
-        self.setSizePolicy(QtGui.QSizePolicy.Maximum,QtGui.QSizePolicy.Maximum)
+        self.setSizePolicy(QtWidgets.QSizePolicy.Maximum,QtWidgets.QSizePolicy.Maximum)
         self.show()
 
     def setCurrent(self):
-        self.emit(QtCore.SIGNAL("turnCurrent"), self)
+        self.turnCurrent.emit(self)
         self.isCurrent = True
         self.update()
 
@@ -444,7 +447,7 @@ class View(QtGui.QTabWidget):
         mimeData.setData("text/artview",self.widget(idx).__repr__())
         drag = QtGui.QDrag(self)
         drag.setMimeData(mimeData)
-        drag.start(QtCore.Qt.MoveAction)
+        drag.exec_(QtCore.Qt.MoveAction)
         if drag.target() == None:
             window = Window()
             window.addComponent(self.widget(idx))
@@ -459,9 +462,13 @@ class View(QtGui.QTabWidget):
     def dropEvent(self, event):
         mimeData = event.mimeData()
         if mimeData and event.source() != self:
-            text = str(mimeData.data("text/artview"))
+            text = mimeData.data("text/artview")
+            try:
+                text = str(text, "utf-8") # python3
+            except:
+                text = str(text)
             d = dict([(c.__repr__(),c) for c in componentsList])
-            if text in d:
+            if text in d.keys():
                 widget = d[text]
                 self.addTab(widget,widget.name)
                 self.setCurrent()
@@ -488,8 +495,8 @@ class View(QtGui.QTabWidget):
 
         painter = QtGui.QPainter(self)
         #painter.setBackgroundMode(1)
-        option = QtGui.QStyleOptionButton()
-        #option2 = QtGui.QStyleOptionFocusRect()
+        option = QtWidgets.QStyleOptionButton()
+        #option2 = QtWidgets.QStyleOptionFocusRect()
         option.initFrom(self)
         #option2.initFrom(self)
 
@@ -499,26 +506,26 @@ class View(QtGui.QTabWidget):
             option.state |= 0x01000000
             option.state |= style.State_MouseOver
             option.state |= style.State_Raised
-            style.drawControl(QtGui.QStyle.CE_PushButton, option, painter, self)
+            style.drawControl(QtWidgets.QStyle.CE_PushButton, option, painter, self)
             #option2.backgroundColor = QtGui.QColor(QtCore.Qt.green)
-            #style.drawPrimitive(QtGui.QStyle.PE_FrameFocusRect, option2, painter, self)
+            #style.drawPrimitive(QtWidgets.QStyle.PE_FrameFocusRect, option2, painter, self)
         else:
             option.state &= not style.State_HasFocus
             option.state &= not 0x01000000
             option.state &= not style.State_MouseOver
             option.state |= style.State_Sunken
             #option.background = PyGui.QPalette.Background
-            style.drawControl(QtGui.QStyle.CE_PushButton, option, painter, self)
+            style.drawControl(QtWidgets.QStyle.CE_PushButton, option, painter, self)
         if self.count() == 0:
             painter.drawText(option.rect,QtCore.Qt.AlignCenter,"Move Tabs \n in Here")
 
 
-class TabBar(QtGui.QTabBar):
+class TabBar(QtWidgets.QTabBar):
     dragStart = QtCore.pyqtSignal(int)
     clicked = QtCore.pyqtSignal()
 
     def __init__(self):
-        super(QtGui.QTabBar, self).__init__()
+        super(QtWidgets.QTabBar, self).__init__()
         self.pos = None
 
     def tabInserted(self, index):
@@ -532,12 +539,12 @@ class TabBar(QtGui.QTabBar):
 
     def mousePressEvent(self, mouseEvent):
         self.pos = mouseEvent.pos()
-        QtGui.QTabBar.mousePressEvent(self, mouseEvent)
+        QtWidgets.QTabBar.mousePressEvent(self, mouseEvent)
         self.clicked.emit()
 
     def mouseReleaseEvent(self, mouseEvent):
         self.pos = None
-        QtGui.QTabBar.mouseReleaseEvent(self, mouseEvent)
+        QtWidgets.QTabBar.mouseReleaseEvent(self, mouseEvent)
 
     def mouseMoveEvent(self, mouseEvent):
         if self.pos is not None:
@@ -565,7 +572,6 @@ class LayoutComponent(Component):
         '''
         super(LayoutComponent, self).__init__(name=name, parent=parent)
         widget = QtWidgets.QWidget()
-        self.layout = QtGui.QGridLayout()
+        self.layout = QtWidgets.QGridLayout()
         widget.setLayout(self.layout)
         self.setCentralWidget(widget)
-

@@ -6,7 +6,7 @@ Driver function that creates ARTView display.
 import os
 import sys
 
-from ..core import Variable, QtGui, QtCore
+from ..core import Variable, QtWidgets, QtCore
 from ..components import RadarDisplay, Menu, LinkSharedVariables, SelectRegion
 from ._common import _add_all_advanced_tools, _parse_dir, _parse_field
 from ..plugins import ManualUnfold
@@ -18,7 +18,7 @@ def run(DirIn=None, filename=None, field=None):
     """
     DirIn = _parse_dir(DirIn)
 
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
 
     # start Menu and initiate Vradar
     menu = Menu(DirIn, filename, mode=("Radar",), name="Menu")
@@ -57,7 +57,7 @@ def run(DirIn=None, filename=None, field=None):
     unfold.show()
 
     # Replace in Screen
-    desktop_rect = QtGui.QDesktopWidget().screenGeometry()
+    desktop_rect = QtWidgets.QDesktopWidget().screenGeometry()
 
     height = desktop_rect.height()
     width = desktop_rect.width()

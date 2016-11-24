@@ -5,9 +5,10 @@ Common routines run throughout ARTView.
 """
 
 # Load the needed packages
-from .core import QtGui, QtCore
+from .core import QtWidgets, QtCore, QtGui
 import numpy as np
-import os, glob
+import os
+import glob
 
 ########################
 # Dialog methods #
@@ -23,9 +24,9 @@ def ShowWarning(msg):
     msg - string
         Message to display in MessageBox.
     '''
-    Dialog = QtGui.QDialog()
-    flags = QtGui.QMessageBox.StandardButton()
-    response = QtGui.QMessageBox.warning(Dialog, "Warning!", msg, flags)
+    Dialog = QtWidgets.QDialog()
+    flags = QtWidgets.QMessageBox.StandardButton()
+    response = QtWidgets.QMessageBox.warning(Dialog, "Warning!", msg, flags)
     if response == 0:
         print(msg)
     else:
@@ -43,16 +44,17 @@ def ShowQuestion(msg):
     msg - string
         Message to display in MessageBox.
     '''
-    Dialog = QtGui.QDialog()
-    response = QtGui.QMessageBox.question(
+    Dialog = QtWidgets.QDialog()
+    response = QtWidgets.QMessageBox.question(
         Dialog, "Question", msg,
-        QtGui.QMessageBox.Ok, QtGui.QMessageBox.Cancel)
-    if response == QtGui.QMessageBox.Ok:
+        QtWidgets.QMessageBox.Ok, QtWidgets.QMessageBox.Cancel)
+    if response == QtWidgets.QMessageBox.Ok:
         print(msg)
     else:
         print("Warning Discarded!")
 
     return response
+
 
 def ShowQuestionYesNo(msg):
     '''
@@ -63,11 +65,11 @@ def ShowQuestionYesNo(msg):
     msg - string
         Message to display in MessageBox.
     '''
-    Dialog = QtGui.QDialog()
-    response = QtGui.QMessageBox.question(
+    Dialog = QtWidgets.QDialog()
+    response = QtWidgets.QMessageBox.question(
         Dialog, "Question", msg,
-        QtGui.QMessageBox.Yes, QtGui.QMessageBox.No,
-        QtGui.QMessageBox.Cancel)
+        QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No,
+        QtWidgets.QMessageBox.Cancel)
 
     return response
 
@@ -81,10 +83,10 @@ def ShowLongText(msg, modal=True, set_html=False):
     msg - string
         Message to display in MessageBox.
     '''
-    Dialog = QtGui.QDialog()
+    Dialog = QtWidgets.QDialog()
     Dialog.resize(600, 400)
-    layout = QtGui.QGridLayout(Dialog)
-    text = QtGui.QTextEdit("")
+    layout = QtWidgets.QGridLayout(Dialog)
+    text = QtWidgets.QTextEdit("")
     layout.addWidget(text, 0, 0)
     text.setAcceptRichText(True)
     text.setReadOnly(True)
@@ -110,10 +112,10 @@ def ShowLongTextHyperlinked(msg, modal=True):
     msg - string
         Message to display in MessageBox.
     '''
-    Dialog = QtGui.QDialog()
+    Dialog = QtWidgets.QDialog()
 #    Dialog.resize(600, 400)
-    layout = QtGui.QGridLayout(Dialog)
-    text = QtGui.QLabel("")
+    layout = QtWidgets.QGridLayout(Dialog)
+    text = QtWidgets.QLabel("")
     text.setText(msg)
     text.setOpenExternalLinks(True)
     text.setWordWrap(True)
@@ -145,12 +147,12 @@ def string_dialog(stringIn, title, msg):
     The value that is then entered is returned via the
     stringOut and entry variables.
     '''
-    Dialog = QtGui.QDialog()
+    Dialog = QtWidgets.QDialog()
     if stringIn is None:
         old_val = ''
     else:
         old_val = stringIn
-    stringOut, entry = QtGui.QInputDialog.getText(
+    stringOut, entry = QtWidgets.QInputDialog.getText(
         Dialog, title, msg, 0, old_val)
 
     return stringOut, entry
@@ -181,34 +183,34 @@ def string_dialog_with_reset(stringIn, title, msg, reset=None):
         old_val = stringIn
 
     # start dialog
-    Dialog = QtGui.QDialog()
+    Dialog = QtWidgets.QDialog()
     Dialog.setWindowTitle(title)
-    gridLayout = QtGui.QGridLayout(Dialog)
+    gridLayout = QtWidgets.QGridLayout(Dialog)
     # add mensage and edit line
-    gridLayout.addWidget(QtGui.QLabel(msg), 0, 0, 1, 1)
-    lineEdit = QtGui.QLineEdit(old_val, Dialog)
+    gridLayout.addWidget(QtWidgets.QLabel(msg), 0, 0, 1, 1)
+    lineEdit = QtWidgets.QLineEdit(old_val, Dialog)
     gridLayout.addWidget(lineEdit, 1, 0, 1, 1)
     # add buttons
-    buttonBox = QtGui.QDialogButtonBox(Dialog)
+    buttonBox = QtWidgets.QDialogButtonBox(Dialog)
     buttonBox.setOrientation(QtCore.Qt.Horizontal)
     if reset is not None:
-        buttons = (QtGui.QDialogButtonBox.Reset |
-                   QtGui.QDialogButtonBox.Cancel |
-                   QtGui.QDialogButtonBox.Ok)
+        buttons = (QtWidgets.QDialogButtonBox.Reset |
+                   QtWidgets.QDialogButtonBox.Cancel |
+                   QtWidgets.QDialogButtonBox.Ok)
     else:
-        buttons = (QtGui.QDialogButtonBox.Cancel |
-                   QtGui.QDialogButtonBox.Ok)
+        buttons = (QtWidgets.QDialogButtonBox.Cancel |
+                   QtWidgets.QDialogButtonBox.Ok)
     buttonBox.setStandardButtons(buttons)
     gridLayout.addWidget(buttonBox, 2, 0, 1, 1)
 
     # handel click signal
     def handleClick(button):
         enum = buttonBox.standardButton(button)
-        if enum == QtGui.QDialogButtonBox.Reset:
+        if enum == QtWidgets.QDialogButtonBox.Reset:
             lineEdit.setText(reset)
-        elif enum == QtGui.QDialogButtonBox.Cancel:
+        elif enum == QtWidgets.QDialogButtonBox.Cancel:
             Dialog.done(0)
-        elif enum == QtGui.QDialogButtonBox.Ok:
+        elif enum == QtWidgets.QDialogButtonBox.Ok:
             Dialog.done(1)
     buttonBox.clicked.connect(handleClick)
 
@@ -292,7 +294,7 @@ def get_options(options, values):
 ########################
 
 
-class _SimplePluginStart(QtGui.QDialog):
+class _SimplePluginStart(QtWidgets.QDialog):
     '''
     Dialog Class for graphical Start of Display,
     to be used in guiStart.
@@ -302,7 +304,7 @@ class _SimplePluginStart(QtGui.QDialog):
         '''Initialize the class to create the interface.'''
         super(_SimplePluginStart, self).__init__()
         self.result = {}
-        self.layout = QtGui.QGridLayout(self)
+        self.layout = QtWidgets.QGridLayout(self)
         self._name = name
         self.setWindowTitle(name)
         # set window as modal
@@ -311,20 +313,20 @@ class _SimplePluginStart(QtGui.QDialog):
         self.setupUi()
 
     def setupUi(self):
-        self.layout.addWidget(QtGui.QLabel("Name"), 0, 0)
-        self.name = QtGui.QLineEdit(self._name)
+        self.layout.addWidget(QtWidgets.QLabel("Name"), 0, 0)
+        self.name = QtWidgets.QLineEdit(self._name)
         self.layout.addWidget(self.name, 0, 1)
 
-        self.independent = QtGui.QCheckBox("Independent Window")
+        self.independent = QtWidgets.QCheckBox("Independent Window")
         self.independent.setChecked(True)
         self.layout.addWidget(self.independent, 1, 1, 1, 1)
 
-        self.closeButton = QtGui.QPushButton("Start")
+        self.closeButton = QtWidgets.QPushButton("Start")
         self.closeButton.clicked.connect(self.closeDialog)
         self.layout.addWidget(self.closeButton, 2, 0, 1, 2)
 
     def closeDialog(self):
-        self.done(QtGui.QDialog.Accepted)
+        self.done(QtWidgets.QDialog.Accepted)
 
     def startDisplay(self):
         self.exec_()
@@ -338,11 +340,11 @@ class _SimplePluginStart(QtGui.QDialog):
 ########################
 
 
-class CreateTable(QtGui.QTableWidget):
+class CreateTable(QtWidgets.QTableWidget):
     """Creates a custom table widget."""
     def __init__(self, points, name="Table",
                  textcolor="black", bgcolor="gray", parent=None, *args):
-        QtGui.QTableWidget.__init__(self, *args)
+        QtWidgets.QTableWidget.__init__(self, *args)
         self.points = points
         self.setSelectionMode(self.ContiguousSelection)
         self.setGeometry(0, 0, 700, 400)
@@ -372,10 +374,10 @@ class CreateTable(QtGui.QTableWidget):
             # Set each cell to be a QTableWidgetItem from _process_row method
             for j, name in enumerate(colnames):
                 if name in self.points.axes:
-                    item = QtGui.QTableWidgetItem(
+                    item = QtWidgets.QTableWidgetItem(
                         "%8.3f" % self.points.axes[name]['data'][i])
                 else:
-                    item = QtGui.QTableWidgetItem(
+                    item = QtWidgets.QTableWidgetItem(
                         "%8.3f" % self.points.fields[name]['data'][i])
 
                 item.setBackgroundColor = QtGui.QColor(self.bgcolor)
@@ -409,11 +411,11 @@ def _array_stats(data):
 #   Colormap methods   #
 ########################
 
-class select_cmap(QtGui.QDialog):
+class select_cmap(QtWidgets.QDialog):
     def __init__(self):
         '''Allow the user to select a colormap.'''
         super(select_cmap, self).__init__()
-        self.layout = QtGui.QGridLayout(self)
+        self.layout = QtWidgets.QGridLayout(self)
         self.setWindowTitle("Select Colormap")
         # set window as modal
         self.setWindowModality(QtCore.Qt.ApplicationModal)
@@ -422,20 +424,20 @@ class select_cmap(QtGui.QDialog):
                                                  os.pardir))
         images = glob.glob(parentdir + "/icons/colormaps/*.png")
 
-        for i,path in enumerate(images):
+        for i, path in enumerate(images):
             name = path.split('/')[-1].split('.')[0]
-            button = QtGui.QPushButton(name)
-            self.layout.addWidget(button, 2*(i/3)+1, 2*(i%3))
-            button.clicked.connect(lambda ans,name=name: self.select(name))
-            label = QtGui.QLabel()
+            button = QtWidgets.QPushButton(name)
+            self.layout.addWidget(button, 2 * (i/3) + 1, 2 * (i % 3))
+            button.clicked.connect(lambda ans, name=name: self.select(name))
+            label = QtWidgets.QLabel()
             pixmap = QtGui.QPixmap(path)
             label.setPixmap(pixmap)
             label.setScaledContents(True)
-            self.layout.addWidget(label, 2*(i/3)+1, 2*(i%3)+1)
+            self.layout.addWidget(label, 2 * (i/3) + 1, 2 * (i % 3) + 1)
 
         self.selection = None
         self.exec_()
 
     def select(self, name):
         self.selection = name
-        self.done(QtGui.QDialog.Accepted)
+        self.done(QtWidgets.QDialog.Accepted)

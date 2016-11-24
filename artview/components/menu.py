@@ -10,7 +10,7 @@ import os
 import sys
 import glob
 
-from ..core import Variable, Component, common, QtGui, QtCore, componentsList
+from ..core import Variable, Component, common, QtWidgets, QtCore, componentsList
 
 
 class Menu(Component):
@@ -104,24 +104,28 @@ class Menu(Component):
         if event.key() == QtCore.Qt.Key_Right:
             # Menu control the file and open the radar
             resp = True
-            if hasattr(self.current_container.value, 'changed') and self.current_container.value.changed:
-                resp = common.ShowQuestionYesNo("Save changes before moving to next File?")
-                if resp == QtGui.QMessageBox.Yes:
+            if (hasattr(self.current_container.value, 'changed') and
+                self.current_container.value.changed):
+                resp = common.ShowQuestionYesNo(
+                    "Save changes before moving to next File?")
+                if resp == QtWidgets.QMessageBox.Yes:
                     self.saveCurrent()
-                elif resp != QtGui.QMessageBox.No:
+                elif resp != QtWidgets.QMessageBox.No:
                     return
             self.AdvanceFileSelect(self.fileindex + 1)
         elif event.key() == QtCore.Qt.Key_Left:
             # Menu control the file and open the radar
-            if hasattr(self.current_container.value, 'changed') and self.current_container.value.changed:
-                resp = common.ShowQuestionYesNo("Save changes before moving to next File?")
-                if resp == QtGui.QMessageBox.Yes:
+            if (hasattr(self.current_container.value, 'changed') and
+                self.current_container.value.changed):
+                resp = common.ShowQuestionYesNo(
+                    "Save changes before moving to next File?")
+                if resp == QtWidgets.QMessageBox.Yes:
                     self.saveCurrent()
-                elif resp != QtGui.QMessageBox.No:
+                elif resp != QtWidgets.QMessageBox.No:
                     return
             self.AdvanceFileSelect(self.fileindex - 1)
         else:
-            QtGui.QWidget.keyPressEvent(self, event)
+            QtWidgets.QWidget.keyPressEvent(self, event)
 
     ####################
     # GUI methods #
@@ -136,14 +140,14 @@ class Menu(Component):
 
         # Create layout
         if sys.version_info < (2, 7, 0):
-            self.central_widget = QtGui.QWidget()
+            self.central_widget = QtWidgets.QWidget()
             self.setCentralWidget(self.central_widget)
-            self.centralLayout = QtGui.QVBoxLayout(self.central_widget)
+            self.centralLayout = QtWidgets.QVBoxLayout(self.central_widget)
             self.centralLayout.setSpacing(8)
             self.frames = {}
             self.addLayoutMenu()
         else:
-            self.tabWidget = QtGui.QTabWidget()
+            self.tabWidget = QtWidgets.QTabWidget()
             self.setCentralWidget(self.tabWidget)
 #            self.tabWidget.setAcceptDrops(True)
             self.tabWidget.setTabsClosable(True)
@@ -158,9 +162,12 @@ class Menu(Component):
     def showFileDialog(self):
         '''Open a dialog box to choose file.'''
 
-        filename = QtGui.QFileDialog.getOpenFileName(
+        filename = QtWidgets.QFileDialog.getOpenFileName(
             self, 'Open file', self.dirIn)
+        if isinstance(filename, tuple): # PyQt5
+            filename = filename[0]
         filename = str(filename)
+        print("filename",filename.__repr__())
         if filename == '':
             return
         else:
@@ -183,8 +190,10 @@ class Menu(Component):
             Optional parameter to allow access from
             other ARTView plugins, etc.
         '''
-        filename = QtGui.QFileDialog.getSaveFileName(
+        filename = QtWidgets.QFileDialog.getSaveFileName(
             self, 'Save Radar File', self.dirIn)
+        if isinstance(filename, tuple): # PyQt5
+            filename = filename[0]
         filename = str(filename)
         if filename == '' or self.Vradar.value is None:
             return
@@ -195,8 +204,10 @@ class Menu(Component):
     def saveGrid(self):
         '''Open a dialog box to save grid file.'''
 
-        filename = QtGui.QFileDialog.getSaveFileName(
+        filename = QtWidgets.QFileDialog.getSaveFileName(
             self, 'Save grid File', self.dirIn)
+        if isinstance(filename, tuple): # PyQt5
+            filename = filename[0]
         filename = str(filename)
         if filename == '' or self.Vgrid.value is None:
             return
@@ -209,9 +220,9 @@ class Menu(Component):
         This function is to be called both internal and external.
         '''
         if sys.version_info < (2, 7, 0):
-            frame = QtGui.QFrame()
-            frame.setFrameShape(QtGui.QFrame.Box)
-            layout = QtGui.QVBoxLayout(frame)
+            frame = QtWidgets.QFrame()
+            frame.setFrameShape(QtWidgets.QFrame.Box)
+            layout = QtWidgets.QVBoxLayout(frame)
             layout.addWidget(widget)
             self.frames[widget.__repr__()] = widget
             self.centralLayout.addWidget(widget)
@@ -285,7 +296,7 @@ class Menu(Component):
 
         # Create Open action
         if self.mode:
-            openFile = QtGui.QAction('Open', self)
+            openFile = QtWidgets.QAction('Open', self)
             openFile.setShortcut('Ctrl+O')
             openFile.setStatusTip('Open new File')
             openFile.triggered.connect(self.showFileDialog)
@@ -293,30 +304,30 @@ class Menu(Component):
 
         # Create Save radar and/or grid action
         if "radar" in self.mode:
-            saveRadar = QtGui.QAction('Save Radar', self)
+            saveRadar = QtWidgets.QAction('Save Radar', self)
             saveRadar.setStatusTip('Save Radar to Cf/Radial NetCDF')
             saveRadar.triggered.connect(self.saveRadar)
             self.filemenu.addAction(saveRadar)
         if "grid" in self.mode:
-            saveGrid = QtGui.QAction('Save Grid', self)
+            saveGrid = QtWidgets.QAction('Save Grid', self)
             saveGrid.setStatusTip('Save Grid NetCDF')
             saveGrid.triggered.connect(self.saveGrid)
             self.filemenu.addAction(saveGrid)
 
         # Create About ARTView action
-        aboutApp = QtGui.QAction('ARTView...', self)
+        aboutApp = QtWidgets.QAction('ARTView...', self)
         aboutApp.setStatusTip('About ARTview')
         aboutApp.triggered.connect(self._about)
         self.filemenu.addAction(aboutApp)
 
         # Create Plugin Help action
-        pluginHelp = QtGui.QAction('Plugin Help', self)
+        pluginHelp = QtWidgets.QAction('Plugin Help', self)
         pluginHelp.setStatusTip('More information about Plugins')
         pluginHelp.triggered.connect(self._get_pluginhelp)
         self.filemenu.addAction(pluginHelp)
 
         # Create Close ARTView action
-        exitApp = QtGui.QAction('Close', self)
+        exitApp = QtWidgets.QAction('Close', self)
         exitApp.setShortcut('Ctrl+Q')
         exitApp.setStatusTip('Exit ARTview')
         exitApp.triggered.connect(self.close)
@@ -427,7 +438,7 @@ class Menu(Component):
         txOut = self.Vradar.value.info()
 
         print(txOut)
-        QtGui.QMessageBox.information(self, "Long Radar Info",
+        QtWidgets.QMessageBox.information(self, "Long Radar Info",
                                       "See terminal window")
 
     # XXX Remove once FileDetails is made live
@@ -518,7 +529,7 @@ class Menu(Component):
                  ('Number of gates: %s\n' % ngates) +
                  ('Number of sweeps: %s\n' % nsweeps))
 
-        QtGui.QMessageBox.information(self, "Short Radar Info", txOut)
+        QtWidgets.QMessageBox.information(self, "Short Radar Info", txOut)
 
     def _get_pluginhelp(self):
         '''Print out a short help text box regarding plugins.'''

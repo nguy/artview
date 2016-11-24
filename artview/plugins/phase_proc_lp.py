@@ -10,7 +10,8 @@ from pyart.config import get_field_name
 import time
 import os
 
-from ..core import Component, Variable, common, QtGui, QtCore, VariableChoose
+from ..core import (Component, Variable, common, QtWidgets, QtGui,
+                    QtCore, VariableChoose)
 
 
 class PhaseProcLp(Component):
@@ -45,11 +46,11 @@ class PhaseProcLp(Component):
             If None, then Qt owns, otherwise associated w/ parent PyQt instance
         '''
         super(PhaseProcLp, self).__init__(name=name, parent=parent)
-        self.central_widget = QtGui.QWidget()
+        self.central_widget = QtWidgets.QWidget()
         self.setCentralWidget(self.central_widget)
-        self.layout = QtGui.QGridLayout(self.central_widget)
+        self.layout = QtWidgets.QGridLayout(self.central_widget)
 
-        self.despeckleButton = QtGui.QPushButton("PhaseProcLp")
+        self.despeckleButton = QtWidgets.QPushButton("PhaseProcLp")
         self.despeckleButton.clicked.connect(self.phase_proc_lp)
         self.layout.addWidget(self.despeckleButton, 0, 0)
 
@@ -57,14 +58,14 @@ class PhaseProcLp(Component):
                                                  os.pardir))
         config_icon = QtGui.QIcon(os.sep.join([parentdir, 'icons',
                                               "categories-applications-system-icon.png"]))
-        self.configButton = QtGui.QPushButton(config_icon,"")
+        self.configButton = QtWidgets.QPushButton(config_icon,"")
         self.layout.addWidget(self.configButton, 0, 1)
-        self.configMenu = QtGui.QMenu(self)
+        self.configMenu = QtWidgets.QMenu(self)
         self.configButton.setMenu(self.configMenu)
 
-        self.configMenu.addAction(QtGui.QAction("Set Parameters", self,
+        self.configMenu.addAction(QtWidgets.QAction("Set Parameters", self,
                                                 triggered=self.setParameters))
-        self.configMenu.addAction(QtGui.QAction("Help", self,
+        self.configMenu.addAction(QtWidgets.QAction("Help", self,
                                                 triggered=self._displayHelp))
         self.parameters = {
             "radar": None,
@@ -172,7 +173,7 @@ class PhaseProcLp(Component):
             resp = common.ShowQuestion(
                 "Field %s already exists! Do you want to over write it?" %
                 reproc_phase_name)
-            if resp != QtGui.QMessageBox.Ok:
+            if resp != QtWidgets.QMessageBox.Ok:
                 return
             else:
                 strong_update = True
@@ -181,7 +182,7 @@ class PhaseProcLp(Component):
             resp = common.ShowQuestion(
                 "Field %s already exists! Do you want to over write it?" %
                 sob_kdp_name)
-            if resp != QtGui.QMessageBox.Ok:
+            if resp != QtWidgets.QMessageBox.Ok:
                 return
             else:
                 strong_update = True
@@ -238,9 +239,9 @@ class PhaseProcLp_old(Component):
             If None, then Qt owns, otherwise associated w/ parent PyQt instance
         '''
         super(PhaseProcLp_old, self).__init__(name=name, parent=parent)
-        self.central_widget = QtGui.QWidget()
+        self.central_widget = QtWidgets.QWidget()
         self.setCentralWidget(self.central_widget)
-        self.layout = QtGui.QGridLayout(self.central_widget)
+        self.layout = QtWidgets.QGridLayout(self.central_widget)
 
         if Vradar is None:
             self.Vradar = Variable(None)
@@ -250,14 +251,14 @@ class PhaseProcLp_old(Component):
         self.sharedVariables = {"Vradar": None}
         self.connectAllVariables()
 
-        self.generalLayout = QtGui.QGridLayout()
+        self.generalLayout = QtWidgets.QGridLayout()
         self.layout.addLayout(self.generalLayout, 0, 0, 1, 2)
 
-        self.helpButton = QtGui.QPushButton("Help")
+        self.helpButton = QtWidgets.QPushButton("Help")
         self.helpButton.clicked.connect(self._displayHelp)
         self.layout.addWidget(self.helpButton, 1, 0, 1, 1)
 
-        self.button = QtGui.QPushButton("Correct")
+        self.button = QtWidgets.QPushButton("Correct")
         self.button.clicked.connect(self.phase_proc_lp)
         self.button.setToolTip('Execute pyart.correct.phase_proc_lp')
         self.layout.addWidget(self.button, 1, 1, 1, 1)
@@ -268,132 +269,132 @@ class PhaseProcLp_old(Component):
 
     def addGeneralOptions(self):
         '''Mount Options Layout.'''
-        self.radarButton = QtGui.QPushButton("Find Variable")
+        self.radarButton = QtWidgets.QPushButton("Find Variable")
         self.radarButton.clicked.connect(self.chooseRadar)
-        self.generalLayout.addWidget(QtGui.QLabel("Radar"), 0, 0)
+        self.generalLayout.addWidget(QtWidgets.QLabel("Radar"), 0, 0)
         self.generalLayout.addWidget(self.radarButton, 0, 1)
 
-        self.offset = QtGui.QDoubleSpinBox()
+        self.offset = QtWidgets.QDoubleSpinBox()
         self.offset.setRange(-1000, 1000)
-        self.generalLayout.addWidget(QtGui.QLabel("offset"), 1, 0)
+        self.generalLayout.addWidget(QtWidgets.QLabel("offset"), 1, 0)
         self.generalLayout.addWidget(self.offset, 1, 1)
 
-        self.debug = QtGui.QCheckBox("debug")
+        self.debug = QtWidgets.QCheckBox("debug")
         self.debug.setChecked(False)
         self.generalLayout.addWidget(self.debug, 2, 1)
 
-        self.selfConst = QtGui.QDoubleSpinBox()
+        self.selfConst = QtWidgets.QDoubleSpinBox()
         self.selfConst.setRange(-1000000, 10000000)
         self.selfConst.setValue(60000)
-        self.generalLayout.addWidget(QtGui.QLabel("self_const"), 3, 0)
+        self.generalLayout.addWidget(QtWidgets.QLabel("self_const"), 3, 0)
         self.generalLayout.addWidget(self.selfConst, 3, 1)
 
-        self.lowZ = QtGui.QDoubleSpinBox()
+        self.lowZ = QtWidgets.QDoubleSpinBox()
         self.lowZ.setRange(-1000000, 10000000)
         self.lowZ.setValue(10)
-        self.generalLayout.addWidget(QtGui.QLabel("low_z"), 4, 0)
+        self.generalLayout.addWidget(QtWidgets.QLabel("low_z"), 4, 0)
         self.generalLayout.addWidget(self.lowZ, 4, 1)
 
-        self.highZ = QtGui.QDoubleSpinBox()
+        self.highZ = QtWidgets.QDoubleSpinBox()
         self.highZ.setRange(-1000000, 10000000)
         self.highZ.setValue(53)
-        self.generalLayout.addWidget(QtGui.QLabel("high_z"), 5, 0)
+        self.generalLayout.addWidget(QtWidgets.QLabel("high_z"), 5, 0)
         self.generalLayout.addWidget(self.highZ, 5, 1)
 
-        self.minPhidp = QtGui.QDoubleSpinBox()
+        self.minPhidp = QtWidgets.QDoubleSpinBox()
         self.minPhidp.setRange(-1000000, 10000000)
         self.minPhidp.setValue(0.01)
-        self.generalLayout.addWidget(QtGui.QLabel("min_phidp"), 6, 0)
+        self.generalLayout.addWidget(QtWidgets.QLabel("min_phidp"), 6, 0)
         self.generalLayout.addWidget(self.minPhidp, 6, 1)
 
-        self.minNcp = QtGui.QDoubleSpinBox()
+        self.minNcp = QtWidgets.QDoubleSpinBox()
         self.minNcp.setRange(-1000000, 10000000)
         self.minNcp.setValue(0.5)
-        self.generalLayout.addWidget(QtGui.QLabel("min_ncp"), 7, 0)
+        self.generalLayout.addWidget(QtWidgets.QLabel("min_ncp"), 7, 0)
         self.generalLayout.addWidget(self.minNcp, 7, 1)
 
-        self.minRhv = QtGui.QDoubleSpinBox()
+        self.minRhv = QtWidgets.QDoubleSpinBox()
         self.minRhv.setRange(-1000000, 10000000)
         self.minRhv.setValue(0.8)
-        self.generalLayout.addWidget(QtGui.QLabel("min_rhv"), 8, 0)
+        self.generalLayout.addWidget(QtWidgets.QLabel("min_rhv"), 8, 0)
         self.generalLayout.addWidget(self.minRhv, 8, 1)
 
-        self.fzl = QtGui.QDoubleSpinBox()
+        self.fzl = QtWidgets.QDoubleSpinBox()
         self.fzl.setRange(-100000, 1000000)
         self.fzl.setValue(4000)
-        self.generalLayout.addWidget(QtGui.QLabel("fzl"), 9, 0)
+        self.generalLayout.addWidget(QtWidgets.QLabel("fzl"), 9, 0)
         self.generalLayout.addWidget(self.fzl, 9, 1)
 
-        self.sysPhase = QtGui.QDoubleSpinBox()
+        self.sysPhase = QtWidgets.QDoubleSpinBox()
         self.sysPhase.setRange(-100000, 1000000)
-        self.generalLayout.addWidget(QtGui.QLabel("sys_phase"), 10, 0)
+        self.generalLayout.addWidget(QtWidgets.QLabel("sys_phase"), 10, 0)
         self.generalLayout.addWidget(self.sysPhase, 10, 1)
 
-        self.overideSysPhase = QtGui.QCheckBox("overide_sys_phase")
+        self.overideSysPhase = QtWidgets.QCheckBox("overide_sys_phase")
         self.overideSysPhase.setChecked(False)
         self.generalLayout.addWidget(self.overideSysPhase, 11, 1)
 
-        self.nowrap = QtGui.QSpinBox()  # XXX must implement deactivation
+        self.nowrap = QtWidgets.QSpinBox()  # XXX must implement deactivation
         self.nowrap.setRange(-1, 1000000)
         self.nowrap.setValue(-1)
-        self.generalLayout.addWidget(QtGui.QLabel("nowrap"), 12, 0)
+        self.generalLayout.addWidget(QtWidgets.QLabel("nowrap"), 12, 0)
         self.generalLayout.addWidget(self.nowrap, 12, 1)
 
-        self.reallyVerbose = QtGui.QCheckBox("really_verbose")
+        self.reallyVerbose = QtWidgets.QCheckBox("really_verbose")
         self.reallyVerbose.setChecked(False)
         self.generalLayout.addWidget(self.reallyVerbose, 13, 1)
 
-        self.lpSolver = QtGui.QComboBox()
+        self.lpSolver = QtWidgets.QComboBox()
         self.lpSolver.addItem('pyglpk')
         self.lpSolver.addItem('cvxopt')
         self.lpSolver.addItem('cylp')
         self.lpSolver.addItem('cylp_mp')
         self.lpSolver.setCurrentIndex(2)
-        self.generalLayout.addWidget(QtGui.QLabel("LP_solver"), 14, 0)
+        self.generalLayout.addWidget(QtWidgets.QLabel("LP_solver"), 14, 0)
         self.generalLayout.addWidget(self.lpSolver, 14, 1)
 
-        self.reflField = QtGui.QLineEdit("")
-        self.generalLayout.addWidget(QtGui.QLabel("refl_field"), 15, 0)
+        self.reflField = QtWidgets.QLineEdit("")
+        self.generalLayout.addWidget(QtWidgets.QLabel("refl_field"), 15, 0)
         self.generalLayout.addWidget(self.reflField, 15, 1)
 
-        self.ncpField = QtGui.QLineEdit("")
-        self.generalLayout.addWidget(QtGui.QLabel("ncp_field"), 16, 0)
+        self.ncpField = QtWidgets.QLineEdit("")
+        self.generalLayout.addWidget(QtWidgets.QLabel("ncp_field"), 16, 0)
         self.generalLayout.addWidget(self.ncpField, 16, 1)
 
-        self.rhvField = QtGui.QLineEdit("")
-        self.generalLayout.addWidget(QtGui.QLabel("rhv_field"), 17, 0)
+        self.rhvField = QtWidgets.QLineEdit("")
+        self.generalLayout.addWidget(QtWidgets.QLabel("rhv_field"), 17, 0)
         self.generalLayout.addWidget(self.rhvField, 17, 1)
 
-        self.phidpField = QtGui.QLineEdit("")
-        self.generalLayout.addWidget(QtGui.QLabel("phidp_field"), 18, 0)
+        self.phidpField = QtWidgets.QLineEdit("")
+        self.generalLayout.addWidget(QtWidgets.QLabel("phidp_field"), 18, 0)
         self.generalLayout.addWidget(self.phidpField, 18, 1)
 
-        self.kdpField = QtGui.QLineEdit("")
-        self.generalLayout.addWidget(QtGui.QLabel("kdp_field"), 19, 0)
+        self.kdpField = QtWidgets.QLineEdit("")
+        self.generalLayout.addWidget(QtWidgets.QLabel("kdp_field"), 19, 0)
         self.generalLayout.addWidget(self.kdpField, 19, 1)
 
-        self.unfField = QtGui.QLineEdit("")
-        self.generalLayout.addWidget(QtGui.QLabel("unf_field"), 20, 0)
+        self.unfField = QtWidgets.QLineEdit("")
+        self.generalLayout.addWidget(QtWidgets.QLabel("unf_field"), 20, 0)
         self.generalLayout.addWidget(self.unfField, 20, 1)
 
-        self.windowLen = QtGui.QSpinBox()
+        self.windowLen = QtWidgets.QSpinBox()
         self.windowLen.setRange(0, 1000000)
         self.windowLen.setValue(35)
-        self.generalLayout.addWidget(QtGui.QLabel("window_len"), 21, 0)
+        self.generalLayout.addWidget(QtWidgets.QLabel("window_len"), 21, 0)
         self.generalLayout.addWidget(self.windowLen, 21, 1)
 
-        self.proc = QtGui.QSpinBox()
+        self.proc = QtWidgets.QSpinBox()
         self.proc.setRange(0, 1000000)
         self.proc.setValue(1)
-        self.generalLayout.addWidget(QtGui.QLabel("proc"), 22, 0)
+        self.generalLayout.addWidget(QtWidgets.QLabel("proc"), 22, 0)
         self.generalLayout.addWidget(self.proc, 22, 1)
 
-        self.reprocPhase = QtGui.QLineEdit("reproc_phase")
-        self.generalLayout.addWidget(QtGui.QLabel("reproc_phase"), 23, 0)
+        self.reprocPhase = QtWidgets.QLineEdit("reproc_phase")
+        self.generalLayout.addWidget(QtWidgets.QLabel("reproc_phase"), 23, 0)
         self.generalLayout.addWidget(self.reprocPhase, 23, 1)
 
-        self.sobKdp = QtGui.QLineEdit("sob_kdp")
-        self.generalLayout.addWidget(QtGui.QLabel("sob_kdp"), 24, 0)
+        self.sobKdp = QtWidgets.QLineEdit("sob_kdp")
+        self.generalLayout.addWidget(QtWidgets.QLabel("sob_kdp"), 24, 0)
         self.generalLayout.addWidget(self.sobKdp, 24, 1)
 
     def chooseRadar(self):
@@ -474,7 +475,7 @@ class PhaseProcLp_old(Component):
             resp = common.ShowQuestion(
                 "Field %s already exists! Do you want to over write it?" %
                 reproc_phase_name)
-            if resp != QtGui.QMessageBox.Ok:
+            if resp != QtWidgets.QMessageBox.Ok:
                 return
             else:
                 strong_update = True
@@ -483,7 +484,7 @@ class PhaseProcLp_old(Component):
             resp = common.ShowQuestion(
                 "Field %s already exists! Do you want to over write it?" %
                 sob_kdp_name)
-            if resp != QtGui.QMessageBox.Ok:
+            if resp != QtWidgets.QMessageBox.Ok:
                 return
             else:
                 strong_update = True

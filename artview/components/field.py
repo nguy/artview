@@ -7,7 +7,7 @@ Class instance used for modifying field via Display window.
 # Load the needed packages
 from functools import partial
 
-from ..core import Variable, Component, QtGui, QtCore
+from ..core import Variable, Component, QtWidgets, QtCore
 
 
 class FieldButtonWindow(Component):
@@ -71,8 +71,8 @@ class FieldButtonWindow(Component):
 
     def CreateFieldWidget(self):
         '''Create a widget to store radio buttons to control field adjust.'''
-        self.radioBox = QtGui.QGroupBox("Field Selection", parent=self)
-        self.rBox_layout = QtGui.QVBoxLayout(self.radioBox)
+        self.radioBox = QtWidgets.QGroupBox("Field Selection", parent=self)
+        self.rBox_layout = QtWidgets.QVBoxLayout(self.radioBox)
         self.radioBox.setLayout(self.rBox_layout)
         self.setCentralWidget(self.radioBox)
 
@@ -87,10 +87,9 @@ class FieldButtonWindow(Component):
         # Loop through and create each field button and
         # connect a value when selected
         for field in self.Vradar.value.fields.keys():
-            button = QtGui.QRadioButton(field, self.radioBox)
+            button = QtWidgets.QRadioButton(field, self.radioBox)
             self.fieldbutton[field] = button
-            QtCore.QObject.connect(button, QtCore.SIGNAL("clicked()"),
-                                   partial(self.FieldSelectCmd, field))
+            button.clicked.connect(partial(self.FieldSelectCmd, field))
 
             self.rBox_layout.addWidget(button)
 

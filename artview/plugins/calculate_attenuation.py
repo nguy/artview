@@ -9,7 +9,8 @@ import pyart
 from pyart.config import get_field_name
 import time
 
-from ..core import Component, Variable, common, QtGui, QtCore, VariableChoose
+from ..core import (Component, Variable, common, QtWidgets, QtGui,
+                    QtCore, VariableChoose)
 
 import os
 
@@ -47,11 +48,11 @@ class CalculateAttenuation(Component):
             If None, then Qt owns, otherwise associated w/ parent PyQt instance
         '''
         super(CalculateAttenuation, self).__init__(name=name, parent=parent)
-        self.central_widget = QtGui.QWidget()
+        self.central_widget = QtWidgets.QWidget()
         self.setCentralWidget(self.central_widget)
-        self.layout = QtGui.QGridLayout(self.central_widget)
+        self.layout = QtWidgets.QGridLayout(self.central_widget)
 
-        self.despeckleButton = QtGui.QPushButton("CalculateAttenuation")
+        self.despeckleButton = QtWidgets.QPushButton("CalculateAttenuation")
         self.despeckleButton.clicked.connect(self.calculate_attenuation)
         self.layout.addWidget(self.despeckleButton, 0, 0)
 
@@ -59,14 +60,14 @@ class CalculateAttenuation(Component):
                                                  os.pardir))
         config_icon = QtGui.QIcon(os.sep.join([parentdir, 'icons',
                                               "categories-applications-system-icon.png"]))
-        self.configButton = QtGui.QPushButton(config_icon,"")
+        self.configButton = QtWidgets.QPushButton(config_icon,"")
         self.layout.addWidget(self.configButton, 0, 1)
-        self.configMenu = QtGui.QMenu(self)
+        self.configMenu = QtWidgets.QMenu(self)
         self.configButton.setMenu(self.configMenu)
 
-        self.configMenu.addAction(QtGui.QAction("Set Parameters", self,
+        self.configMenu.addAction(QtWidgets.QAction("Set Parameters", self,
                                                 triggered=self.setParameters))
-        self.configMenu.addAction(QtGui.QAction("Help", self,
+        self.configMenu.addAction(QtWidgets.QAction("Help", self,
                                                 triggered=self._displayHelp))
         self.parameters = {
             "radar": None,
@@ -152,7 +153,7 @@ class CalculateAttenuation(Component):
             resp = common.ShowQuestion(
                 "Field %s already exists! Do you want to over write it?" %
                 spec_at_field_name)
-            if resp != QtGui.QMessageBox.Ok:
+            if resp != QtWidgets.QMessageBox.Ok:
                 return
             else:
                 strong_update = True
@@ -161,7 +162,7 @@ class CalculateAttenuation(Component):
             resp = common.ShowQuestion(
                 "Field %s already exists! Do you want to over write it?" %
                 corr_refl_field_name)
-            if resp != QtGui.QMessageBox.Ok:
+            if resp != QtWidgets.QMessageBox.Ok:
                 return
             else:
                 strong_update = True
@@ -215,9 +216,9 @@ class CalculateAttenuation_old(Component):
             If None, then Qt owns, otherwise associated w/ parent PyQt instance
         '''
         super(CalculateAttenuation_old, self).__init__(name=name, parent=parent)
-        self.central_widget = QtGui.QWidget()
+        self.central_widget = QtWidgets.QWidget()
         self.setCentralWidget(self.central_widget)
-        self.layout = QtGui.QGridLayout(self.central_widget)
+        self.layout = QtWidgets.QGridLayout(self.central_widget)
 
         if Vradar is None:
             self.Vradar = Variable(None)
@@ -227,14 +228,14 @@ class CalculateAttenuation_old(Component):
         self.sharedVariables = {"Vradar": None}
         self.connectAllVariables()
 
-        self.generalLayout = QtGui.QGridLayout()
+        self.generalLayout = QtWidgets.QGridLayout()
         self.layout.addLayout(self.generalLayout, 0, 0, 1, 2)
 
-        self.helpButton = QtGui.QPushButton("Help")
+        self.helpButton = QtWidgets.QPushButton("Help")
         self.helpButton.clicked.connect(self._displayHelp)
         self.layout.addWidget(self.helpButton, 1, 0, 1, 1)
 
-        self.button = QtGui.QPushButton("Correct")
+        self.button = QtWidgets.QPushButton("Correct")
         self.button.clicked.connect(self.calculate_attenuation)
         self.button.setToolTip('Execute pyart.correct.calculate_attenuation')
         self.layout.addWidget(self.button, 1, 1, 1, 1)
@@ -246,78 +247,78 @@ class CalculateAttenuation_old(Component):
     def addGeneralOptions(self):
         '''Mount Options Layout.'''
 
-        self.radarButton = QtGui.QPushButton("Find Variable")
+        self.radarButton = QtWidgets.QPushButton("Find Variable")
         self.radarButton.clicked.connect(self.chooseRadar)
-        self.generalLayout.addWidget(QtGui.QLabel("Radar"), 0, 0)
+        self.generalLayout.addWidget(QtWidgets.QLabel("Radar"), 0, 0)
         self.generalLayout.addWidget(self.radarButton, 0, 1)
 
-        self.zOffset = QtGui.QDoubleSpinBox()
+        self.zOffset = QtWidgets.QDoubleSpinBox()
         self.zOffset.setRange(-1000, 1000)
-        self.generalLayout.addWidget(QtGui.QLabel("z_offset"), 1, 0)
+        self.generalLayout.addWidget(QtWidgets.QLabel("z_offset"), 1, 0)
         self.generalLayout.addWidget(self.zOffset, 1, 1)
 
-        self.debug = QtGui.QCheckBox("debug")
+        self.debug = QtWidgets.QCheckBox("debug")
         self.debug.setChecked(False)
         self.generalLayout.addWidget(self.debug, 2, 1)
 
-        self.doc = QtGui.QDoubleSpinBox()
+        self.doc = QtWidgets.QDoubleSpinBox()
         self.doc.setRange(-1000, 1000)
         self.doc.setValue(15)
-        self.generalLayout.addWidget(QtGui.QLabel("doc"), 3, 0)
+        self.generalLayout.addWidget(QtWidgets.QLabel("doc"), 3, 0)
         self.generalLayout.addWidget(self.doc, 3, 1)
 
-        self.fzl = QtGui.QDoubleSpinBox()
+        self.fzl = QtWidgets.QDoubleSpinBox()
         self.fzl.setRange(-100000, 1000000)
         self.fzl.setValue(4000)
-        self.generalLayout.addWidget(QtGui.QLabel("fzl"), 4, 0)
+        self.generalLayout.addWidget(QtWidgets.QLabel("fzl"), 4, 0)
         self.generalLayout.addWidget(self.fzl, 4, 1)
 
-        self.rhvMin = QtGui.QDoubleSpinBox()
+        self.rhvMin = QtWidgets.QDoubleSpinBox()
         self.rhvMin.setRange(-100000, 1000000)
         self.rhvMin.setValue(0.8)
-        self.generalLayout.addWidget(QtGui.QLabel("rhv_min"), 5, 0)
+        self.generalLayout.addWidget(QtWidgets.QLabel("rhv_min"), 5, 0)
         self.generalLayout.addWidget(self.rhvMin, 5, 1)
 
-        self.ncpMin = QtGui.QDoubleSpinBox()
+        self.ncpMin = QtWidgets.QDoubleSpinBox()
         self.ncpMin.setRange(-100000, 1000000)
         self.ncpMin.setValue(0.5)
-        self.generalLayout.addWidget(QtGui.QLabel("ncp_min"), 6, 0)
+        self.generalLayout.addWidget(QtWidgets.QLabel("ncp_min"), 6, 0)
         self.generalLayout.addWidget(self.ncpMin, 6, 1)
 
-        self.aCoef = QtGui.QDoubleSpinBox()
+        self.aCoef = QtWidgets.QDoubleSpinBox()
         self.aCoef.setRange(-100000, 1000000)
         self.aCoef.setValue(0.06)
-        self.generalLayout.addWidget(QtGui.QLabel("a_coef"), 7, 0)
+        self.generalLayout.addWidget(QtWidgets.QLabel("a_coef"), 7, 0)
         self.generalLayout.addWidget(self.aCoef, 7, 1)
 
-        self.beta = QtGui.QDoubleSpinBox()
+        self.beta = QtWidgets.QDoubleSpinBox()
         self.beta.setRange(-100000, 1000000)
         self.beta.setValue(0.8)
-        self.generalLayout.addWidget(QtGui.QLabel("beta"), 8, 0)
+        self.generalLayout.addWidget(QtWidgets.QLabel("beta"), 8, 0)
         self.generalLayout.addWidget(self.beta, 8, 1)
 
-        self.reflField = QtGui.QLineEdit("")
-        self.generalLayout.addWidget(QtGui.QLabel("refl_field"), 9, 0)
+        self.reflField = QtWidgets.QLineEdit("")
+        self.generalLayout.addWidget(QtWidgets.QLabel("refl_field"), 9, 0)
         self.generalLayout.addWidget(self.reflField, 9, 1)
 
-        self.ncpField = QtGui.QLineEdit("")
-        self.generalLayout.addWidget(QtGui.QLabel("ncp_field"), 10, 0)
+        self.ncpField = QtWidgets.QLineEdit("")
+        self.generalLayout.addWidget(QtWidgets.QLabel("ncp_field"), 10, 0)
         self.generalLayout.addWidget(self.ncpField, 10, 1)
 
-        self.rhvField = QtGui.QLineEdit("")
-        self.generalLayout.addWidget(QtGui.QLabel("rhv_field"), 11, 0)
+        self.rhvField = QtWidgets.QLineEdit("")
+        self.generalLayout.addWidget(QtWidgets.QLabel("rhv_field"), 11, 0)
         self.generalLayout.addWidget(self.rhvField, 11, 1)
 
-        self.phidpField = QtGui.QLineEdit("")
-        self.generalLayout.addWidget(QtGui.QLabel("phidp_field"), 12, 0)
+        self.phidpField = QtWidgets.QLineEdit("")
+        self.generalLayout.addWidget(QtWidgets.QLabel("phidp_field"), 12, 0)
         self.generalLayout.addWidget(self.phidpField, 12, 1)
 
-        self.specAtField = QtGui.QLineEdit("")
-        self.generalLayout.addWidget(QtGui.QLabel("spec_at_field"), 13, 0)
+        self.specAtField = QtWidgets.QLineEdit("")
+        self.generalLayout.addWidget(QtWidgets.QLabel("spec_at_field"), 13, 0)
         self.generalLayout.addWidget(self.specAtField, 13, 1)
 
-        self.corrReflField = QtGui.QLineEdit("")
-        self.generalLayout.addWidget(QtGui.QLabel("corr_refl_field"), 14, 0)
+        self.corrReflField = QtWidgets.QLineEdit("")
+        self.generalLayout.addWidget(QtWidgets.QLabel("corr_refl_field"), 14, 0)
         self.generalLayout.addWidget(self.corrReflField, 14, 1)
 
     def chooseRadar(self):
@@ -397,7 +398,7 @@ class CalculateAttenuation_old(Component):
             resp = common.ShowQuestion(
                 "Field %s already exists! Do you want to over write it?" %
                 spec_at_field_name)
-            if resp != QtGui.QMessageBox.Ok:
+            if resp != QtWidgets.QMessageBox.Ok:
                 return
             else:
                 strong_update = True
@@ -406,7 +407,7 @@ class CalculateAttenuation_old(Component):
             resp = common.ShowQuestion(
                 "Field %s already exists! Do you want to over write it?" %
                 corr_refl_field_name)
-            if resp != QtGui.QMessageBox.Ok:
+            if resp != QtWidgets.QMessageBox.Ok:
                 return
             else:
                 strong_update = True

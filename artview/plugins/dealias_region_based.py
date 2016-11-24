@@ -10,7 +10,8 @@ from pyart.config import get_field_name
 import time
 import os
 
-from ..core import Component, Variable, common, QtGui, QtCore, VariableChoose
+from ..core import (Component, Variable, common, QtGui, QtWidgets,
+                    QtCore, VariableChoose)
 
 
 class DealiasRegionBased(Component):
@@ -46,11 +47,11 @@ class DealiasRegionBased(Component):
             If None, then Qt owns, otherwise associated w/ parent PyQt instance
         '''
         super(DealiasRegionBased, self).__init__(name=name, parent=parent)
-        self.central_widget = QtGui.QWidget()
+        self.central_widget = QtWidgets.QWidget()
         self.setCentralWidget(self.central_widget)
-        self.layout = QtGui.QGridLayout(self.central_widget)
+        self.layout = QtWidgets.QGridLayout(self.central_widget)
 
-        self.despeckleButton = QtGui.QPushButton("DealiasRegionBased")
+        self.despeckleButton = QtWidgets.QPushButton("DealiasRegionBased")
         self.despeckleButton.clicked.connect(self.dealias_region_based)
         self.layout.addWidget(self.despeckleButton, 0, 0)
 
@@ -58,14 +59,14 @@ class DealiasRegionBased(Component):
                                                  os.pardir))
         config_icon = QtGui.QIcon(os.sep.join(
             [parentdir, 'icons', "categories-applications-system-icon.png"]))
-        self.configButton = QtGui.QPushButton(config_icon,"")
+        self.configButton = QtWidgets.QPushButton(config_icon,"")
         self.layout.addWidget(self.configButton, 0, 1)
-        self.configMenu = QtGui.QMenu(self)
+        self.configMenu = QtWidgets.QMenu(self)
         self.configButton.setMenu(self.configMenu)
 
-        self.configMenu.addAction(QtGui.QAction("Set Parameters", self,
+        self.configMenu.addAction(QtWidgets.QAction("Set Parameters", self,
                                                 triggered=self.setParameters))
-        self.configMenu.addAction(QtGui.QAction("Help", self,
+        self.configMenu.addAction(QtWidgets.QAction("Help", self,
                                                 triggered=self._displayHelp))
         self.parameters = {
             "radar": None,
@@ -149,7 +150,7 @@ class DealiasRegionBased(Component):
             resp = common.ShowQuestion(
                 "Field %s already exists! Do you want to over write it?" %
                 name)
-            if resp != QtGui.QMessageBox.Ok:
+            if resp != QtWidgets.QMessageBox.Ok:
                 return
             else:
                 strong_update = True
@@ -210,9 +211,9 @@ class DealiasRegionBased_old(Component):
 #            [Not Implemented]
 
         super(DealiasRegionBased_old, self).__init__(name=name, parent=parent)
-        self.central_widget = QtGui.QWidget()
+        self.central_widget = QtWidgets.QWidget()
         self.setCentralWidget(self.central_widget)
-        self.layout = QtGui.QGridLayout(self.central_widget)
+        self.layout = QtWidgets.QGridLayout(self.central_widget)
 
         if Vradar is None:
             self.Vradar = Variable(None)
@@ -228,14 +229,14 @@ class DealiasRegionBased_old(Component):
 #                                "Vgatefilter": None}
         self.connectAllVariables()
 
-        self.generalLayout = QtGui.QGridLayout()
+        self.generalLayout = QtWidgets.QGridLayout()
         self.layout.addLayout(self.generalLayout, 0, 0, 1, 2)
 
-        self.helpButton = QtGui.QPushButton("Help")
+        self.helpButton = QtWidgets.QPushButton("Help")
         self.helpButton.clicked.connect(self._displayHelp)
         self.layout.addWidget(self.helpButton, 1, 0, 1, 1)
 
-        self.button = QtGui.QPushButton("Correct")
+        self.button = QtWidgets.QPushButton("Correct")
         self.button.clicked.connect(self.dealias_region_based)
         self.button.setToolTip('Execute pyart.correct.dealias_region_based')
         self.layout.addWidget(self.button, 1, 1, 1, 1)
@@ -247,65 +248,65 @@ class DealiasRegionBased_old(Component):
 
     def addGeneralOptions(self):
         '''Mount Options Layout.'''
-        self.radarButton = QtGui.QPushButton("Find Variable")
+        self.radarButton = QtWidgets.QPushButton("Find Variable")
         self.radarButton.clicked.connect(self.chooseRadar)
-        self.generalLayout.addWidget(QtGui.QLabel("Radar"), 0, 0)
+        self.generalLayout.addWidget(QtWidgets.QLabel("Radar"), 0, 0)
         self.generalLayout.addWidget(self.radarButton, 0, 1)
 
-        self.intervalSplits = QtGui.QSpinBox()
+        self.intervalSplits = QtWidgets.QSpinBox()
         self.intervalSplits.setRange(0, 1000000)
         self.intervalSplits.setValue(3)
-        self.generalLayout.addWidget(QtGui.QLabel("interval_splits"), 1, 0)
+        self.generalLayout.addWidget(QtWidgets.QLabel("interval_splits"), 1, 0)
         self.generalLayout.addWidget(self.intervalSplits, 1, 1)
 
-        self.generalLayout.addWidget(QtGui.QLabel("interval_limits"), 2, 0)
-        self.generalLayout.addWidget(QtGui.QLabel("NotImplemented"), 2, 1)
+        self.generalLayout.addWidget(QtWidgets.QLabel("interval_limits"), 2, 0)
+        self.generalLayout.addWidget(QtWidgets.QLabel("NotImplemented"), 2, 1)
 
-        self.skipBetweenRays = QtGui.QSpinBox()
+        self.skipBetweenRays = QtWidgets.QSpinBox()
         self.skipBetweenRays.setRange(0, 1000000)
         self.skipBetweenRays.setValue(100)
-        self.generalLayout.addWidget(QtGui.QLabel("skip_between_rays"), 3, 0)
+        self.generalLayout.addWidget(QtWidgets.QLabel("skip_between_rays"), 3, 0)
         self.generalLayout.addWidget(self.skipBetweenRays, 3, 1)
 
-        self.skipAlongRay = QtGui.QSpinBox()
+        self.skipAlongRay = QtWidgets.QSpinBox()
         self.skipAlongRay.setRange(0, 1000000)
         self.skipAlongRay.setValue(100)
-        self.generalLayout.addWidget(QtGui.QLabel("skip_along_ray"), 4, 0)
+        self.generalLayout.addWidget(QtWidgets.QLabel("skip_along_ray"), 4, 0)
         self.generalLayout.addWidget(self.skipAlongRay, 4, 1)
 
-        self.centered = QtGui.QCheckBox("centered")
+        self.centered = QtWidgets.QCheckBox("centered")
         self.centered.setChecked(True)
         self.generalLayout.addWidget(self.centered, 5, 1)
 
         # XXX must implement deactivation
-        self.nyquistVelocity = QtGui.QDoubleSpinBox()
+        self.nyquistVelocity = QtWidgets.QDoubleSpinBox()
         self.nyquistVelocity.setRange(-1, 1000)
         self.nyquistVelocity.setValue(-1)
-        self.generalLayout.addWidget(QtGui.QLabel("nyquist_velocity"), 6, 0)
+        self.generalLayout.addWidget(QtWidgets.QLabel("nyquist_velocity"), 6, 0)
         self.generalLayout.addWidget(self.nyquistVelocity, 6, 1)
 
-        self.checkNyquistUniform = QtGui.QCheckBox("check_nyquist_uniform")
+        self.checkNyquistUniform = QtWidgets.QCheckBox("check_nyquist_uniform")
         self.checkNyquistUniform.setChecked(False)
         self.generalLayout.addWidget(self.checkNyquistUniform, 7, 1)
 
-#        self.generalLayout.addWidget(QtGui.QLabel("gatefilter"), 8, 0)
+#        self.generalLayout.addWidget(QtWidgets.QLabel("gatefilter"), 8, 0)
         # XXX NotImplemented
-#        self.generalLayout.addWidget(QtGui.QLabel("NotImplemented"), 8, 1)
+#        self.generalLayout.addWidget(QtWidgets.QLabel("NotImplemented"), 8, 1)
 
-        self.raysWrapAround = QtGui.QCheckBox("rays_wrap_around")
+        self.raysWrapAround = QtWidgets.QCheckBox("rays_wrap_around")
         self.raysWrapAround.setChecked(True)
         self.generalLayout.addWidget(self.raysWrapAround, 9, 1)
 
-        self.keepOriginal = QtGui.QCheckBox("keep_original")
+        self.keepOriginal = QtWidgets.QCheckBox("keep_original")
         self.keepOriginal.setChecked(False)
         self.generalLayout.addWidget(self.keepOriginal, 10, 1)
 
-        self.velField = QtGui.QLineEdit("")
-        self.generalLayout.addWidget(QtGui.QLabel("vel_field"), 11, 0)
+        self.velField = QtWidgets.QLineEdit("")
+        self.generalLayout.addWidget(QtWidgets.QLabel("vel_field"), 11, 0)
         self.generalLayout.addWidget(self.velField, 11, 1)
 
-        self.corrVelField = QtGui.QLineEdit("")
-        self.generalLayout.addWidget(QtGui.QLabel("corr_vel_field"), 12, 0)
+        self.corrVelField = QtWidgets.QLineEdit("")
+        self.generalLayout.addWidget(QtWidgets.QLabel("corr_vel_field"), 12, 0)
         self.generalLayout.addWidget(self.corrVelField, 12, 1)
 
     def chooseRadar(self):
@@ -386,7 +387,7 @@ class DealiasRegionBased_old(Component):
             resp = common.ShowQuestion(
                 "Field %s already exists! Do you want to over write it?" %
                 name)
-            if resp != QtGui.QMessageBox.Ok:
+            if resp != QtWidgets.QMessageBox.Ok:
                 return
             else:
                 strong_update = True

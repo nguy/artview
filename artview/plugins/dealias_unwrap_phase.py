@@ -10,7 +10,8 @@ from pyart.config import get_field_name
 import time
 import os
 
-from ..core import Component, Variable, common, QtGui, QtCore, VariableChoose
+from ..core import (Component, Variable, common, QtWidgets, QtGui,
+                    QtCore, VariableChoose)
 
 class DealiasUnwrapPhase(Component):
     '''
@@ -45,11 +46,11 @@ class DealiasUnwrapPhase(Component):
             If None, then Qt owns, otherwise associated w/ parent PyQt instance
         '''
         super(DealiasUnwrapPhase, self).__init__(name=name, parent=parent)
-        self.central_widget = QtGui.QWidget()
+        self.central_widget = QtWidgets.QWidget()
         self.setCentralWidget(self.central_widget)
-        self.layout = QtGui.QGridLayout(self.central_widget)
+        self.layout = QtWidgets.QGridLayout(self.central_widget)
 
-        self.despeckleButton = QtGui.QPushButton("DealiasUnwrapPhase")
+        self.despeckleButton = QtWidgets.QPushButton("DealiasUnwrapPhase")
         self.despeckleButton.clicked.connect(self.dealias_unwrap_phase)
         self.layout.addWidget(self.despeckleButton, 0, 0)
 
@@ -57,14 +58,14 @@ class DealiasUnwrapPhase(Component):
                                                  os.pardir))
         config_icon = QtGui.QIcon(os.sep.join(
             [parentdir, 'icons', "categories-applications-system-icon.png"]))
-        self.configButton = QtGui.QPushButton(config_icon,"")
+        self.configButton = QtWidgets.QPushButton(config_icon,"")
         self.layout.addWidget(self.configButton, 0, 1)
-        self.configMenu = QtGui.QMenu(self)
+        self.configMenu = QtWidgets.QMenu(self)
         self.configButton.setMenu(self.configMenu)
 
-        self.configMenu.addAction(QtGui.QAction("Set Parameters", self,
+        self.configMenu.addAction(QtWidgets.QAction("Set Parameters", self,
                                                 triggered=self.setParameters))
-        self.configMenu.addAction(QtGui.QAction("Help", self,
+        self.configMenu.addAction(QtWidgets.QAction("Help", self,
                                                 triggered=self._displayHelp))
         self.parameters = {
             "radar": None,
@@ -147,7 +148,7 @@ class DealiasUnwrapPhase(Component):
             resp = common.ShowQuestion(
                 "Field %s already exists! Do you want to over write it?" %
                 name)
-            if resp != QtGui.QMessageBox.Ok:
+            if resp != QtWidgets.QMessageBox.Ok:
                 return
             else:
                 strong_update = True
@@ -208,9 +209,9 @@ class DealiasUnwrapPhase_old(Component):
 #            [Not Implemented]
 
         super(DealiasUnwrapPhase_old, self).__init__(name=name, parent=parent)
-        self.central_widget = QtGui.QWidget()
+        self.central_widget = QtWidgets.QWidget()
         self.setCentralWidget(self.central_widget)
-        self.layout = QtGui.QGridLayout(self.central_widget)
+        self.layout = QtWidgets.QGridLayout(self.central_widget)
 
         if Vradar is None:
             self.Vradar = Variable(None)
@@ -226,14 +227,14 @@ class DealiasUnwrapPhase_old(Component):
 #                                "Vgatefilter": None}
         self.connectAllVariables()
 
-        self.generalLayout = QtGui.QGridLayout()
+        self.generalLayout = QtWidgets.QGridLayout()
         self.layout.addLayout(self.generalLayout, 0, 0, 1, 2)
 
-        self.helpButton = QtGui.QPushButton("Help")
+        self.helpButton = QtWidgets.QPushButton("Help")
         self.helpButton.clicked.connect(self._displayHelp)
         self.layout.addWidget(self.helpButton, 1, 0, 1, 1)
 
-        self.button = QtGui.QPushButton("Correct")
+        self.button = QtWidgets.QPushButton("Correct")
         self.button.clicked.connect(self.dealias_unwrap_phase)
         self.button.setToolTip('Execute pyart.correct.dealias_unwrap_phase')
         self.layout.addWidget(self.button, 1, 1, 1, 1)
@@ -246,51 +247,51 @@ class DealiasUnwrapPhase_old(Component):
 
     def addGeneralOptions(self):
         '''Mount Options Layout.'''
-        self.radarButton = QtGui.QPushButton("Find Variable")
+        self.radarButton = QtWidgets.QPushButton("Find Variable")
         self.radarButton.clicked.connect(self.chooseRadar)
-        self.generalLayout.addWidget(QtGui.QLabel("Radar"), 0, 0)
+        self.generalLayout.addWidget(QtWidgets.QLabel("Radar"), 0, 0)
         self.generalLayout.addWidget(self.radarButton, 0, 1)
 
-        self.unwrapUnit = QtGui.QComboBox()
+        self.unwrapUnit = QtWidgets.QComboBox()
         self.unwrapUnit.addItem('ray')
         self.unwrapUnit.addItem('sweep')
         self.unwrapUnit.addItem('volume')
         self.unwrapUnit.setCurrentIndex(1)
-        self.generalLayout.addWidget(QtGui.QLabel("unwrap_unit"), 1, 0)
+        self.generalLayout.addWidget(QtWidgets.QLabel("unwrap_unit"), 1, 0)
         self.generalLayout.addWidget(self.unwrapUnit, 1, 1)
 
         # XXX must implement deactivation
-        self.nyquistVelocity = QtGui.QDoubleSpinBox()
+        self.nyquistVelocity = QtWidgets.QDoubleSpinBox()
         self.nyquistVelocity.setRange(-1, 1000)
         self.nyquistVelocity.setValue(-1)
-        self.generalLayout.addWidget(QtGui.QLabel("nyquist_velocity"), 2, 0)
+        self.generalLayout.addWidget(QtWidgets.QLabel("nyquist_velocity"), 2, 0)
         self.generalLayout.addWidget(self.nyquistVelocity, 2, 1)
 
-        self.checkNyquistUniform = QtGui.QCheckBox("check_nyquist_uniform")
+        self.checkNyquistUniform = QtWidgets.QCheckBox("check_nyquist_uniform")
         self.checkNyquistUniform.setChecked(False)
         self.generalLayout.addWidget(self.checkNyquistUniform, 3, 1)
 
-#        self.generalLayout.addWidget(QtGui.QLabel("gatefilter"), 4, 0)
+#        self.generalLayout.addWidget(QtWidgets.QLabel("gatefilter"), 4, 0)
         # XXX NotImplemented
-#        self.generalLayout.addWidget(QtGui.QLabel("NotImplemented"), 4, 1)
+#        self.generalLayout.addWidget(QtWidgets.QLabel("NotImplemented"), 4, 1)
 
-        self.raysWrapAround = QtGui.QCheckBox("rays_wrap_around")
+        self.raysWrapAround = QtWidgets.QCheckBox("rays_wrap_around")
         self.raysWrapAround.setChecked(True)
         self.generalLayout.addWidget(self.raysWrapAround, 5, 1)
 
-        self.keepOriginal = QtGui.QCheckBox("keep_original")
+        self.keepOriginal = QtWidgets.QCheckBox("keep_original")
         self.keepOriginal.setChecked(False)
         self.generalLayout.addWidget(self.keepOriginal, 6, 1)
 
-        self.velField = QtGui.QLineEdit("")
-        self.generalLayout.addWidget(QtGui.QLabel("vel_field"), 7, 0)
+        self.velField = QtWidgets.QLineEdit("")
+        self.generalLayout.addWidget(QtWidgets.QLabel("vel_field"), 7, 0)
         self.generalLayout.addWidget(self.velField, 7, 1)
 
-        self.corrVelField = QtGui.QLineEdit("")
-        self.generalLayout.addWidget(QtGui.QLabel("corr_vel_field"), 8, 0)
+        self.corrVelField = QtWidgets.QLineEdit("")
+        self.generalLayout.addWidget(QtWidgets.QLabel("corr_vel_field"), 8, 0)
         self.generalLayout.addWidget(self.corrVelField, 8, 1)
 
-        self.skipChecks = QtGui.QCheckBox("skip_checks")
+        self.skipChecks = QtWidgets.QCheckBox("skip_checks")
         self.skipChecks.setChecked(False)
         self.generalLayout.addWidget(self.skipChecks, 9, 1)
 
@@ -371,7 +372,7 @@ class DealiasUnwrapPhase_old(Component):
             resp = common.ShowQuestion(
                 "Field %s already exists! Do you want to over write it?" %
                 name)
-            if resp != QtGui.QMessageBox.Ok:
+            if resp != QtWidgets.QMessageBox.Ok:
                 return
             else:
                 strong_update = True
