@@ -16,11 +16,12 @@ sys.path.insert(0, path)
 
 import artview
 
-from ..core import Component, Variable, common, QtGui, QtCore, componentsList
+from ..core import (Component, Variable, common, QtCore, QtGui, QtWidgets,
+                    componentsList)
 
 class Field():
-''' Imprement array like acess to field variable and send update signal to 
-radar if the field is changed.'''
+    ''' Imprement array like acess to field variable and send update signal to
+    radar if the field is changed.'''
 
     def __init__(self, Vradar, field_name):
         '''
@@ -425,14 +426,14 @@ class RadarTerminal(Component):
         # Connect the components
         self.connectAllVariables()
 
-        self.central_widget = QtGui.QWidget()
+        self.central_widget = QtWidgets.QWidget()
         self.setCentralWidget(self.central_widget)
-        self.layout = QtGui.QGridLayout(self.central_widget)
-        self.button = QtGui.QPushButton("Interactive Console")
+        self.layout = QtWidgets.QGridLayout(self.central_widget)
+        self.button = QtWidgets.QPushButton("Interactive Console")
         self.button.clicked.connect(self.buttonClicked)
         self.layout.addWidget(self.button, 0, 0)
         self.layout.addWidget(
-            QtGui.QLabel("WARNING: never run this if you don't\n" +
+            QtWidgets.QLabel("WARNING: never run this if you don't\n" +
                          "have acess to the running terminal."), 1, 0)
         self.show()
 
@@ -456,7 +457,6 @@ class RadarTerminal(Component):
         env = LocalEnvoriment(self.Vradar)
         env["np"] = np
         env["pyart"] = pyart
-        print env.keys()
         banner = ("\n\n"
             "## Interactive field manipulation console\n"
             "##\n"
@@ -472,7 +472,6 @@ class RadarTerminal(Component):
         self.thread.daemon=True
         self.thread.start()
         #self.isRunning = True
-
 
 
 _plugins = [RadarTerminal]

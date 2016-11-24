@@ -201,7 +201,7 @@ background_mode = (
         ]
     )
 
-radarterminal_mode = (
+radar_terminal_mode = (
     [Menu, RadarDisplay, RadarTerminal],
     [
         ((0, 'Vradar'), (1, 'Vradar')),
@@ -257,5 +257,5 @@ modes = [
 #     'action': background_mode},
     {'label': 'Manipulate Radar in Terminal',
      'group': 'terminal',
-     'action': radarterminal_mode},
+     'action': radar_terminal_mode},
     ]
