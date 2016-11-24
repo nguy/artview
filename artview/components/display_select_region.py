@@ -13,7 +13,7 @@ from matplotlib.lines import Line2D
 import csv
 
 from ..core import (Variable, Component, common, VariableChoose,
-                    componentsList, QtGui, QtCore)
+                    componentsList, QtWidgets, QtCore)
 from ..core.points import Points, write_points_csv, read_points_csv
 
 
@@ -49,7 +49,7 @@ class DisplaySelectRegion(Component):
 
     @classmethod
     def guiStart(self, parent=None):
-        #args, independent = _SelectRegionStart().startDisplay()
+        # args, independent = _SelectRegionStart().startDisplay()
         # XXX _SelectRegionStart need updating
         return self(parent=parent), False
 
@@ -184,7 +184,7 @@ class DisplaySelectRegion(Component):
                 path = Path(self.verts)
 
                 # Inform via status bar
-                #self.statusbar.showMessage("Closed Region")
+                # self.statusbar.showMessage("Closed Region")
 
                 # Create Points object
                 func = self.VpathInteriorFunc.value
@@ -212,31 +212,32 @@ class DisplaySelectRegion(Component):
         Open and Save Table methods borrowed from:
         http://stackoverflow.com/questions/12608835/writing-a-qtablewidget-to-a-csv-or-xls
         '''
-        self.SelectRegionbox = QtGui.QGroupBox("Region of Interest Selection")
-        self.rBox_layout = QtGui.QVBoxLayout(self.SelectRegionbox)
+        self.SelectRegionbox = QtWidgets.QGroupBox("Region of Interest Selection")
+        self.rBox_layout = QtWidgets.QVBoxLayout(self.SelectRegionbox)
         self.SelectRegionbox.setLayout(self.rBox_layout)
         self.setCentralWidget(self.SelectRegionbox)
 
         # Add buttons for functionality
-        self.buttonViewTable = QtGui.QPushButton('View Tabular Data', self)
+        self.buttonViewTable = QtWidgets.QPushButton('View Tabular Data', self)
         self.buttonViewTable.setToolTip("View Region Data in popup window")
-        self.buttonOpenTable = QtGui.QPushButton('Open Tabular Data', self)
+        self.buttonOpenTable = QtWidgets.QPushButton('Open Tabular Data', self)
         self.buttonOpenTable.setToolTip("Open a Region Data CSV file")
-        self.buttonSaveTable = QtGui.QPushButton('Save Tabular Data', self)
+        self.buttonSaveTable = QtWidgets.QPushButton('Save Tabular Data', self)
         self.buttonSaveTable.setToolTip("Save a Region Data CSV file")
-        self.buttonStats = QtGui.QPushButton('Stats', self)
+        self.buttonStats = QtWidgets.QPushButton('Stats', self)
         self.buttonStats.setToolTip("Show basic statistics of selected Region")
-        self.buttonHist = QtGui.QPushButton('Plot Histogram', self)
+        self.buttonHist = QtWidgets.QPushButton('Plot Histogram', self)
         self.buttonHist.setToolTip("Plot histogram of selected Region")
-        self.buttonApplyMask = QtGui.QPushButton('Mask Region', self)
+        self.buttonApplyMask = QtWidgets.QPushButton('Mask Region', self)
         self.buttonApplyMask.setToolTip("Apply filter mask to selected Region")
-        self.buttonRestoreMask = QtGui.QPushButton('Restore Mask', self)
+        self.buttonRestoreMask = QtWidgets.QPushButton('Restore Mask', self)
         self.buttonRestoreMask.setToolTip("Restore the original data mask")
-        self.buttonResetSelectRegion = QtGui.QPushButton('Reset Region', self)
+        self.buttonResetSelectRegion = QtWidgets.QPushButton('Reset Region', self)
         self.buttonResetSelectRegion.setToolTip("Clear the Region")
-        self.saveButton = QtGui.QPushButton("Save File", self)
-        self.saveButton.setToolTip("Save modified radar instance to cfradial file")
-        self.buttonHelp = QtGui.QPushButton('Help', self)
+        self.saveButton = QtWidgets.QPushButton("Save File", self)
+        self.saveButton.setToolTip("Save modified radar instance to "
+                                   "cfradial file")
+        self.buttonHelp = QtWidgets.QPushButton('Help', self)
         self.buttonHelp.setToolTip("About using DisplaySelectRegion")
         self.buttonViewTable.clicked.connect(self.viewTable)
         self.buttonOpenTable.clicked.connect(self.openTable)
@@ -264,7 +265,8 @@ class DisplaySelectRegion(Component):
     def _displayHelp(self):
         ''' Launch pop-up help window.'''
         text = (
-            "<b>Using the Display Region of Interest (DisplaySelectRegion) Tool</b><br><br>"
+            "<b>Using the Display Region of Interest (DisplaySelectRegion) "
+            "Tool</b><br><br>"
             "<i>Purpose</i>:<br>"
             "Draw a path in the display window using the Mouse.<br><br>"
             "<i>Functions</i>:<br>"
@@ -295,9 +297,9 @@ class DisplaySelectRegion(Component):
         points = self.Vpoints.value
         if points is not None:
             fsuggest = ('SelectRegion_' + self.Vfield.value + '_' +
-                str(points.axes['x_disp']['data'][:].mean()) + '_' +
-                str(points.axes['y_disp']['data'][:].mean())+'.csv')
-            path = QtGui.QFileDialog.getSaveFileName(
+                        str(points.axes['x_disp']['data'][:].mean()) + '_' +
+                        str(points.axes['y_disp']['data'][:].mean())+'.csv')
+            path = QtWidgets.QFileDialog.getSaveFileName(
                 self, 'Save CSV Table File', fsuggest, 'CSV(*.csv)')
             if not path.isEmpty():
                 write_points_csv(path, points)
@@ -306,7 +308,7 @@ class DisplaySelectRegion(Component):
 
     def openTable(self):
         '''Open a saved table of SelectRegion points from a CSV file.'''
-        path = QtGui.QFileDialog.getOpenFileName(
+        path = QtWidgets.QFileDialog.getOpenFileName(
             self, 'Open File', '', 'CSV(*.csv)')
         if path == '':
             return
@@ -327,7 +329,7 @@ class DisplaySelectRegion(Component):
 
             # Renew region variables, etc.
             self._initialize_SelectRegion_vars()
-        #self.statusbar.showMessage("Select Region with Mouse")
+        # self.statusbar.showMessage("Select Region with Mouse")
         else:
             print("No Region Selection to clear")
         self.Vpoints.change(None)
@@ -383,7 +385,7 @@ class DisplaySelectRegion(Component):
     def saveRadar(self):
         '''Open a dialog box to save radar file.'''
         dirIn, fname = os.path.split(self.Vradar.value.filename)
-        filename = QtGui.QFileDialog.getSaveFileName(
+        filename = QtWidgets.QFileDialog.getSaveFileName(
             self, 'Save Radar File', dirIn)
         filename = str(filename)
         if filename == '' or self.Vradar.value is None:
@@ -396,7 +398,6 @@ class DisplaySelectRegion(Component):
                     radar.fields[field]['data'].mask = np.logical_or(
                         self.Vgatefilter.value._gate_excluded,
                         radar.fields[field]['data'].mask)
-            #self.Vradar.update(True)
             pyart.io.write_cfradial(filename, radar)
             print("Saved %s" % (filename))
 
@@ -415,7 +416,8 @@ class DisplaySelectRegion(Component):
         '''Mount Options and execute
         :py:func:`~pyart.filters.GateFilter`.
         Mask the selected points.
-        Vgatefilter is updated, strong or weak depending on overwriting old fields.
+        Vgatefilter is updated, strong or weak depending on
+        overwriting old fields.
         '''
         mask_ray = self.Vpoints.value.axes['ray_index']['data'][:]
         mask_range = self.Vpoints.value.axes['range_index']['data'][:]
@@ -438,7 +440,8 @@ class DisplaySelectRegion(Component):
         print(np.sum(mask))
         print(np.sum(self.Vgatefilter.value._gate_excluded))
 
-class _SelectRegionStart(QtGui.QDialog):
+
+class _SelectRegionStart(QtWidgets.QDialog):
     '''
     Dialog Class for graphical start of SelectRegion, to be used in guiStart.
     '''
@@ -447,7 +450,7 @@ class _SelectRegionStart(QtGui.QDialog):
         '''Initialize the class to create the interface.'''
         super(_SelectRegionStart, self).__init__()
         self.result = {"display": None}
-        self.layout = QtGui.QGridLayout(self)
+        self.layout = QtWidgets.QGridLayout(self)
         # set window as modal
         self.setWindowModality(QtCore.Qt.ApplicationModal)
 
@@ -463,20 +466,20 @@ class _SelectRegionStart(QtGui.QDialog):
 
     def setupUi(self):
 
-        self.displayCombo = QtGui.QComboBox()
-        self.layout.addWidget(QtGui.QLabel("Select display"), 0, 0)
+        self.displayCombo = QtWidgets.QComboBox()
+        self.layout.addWidget(QtWidgets.QLabel("Select display"), 0, 0)
         self.layout.addWidget(self.displayCombo, 0, 1, 1, 3)
         self.fillCombo()
 
-        self.name = QtGui.QLineEdit("SelectRegion")
-        self.layout.addWidget(QtGui.QLabel("name"), 1, 0)
+        self.name = QtWidgets.QLineEdit("SelectRegion")
+        self.layout.addWidget(QtWidgets.QLabel("name"), 1, 0)
         self.layout.addWidget(self.name, 1, 1, 1, 3)
 
-        self.independent = QtGui.QCheckBox("Independent Window")
+        self.independent = QtWidgets.QCheckBox("Independent Window")
         self.independent.setChecked(True)
         self.layout.addWidget(self.independent, 2, 1, 1, 1)
 
-        self.closeButton = QtGui.QPushButton("Start")
+        self.closeButton = QtWidgets.QPushButton("Start")
         self.closeButton.clicked.connect(self.closeDialog)
         self.layout.addWidget(self.closeButton, 3, 0, 1, 5)
 
@@ -501,7 +504,7 @@ class _SelectRegionStart(QtGui.QDialog):
             return False
 
     def closeDialog(self):
-        self.done(QtGui.QDialog.Accepted)
+        self.done(QtWidgets.QDialog.Accepted)
 
     def startDisplay(self):
         self.exec_()

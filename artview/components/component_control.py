@@ -7,7 +7,7 @@ Class instance for control variables shared between components.
 # Load the needed packages
 from functools import partial
 
-from ..core import Variable, Component, QtGui, QtCore, common, componentsList
+from ..core import Variable, Component, QtWidgets, QtCore, common, componentsList
 
 
 class LinkSharedVariables(Component):
@@ -47,29 +47,27 @@ class LinkSharedVariables(Component):
 
         '''
         super(LinkSharedVariables, self).__init__(name=name, parent=parent)
-        self.central_widget = QtGui.QWidget()
+        self.central_widget = QtWidgets.QWidget()
         self.setCentralWidget(self.central_widget)
-        self.layout = QtGui.QGridLayout(self.central_widget)
+        self.layout = QtWidgets.QGridLayout(self.central_widget)
 
-        self.groupBox = QtGui.QGroupBox("Manage how variables are shared"
+        self.groupBox = QtWidgets.QGroupBox("Manage how variables are shared"
                                         "between components")
         # self.groupBox.setCheckable(True)
         self.layout.addWidget(self.groupBox, 0, 0, 1, -1)
 
-        self.linkingLayout = QtGui.QGridLayout()
+        self.linkingLayout = QtWidgets.QGridLayout()
         self.groupBox.setLayout(self.linkingLayout)
 
-        self.helpButton = QtGui.QPushButton("Help")
+        self.helpButton = QtWidgets.QPushButton("Help")
         self.helpButton.clicked.connect(self._displayHelp)
         self.layout.addWidget(self.helpButton, 1, 0, 1, -1)
 
         if components is None:
             self.components = componentsList
-            QtCore.QObject.connect(
-                self.components, QtCore.SIGNAL("ComponentAppended"),
+            self.components.componentAppended.connect(
                 self._updateComponentList)
-            QtCore.QObject.connect(
-                self.components, QtCore.SIGNAL("ComponentRemoved"),
+            self.components.componentRemoved.connect(
                 self._updateComponentList)
         else:
             self.components = components
@@ -101,8 +99,8 @@ class LinkSharedVariables(Component):
             self.comp1 = self.components[0]
 
         # Select Components buttons
-        self.combo0 = QtGui.QComboBox()
-        self.combo1 = QtGui.QComboBox()
+        self.combo0 = QtWidgets.QComboBox()
+        self.combo1 = QtWidgets.QComboBox()
 
         # Fill buttons
         for component in self.components:
@@ -125,16 +123,16 @@ class LinkSharedVariables(Component):
             for idx, var in enumerate(self.variables):
                 self._addRadioButton(var, idx)
 
-            self.linkingLayout.addWidget(QtGui.QLabel('Linking from'),
+            self.linkingLayout.addWidget(QtWidgets.QLabel('Linking from'),
                                          0, 0, 1, 2)
             self.linkingLayout.addWidget(self.combo1, 0, 2, 1, 1)
-            self.linkingLayout.addWidget(QtGui.QLabel('to'), 0, 3, 1, 1)
+            self.linkingLayout.addWidget(QtWidgets.QLabel('to'), 0, 3, 1, 1)
             self.linkingLayout.addWidget(self.combo0, 0, 4, 1, 1)
         else:
             self.linkingLayout.addWidget(self.combo0, 0, 0)
-            self.linkingLayout.addWidget(QtGui.QLabel('and'), 0, 1)
+            self.linkingLayout.addWidget(QtWidgets.QLabel('and'), 0, 1)
             self.linkingLayout.addWidget(self.combo1, 0, 2)
-            self.linkingLayout.addWidget(QtGui.QLabel('have no common shared'
+            self.linkingLayout.addWidget(QtWidgets.QLabel('have no common shared'
                                                       'variables'), 0, 3)
 
     def linking(self, var, state):
@@ -146,7 +144,7 @@ class LinkSharedVariables(Component):
     def _addRadioButton(self, var, idx):
         '''Add radio button for variable in the given index.'''
 
-        link = QtGui.QCheckBox('is linked')
+        link = QtWidgets.QCheckBox('is linked')
 
         if getattr(self.comp0, var) is getattr(self.comp1, var):
             link.setChecked(True)
@@ -156,22 +154,20 @@ class LinkSharedVariables(Component):
         if self.comp0 is self.comp1:
             link.setDisabled(True)
 
-        self.linkingLayout.addWidget(QtGui.QLabel(var[1::] + ' '),
+        self.linkingLayout.addWidget(QtWidgets.QLabel(var[1::] + ' '),
                                      idx+1, 1, 1, 2)
         self.linkingLayout.addWidget(link, idx+1, 3, 1, 2)
 
         link.stateChanged.connect(partial(self.linking, var))
 
         return
-        radioBox = QtGui.QButtonGroup()
+        radioBox = QtWidgets.QButtonGroup()
         self.radioBoxes.append(radioBox)  # avoid garbage collector
 
-        link = QtGui.QRadioButton()
-        unlink = QtGui.QRadioButton()
-        QtCore.QObject.connect(link, QtCore.SIGNAL("clicked()"),
-                               partial(self.connectVar, var))
-        QtCore.QObject.connect(unlink, QtCore.SIGNAL("clicked()"),
-                               partial(self.disconnectVar, var))
+        link = QtWidgets.QRadioButton()
+        unlink = QtWidgets.QRadioButton()
+        link.clicked.connect(partial(self.connectVar, var))
+        unlink.clicked.connect(partial(self.disconnectVar, var))
         radioBox.addButton(link)
         radioBox.addButton(unlink)
 
@@ -183,8 +179,8 @@ class LinkSharedVariables(Component):
         if self.comp0 is self.comp1:
             unlink.setDisabled(True)
 
-        self.radioLayout.addWidget(QtGui.QLabel(var[1::]), idx+1, 0)
-        self.radioLayout.addWidget(QtGui.QLabel(), idx+1, 0)
+        self.radioLayout.addWidget(QtWidgets.QLabel(var[1::]), idx+1, 0)
+        self.radioLayout.addWidget(QtWidgets.QLabel(), idx+1, 0)
         self.radioLayout.addWidget(link, idx+1, 1)
         self.radioLayout.addWidget(unlink, idx+1, 2)
 
@@ -279,8 +275,8 @@ class LinkSharedVariables(Component):
             "(i.e. is being shared).<br><br>"
             "<i>Functions</i>:<br>"
             "If a box is not checked, checking it will force those Components "
-            "to share that variables, in particular the first one will drops its "
-            "variable and use the one from the second.<br>"
+            "to share that variables, in particular the first one will drops "
+            "its variable and use the one from the second.<br>"
             "If a box is checked, unchecking it will unlink the variable. "
             "That means, the first components "
             "will start to use copy of the variable, so it no longer uses the "

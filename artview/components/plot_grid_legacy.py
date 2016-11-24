@@ -8,15 +8,19 @@ import numpy as np
 import os
 import pyart
 
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as \
-    NavigationToolbar
+from matplotlib.backends import pylab_setup
+backend = pylab_setup()[0]
+FigureCanvasQTAgg = backend.FigureCanvasQTAgg
+NavigationToolbar = backend.NavigationToolbar2QT
+#from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
+#from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as \
+#    NavigationToolbar
 from matplotlib.figure import Figure
 from matplotlib.colors import Normalize as mlabNormalize
 from matplotlib.colorbar import ColorbarBase as mlabColorbarBase
 from matplotlib.pyplot import cm
 
-from ..core import Variable, Component, common, VariableChoose, QtGui, QtCore
+from ..core import Variable, Component, common, VariableChoose, QtWidgets, QtCore
 from ..core.points import Points
 
 # Save image file type and DPI (resolution)
@@ -194,11 +198,11 @@ class GridDisplay(Component):
     def LaunchGUI(self):
         '''Launches a GUI interface.'''
         # Create layout
-        self.layout = QtGui.QGridLayout()
+        self.layout = QtWidgets.QGridLayout()
         self.layout.setSpacing(8)
 
         # Create the widget
-        self.central_widget = QtGui.QWidget()
+        self.central_widget = QtWidgets.QWidget()
         self.setCentralWidget(self.central_widget)
         self._set_figure_canvas()
 
@@ -332,16 +336,16 @@ class GridDisplay(Component):
         for cm_name in self.cm_names:
             cmapAction = self.dispCmapmenu.addAction(cm_name)
             cmapAction.setStatusTip("Use the %s colormap" % cm_name)
-            cmapAction.triggered[()].connect(
+            cmapAction.triggered.connect(
                 lambda cm_name=cm_name: self.cmapSelectCmd(cm_name))
             self.dispCmap.setMenu(self.dispCmapmenu)
 
     def _add_displayBoxUI(self):
         '''Create the Display Options Button menu.'''
-        self.dispButton = QtGui.QPushButton("Display Options")
+        self.dispButton = QtWidgets.QPushButton("Display Options")
         self.dispButton.setToolTip("Adjust display properties")
         self.dispButton.setFocusPolicy(QtCore.Qt.NoFocus)
-        dispmenu = QtGui.QMenu(self)
+        dispmenu = QtWidgets.QMenu(self)
         dispLimits = dispmenu.addAction("Adjust Display Limits")
         dispLimits.setToolTip("Set data, X, and Y range limits")
         dispTitle = dispmenu.addAction("Change Title")
@@ -349,7 +353,7 @@ class GridDisplay(Component):
         dispUnit = dispmenu.addAction("Change Units")
         dispUnit.setToolTip("Change units string")
         self.dispCmap = dispmenu.addAction("Change Colormap")
-        self.dispCmapmenu = QtGui.QMenu("Change Cmap")
+        self.dispCmapmenu = QtWidgets.QMenu("Change Cmap")
         self.dispCmapmenu.setFocusPolicy(QtCore.Qt.NoFocus)
         dispQuickSave = dispmenu.addAction("Quick Save Image")
         dispQuickSave.setShortcut("Ctrl+D")
@@ -359,18 +363,18 @@ class GridDisplay(Component):
         dispSaveFile.setShortcut("Ctrl+S")
         dispSaveFile.setStatusTip("Save Image using dialog")
 
-        dispLimits.triggered[()].connect(self._open_LimsDialog)
-        dispTitle.triggered[()].connect(self._title_input)
-        dispUnit.triggered[()].connect(self._units_input)
-        dispQuickSave.triggered[()].connect(self._quick_savefile)
-        dispSaveFile.triggered[()].connect(self._savefile)
+        dispLimits.triggered.connect(self._open_LimsDialog)
+        dispTitle.triggered.connect(self._title_input)
+        dispUnit.triggered.connect(self._units_input)
+        dispQuickSave.triggered.connect(self._quick_savefile)
+        dispSaveFile.triggered.connect(self._savefile)
 
         self._add_cmaps_to_button()
         self.dispButton.setMenu(dispmenu)
 
     def _add_levelBoxUI(self):
         '''Create the Level Selection ComboBox.'''
-        self.levelBox = QtGui.QComboBox()
+        self.levelBox = QtWidgets.QComboBox()
         self.levelBox.setFocusPolicy(QtCore.Qt.NoFocus)
         self.levelBox.setToolTip(
             "Select level slice to display.\n"
@@ -381,7 +385,7 @@ class GridDisplay(Component):
 
     def _add_fieldBoxUI(self):
         '''Create the Field Selection ComboBox.'''
-        self.fieldBox = QtGui.QComboBox()
+        self.fieldBox = QtWidgets.QComboBox()
         self.fieldBox.setFocusPolicy(QtCore.Qt.NoFocus)
         self.fieldBox.setToolTip("Select variable/field in data file.\n"
                                  "'Field Window' will launch popup.\n")
@@ -389,25 +393,25 @@ class GridDisplay(Component):
 
     def _add_toolsBoxUI(self):
         '''Create the Tools Button menu.'''
-        self.toolsButton = QtGui.QPushButton("Toolbox")
+        self.toolsButton = QtWidgets.QPushButton("Toolbox")
         self.toolsButton.setFocusPolicy(QtCore.Qt.NoFocus)
         self.toolsButton.setToolTip("Choose a tool to apply")
-        toolmenu = QtGui.QMenu(self)
+        toolmenu = QtWidgets.QMenu(self)
         toolZoomPan = toolmenu.addAction("Zoom/Pan")
         toolValueClick = toolmenu.addAction("Click for Value")
         toolSelectRegion = toolmenu.addAction("Select a Region of Interest")
         toolReset = toolmenu.addAction("Reset Tools")
         toolDefault = toolmenu.addAction("Reset File Defaults")
-        toolZoomPan.triggered[()].connect(self.toolZoomPanCmd)
-        toolValueClick.triggered[()].connect(self.toolValueClickCmd)
-        toolSelectRegion.triggered[()].connect(self.toolSelectRegionCmd)
-        toolReset.triggered[()].connect(self.toolResetCmd)
-        toolDefault.triggered[()].connect(self.toolDefaultCmd)
+        toolZoomPan.triggered.connect(self.toolZoomPanCmd)
+        toolValueClick.triggered.connect(self.toolValueClickCmd)
+        toolSelectRegion.triggered.connect(self.toolSelectRegionCmd)
+        toolReset.triggered.connect(self.toolResetCmd)
+        toolDefault.triggered.connect(self.toolDefaultCmd)
         self.toolsButton.setMenu(toolmenu)
 
     def _add_infolabel(self):
         '''Create an information label about the display'''
-        self.infolabel = QtGui.QLabel("Grid: \n"
+        self.infolabel = QtWidgets.QLabel("Grid: \n"
                                       "Field: \n"
                                       "Level: ", self)
         self.infolabel.setStyleSheet('color: red; font: italic 10px')
@@ -551,7 +555,7 @@ class GridDisplay(Component):
 
     def toolZoomPanCmd(self):
         '''Creates and connects to a Zoom/Pan instance.'''
-        from .tools import ZoomPan
+        from .toolbox import ZoomPan
         scale = 1.1
         self.tools['zoompan'] = ZoomPan(
             self.Vlimits, self.ax,
@@ -573,8 +577,8 @@ class GridDisplay(Component):
 
     def toolResetCmd(self):
         '''Reset tools via disconnect.'''
-        from . import tools
-        self.tools = tools.reset_tools(self.tools)
+        from . import toolbox
+        self.tools = toolbox.reset_tools(self.tools)
 
     def toolDefaultCmd(self):
         '''Restore the Display defaults.'''
@@ -606,7 +610,7 @@ class GridDisplay(Component):
         -----
             If Vgrid.value is None, returns None
         '''
-        from .tools import interior_grid
+        from .toolbox import interior_grid
         grid = self.Vgrid.value
         if grid is None:
             return None
@@ -704,7 +708,7 @@ class GridDisplay(Component):
         -----
             If Vgrid.value is None, returns None
         '''
-        from .tools import nearest_point_grid
+        from .toolbox import nearest_point_grid
         grid = self.Vgrid.value
 
         # map center
@@ -980,7 +984,7 @@ class GridDisplay(Component):
         imagename = self.display.generate_filename(
             self.Vfield.value, self.Vlevel.value, ext=IMAGE_EXT)
         file_choices = "PNG (*.png)|*.png"
-        path = unicode(QtGui.QFileDialog.getSaveFileName(
+        path = unicode(QtWidgets.QFileDialog.getSaveFileName(
             self, 'Save file', imagename, file_choices))
         if path:
             self.canvas.print_figure(path, dpi=DPI)
@@ -995,7 +999,7 @@ class GridDisplay(Component):
         return self.ax
 
     def getStatusBar(self):
-        ''' get :py:class:`PyQt4.QtGui.QStatusBar` instance'''
+        ''' get :py:class:`PyQt4.QtWidgets.QStatusBar` instance'''
         return self.statusbar
 
     def getField(self):
@@ -1035,7 +1039,7 @@ class GridDisplay(Component):
             return None
 
 
-class _DisplayStart(QtGui.QDialog):
+class _DisplayStart(QtWidgets.QDialog):
     '''
     Dialog Class for graphical start of display, to be used in guiStart.
     '''
@@ -1044,7 +1048,7 @@ class _DisplayStart(QtGui.QDialog):
         '''Initialize the class to create the interface.'''
         super(_DisplayStart, self).__init__()
         self.result = {}
-        self.layout = QtGui.QGridLayout(self)
+        self.layout = QtWidgets.QGridLayout(self)
         # set window as modal
         self.setWindowModality(QtCore.Qt.ApplicationModal)
 
@@ -1080,46 +1084,46 @@ class _DisplayStart(QtGui.QDialog):
 
     def setupUi(self):
 
-        self.gridButton = QtGui.QPushButton("Find Variable")
+        self.gridButton = QtWidgets.QPushButton("Find Variable")
         self.gridButton.clicked.connect(self.chooseGrid)
-        self.layout.addWidget(QtGui.QLabel("Vgrid"), 0, 0)
+        self.layout.addWidget(QtWidgets.QLabel("Vgrid"), 0, 0)
         self.layout.addWidget(self.gridButton, 0, 1, 1, 3)
 
-        self.plot_type = QtGui.QLineEdit("gridZ")
-        self.layout.addWidget(QtGui.QLabel("plot_type"), 1, 0)
+        self.plot_type = QtWidgets.QLineEdit("gridZ")
+        self.layout.addWidget(QtWidgets.QLabel("plot_type"), 1, 0)
         self.layout.addWidget(self.plot_type, 1, 1, 1, 3)
 
-        self.fieldButton = QtGui.QPushButton("Find Variable")
+        self.fieldButton = QtWidgets.QPushButton("Find Variable")
         self.fieldButton.clicked.connect(self.chooseField)
-        self.layout.addWidget(QtGui.QLabel("Vfield"), 2, 0)
-        self.field = QtGui.QLineEdit("")
+        self.layout.addWidget(QtWidgets.QLabel("Vfield"), 2, 0)
+        self.field = QtWidgets.QLineEdit("")
         self.layout.addWidget(self.field, 2, 1)
-        self.layout.addWidget(QtGui.QLabel("or"), 2, 2)
+        self.layout.addWidget(QtWidgets.QLabel("or"), 2, 2)
         self.layout.addWidget(self.fieldButton, 2, 3)
 
-        self.levelButton = QtGui.QPushButton("Find Variable")
+        self.levelButton = QtWidgets.QPushButton("Find Variable")
         self.levelButton.clicked.connect(self.chooseLevel)
-        self.layout.addWidget(QtGui.QLabel("Vlevel"), 3, 0)
-        self.level = QtGui.QSpinBox()
+        self.layout.addWidget(QtWidgets.QLabel("Vlevel"), 3, 0)
+        self.level = QtWidgets.QSpinBox()
         self.layout.addWidget(self.level, 3, 1)
-        self.layout.addWidget(QtGui.QLabel("or"), 3, 2)
+        self.layout.addWidget(QtWidgets.QLabel("or"), 3, 2)
         self.layout.addWidget(self.levelButton, 3, 3)
 
-        self.limsButton = QtGui.QPushButton("Find Variable")
+        self.limsButton = QtWidgets.QPushButton("Find Variable")
         self.limsButton.clicked.connect(self.chooseLims)
-        self.layout.addWidget(QtGui.QLabel("Vlimits"), 4, 0)
+        self.layout.addWidget(QtWidgets.QLabel("Vlimits"), 4, 0)
         self.layout.addWidget(self.limsButton, 4, 1, 1, 3)
 
-        self.name = QtGui.QLineEdit("GridDisplay")
-        self.layout.addWidget(QtGui.QLabel("name"), 5, 0)
+        self.name = QtWidgets.QLineEdit("GridDisplay")
+        self.layout.addWidget(QtWidgets.QLabel("name"), 5, 0)
         self.layout.addWidget(self.name, 5, 1, 1, 3)
 
-        self.closeButton = QtGui.QPushButton("Start")
+        self.closeButton = QtWidgets.QPushButton("Start")
         self.closeButton.clicked.connect(self.closeDialog)
         self.layout.addWidget(self.closeButton, 6, 0, 1, 5)
 
     def closeDialog(self):
-        self.done(QtGui.QDialog.Accepted)
+        self.done(QtWidgets.QDialog.Accepted)
 
     def startDisplay(self):
         self.exec_()

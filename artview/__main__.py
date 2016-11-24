@@ -12,9 +12,10 @@ try:
 except:
     profiling = False
 
+
 def main(argv):
     if profiling:
-        import cProfile, pstats, StringIO
+        import cProfile, pstats
         pr = cProfile.Profile()
         pr.enable()
 
@@ -24,7 +25,6 @@ def main(argv):
         artview.scripts.scripts[script](DirIn, filename, field)
     else:
         artview.run(DirIn, filename, field)
-
 
     if profiling:
         pr.disable()

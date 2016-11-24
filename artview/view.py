@@ -20,7 +20,7 @@ import os
 import platform
 import pyart
 
-from .core import Variable, QtGui, QtCore
+from .core import Variable, QtWidgets, QtCore
 from .components import (
     RadarDisplay, GridDisplay, Menu, LinkSharedVariables, SelectRegion)
 from .scripts._common import startMainMenu
@@ -66,7 +66,7 @@ def start(DirIn=os.getcwd(), filename=False):
     ''' Start Qt Application and :py:class:`~artview.components.Menu` '''
     global app
     if app is None:
-        app = QtGui.QApplication([])
+        app = QtWidgets.QApplication([])
         if checkifmac():
             app.setAttribute(QtCore.Qt.AA_MacPluginApplication, True)
 
