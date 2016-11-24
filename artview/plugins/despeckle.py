@@ -116,6 +116,9 @@ class Despeckle(Component):
                                 "Vfield": self.NewField,
                                 "Vgatefilter": None}
 
+        # Connect the components
+        self.connectAllVariables()
+
         self.NewRadar(None, True)
 
         self.show()

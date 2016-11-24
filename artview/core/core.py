@@ -259,6 +259,7 @@ class Component(QtWidgets.QMainWindow):
         '''Connect variable 'var' to its slot as defined in
         sharedVariables dictionary.'''
         if var in self.sharedVariables:
+            print(var,self.sharedVariables[var])
             if self.sharedVariables[var] is not None:
                 getattr(self, var).valueChanged.disconnect(
                     self.sharedVariables[var])
