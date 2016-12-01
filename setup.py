@@ -208,12 +208,17 @@ def pre_instalation_tests():
                                 (key, dependencies[key], key, dep.__version__))
 
     # test pyqt4 (non standard version)
-    from PyQt4.Qt import PYQT_VERSION_STR
-    if (parse_version(PYQT_VERSION_STR) <
-        parse_version('4.6')):
-        raise Exception('Missing Dependency: %s >= %s. Has %s, %s' %
-                        ('PyQt4', '4.6', 'PyQt4', PYQT_VERSION_STR))
-
+    try:
+        from PyQt4.Qt import PYQT_VERSION_STR
+        if (parse_version(PYQT_VERSION_STR) <
+            parse_version('4.6')):
+            raise Exception('Missing Dependency: %s >= %s. Has %s, %s' %
+                            ('PyQt4', '4.6', 'PyQt4', PYQT_VERSION_STR))
+    except ImportError:
+        try:
+            from PyQt5.Qt import PYQT_VERSION_STR
+        except ImportError:
+            raise Exception('Missing Dependency: PyQt')
 
 if __name__ == '__main__':
     pre_instalation_tests()
