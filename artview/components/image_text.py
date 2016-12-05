@@ -184,7 +184,8 @@ class ImageTextBox(QtWidgets.QMainWindow):
 
     def updateChoice(self):
         '''Update the Display text box and/or parameters.'''
-        self._check_entries()
+        if not self._check_entries():
+            return
         self.choice = self._get_entries()
 
         # Create the text instance
@@ -268,14 +269,23 @@ class ImageTextBox(QtWidgets.QMainWindow):
     def _check_entries(self):
         '''Check that entries are valid.'''
         try: float(self.ent_xpos.text())
-        except ValueError: core.common.ShowWarning('X-Coord must be float value')
+        except ValueError:
+            core.common.ShowWarning('X-Coord must be float value')
+            return False
         try: float(self.ent_ypos.text())
-        except ValueError: core.common.ShowWarning('Y-Coord must be float value')
+        except ValueError:
+            core.common.ShowWarning('Y-Coord must be float value')
+            return False
         try: int(self.ent_texsz.text())
-        except ValueError: core.common.ShowWarning('Text size must be integer value')
+        except ValueError:
+            core.common.ShowWarning('Text size must be integer value')
+            return False
         if str(self.ent_texst.text()) not in ['normal', 'italic', 'oblique']:
             core.common.ShowWarning(
                 'Text Style must be normal, italic, or oblique')
+            return False
+
+        return True
 
     def _get_entries(self):
         '''Get the entry values and put in dictionary.'''

@@ -16,8 +16,8 @@ import sys
 
 # lets add some magic for the documentation
 QtCore.__doc__ = ("Qt backend to be used all over ARTview")
-QtGui.__doc__ = ("Qt backend to be used all over ARTview`")
-QtWidgets.__doc__ = ("Qt backend to be used all over ARTview`, "
+QtGui.__doc__ = ("Qt backend to be used all over ARTview")
+QtWidgets.__doc__ = ("Qt backend to be used all over ARTview, "
                      "for PyQt4 is a copy of QtGui")
 
 # keep track of all components, this is not fundamental, but may be useful
