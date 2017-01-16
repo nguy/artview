@@ -128,59 +128,69 @@ class FileNavigator(Component):
                                              "arrow_go_next_icon.png"]))
         pixlast = QtGui.QPixmap(os.sep.join([parentdir, 'icons',
                                              "arrow_go_last_icon.png"]))
-        pixconfig = QtGui.QPixmap(os.sep.join(
+        pixsave = QtGui.QPixmap(os.sep.join(
             [parentdir, 'icons',
             "save_icon.png"]))
+        pixopen = QtGui.QPixmap(os.sep.join(
+            [parentdir, 'icons',
+            "open_icon.png"]))
 
-        self.configButton = QtWidgets.QPushButton(QtGui.QIcon(pixconfig),"")
-        self.layout.addWidget(self.configButton, 0, 0)
+        self.openButton = QtWidgets.QPushButton(QtGui.QIcon(pixopen),"")
+        self.layout.addWidget(self.openButton, 0, 0)
+
+        self.saveButton = QtWidgets.QPushButton(QtGui.QIcon(pixsave),"")
+        self.layout.addWidget(self.saveButton, 0, 1)
 
         self.act_first = QtWidgets.QToolButton()
         self.act_first.setIcon(QtGui.QIcon(pixfirst))
         self.act_first.clicked.connect(self.goto_first_file)
-        self.layout.addWidget(self.act_first, 0, 1)
+        self.layout.addWidget(self.act_first, 0, 2)
 
         self.act_prev = QtWidgets.QToolButton()
         self.act_prev.setIcon(QtGui.QIcon(pixprev))
         self.act_prev.clicked.connect(self.goto_prev_file)
-        self.layout.addWidget(self.act_prev, 0, 2)
+        self.layout.addWidget(self.act_prev, 0, 3)
 
         self.act_next = QtWidgets.QToolButton()
         self.act_next.setIcon(QtGui.QIcon(pixnext))
         self.act_next.clicked.connect(self.goto_next_file)
-        self.layout.addWidget(self.act_next, 0, 3)
+        self.layout.addWidget(self.act_next, 0, 4)
 
         self.act_last = QtWidgets.QToolButton()
         self.act_last.setIcon(QtGui.QIcon(pixlast))
         self.act_last.clicked.connect(self.goto_last_file)
-        self.layout.addWidget(self.act_last, 0, 4)
+        self.layout.addWidget(self.act_last, 0, 5)
 
-        self.configMenu = QtWidgets.QMenu()
-        self.configButton.setMenu(self.configMenu)
-        self.directoryMenu = self.configMenu.addMenu("Directory:")
+        self.openMenu = QtWidgets.QMenu()
+        self.openButton.setMenu(self.openMenu)
+
+        self.directoryMenu = self.openMenu.addMenu("Directory:")
         self.directoryAction = self.directoryMenu.addAction("")
-        self.fileMenu = self.configMenu.addMenu("File:")
+        self.fileMenu = self.openMenu.addMenu("File:")
         self.fileAction = self.fileMenu.addAction("")
 
         action = QtWidgets.QAction("Open", self,
                                triggered=lambda: self._openfile())
-        self.configMenu.addAction(action)
+        self.openMenu.addAction(action)
+
+        self.saveMenu = QtWidgets.QMenu()
+        self.saveButton.setMenu(self.saveMenu)
 
         self.saveRadarAction = QtWidgets.QAction("Save Radar", self,
                                              triggered=self.saveRadar)
         if self.Vradar.value is None:
             self.saveRadarAction.setEnabled(False)
-        self.configMenu.addAction(self.saveRadarAction)
+        self.saveMenu.addAction(self.saveRadarAction)
 
         self.saveGridAction = QtWidgets.QAction("Save Grid", self,
                                             triggered=self.saveGrid)
         if self.Vgrid.value is None:
             self.saveGridAction.setEnabled(False)
-        self.configMenu.addAction(self.saveGridAction)
+        self.saveMenu.addAction(self.saveGridAction)
 
         action = QtWidgets.QAction("Help", self,
                                triggered=self._show_help)
-        self.configMenu.addAction(action)
+        self.openMenu.addAction(action)
 
         self.layout.addItem(QtWidgets.QSpacerItem(
             0, 0, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding),
