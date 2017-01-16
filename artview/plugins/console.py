@@ -15,8 +15,8 @@ sys.path.insert(0, path)
 
 import artview
 
-from ..core import (Component, Variable, common, QtGui,
-                    QtCore, componentsList)
+from ..core import (Component, Variable, common, QtCore,
+                    QtGui, QtWidgets, componentsList)
 
 
 class AccessTerminal(Component):
@@ -46,14 +46,14 @@ class AccessTerminal(Component):
             instance.
         '''
         super(AccessTerminal, self).__init__(name=name, parent=parent)
-        self.central_widget = QtGui.QWidget()
+        self.central_widget = QtWidgets.QWidget()
         self.setCentralWidget(self.central_widget)
-        self.layout = QtGui.QGridLayout(self.central_widget)
-        self.button = QtGui.QPushButton("Interactive Console")
+        self.layout = QtWidgets.QGridLayout(self.central_widget)
+        self.button = QtWidgets.QPushButton("Interactive Console")
         self.button.clicked.connect(self.runCode)
         self.layout.addWidget(self.button, 0, 0)
         self.layout.addWidget(
-            QtGui.QLabel("WARNING: never run this if you don't\n" +
+            QtWidgets.QLabel("WARNING: never run this if you don't\n" +
                          "have acess to the running terminal."), 1, 0)
         self.show()
 

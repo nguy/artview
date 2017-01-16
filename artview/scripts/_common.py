@@ -6,7 +6,7 @@ auxiliary functions for scripts
 import pyart
 from ..components import (Menu, RadarDisplay, GridDisplay, LinkSharedVariables,
                           SelectRegion, PointsDisplay)
-from ..core import QtGui, QtCore
+from ..core import QtWidgets, QtCore
 
 
 def _add_all_advanced_tools(menu):
@@ -14,8 +14,8 @@ def _add_all_advanced_tools(menu):
     # add graphical starts
     for comp in [LinkSharedVariables, RadarDisplay, GridDisplay,
                  SelectRegion, PointsDisplay]:
-        action = QtGui.QAction(comp.__name__, menu)
-        action.triggered[()].connect(
+        action = QtWidgets.QAction(comp.__name__, menu)
+        action.triggered.connect(
             lambda comp=comp: menu.startComponent(comp))
         menu.addMenuAction(("File", "Plugins", ), action)
 
@@ -23,8 +23,8 @@ def _add_all_advanced_tools(menu):
     try:
         from .. import plugins
         for plugin in plugins._plugins.values():
-            action = QtGui.QAction(plugin.__name__, menu)
-            action.triggered[()].connect(
+            action = QtWidgets.QAction(plugin.__name__, menu)
+            action.triggered.connect(
                 lambda plugin=plugin: menu.startComponent(plugin))
             menu.addMenuAction(("File", "Plugins", ), action)
     except:
@@ -66,30 +66,32 @@ def _parse_field(container, field):
 
     return field
 
-
 def startMainMenu(DirIn=None, filename=None):
 
     MainMenu = Menu(DirIn, filename, mode=("Radar", "Grid"))
 
-    try:
-        from ..modes import modes
-        group_names = [m['group'] for m in modes]
-        seen = set()
-        group_names = [x for x in group_names if x not in seen and not seen.add(x)]
-        groups = [[m for m in modes if m['group']==name] for name in group_names]
-        for group in groups:
-            for mode in group:
-                action = QtGui.QAction(mode['label'], MainMenu)
-                action.triggered[()].connect(
-                    lambda mode=mode: MainMenu.change_mode(mode['action']))
-                if mode['group'] != 'io':
-                    MainMenu.addMenuAction(("Modes",), action)
-                else:
-                    MainMenu.addMenuAction(("File",), action)
-            MainMenu.addMenuSeparator(("Modes",))
-    except:
-        import warnings
-        warnings.warn("Loading Modes Fail")
+#    try:
+    from ..modes import modes
+    group_names = [m['group'] for m in modes]
+    seen = set()
+    group_names = [x for x in group_names
+                    if x not in seen and not seen.add(x)]
+    groups = [[m for m in modes
+                if m['group']==name] for name in group_names]
+    for group in groups:
+        for mode in group:
+            action = QtWidgets.QAction(mode['label'], MainMenu)
+            if mode['group'] != 'io':
+                MainMenu.addMenuAction(("Modes",), action)
+            else:
+                MainMenu.addMenuAction(("File",), action)
+            #action.triggered.connect(slot)
+            action.triggered.connect(
+                lambda checked,mode=mode: MainMenu.change_mode(mode['action']))
+        MainMenu.addMenuSeparator(("Modes",))
+#    except:
+#        import warnings
+ #       warnings.warn("Loading Modes Fail")
 
     _add_all_advanced_tools(MainMenu)
 

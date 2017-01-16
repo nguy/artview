@@ -4,11 +4,13 @@ cmap_value.py
 
 # Load the needed packages
 import numpy as np
-from PyQt4 import QtGui, QtCore
+from ..core import QtWidgets, QtCore
 
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
+from matplotlib.backends import pylab_setup
+FigureCanvasQTAgg = pylab_setup()[0].FigureCanvasQTAgg
+#from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
 from matplotlib import colors
 
 import pyart
@@ -34,9 +36,9 @@ class ColormapEdit(core.Component):
         '''
         super(ColormapEdit, self).__init__(name=name, parent=parent)
 
-        self.central_widget = QtGui.QWidget()
+        self.central_widget = QtWidgets.QWidget()
         self.setCentralWidget(self.central_widget)
-        self.layout = QtGui.QGridLayout(self.central_widget)
+        self.layout = QtWidgets.QGridLayout(self.central_widget)
 
         if Vcolormap is None:
             self.Vcolormap = core.Variable(None)
@@ -65,7 +67,7 @@ class ColormapEdit(core.Component):
         '''
         Mount the component layout.
         '''
-        self.norm_type = QtGui.QComboBox()
+        self.norm_type = QtWidgets.QComboBox()
         self.norm_type.addItem('None (linear)')
         self.norm_type.addItem('Linear')
         self.norm_type.addItem('Logarithmic')
@@ -74,38 +76,38 @@ class ColormapEdit(core.Component):
         self.norm_type.addItem('Discrete')
         self.norm_type.activated[int].connect(self.change_norm)
 
-        self.ent_vmax = QtGui.QLineEdit()
+        self.ent_vmax = QtWidgets.QLineEdit()
         self.ent_vmax.editingFinished.connect(self.update_colormap)
-        self.ent_vmin = QtGui.QLineEdit()
+        self.ent_vmin = QtWidgets.QLineEdit()
         self.ent_vmin.editingFinished.connect(self.update_colormap)
 
-        self.ent_linthresh = QtGui.QLineEdit('0.1')
+        self.ent_linthresh = QtWidgets.QLineEdit('0.1')
         self.ent_linthresh.editingFinished.connect(self.update_colormap)
-        self.ent_linscale = QtGui.QLineEdit('1')
+        self.ent_linscale = QtWidgets.QLineEdit('1')
         self.ent_linscale.editingFinished.connect(self.update_colormap)
 
-        self.ent_gamma = QtGui.QLineEdit('1')
+        self.ent_gamma = QtWidgets.QLineEdit('1')
         self.ent_gamma.editingFinished.connect(self.update_colormap)
 
-        self.lock_box = QtGui.QCheckBox('lock colormap')
+        self.lock_box = QtWidgets.QCheckBox('lock colormap')
         self.lock_box.stateChanged.connect(self.update_colormap)
         self.layout.addWidget(self.lock_box, 6, 0, 1, 2)
 
-        self.select_button = QtGui.QPushButton("Select cmap")
+        self.select_button = QtWidgets.QPushButton("Select cmap")
         self.select_button.clicked.connect(self.select_cmap)
 
-        self.apply_button = QtGui.QPushButton("Apply")
+        self.apply_button = QtWidgets.QPushButton("Apply")
         self.apply_button.clicked.connect(self.apply)
 
-        self.add_button = QtGui.QPushButton("+ bound")
+        self.add_button = QtWidgets.QPushButton("+ bound")
         self.add_button.clicked.connect(self.add_bound)
 
-        self.remove_button = QtGui.QPushButton("- bound")
+        self.remove_button = QtWidgets.QPushButton("- bound")
         self.remove_button.setEnabled(False)
         self.remove_button.clicked.connect(self.remove_bound)
 
         self.ent_bounds = [self.ent_vmax,
-                           QtGui.QLineEdit('0'),
+                           QtWidgets.QLineEdit('0'),
                            self.ent_vmin,
                            ]
 
@@ -120,16 +122,16 @@ class ColormapEdit(core.Component):
                 self.layout.removeWidget(widget)
                 widget.setParent(None)
 
-        self.layout.addWidget(QtGui.QLabel("Normalize"), 0, 0, 1, 1)
+        self.layout.addWidget(QtWidgets.QLabel("Normalize"), 0, 0, 1, 1)
         self.layout.addWidget(self.norm_type, 0, 1, 1, 3)
         self.layout.addWidget(self.select_button, 1, 2, 1, 1)
 
         idx = self.norm_type.currentIndex()
         if idx in [0, 1, 2, 3, 4]:
-            self.layout.addWidget(QtGui.QLabel("Vmax"), 1, 0, 1, 1)
+            self.layout.addWidget(QtWidgets.QLabel("Vmax"), 1, 0, 1, 1)
             self.layout.addWidget(self.ent_vmax, 1, 1, 1, 1)
 
-            self.layout.addWidget(QtGui.QLabel("Vmin"), 5, 0, 1, 1)
+            self.layout.addWidget(QtWidgets.QLabel("Vmin"), 5, 0, 1, 1)
             self.layout.addWidget(self.ent_vmin, 5, 1, 1, 1)
 
             self.layout.addWidget(self.canvas, 2, 2, 3, 1)
@@ -138,16 +140,16 @@ class ColormapEdit(core.Component):
             self.layout.addWidget(self.lock_box, 6, 0, 1, 2)
             self.layout.addWidget(self.apply_button, 6, 2, 1, 1)
         elif idx == 3:
-            self.layout.addWidget(QtGui.QLabel("linthresh"), 6, 0, 1, 1)
+            self.layout.addWidget(QtWidgets.QLabel("linthresh"), 6, 0, 1, 1)
             self.layout.addWidget(self.ent_linthresh, 6, 1, 1, 1)
 
-            self.layout.addWidget(QtGui.QLabel("linscale"), 7, 0, 1, 1)
+            self.layout.addWidget(QtWidgets.QLabel("linscale"), 7, 0, 1, 1)
             self.layout.addWidget(self.ent_linscale, 7, 1, 1, 1)
 
             self.layout.addWidget(self.lock_box, 8, 0, 1, 2)
             self.layout.addWidget(self.apply_button, 8, 2, 1, 1)
         elif idx == 4:
-            self.layout.addWidget(QtGui.QLabel("gamma"), 6, 0, 1, 1)
+            self.layout.addWidget(QtWidgets.QLabel("gamma"), 6, 0, 1, 1)
             self.layout.addWidget(self.ent_gamma, 6, 1, 1, 1)
 
             self.layout.addWidget(self.lock_box, 7, 0, 1, 2)
@@ -252,7 +254,7 @@ class ColormapEdit(core.Component):
         return [float(ent.text()) for ent in reversed(self.ent_bounds)]
 
     def add_bound(self):
-        self.ent_bounds.insert(-1, QtGui.QLineEdit(self.ent_bounds[-1].text()))
+        self.ent_bounds.insert(-1, QtWidgets.QLineEdit(self.ent_bounds[-1].text()))
         self.ent_bounds[-1].editingFinished.connect(self.update_colormap)
         self.remove_button.setEnabled(True)
         self.set_layout()

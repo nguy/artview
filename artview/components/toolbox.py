@@ -10,7 +10,7 @@ import warnings
 import csv
 
 from . import limits
-from ..core import common, QtGui, QtCore
+from ..core import common, QtWidgets, QtCore
 
 from matplotlib.lines import Line2D
 from matplotlib.path import Path
@@ -69,7 +69,7 @@ def reset_tools(tooldict):
 ####################################
 
 
-class ValueClick(QtGui.QMainWindow):
+class ValueClick(QtWidgets.QMainWindow):
     '''
     Class for retrieving value by mouse click on display.
     '''
@@ -107,8 +107,7 @@ class ValueClick(QtGui.QMainWindow):
         self.statusbar = display.getStatusBar()
         self.fig = self.ax.get_figure()
         self.plot_type = display.plot_type
-        QtCore.QObject.connect(
-            self.Vradar, QtCore.SIGNAL("ValueChanged"), self.NewRadar)
+        self.Vradar.valueChanged.connect(self.NewRadar)
 
         self.msg = "Click to display value"
 
@@ -198,7 +197,7 @@ class ValueClick(QtGui.QMainWindow):
 ##########################
 
 
-class ZoomPan(QtGui.QMainWindow):
+class ZoomPan(QtWidgets.QMainWindow):
     '''
     Class for Zoom and Pan of display.
     Activated through mouse drags and wheel movements.

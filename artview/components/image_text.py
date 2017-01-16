@@ -4,12 +4,12 @@ Routines for Display modifications and additions.
 """
 
 # Load the needed packages
-from ..core import QtGui, QtCore
+from ..core import QtGui, QtCore, QtWidgets
 from .. import core
 from datetime import datetime as dt
 
 
-class ImageTextBox(QtGui.QMainWindow):
+class ImageTextBox(QtWidgets.QMainWindow):
     '''
     Interface for executing :py:class:`ImageTextBox`.
     '''
@@ -27,18 +27,18 @@ class ImageTextBox(QtGui.QMainWindow):
             If None, then Qt owns, otherwise associated w/ parent PyQt instance
         '''
         super(ImageTextBox, self).__init__(parent=parent)
-        self.central_widget = QtGui.QWidget()
+        self.central_widget = QtWidgets.QWidget()
         self.setCentralWidget(self.central_widget)
-        self.layout = QtGui.QGridLayout(self.central_widget)
+        self.layout = QtWidgets.QGridLayout(self.central_widget)
 
         self.display = display
 
-        self.generalLayout = QtGui.QVBoxLayout()
+        self.generalLayout = QtWidgets.QVBoxLayout()
         # Set the Variable layout
         self.generalLayout.addWidget(self.ButtonUI(), 2)
         self.generalLayout.addWidget(self.EntryUI(), 1)
         self.generalLayout.addWidget(self.TextUI(), 0)
-        self.generalLayout.layout().setDirection(QtGui.QBoxLayout.BottomToTop)
+        self.generalLayout.setDirection(QtWidgets.QBoxLayout.BottomToTop)
 
         self.layout.addLayout(self.generalLayout, 0, 0, 1, 2)
 
@@ -55,11 +55,11 @@ class ImageTextBox(QtGui.QMainWindow):
         Mount the Text layout.
         User may select another Text instance
         '''
-        groupBox = QtGui.QGroupBox(self.display.name + " Image Text Selection")
-        gBox_layout = QtGui.QGridLayout()
+        groupBox = QtWidgets.QGroupBox(self.display.name + " Image Text Selection")
+        gBox_layout = QtWidgets.QGridLayout()
 
-        self.dispCombo = QtGui.QComboBox()
-        gBox_layout.addWidget(QtGui.QLabel("Select Text Instance"), 0, 0)
+        self.dispCombo = QtWidgets.QComboBox()
+        gBox_layout.addWidget(QtWidgets.QLabel("Select Text Instance"), 0, 0)
         gBox_layout.addWidget(self.dispCombo, 0, 1, 1, 1)
 
         self.dispChoiceList = []
@@ -81,24 +81,24 @@ class ImageTextBox(QtGui.QMainWindow):
 
     def ButtonUI(self):
         '''Mount the Action layout.'''
-        groupBox = QtGui.QGroupBox("Select Action")
-        gBox_layout = QtGui.QGridLayout()
+        groupBox = QtWidgets.QGroupBox("Select Action")
+        gBox_layout = QtWidgets.QGridLayout()
 
-        self.helpButton = QtGui.QPushButton("Help")
+        self.helpButton = QtWidgets.QPushButton("Help")
         self.helpButton.clicked.connect(self._displayHelp)
         gBox_layout.addWidget(self.helpButton, 0, 0, 1, 1)
 
-        self.updateButton = QtGui.QPushButton("Update Text")
+        self.updateButton = QtWidgets.QPushButton("Update Text")
         self.updateButton.clicked.connect(self.updateChoice)
         self.updateButton.setToolTip('Display relevant python script')
         gBox_layout.addWidget(self.updateButton, 0, 1, 1, 1)
 
-        self.delButton = QtGui.QPushButton("Delete Text")
+        self.delButton = QtWidgets.QPushButton("Delete Text")
         self.delButton.clicked.connect(self.delDispText)
         self.delButton.setToolTip('Save cfRadial data file')
         gBox_layout.addWidget(self.delButton, 1, 0, 1, 1)
 
-        self.clrButton = QtGui.QPushButton("Clear All Text")
+        self.clrButton = QtWidgets.QPushButton("Clear All Text")
         self.clrButton.clicked.connect(self.clrDispText)
         self.clrButton.setToolTip('Remove applied filters')
         gBox_layout.addWidget(self.clrButton, 1, 1, 1, 1)
@@ -109,30 +109,30 @@ class ImageTextBox(QtGui.QMainWindow):
 
     def EntryUI(self):
         '''Mount text entry layout.'''
-        groupBox = QtGui.QGroupBox("Text Entry and Position")
+        groupBox = QtWidgets.QGroupBox("Text Entry and Position")
         # groupBox.setFlat(True)
-        gBox_layout = QtGui.QGridLayout()
+        gBox_layout = QtWidgets.QGridLayout()
 
         # Set up the Labels for entry
-        tex = QtGui.QLabel("Label Text")
-        xpos = QtGui.QLabel("X-Coord")
-        ypos = QtGui.QLabel("Y-Coord")
-        texc = QtGui.QLabel("Color")
-        texsz = QtGui.QLabel("Font Size")
-        texst = QtGui.QLabel("Style")
+        tex = QtWidgets.QLabel("Label Text")
+        xpos = QtWidgets.QLabel("X-Coord")
+        ypos = QtWidgets.QLabel("Y-Coord")
+        texc = QtWidgets.QLabel("Color")
+        texsz = QtWidgets.QLabel("Font Size")
+        texst = QtWidgets.QLabel("Style")
 
         # Set up the Entry Line Entries / Add text
-        self.ent_tex = QtGui.QLineEdit('')
+        self.ent_tex = QtWidgets.QLineEdit('')
         self.ent_tex.setToolTip('Label box text')
-        self.ent_xpos = QtGui.QLineEdit('')
+        self.ent_xpos = QtWidgets.QLineEdit('')
         self.ent_xpos.setToolTip('X position of text on display')
-        self.ent_ypos = QtGui.QLineEdit('')
+        self.ent_ypos = QtWidgets.QLineEdit('')
         self.ent_ypos.setToolTip('Y position of text on display')
-        self.ent_texc = QtGui.QLineEdit('')
+        self.ent_texc = QtWidgets.QLineEdit('')
         self.ent_texc.setToolTip('Label text color')
-        self.ent_texsz = QtGui.QLineEdit('')
+        self.ent_texsz = QtWidgets.QLineEdit('')
         self.ent_texsz.setToolTip('Label text font size')
-        self.ent_texst = QtGui.QLineEdit('')
+        self.ent_texst = QtWidgets.QLineEdit('')
         self.ent_texst.setToolTip('Label text font style: normal, '
                                   'italic, or bold')
 
@@ -184,7 +184,8 @@ class ImageTextBox(QtGui.QMainWindow):
 
     def updateChoice(self):
         '''Update the Display text box and/or parameters.'''
-        self._check_entries()
+        if not self._check_entries():
+            return
         self.choice = self._get_entries()
 
         # Create the text instance
@@ -267,19 +268,24 @@ class ImageTextBox(QtGui.QMainWindow):
 
     def _check_entries(self):
         '''Check that entries are valid.'''
-        if not isinstance(str(self.ent_tex.text()), str):
-            core.common.ShowWarning('Label Text must be string entry')
-        if not isinstance(float(self.ent_xpos.text()), float):
+        try: float(self.ent_xpos.text())
+        except ValueError:
             core.common.ShowWarning('X-Coord must be float value')
-        if not isinstance(float(self.ent_ypos.text()), float):
+            return False
+        try: float(self.ent_ypos.text())
+        except ValueError:
             core.common.ShowWarning('Y-Coord must be float value')
-        if not isinstance(str(self.ent_texc.text()), str):
-            core.common.ShowWarning('Color must be a valid string ')
-        if not isinstance(int(self.ent_texsz.text()), int):
+            return False
+        try: int(self.ent_texsz.text())
+        except ValueError:
             core.common.ShowWarning('Text size must be integer value')
+            return False
         if str(self.ent_texst.text()) not in ['normal', 'italic', 'oblique']:
             core.common.ShowWarning(
                 'Text Style must be normal, italic, or oblique')
+            return False
+
+        return True
 
     def _get_entries(self):
         '''Get the entry values and put in dictionary.'''

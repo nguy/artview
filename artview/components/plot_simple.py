@@ -8,15 +8,19 @@ import numpy as np
 import os
 import pyart
 
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as \
-    NavigationToolbar
+from matplotlib.backends import pylab_setup
+backend = pylab_setup()[0]
+FigureCanvasQTAgg = backend.FigureCanvasQTAgg
+NavigationToolbar = backend.NavigationToolbar2QT
+#from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
+#from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as \
+#    NavigationToolbar
 from matplotlib.figure import Figure
 from matplotlib.colors import Normalize as mlabNormalize
 from matplotlib.colorbar import ColorbarBase as mlabColorbarBase
 from matplotlib.pyplot import cm
 
-from ..core import Variable, Component, common, VariableChoose, QtGui, QtCore
+from ..core import Variable, Component, common, VariableChoose, QtWidgets, QtCore
 
 # Save image file type and DPI (resolution)
 IMAGE_EXT = 'png'
@@ -91,11 +95,11 @@ class PlotDisplay(Component):
     def LaunchGUI(self):
         '''Launches a GUI interface.'''
         # Create layout
-        self.layout = QtGui.QGridLayout()
+        self.layout = QtWidgets.QGridLayout()
         self.layout.setSpacing(4)
 
         # Create the widget
-        self.central_widget = QtGui.QWidget()
+        self.central_widget = QtWidgets.QWidget()
         self.setCentralWidget(self.central_widget)
         self._set_figure_canvas()
 
@@ -161,10 +165,10 @@ class PlotDisplay(Component):
 
     def _add_displayBoxUI(self):
         '''Create the Display Options Button menu.'''
-        self.dispButton = QtGui.QPushButton("Display Options")
+        self.dispButton = QtWidgets.QPushButton("Display Options")
         self.dispButton.setToolTip("Adjust display properties")
         self.dispButton.setFocusPolicy(QtCore.Qt.NoFocus)
-        dispmenu = QtGui.QMenu(self)
+        dispmenu = QtWidgets.QMenu(self)
         dispLimits = dispmenu.addAction("Adjust Display Limits")
         dispLimits.setToolTip("Set data, X, and Y range limits")
         dispTitle = dispmenu.addAction("Change Title")
@@ -173,7 +177,7 @@ class PlotDisplay(Component):
         dispUnit.setToolTip("Change units string")
 #        toolZoomPan = dispmenu.addAction("Zoom/Pan")
         self.dispCmap = dispmenu.addAction("Change Colormap")
-        self.dispCmapmenu = QtGui.QMenu("Change Cmap")
+        self.dispCmapmenu = QtWidgets.QMenu("Change Cmap")
         self.dispCmapmenu.setFocusPolicy(QtCore.Qt.NoFocus)
         dispSaveFile = dispmenu.addAction("Save Image")
         dispSaveFile.setShortcut("Ctrl+S")
@@ -406,7 +410,7 @@ class PlotDisplay(Component):
     def _savefile(self, PTYPE=IMAGE_EXT):
         '''Save the current display using PyQt dialog interface.'''
         file_choices = "PNG (*.png)|*.png"
-        path = unicode(QtGui.QFileDialog.getSaveFileName(
+        path = unicode(QtWidgets.QFileDialog.getSaveFileName(
             self, 'Save file', ' ', file_choices))
         if path:
             self.canvas.print_figure(path, dpi=DPI)

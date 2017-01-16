@@ -8,11 +8,11 @@ Class instance for finding and choosing shared variable
 # Load the needed packages
 from functools import partial
 
-from .core import componentsList, QtGui, QtCore
+from .core import componentsList, QtWidgets, QtCore
 from . import common
 
 
-class VariableChoose(QtGui.QDialog):
+class VariableChoose(QtWidgets.QDialog):
     '''
     Class instance for finding and choosing component and shared variable
     from other components.
@@ -29,20 +29,14 @@ class VariableChoose(QtGui.QDialog):
         self.result = None
         self.compSelect = compSelect
         self.varSelect = varSelect
-        # self.central_widget = QtGui.QWidget()
+        # self.central_widget = QtWidgets.QWidget()
         # self.setCentralWidget(self.central_widget)
-        self.layout = QtGui.QGridLayout(self)
+        self.layout = QtWidgets.QGridLayout(self)
         # set window as modal
         self.setWindowModality(QtCore.Qt.ApplicationModal)
 
         if components is None:
             self.components = componentsList[:]
-#            QtCore.QObject.connect(
-#                self.components, QtCore.SIGNAL("ComponentAppended"),
-#                self._updateComponentList)
-#            QtCore.QObject.connect(
-#                self.components, QtCore.SIGNAL("ComponentRemoved"),
-#                self._updateComponentList)
         else:
             self.components = components[:]
 
@@ -70,17 +64,18 @@ class VariableChoose(QtGui.QDialog):
         self.model = QtGui.QStandardItemModel()
         self.addItems()
 
-        self.treeView = QtGui.QTreeView()
+        self.treeView = QtWidgets.QTreeView()
         self.treeView.setModel(self.model)
-        self.treeView.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.treeView.setEditTriggers(
+            QtWidgets.QAbstractItemView.NoEditTriggers)
         self.treeView.setHeaderHidden(True)
         self.layout.addWidget(self.treeView, 0, 0, 1, 2)
 
-        self.button = QtGui.QPushButton("Cancel")
+        self.button = QtWidgets.QPushButton("Cancel")
         self.button.clicked.connect(self.cancel)
         self.layout.addWidget(self.button, 1, 0)
 
-        self.button = QtGui.QPushButton("Select")
+        self.button = QtWidgets.QPushButton("Select")
         self.button.clicked.connect(self.select)
         self.layout.addWidget(self.button, 1, 1)
 
@@ -96,7 +91,7 @@ class VariableChoose(QtGui.QDialog):
 
     def cancel(self):
         self.result = None
-        self.done(QtGui.QDialog.Rejected)
+        self.done(QtWidgets.QDialog.Rejected)
 
     def select(self):
         selection = self.treeView.selectedIndexes()
@@ -112,7 +107,7 @@ class VariableChoose(QtGui.QDialog):
                 row = item.row()
                 component = item.data().toString()
                 self.result = (str(component), self.components[row], None)
-            self.done(QtGui.QDialog.Accepted)
+            self.done(QtWidgets.QDialog.Accepted)
         else:
             self.cancel()
 

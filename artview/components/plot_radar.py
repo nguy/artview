@@ -8,15 +8,20 @@ import numpy as np
 import os
 import pyart
 
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as \
-    NavigationToolbar
+from matplotlib.backends import pylab_setup
+backend = pylab_setup()[0]
+FigureCanvasQTAgg = backend.FigureCanvasQTAgg
+NavigationToolbar = backend.NavigationToolbar2QT
+#from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
+#from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as \
+#    NavigationToolbar
 from matplotlib.figure import Figure
 from matplotlib.colors import Normalize as mlabNormalize
 from matplotlib.colorbar import ColorbarBase as mlabColorbarBase
 from matplotlib.pyplot import cm
 
-from ..core import (Variable, Component, common, VariableChoose, QtGui, QtCore)
+from ..core import (Variable, Component, common, VariableChoose, QtCore,
+                    QtGui, QtWidgets)
 from ..core.points import Points
 
 # Save image file type and DPI (resolution)
@@ -185,11 +190,11 @@ class RadarDisplay(Component):
     def LaunchGUI(self):
         '''Launches a GUI interface.'''
         # Create layout
-        self.layout = QtGui.QGridLayout()
+        self.layout = QtWidgets.QGridLayout()
         self.layout.setSpacing(8)
 
         # Create the widget
-        self.central_widget = QtGui.QWidget()
+        self.central_widget = QtWidgets.QWidget()
         self.setCentralWidget(self.central_widget)
         self._set_figure_canvas()
 
@@ -338,8 +343,8 @@ class RadarDisplay(Component):
         for RngRing in self.RngRingList:
             RingAction = self.dispRngRingmenu.addAction(RngRing)
             RingAction.setStatusTip("Apply Range Rings every %s" % RngRing)
-            RingAction.triggered[()].connect(
-                lambda RngRing=RngRing: self.RngRingSelectCmd(RngRing))
+            RingAction.triggered.connect(
+                lambda check, RngRing=RngRing: self.RngRingSelectCmd(RngRing))
             self.dispRngRing.setMenu(self.dispRngRingmenu)
 
     def _add_cmaps_to_button(self):
@@ -347,29 +352,29 @@ class RadarDisplay(Component):
         for cm_name in self.cm_names:
             cmapAction = self.dispCmapmenu.addAction(cm_name)
             cmapAction.setStatusTip("Use the %s colormap" % cm_name)
-            cmapAction.triggered[()].connect(
-                lambda cm_name=cm_name: self.cmapSelectCmd(cm_name))
+            cmapAction.triggered.connect(
+                lambda check, cm_name=cm_name: self.cmapSelectCmd(cm_name))
             self.dispCmap.setMenu(self.dispCmapmenu)
 
     def _add_displayBoxUI(self):
         '''Create the Display Options Button menu.'''
-        self.dispButton = QtGui.QPushButton("Display Options")
+        self.dispButton = QtWidgets.QPushButton("Display Options")
         self.dispButton.setToolTip("Adjust display properties")
         self.dispButton.setFocusPolicy(QtCore.Qt.NoFocus)
-        dispmenu = QtGui.QMenu(self)
+        dispmenu = QtWidgets.QMenu(self)
         dispLimits = dispmenu.addAction("Adjust Display Limits")
         dispLimits.setToolTip("Set data, X, and Y range limits")
-        self.gatefilterToggle = QtGui.QAction(
+        self.gatefilterToggle = QtWidgets.QAction(
             'GateFilter On', dispmenu, checkable=True,
             triggered=self._GateFilterToggleAction)
         dispmenu.addAction(self.gatefilterToggle)
         self.gatefilterToggle.setChecked(True)
-        self.ignoreEdgesToggle = QtGui.QAction(
+        self.ignoreEdgesToggle = QtWidgets.QAction(
             'Ignore Edges', dispmenu, checkable=True,
             triggered=self._IgnoreEdgesToggleAction)
         dispmenu.addAction(self.ignoreEdgesToggle)
         self.ignoreEdgesToggle.setChecked(False)
-        self.useMapToggle = QtGui.QAction(
+        self.useMapToggle = QtWidgets.QAction(
             'Use MapDisplay', dispmenu, checkable=True,
             triggered=self._UseMapToggleAction)
         dispmenu.addAction(self.useMapToggle)
@@ -379,10 +384,10 @@ class RadarDisplay(Component):
         dispUnit = dispmenu.addAction("Change Units")
         dispUnit.setToolTip("Change units string")
         self.dispRngRing = dispmenu.addAction("Add Range Rings")
-        self.dispRngRingmenu = QtGui.QMenu("Add Range Rings")
+        self.dispRngRingmenu = QtWidgets.QMenu("Add Range Rings")
         self.dispRngRingmenu.setFocusPolicy(QtCore.Qt.NoFocus)
         self.dispCmap = dispmenu.addAction("Change Colormap")
-        self.dispCmapmenu = QtGui.QMenu("Change Cmap")
+        self.dispCmapmenu = QtWidgets.QMenu("Change Cmap")
         self.dispCmapmenu.setFocusPolicy(QtCore.Qt.NoFocus)
         self.dispImageText = dispmenu.addAction("Add Text to Image")
         self.dispImageText.setToolTip("Add Text Box to Image")
@@ -394,12 +399,12 @@ class RadarDisplay(Component):
         dispSaveFile.setShortcut("Ctrl+S")
         dispSaveFile.setStatusTip("Save Image using dialog")
 
-        dispLimits.triggered[()].connect(self._open_LimsDialog)
-        dispTitle.triggered[()].connect(self._title_input)
-        dispUnit.triggered[()].connect(self._units_input)
-        self.dispImageText.triggered[()].connect(self._add_ImageText)
-        dispQuickSave.triggered[()].connect(self._quick_savefile)
-        dispSaveFile.triggered[()].connect(self._savefile)
+        dispLimits.triggered.connect(self._open_LimsDialog)
+        dispTitle.triggered.connect(self._title_input)
+        dispUnit.triggered.connect(self._units_input)
+        self.dispImageText.triggered.connect(self._add_ImageText)
+        dispQuickSave.triggered.connect(self._quick_savefile)
+        dispSaveFile.triggered.connect(self._savefile)
 
         self._add_RngRing_to_button()
         self._add_cmaps_to_button()
@@ -407,7 +412,7 @@ class RadarDisplay(Component):
 
     def _add_tiltBoxUI(self):
         '''Create the Tilt Selection ComboBox.'''
-        self.tiltBox = QtGui.QComboBox()
+        self.tiltBox = QtWidgets.QComboBox()
         self.tiltBox.setFocusPolicy(QtCore.Qt.NoFocus)
         self.tiltBox.setToolTip("Select tilt elevation angle to display.\n"
                                 "'Tilt Window' will launch popup.\n"
@@ -416,7 +421,7 @@ class RadarDisplay(Component):
 
     def _add_fieldBoxUI(self):
         '''Create the Field Selection ComboBox.'''
-        self.fieldBox = QtGui.QComboBox()
+        self.fieldBox = QtWidgets.QComboBox()
         self.fieldBox.setFocusPolicy(QtCore.Qt.NoFocus)
         self.fieldBox.setToolTip("Select variable/field in data file.\n"
                                  "'Field Window' will launch popup.\n")
@@ -424,25 +429,25 @@ class RadarDisplay(Component):
 
     def _add_toolsBoxUI(self):
         '''Create the Tools Button menu.'''
-        self.toolsButton = QtGui.QPushButton("Toolbox")
+        self.toolsButton = QtWidgets.QPushButton("Toolbox")
         self.toolsButton.setFocusPolicy(QtCore.Qt.NoFocus)
         self.toolsButton.setToolTip("Choose a tool to apply")
-        toolmenu = QtGui.QMenu(self)
+        toolmenu = QtWidgets.QMenu(self)
         toolZoomPan = toolmenu.addAction("Zoom/Pan")
         toolValueClick = toolmenu.addAction("Click for Value")
         toolSelectRegion = toolmenu.addAction("Select a Region of Interest")
         toolReset = toolmenu.addAction("Reset Tools")
         toolDefault = toolmenu.addAction("Reset File Defaults")
-        toolZoomPan.triggered[()].connect(self.toolZoomPanCmd)
-        toolValueClick.triggered[()].connect(self.toolValueClickCmd)
-        toolSelectRegion.triggered[()].connect(self.toolSelectRegionCmd)
-        toolReset.triggered[()].connect(self.toolResetCmd)
-        toolDefault.triggered[()].connect(self.toolDefaultCmd)
+        toolZoomPan.triggered.connect(self.toolZoomPanCmd)
+        toolValueClick.triggered.connect(self.toolValueClickCmd)
+        toolSelectRegion.triggered.connect(self.toolSelectRegionCmd)
+        toolReset.triggered.connect(self.toolResetCmd)
+        toolDefault.triggered.connect(self.toolDefaultCmd)
         self.toolsButton.setMenu(toolmenu)
 
     def _add_infolabel(self):
         '''Create an information label about the display'''
-        self.infolabel = QtGui.QLabel("Radar: \n"
+        self.infolabel = QtWidgets.QLabel("Radar: \n"
                                       "Field: \n"
                                       "Tilt: ", self)
         self.infolabel.setStyleSheet('color: red; font: italic 10px')
@@ -899,14 +904,16 @@ class RadarDisplay(Component):
 
         if 'norm' in cmap:
             norm = cmap['norm']
+            mask_outside = False
         else:
             norm = None
+            mask_outside = True
 
         if self.plot_type == "radarAirborne":
             self.plot = display.plot_sweep_grid(
                 self.Vfield.value, vmin=cmap['vmin'],
                 vmax=cmap['vmax'], colorbar_flag=False, cmap=cmap['cmap'],
-                norm=norm, mask_outside=True,
+                norm=norm, mask_outside=mask_outside,
                 edges=ignoreEdges, gatefilter=gatefilter,
                 ax=self.ax, fig=self.fig, title=title)
             display.plot_grid_lines()
@@ -921,7 +928,7 @@ class RadarDisplay(Component):
             self.plot = plot_ppi(
                 self.Vfield.value, self.Vtilt.value,
                 vmin=cmap['vmin'], vmax=cmap['vmax'], norm=norm,
-                colorbar_flag=False, cmap=cmap['cmap'], mask_outside=True,
+                colorbar_flag=False, cmap=cmap['cmap'], mask_outside=mask_outside,
                 edges=ignoreEdges, gatefilter=gatefilter,
                 ax=self.ax, fig=self.fig, title=title)
             # Add range rings
@@ -935,7 +942,7 @@ class RadarDisplay(Component):
             self.plot = display.plot_rhi(
                 self.Vfield.value, self.Vtilt.value,
                 vmin=cmap['vmin'], vmax=cmap['vmax'], norm=norm,
-                colorbar_flag=False, cmap=cmap['cmap'], mask_outside=True,
+                colorbar_flag=False, cmap=cmap['cmap'], mask_outside=mask_outside,
                 edges=ignoreEdges, gatefilter=gatefilter,
                 ax=self.ax, fig=self.fig, title=title)
             # Add range rings
@@ -1060,7 +1067,7 @@ class RadarDisplay(Component):
         PBNAME = self.VpyartDisplay.value.generate_filename(
             self.Vfield.value, self.Vtilt.value, ext=IMAGE_EXT)
         file_choices = "PNG (*.png)|*.png"
-        path = unicode(QtGui.QFileDialog.getSaveFileName(
+        path = unicode(QtWidgets.QFileDialog.getSaveFileName(
             self, 'Save file', PBNAME, file_choices))
         if path:
             self.canvas.print_figure(path, dpi=DPI)
@@ -1075,7 +1082,7 @@ class RadarDisplay(Component):
         return self.ax
 
     def getStatusBar(self):
-        '''Get :py:class:`PyQt4.QtGui.QStatusBar` instance.'''
+        '''Get :py:class:`PyQt4.QtWidgets.QStatusBar` instance.'''
         return self.statusbar
 
     def getField(self):
@@ -1095,7 +1102,7 @@ class RadarDisplay(Component):
         return self.Vtilt.value
 
 
-class _DisplayStart(QtGui.QDialog):
+class _DisplayStart(QtWidgets.QDialog):
     '''
     Dialog Class for graphical start of display, to be used in guiStart.
     '''
@@ -1104,7 +1111,7 @@ class _DisplayStart(QtGui.QDialog):
         '''Initialize the class to create the interface.'''
         super(_DisplayStart, self).__init__()
         self.result = {}
-        self.layout = QtGui.QGridLayout(self)
+        self.layout = QtWidgets.QGridLayout(self)
         # set window as modal
         self.setWindowModality(QtCore.Qt.ApplicationModal)
 
@@ -1140,42 +1147,42 @@ class _DisplayStart(QtGui.QDialog):
 
     def setupUi(self):
 
-        self.radarButton = QtGui.QPushButton("Find Variable")
+        self.radarButton = QtWidgets.QPushButton("Find Variable")
         self.radarButton.clicked.connect(self.chooseRadar)
-        self.layout.addWidget(QtGui.QLabel("VRadar"), 0, 0)
+        self.layout.addWidget(QtWidgets.QLabel("VRadar"), 0, 0)
         self.layout.addWidget(self.radarButton, 0, 1, 1, 3)
 
-        self.fieldButton = QtGui.QPushButton("Find Variable")
+        self.fieldButton = QtWidgets.QPushButton("Find Variable")
         self.fieldButton.clicked.connect(self.chooseField)
-        self.layout.addWidget(QtGui.QLabel("Vfield"), 1, 0)
-        self.field = QtGui.QLineEdit("")
+        self.layout.addWidget(QtWidgets.QLabel("Vfield"), 1, 0)
+        self.field = QtWidgets.QLineEdit("")
         self.layout.addWidget(self.field, 1, 1)
-        self.layout.addWidget(QtGui.QLabel("or"), 1, 2)
+        self.layout.addWidget(QtWidgets.QLabel("or"), 1, 2)
         self.layout.addWidget(self.fieldButton, 1, 3)
 
-        self.tiltButton = QtGui.QPushButton("Find Variable")
+        self.tiltButton = QtWidgets.QPushButton("Find Variable")
         self.tiltButton.clicked.connect(self.chooseTilt)
-        self.layout.addWidget(QtGui.QLabel("Vtilt"), 2, 0)
-        self.tilt = QtGui.QSpinBox()
+        self.layout.addWidget(QtWidgets.QLabel("Vtilt"), 2, 0)
+        self.tilt = QtWidgets.QSpinBox()
         self.layout.addWidget(self.tilt, 2, 1)
-        self.layout.addWidget(QtGui.QLabel("or"), 2, 2)
+        self.layout.addWidget(QtWidgets.QLabel("or"), 2, 2)
         self.layout.addWidget(self.tiltButton, 2, 3)
 
-        self.limsButton = QtGui.QPushButton("Find Variable")
+        self.limsButton = QtWidgets.QPushButton("Find Variable")
         self.limsButton.clicked.connect(self.chooseLims)
-        self.layout.addWidget(QtGui.QLabel("Vlimits"), 3, 0)
+        self.layout.addWidget(QtWidgets.QLabel("Vlimits"), 3, 0)
         self.layout.addWidget(self.limsButton, 3, 1, 1, 3)
 
-        self.name = QtGui.QLineEdit("RadarDisplay")
-        self.layout.addWidget(QtGui.QLabel("name"), 4, 0)
+        self.name = QtWidgets.QLineEdit("RadarDisplay")
+        self.layout.addWidget(QtWidgets.QLabel("name"), 4, 0)
         self.layout.addWidget(self.name, 4, 1, 1, 3)
 
-        self.closeButton = QtGui.QPushButton("Start")
+        self.closeButton = QtWidgets.QPushButton("Start")
         self.closeButton.clicked.connect(self.closeDialog)
         self.layout.addWidget(self.closeButton, 5, 0, 1, 5)
 
     def closeDialog(self):
-        self.done(QtGui.QDialog.Accepted)
+        self.done(QtWidgets.QDialog.Accepted)
 
     def startDisplay(self):
         self.exec_()
