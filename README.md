@@ -5,13 +5,14 @@ ARM Radar Toolkit Viewer
 
 ARTview is an interactive GUI viewer that is built on top of the
 [Py-ART](https://github.com/ARM-DOE/pyart) toolkit.
-It allows one to easily scroll through a directory of weather radar data files
-and visualize the data.  All file types available in Py-ART can be opened with
+It extends Py-ART by allowing the user to visualize, query, and modify data
+on the fly within a self-contained environment, accessing individual or entire
+directories of data files.  All file types available in Py-ART can be opened with
 the ARTview browser.
 
-You can interact with data files through "Plugins". Many functions from the Py-ART
-package can be selected. In addition, ARTview plugins allow querying data by
-selecting regions or points visually.
+Interaction with data files is through "Plugins". These include many functions from
+the Py-ART package which can be selected. In addition, native ARTview plugins are provided
+to query data and select regions or points visually and more.
 
 [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.47224.svg)](http://dx.doi.org/10.5281/zenodo.47224)
 
@@ -185,6 +186,18 @@ Linux Red Hat (RHEL6)
 It is  **strongly** encouraged to use Python 2.7 or above. There are minor issues with
 Python 2.6 operability that keep popping up. We make no guarantees that 2.6 will
 work properly.
+
+**WARNING** ARTview has been upgraded to use PyQt5. There is a known issue working with an
+environment that uses Python 3 and PyQt5 on MacOSX (Linux seems to work fine).
+ARTview defaults to PyQt4 if available, so it is highly recommended that you
+install PyQt4 if it is not already on your systems.
+We cannot guarantee that ARTview will work with PyQt5, but will update as fixes
+become available.
+
+To install a version of of PyQt4, for example if using conda:
+```
+conda install pyqt=4.11.4
+```
 
 ## User Forum
 
