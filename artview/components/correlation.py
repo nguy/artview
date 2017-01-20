@@ -296,6 +296,11 @@ class Correlation(Component):
         dispmenu.addAction(self.gatefilterToggle)
         self.gatefilterToggle.setChecked(True)
 
+        self.regressionLineToggle = QtWidgets.QAction(
+            'Regression Line', dispmenu, checkable=True,
+            triggered=self._update_plot)
+        dispmenu.addAction(self.regressionLineToggle)
+
         self.dispImageText = dispmenu.addAction("Add Text to Image")
         self.dispImageText.setToolTip("Add Text Box to Image")
         dispQuickSave = dispmenu.addAction("Quick Save Image")
@@ -471,10 +476,8 @@ class Correlation(Component):
         self.layout.addWidget(self.canvas, 1, 0, 8, 7)
 
     @staticmethod
-    def plot_correlation(radar, field_horizontal, field_vertical,
-                         sweeps, gatefilter, ax, title):
-        # XXX gatefilter not implemented, problem with sweep
-
+    def _get_xy_values(radar, field_horizontal, field_vertical,
+                       sweeps, gatefilter):
         xvalues = radar.fields[field_horizontal]['data']
         yvalues = radar.fields[field_vertical]['data']
 
@@ -493,9 +496,29 @@ class Correlation(Component):
         xvalues = np.ma.MaskedArray(xvalues, mask=gates)
         yvalues = np.ma.MaskedArray(yvalues, mask=gates)
 
+        return xvalues, yvalues
+
+    @staticmethod
+    def plot_correlation(radar, field_horizontal, field_vertical,
+                         sweeps, gatefilter, ax, title):
+
+        xvalues, yvalues = Correlation._get_xy_values(
+            radar, field_horizontal, field_vertical, sweeps, gatefilter)
+
         ax.scatter(xvalues,yvalues)
 
         ax.set_title(title)
+
+    @staticmethod
+    def plot_regression(radar, field_horizontal, field_vertical,
+                        sweeps, gatefilter, ax):
+
+        xvalues, yvalues = Correlation._get_xy_values(
+            radar, field_horizontal, field_vertical, sweeps, gatefilter)
+
+        print(xvalues.shape)
+        m,b = np.polyfit(xvalues.reshape((-1)), yvalues.reshape((-1)), 1)
+        ax.plot(xvalues,m * xvalues + b, '--r')
 
     def _update_plot(self):
         '''Draw/Redraw the plot.'''
@@ -535,7 +558,6 @@ class Correlation(Component):
                 if action.isChecked():
                     sweeps.append(sweep)
 
-
         self.plot_correlation(
             self.Vradar.value, self.VfieldHorizontal.value,
             self.VfieldVertical.value, sweeps, gatefilter, self.ax, self.title)
@@ -547,6 +569,11 @@ class Correlation(Component):
 
         self.ax.set_xlabel(self.unitsHorizontal)
         self.ax.set_ylabel(self.unitsVertical)
+
+        if self.regressionLineToggle.isChecked():
+            self.plot_regression(
+                self.Vradar.value, self.VfieldHorizontal.value,
+                self.VfieldVertical.value, sweeps, gatefilter, self.ax)
 
         self.canvas.draw()
 
