@@ -304,6 +304,7 @@ class LocalEnvoriment(dict):
         self.__setitem__("add_field", self.add_field)
         self.__setitem__("py_help", help)
         self.__setitem__("help", self.help)
+        self.__setitem__("fields", self.fields)
 
     def __setitem__(self, key, value):
         '''method called by self[key] = value,
@@ -374,23 +375,35 @@ class LocalEnvoriment(dict):
 
     def help(self):
         '''Display help informations'''
+        field = list(self.Vradar.value.fields.keys())[0]
         print("radar terminal help, if you want python help try py_help()\n\n")
         help_text = (
             "## Interactive field manipulation console.\n"
             "##\n"
             "## Work with fields are if they were numpy arrays.\n"
-            "##\n"
-            "## This is a python console, so you can do any normal programming,\n"
-            "## for instance dir() to show current defined variables.\n"
+            "## \n"
+            "## This is also a python console, so you can do any normal programming,\n"
+            "## for instance dir() to show current defined variables. \n"
             "## \n"
             "## We also have the field of the current radar set up as variables.\n"
-            "## You may manipulate then as numpy arrays.\n"
+            "## You may manipulate then as numpy arrays. For instance:\n"
+            "## \n"
+            "## >>> " + field + " += 10\n"
             "## \n"
             "## You are also allowed to create new fields, for that assigne a\n"
             "## numpy array to the variable with the name you want for the field\n"
             "## and run add_field( field_name ) to add that field to the radar\n"
+            "## for instance:\n"
+            "## \n"
+            "## >>> new_" + field + " = " + field + " * 2\n"
+            "## >>> add_field('new_" + field + "')\n"
             )
         print(help_text)
+
+    def fields(self):
+        '''Print Current Fields'''
+        for field in self.Vradar.value.fields.keys():
+            print(field)
 
 class RadarTerminal(Component):
     '''
