@@ -5,7 +5,7 @@ auxiliary functions for scripts
 """
 import pyart
 from ..components import (Menu, RadarDisplay, GridDisplay, LinkSharedVariables,
-                          SelectRegion, PointsDisplay)
+                          SelectRegion, PointsDisplay, Correlation)
 from ..core import QtWidgets, QtCore
 
 
@@ -13,10 +13,10 @@ def _add_all_advanced_tools(menu):
 
     # add graphical starts
     for comp in [LinkSharedVariables, RadarDisplay, GridDisplay,
-                 SelectRegion, PointsDisplay]:
+                 SelectRegion, PointsDisplay, Correlation]:
         action = QtWidgets.QAction(comp.__name__, menu)
         action.triggered.connect(
-            lambda comp=comp: menu.startComponent(comp))
+            lambda checked, comp=comp: menu.startComponent(comp))
         menu.addMenuAction(("File", "Plugins", ), action)
 
     # add all plugins to graphical start
@@ -25,7 +25,8 @@ def _add_all_advanced_tools(menu):
         for plugin in plugins._plugins.values():
             action = QtWidgets.QAction(plugin.__name__, menu)
             action.triggered.connect(
-                lambda plugin=plugin: menu.startComponent(plugin))
+                lambda checked, plugin=plugin:
+                    menu.startComponent(plugin))
             menu.addMenuAction(("File", "Plugins", ), action)
     except:
         import traceback

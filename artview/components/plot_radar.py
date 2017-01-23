@@ -44,6 +44,7 @@ class RadarDisplay(Component):
     Vgatefilter = None  #: see :ref:`shared_variable`
     VplotAxes = None  #: see :ref:`shared_variable` (no internal use)
     VpathInteriorFunc = None  #: see :ref:`shared_variable` (no internal use)
+    VpyartDisplay = None  #: see :ref:`shared_variable`
 
     @classmethod
     def guiStart(self, parent=None):

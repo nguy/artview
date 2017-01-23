@@ -201,6 +201,13 @@ background_mode = (
         ]
     )
 
+correlation_mode = (
+    [Menu, Correlation],
+    [
+        ((0, 'Vradar'), (1, 'Vradar')),
+        ]
+    )
+
 radar_terminal_mode = (
     [Menu, RadarDisplay, RadarTerminal],
     [
@@ -208,6 +215,8 @@ radar_terminal_mode = (
         ((1, 'Vradar'), (2, 'Vradar')),
         ]
     )
+
+
 
 modes = [
     {'label': 'Add RadarDisplay',
@@ -252,6 +261,9 @@ modes = [
     {'label': 'Add Topographic Background',
      'group': 'graph',
      'action': topography_mode},
+    {'label': 'Radar Moments Correlation',
+     'group': 'graph',
+     'action': correlation_mode},
 #    {'label': 'Add Image to Background',
 #     'group': 'graph',
 #     'action': background_mode},
