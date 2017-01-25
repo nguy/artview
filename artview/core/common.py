@@ -230,29 +230,29 @@ def string_dialog_with_reset(stringIn, title, msg, reset=None):
 ##################
 
 def get_options(options, values):
-    dialog = QtGui.QDialog()
-    gridLayout = QtGui.QGridLayout(dialog)
+    dialog = QtWidgets.QDialog()
+    gridLayout = QtWidgets.QGridLayout(dialog)
     keys = [a[0] for a in options]
     entrys = {}
     for i, key in enumerate(keys):
         if options[i][1] in (str, int, float):
-            gridLayout.addWidget(QtGui.QLabel(key), i, 0, 1, 1)
-            entrys[key] = QtGui.QLineEdit(str(values[key]), dialog)
+            gridLayout.addWidget(QtWidgets.QLabel(key), i, 0, 1, 1)
+            entrys[key] = QtWidgets.QLineEdit(str(values[key]), dialog)
             gridLayout.addWidget(entrys[key], i, 1, 1, 1)
         elif options[i][1] is bool:
-            entrys[key] = QtGui.QCheckBox(key)
+            entrys[key] = QtWidgets.QCheckBox(key)
             gridLayout.addWidget(entrys[key], i, 1, 1, 1)
             entrys[key].setChecked(values[key])
         elif isinstance(options[i][1], tuple):
-            entrys[key] = QtGui.QComboBox()
+            entrys[key] = QtWidgets.QComboBox()
             entrys[key].addItems(options[i][1])
             gridLayout.addWidget(entrys[key], i, 1, 1, 1)
             entrys[key].setCurrentIndex(options[i][1].index(values[key]))
 
-    buttonBox = QtGui.QDialogButtonBox(dialog)
+    buttonBox = QtWidgets.QDialogButtonBox(dialog)
     buttonBox.setOrientation(QtCore.Qt.Horizontal)
-    buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
-                                QtGui.QDialogButtonBox.Ok)
+    buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel |
+                                QtWidgets.QDialogButtonBox.Ok)
     gridLayout.addWidget(buttonBox, i+1, 0, 1, -1)
 
     # Connect the signals from OK and Cancel buttons
@@ -261,7 +261,7 @@ def get_options(options, values):
 
     entry = dialog.exec_()
 
-    if entry == QtGui.QDialog.Accepted:
+    if entry == QtWidgets.QDialog.Accepted:
         out = {}
         for option in options:
             key = option[0]

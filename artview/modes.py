@@ -288,15 +288,17 @@ def background_mode():
             ]
         )
 
-correlation_mode = (
-    [Menu, Correlation],
+def correlation_mode():
+    change_mode(
+    [FileNavigator, Correlation],
     [
         ((0, 'Vradar'), (1, 'Vradar')),
         ]
     )
 
-radar_terminal_mode = (
-    [Menu, RadarDisplay, RadarTerminal],
+def radar_terminal_mode():
+    change_mode(
+    [FileNavigator, RadarDisplay, RadarTerminal],
     [
         ((0, 'Vradar'), (1, 'Vradar')),
         ((1, 'Vradar'), (2, 'Vradar')),
