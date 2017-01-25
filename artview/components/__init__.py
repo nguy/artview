@@ -30,6 +30,7 @@ if parse_version(pyart.__version__) >= parse_version('1.6.0'):
 else:
     from .plot_grid_legacy import GridDisplay
 from .plot_points import PointsDisplay
+from .correlation import Correlation
 from .menu import Menu
 from .window import Window, LayoutComponent
 from .level import LevelButtonWindow

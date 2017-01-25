@@ -167,7 +167,7 @@ class Menu(Component):
         if isinstance(filename, tuple): # PyQt5
             filename = filename[0]
         filename = str(filename)
-        print("filename",filename.__repr__())
+
         if filename == '':
             return
         else:

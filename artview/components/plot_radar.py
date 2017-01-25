@@ -44,6 +44,7 @@ class RadarDisplay(Component):
     Vgatefilter = None  #: see :ref:`shared_variable`
     VplotAxes = None  #: see :ref:`shared_variable` (no internal use)
     VpathInteriorFunc = None  #: see :ref:`shared_variable` (no internal use)
+    VpyartDisplay = None  #: see :ref:`shared_variable`
 
     @classmethod
     def guiStart(self, parent=None):
@@ -345,7 +346,7 @@ class RadarDisplay(Component):
             RingAction = self.dispRngRingmenu.addAction(RngRing)
             RingAction.setStatusTip("Apply Range Rings every %s" % RngRing)
             RingAction.triggered.connect(
-                lambda RngRing=RngRing: self.RngRingSelectCmd(RngRing))
+                lambda check, RngRing=RngRing: self.RngRingSelectCmd(RngRing))
             self.dispRngRing.setMenu(self.dispRngRingmenu)
 
     def _add_cmaps_to_button(self):
@@ -354,7 +355,7 @@ class RadarDisplay(Component):
             cmapAction = self.dispCmapmenu.addAction(cm_name)
             cmapAction.setStatusTip("Use the %s colormap" % cm_name)
             cmapAction.triggered.connect(
-                lambda cm_name=cm_name: self.cmapSelectCmd(cm_name))
+                lambda check, cm_name=cm_name: self.cmapSelectCmd(cm_name))
             self.dispCmap.setMenu(self.dispCmapmenu)
 
     def _add_displayBoxUI(self):
