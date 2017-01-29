@@ -506,6 +506,7 @@ class RadarDisplay(Component):
         if strong:
             self._update_display()
             self._update_infolabel()
+            self.VpathInteriorFunc.update(True)
 
     def NewField(self, variable, strong):
         '''
@@ -528,6 +529,7 @@ class RadarDisplay(Component):
         if strong:
             self._update_plot()
             self._update_infolabel()
+            self.VpathInteriorFunc.update(True)
 
     def NewLims(self, variable, strong):
         '''
@@ -581,6 +583,7 @@ class RadarDisplay(Component):
             self.title = self._get_default_title()
             self._update_plot()
             self._update_infolabel()
+            self.VpathInteriorFunc.update(True)
 
     def NewDisplay(self, variable, strong):
         '''
