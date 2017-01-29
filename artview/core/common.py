@@ -232,22 +232,27 @@ def string_dialog_with_reset(stringIn, title, msg, reset=None):
 def get_options(options, values):
     dialog = QtWidgets.QDialog()
     gridLayout = QtWidgets.QGridLayout(dialog)
-    keys = [a[0] for a in options]
+
     entrys = {}
-    for i, key in enumerate(keys):
-        if options[i][1] in (str, int, float):
-            gridLayout.addWidget(QtWidgets.QLabel(key), i, 0, 1, 1)
+    for i, option in enumerate(options):
+        key = option[0]
+        try:
+            name = option[2]
+        except:
+            name = key
+        if option[1] in (str, int, float):
+            gridLayout.addWidget(QtWidgets.QLabel(name), i, 0, 1, 1)
             entrys[key] = QtWidgets.QLineEdit(str(values[key]), dialog)
             gridLayout.addWidget(entrys[key], i, 1, 1, 1)
-        elif options[i][1] is bool:
-            entrys[key] = QtWidgets.QCheckBox(key)
+        elif option[1] is bool:
+            entrys[key] = QtWidgets.QCheckBox(name)
             gridLayout.addWidget(entrys[key], i, 1, 1, 1)
             entrys[key].setChecked(values[key])
-        elif isinstance(options[i][1], tuple):
+        elif isinstance(option[1], tuple):
             entrys[key] = QtWidgets.QComboBox()
-            entrys[key].addItems(options[i][1])
+            entrys[key].addItems(option[1])
             gridLayout.addWidget(entrys[key], i, 1, 1, 1)
-            entrys[key].setCurrentIndex(options[i][1].index(values[key]))
+            entrys[key].setCurrentIndex(option[1].index(values[key]))
 
     buttonBox = QtWidgets.QDialogButtonBox(dialog)
     buttonBox.setOrientation(QtCore.Qt.Horizontal)
@@ -362,7 +367,8 @@ class CreateTable(QtWidgets.QTableWidget):
             ncols = 0
         else:
             nrows = self.points.npoints
-            colnames = self.points.axes.keys() + self.points.fields.keys()
+            colnames = (list(self.points.axes.keys()) +
+                        list(self.points.fields.keys()))
             ncols = len(colnames)
 
         self.setRowCount(nrows)

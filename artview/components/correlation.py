@@ -110,6 +110,22 @@ class Correlation(Component):
         # Connect the components
         self.connectAllVariables()
 
+        self.parameters = {
+            "marker": 'o',
+            "facecolors": "blue",
+            "edgecolors": "none",
+            "s": 20,
+            "color": "red",
+            }
+
+        self.parameters_type = [
+            ("marker", str, "marker type"),
+            ("facecolors", str, "market color"),
+            ("edgecolors", str, "marker edge color"),
+            ("s", int, "market size"),
+            ("color", str, "line color")
+            ]
+
         # Set plot title and colorbar units to defaults
         self.title = self._get_default_title()
         self.unitsVertical, self.unitsHorizontal = self._get_default_units()
@@ -150,6 +166,13 @@ class Correlation(Component):
 
         # Set the status bar to display messages
         self.statusbar = self.statusBar()
+
+    def setParameters(self):
+        '''Open set parameters dialog.'''
+        parm = common.get_options(self.parameters_type, self.parameters)
+        for key in parm.keys():
+            self.parameters[key] = parm[key]
+        self._update_plot()
 
     ##################################
     # User display interface methods #
@@ -310,6 +333,9 @@ class Correlation(Component):
         dispSaveFile = dispmenu.addAction("Save Image")
         dispSaveFile.setShortcut("Ctrl+S")
         dispSaveFile.setStatusTip("Save Image using dialog")
+
+        dispmenu.addAction(QtWidgets.QAction("Set Parameters", self,
+                           triggered=self.setParameters))
 
         dispTitle.triggered.connect(self._title_input)
         dispUnit.triggered.connect(self._units_input)
@@ -500,25 +526,30 @@ class Correlation(Component):
 
     @staticmethod
     def plot_correlation(radar, field_horizontal, field_vertical,
-                         sweeps, gatefilter, ax, title):
+                         sweeps, gatefilter, ax, title, **kwargs):
 
         xvalues, yvalues = Correlation._get_xy_values(
             radar, field_horizontal, field_vertical, sweeps, gatefilter)
 
-        ax.scatter(xvalues,yvalues)
+        ax.scatter(xvalues,yvalues,**kwargs)
 
         ax.set_title(title)
 
     @staticmethod
     def plot_regression(radar, field_horizontal, field_vertical,
-                        sweeps, gatefilter, ax):
+                        sweeps, gatefilter, ax, vmin, vmax, **kwargs):
 
         xvalues, yvalues = Correlation._get_xy_values(
             radar, field_horizontal, field_vertical, sweeps, gatefilter)
 
-        print(xvalues.shape)
-        m,b = np.polyfit(xvalues.reshape((-1)), yvalues.reshape((-1)), 1)
-        ax.plot(xvalues,m * xvalues + b, '--r')
+        m,b = np.polyfit(xvalues[~xvalues.mask], yvalues[~xvalues.mask], 1)
+
+        x=np.linspace(vmin,vmax,50)
+
+        line = ax.plot(x,m * x + b, linestyle="--",
+                       label='y = %f x + %f'%(m,b), **kwargs)
+        ax.legend()
+        return (m,b)
 
     def _update_plot(self):
         '''Draw/Redraw the plot.'''
@@ -560,7 +591,11 @@ class Correlation(Component):
 
         self.plot_correlation(
             self.Vradar.value, self.VfieldHorizontal.value,
-            self.VfieldVertical.value, sweeps, gatefilter, self.ax, self.title)
+            self.VfieldVertical.value, sweeps, gatefilter, self.ax, self.title,
+            **{k: self.parameters[k] for k in
+               ('s','facecolors', 'edgecolors', 'marker')}
+            )
+
 
         self.ax.set_xscale(
             str(self.horizontal_scale_menu_group.checkedAction().text()))
@@ -571,9 +606,12 @@ class Correlation(Component):
         self.ax.set_ylabel(self.unitsVertical)
 
         if self.regressionLineToggle.isChecked():
+            vmin, vmax = self.ax.get_xlim()
             self.plot_regression(
                 self.Vradar.value, self.VfieldHorizontal.value,
-                self.VfieldVertical.value, sweeps, gatefilter, self.ax)
+                self.VfieldVertical.value, sweeps, gatefilter, self.ax,
+                vmin + 0.05 * (vmax-vmin), vmax - 0.05 * (vmax-vmin),
+                color=self.parameters["color"])
 
         self.canvas.draw()
 
