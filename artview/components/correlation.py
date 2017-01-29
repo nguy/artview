@@ -120,7 +120,7 @@ class Correlation(Component):
 
         self.parameters_type = [
             ("marker", str, "marker type"),
-            ("facecolors", str, "market color"),
+            ("facecolors", str, "marker color"),
             ("edgecolors", str, "marker edge color"),
             ("s", int, "market size"),
             ("color", str, "line color")
