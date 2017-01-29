@@ -122,7 +122,7 @@ class Correlation(Component):
             ("marker", str, "marker type"),
             ("facecolors", str, "marker color"),
             ("edgecolors", str, "marker edge color"),
-            ("s", int, "market size"),
+            ("s", int, "marker size"),
             ("color", str, "line color")
             ]
 
