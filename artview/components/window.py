@@ -64,6 +64,8 @@ class Window(Component):
         root_spliter.setOrientation(QtCore.Qt.Horizontal)
 
         self.addPane()
+        print(self.layoutTree)
+        print(self.currentMultindex)
 
 
 
@@ -129,7 +131,7 @@ class Window(Component):
         for component in components:
             root.addTab(component, component.name)
 
-    def replaceWithSplitter(self, multindex, orientation):
+    def replaceWithSplitter(self, multindex, orientation, setCurrent=True):
         '''Replace widget in multindex with splitter and move tree down'''
         widget = self.layoutTree[multindex]
         splitter = QtWidgets.QSplitter()
@@ -148,6 +150,9 @@ class Window(Component):
             self.layoutTree[index[0:depth]+(0,)+index[depth:]] = widget
         self.layoutTree[multindex] = splitter
         self.layoutTree[multindex+(0,)].midx = multindex+(0,)
+        if setCurrent and len(self.currentMultindex)>=depth:
+            index = self.currentMultindex
+            self.setCurrentMultindex(index[0:depth]+(0,)+index[depth:])
 
     def splitVertical(self):
         if (self.currentMultindex is None or
@@ -155,7 +160,8 @@ class Window(Component):
             QtCore.Qt.Horizontal):
             self.addPane()
             return
-        self.replaceWithSplitter(self.currentMultindex, QtCore.Qt.Horizontal)
+        self.replaceWithSplitter(self.currentMultindex, QtCore.Qt.Horizontal,
+                                 False)
         self.setCurrentMultindex(self.currentMultindex+(0,))
         self.addPane()
 
@@ -165,7 +171,8 @@ class Window(Component):
             QtCore.Qt.Vertical):
             self.addPane()
             return
-        self.replaceWithSplitter(self.currentMultindex, QtCore.Qt.Vertical)
+        self.replaceWithSplitter(self.currentMultindex, QtCore.Qt.Vertical,
+                                 False)
         self.setCurrentMultindex(self.currentMultindex+(0,))
         self.addPane()
 
@@ -249,6 +256,24 @@ class Window(Component):
         else:
             bar.setVisible(True)
 
+    def popNewWindow(self):
+        widget = self.layoutTree[self.currentMultindex]
+        print(self.currentMultindex,widget)
+        if not isinstance(widget, Pane):
+            common.ShowWarning("ERROR: current widget is not a Pane.\n"
+                               "this should not happen, please report at github")
+        components = []
+        while widget.count() > 0:
+            components.append(widget.widget(0))
+            widget.removeTab(0)
+
+        newWindow = Window()
+        pane = newWindow.layoutTree[newWindow.currentMultindex]
+        for component in components:
+            pane.addTab(component,component.name)
+
+        self.removeMultindex(self.currentMultindex)
+
     def widgetTurnCurrent(self, widget):
         for midx in self.layoutTree.keys():
             if self.layoutTree[midx] == widget:
@@ -311,7 +336,9 @@ class Window(Component):
     def CreateMenu(self):
         '''Create the main menubar.'''
 
-        self.menubar = self.menuBar()
+        menubar = self.menuBar()
+        self.menubar= QtGui.QMenuBar(menubar)
+        menubar.setCornerWidget(self.menubar, QtCore.Qt.TopRightCorner)
 
         self.addArtviewMenu()
         layoutmenu = self.menubar.addMenu('&Layout')
@@ -325,6 +352,7 @@ class Window(Component):
         layoutmenu.addAction('Split Pane Horizontaly', self.splitHorizontal)
         #layoutmenu.addAction('Add Pane', self.addPane)
         layoutmenu.addAction('Current Pane: show/hide TabBar', self.showHideTabBar)
+        layoutmenu.addAction('Current Pane: Pop into new Window', self.popNewWindow)
         layoutmenu.addAction('Close Current Pane', self.closeCurrentPane)
         layoutmenu.addAction('Close Empty Panes', self.closeEmptyPanes)
 

@@ -166,8 +166,10 @@ class FileNavigator(Component):
 
         self.directoryMenu = self.openMenu.addMenu("Directory:")
         self.directoryAction = self.directoryMenu.addAction("")
+        self.directoryAction.triggered.connect(lambda: self._openfile())
         self.fileMenu = self.openMenu.addMenu("File:")
-        self.fileAction = self.fileMenu.addAction("")
+        self.fileAction = self.fileMenu.addAction("",)
+        self.fileAction.triggered.connect(lambda: self._openfile())
 
         action = QtWidgets.QAction("Open", self,
                                triggered=lambda: self._openfile())
