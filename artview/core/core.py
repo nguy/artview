@@ -278,6 +278,7 @@ class Component(QtWidgets.QMainWindow):
 
     def closeEvent(self, QCloseEvent):
         '''Reimplementation to remove from components list.'''
+        print("close event",self)
         componentsList.remove(self)
         self.disconnectAllVariables()
         super(Component, self).closeEvent(QCloseEvent)

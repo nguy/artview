@@ -39,11 +39,10 @@ def run(DirIn=None, filename=None, field=None):
         DirIn = os.getcwd()
 
     menu = LayoutComponent(name="Menu")
-    menu.layout.setContentsMargins(0,0,0,0)
     navigator = FileNavigator(DirIn, filename)
 
-    menu.layout.addWidget(navigator, 0, 0)
-    menu.layout.addWidget(FileDetail(Vradar=navigator.Vradar,
+    menu.addWidget(navigator, 0, 0)
+    menu.addWidget(FileDetail(Vradar=navigator.Vradar,
                                      Vgrid=navigator.Vgrid), 0, 1)
     menu.layout.setColumnStretch(2, 1)
 
@@ -74,7 +73,9 @@ def run(DirIn=None, filename=None, field=None):
     window.splitVertical()
 
     window.layoutTree[(0,1,0)].addTab(control,control.name)
+    window.layoutTree[(0,1,0)].isClosable = False
     window.layoutTree[(0,0)].addTab(menu,menu.name)
+    window.layoutTree[(0,0)].isClosable = False
     #window.layoutTree[(0,0)].flag = True
     window.layoutTree[(0,0)].tabBar().setVisible(False)
     window.layoutTree[(0,1,1)].addTab(plot1,plot1.name)
@@ -91,6 +92,11 @@ def run(DirIn=None, filename=None, field=None):
     geom =  QtWidgets.QDesktopWidget().screenGeometry()
     window.layoutTree[(0,)].setSizes([window.layoutTree[(0,0)].minimumSize().height(),geom.height()-window.layoutTree[(0,0)].minimumSize().height()])
     window.layoutTree[(0,1)].setSizes([window.layoutTree[(0,1,0)].minimumSize().width(),geom.width()-window.layoutTree[(0,1,0)].minimumSize().width()])
+
+    # set root splitter
+    window.replaceWithSplitter((0,1,1), QtCore.Qt.Vertical)
+    window.rootMultindex = (0,1,1)
+
 
     # start program
     view.execute()

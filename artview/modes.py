@@ -64,6 +64,7 @@ def radar_mode():
     static_comp_list = componentsList[:]
     menu = None
     for j, comp in enumerate(static_comp_list):
+        print(comp)
         if isinstance(comp, FileNavigator):
             menu = comp
         elif isinstance(comp, Window):
