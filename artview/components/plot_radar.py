@@ -87,6 +87,7 @@ class RadarDisplay(Component):
         '''
         super(RadarDisplay, self).__init__(name=name, parent=parent)
         self.setFocusPolicy(QtCore.Qt.ClickFocus)
+        #self.setSizePolicy(QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Expanding)
         # Set up signal, so that DISPLAY can react to
         # external (or internal) changes in radar, field,
         # lims and tilt (expected to be Core.Variable instances)

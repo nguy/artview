@@ -318,7 +318,7 @@ class DisplaySelectRegion(Component):
     def resetSelectRegion(self):
         '''Clear the SelectRegion lines from plot and reset things.'''
         if self.poly:
-            for i in xrange(len(self.poly)):
+            for i in range(len(self.poly)):
                 try:
                     self.poly[i].remove()
                 except:

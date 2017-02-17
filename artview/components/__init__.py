@@ -32,6 +32,7 @@ else:
 from .plot_points import PointsDisplay
 from .correlation import Correlation
 from .menu import Menu
+from .window import Window, LayoutComponent
 from .level import LevelButtonWindow
 from .field import FieldButtonWindow
 from .component_control import LinkSharedVariables

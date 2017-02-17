@@ -20,14 +20,15 @@ import os
 import platform
 import pyart
 
-from .core import Variable, QtWidgets, QtCore
+from .core import Variable, QtGui, QtWidgets, QtCore
 from .components import (
     RadarDisplay, GridDisplay, Menu, LinkSharedVariables, SelectRegion)
-from .scripts._common import startMainMenu
+from .scripts._common import startMainMenu, startMainWindow
 
 app = None
 displays = []
 MainMenu = None
+MainWindow = None
 reflectivity = pyart.config.get_field_name('reflectivity')
 
 
@@ -78,6 +79,23 @@ def start(DirIn=os.getcwd(), filename=False):
     menu_height = 180
 
     MainMenu.setGeometry(0, 0, menu_width, menu_height)
+
+def startWindow(DirIn=os.getcwd(), filename=False):
+    ''' Start Qt Application and :py:class:`~artview.components.Menu` '''
+    global app
+    if app is None:
+        app = QtWidgets.QApplication([])
+        if checkifmac():
+            app.setAttribute(QtCore.Qt.AA_MacPluginApplication, True)
+
+    global MainWindow
+    MainWindow= startMainWindow()
+
+    # resize menu
+    menu_width = 300
+    menu_height = 180
+
+    MainWindow.setGeometry(0, 0, menu_width, menu_height)
 
 
 def execute():
