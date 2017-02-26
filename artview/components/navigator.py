@@ -135,10 +135,10 @@ class FileNavigator(Component):
             [parentdir, 'icons',
             "open_icon.png"]))
 
-        self.openButton = QtWidgets.QPushButton(QtGui.QIcon(pixopen),"")
+        self.openButton = QtWidgets.QPushButton(QtGui.QIcon(pixopen),"open")
         self.layout.addWidget(self.openButton, 0, 0)
 
-        self.saveButton = QtWidgets.QPushButton(QtGui.QIcon(pixsave),"")
+        self.saveButton = QtWidgets.QPushButton(QtGui.QIcon(pixsave),"save")
         self.layout.addWidget(self.saveButton, 0, 1)
 
         self.act_first = QtWidgets.QToolButton()

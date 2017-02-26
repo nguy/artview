@@ -233,6 +233,8 @@ class Component(QtWidgets.QMainWindow):
         self.setWindowTitle(name)
         self.sharedVariables = {}
         componentsList.append(self)
+        self.setSizePolicy(QtWidgets.QSizePolicy.Maximum,
+                           QtWidgets.QSizePolicy.Maximum)
 
     def connectAllVariables(self):
         '''Call connectSharedVariable for all keys in sharedVariables.'''
