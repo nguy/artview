@@ -18,10 +18,10 @@ def change_mode(components, links):
             `var_name` is the respective shared variable name.
         '''
         static_comp_list = componentsList[:]
-
         for j, comp in enumerate(static_comp_list):
             if isinstance(comp, Window):
                 window = comp
+                break
 
         # find already running components
         for i, component in enumerate(components):
@@ -63,11 +63,12 @@ def change_mode(components, links):
 def radar_mode():
     static_comp_list = componentsList[:]
     menu = None
+    window = None
     for j, comp in enumerate(static_comp_list):
         print(comp)
-        if isinstance(comp, FileNavigator):
+        if isinstance(comp, FileNavigator) and menu is None:
             menu = comp
-        elif isinstance(comp, Window):
+        elif isinstance(comp, Window) and window is None:
             window = comp
     if menu is None:
         menu = FileNavigator()
@@ -81,10 +82,11 @@ def radar_mode():
 def grid_mode():
     static_comp_list = componentsList[:]
     menu = None
+    window = None
     for j, comp in enumerate(static_comp_list):
-        if isinstance(comp, FileNavigator):
+        if isinstance(comp, FileNavigator) and menu is None:
             menu = comp
-        elif isinstance(comp, Window):
+        elif isinstance(comp, Window) and window is None:
             window = comp
 
     if menu is None:
@@ -126,10 +128,12 @@ def corrections_mode():
         )
 
     static_comp_list = componentsList[:]
+    window = None
+    display = None
     for j, comp in enumerate(static_comp_list):
-        if isinstance(comp, Window):
+        if isinstance(comp, Window) and window is None:
             window = comp
-        elif isinstance(comp, RadarDisplay):
+        elif isinstance(comp, RadarDisplay) and display is None:
             display = comp
 
     widget = LayoutComponent(name="Corrections")

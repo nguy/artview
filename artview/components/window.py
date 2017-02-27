@@ -85,6 +85,7 @@ class Window(Component):
         '''Add Component to pane given by midx.'''
         if midx is None:
             midx = self.currentMultindex
+        print(midx)
         self.layoutTree[midx].addTab(component, component.name)
         self.layoutTree[midx].tabBar().setVisible(True)
 
@@ -336,9 +337,7 @@ class Window(Component):
     def CreateMenu(self):
         '''Create the main menubar.'''
 
-        menubar = self.menuBar()
-        self.menubar= QtGui.QMenuBar(menubar)
-        menubar.setCornerWidget(self.menubar, QtCore.Qt.TopRightCorner)
+        self.menubar = self.menuBar()
 
         self.addArtviewMenu()
         layoutmenu = self.menubar.addMenu('&Layout')
@@ -499,7 +498,8 @@ class Pane(QtWidgets.QTabWidget):
         self.setTabsClosable(True)
         self.tabCloseRequested.connect(self.closeTab)
         #self.setMinimumSize(80,40)
-        self.setSizePolicy(QtWidgets.QSizePolicy.Maximum,QtWidgets.QSizePolicy.Maximum)
+        self.setSizePolicy(QtWidgets.QSizePolicy.Maximum,
+                           QtWidgets.QSizePolicy.Maximum)
         self.show()
 
     def setCurrent(self):
