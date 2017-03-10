@@ -1,3 +1,6 @@
+### This file is diprecated and shall be removed in the future
+import warnings
+warnings.warn("File display_select_region.py is deprecated and will be removed in the future")
 """
 select_region.py
 

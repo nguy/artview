@@ -4,6 +4,15 @@ from .plugins import *
 from .core import componentsList
 from .core import QtWidgets, QtGui
 
+def _get_component_instance(component):
+    static_comp_list = componentsList[:]
+    for comp in static_comp_list:
+        if isinstance(comp, component):
+            return comp
+    from .core.core import suggestName
+    name = suggestName(component)
+    return component(name=name, parent=None)
+
 def change_mode(components, links):
         ''' Open and connect new components to satisfy mode.
 
@@ -77,6 +86,7 @@ def radar_mode():
     from .core.core import suggestName
     radar = RadarDisplay(name=suggestName(RadarDisplay), Vradar=menu.Vradar,
                          parent=menu)
+    radar.add_mode(display_select_region, "Select a Region of Interest")
     window.addComponent(radar)
 
 def grid_mode():
@@ -96,6 +106,7 @@ def grid_mode():
     from .core.core import suggestName
     grid = GridDisplay(name=suggestName(GridDisplay), Vgrid=menu.Vgrid,
                          parent=menu)
+    grid.add_mode(display_select_region, "Select a Region of Interest")
     window.addComponent(grid)
 
 def map_to_grid_mode():
@@ -174,6 +185,30 @@ def select_region_mode():
             ]
         )
 
+def display_select_region(variables={}):
+    if not variables:
+        select_region_mode()
+        return
+    window = _get_component_instance(Window)
+    from .core.core import suggestName
+    select_region = SelectRegion(name=suggestName(SelectRegion), parent=window)
+    pointsDisplay = PointsDisplay(name=suggestName(PointsDisplay), parent=window)
+    window.addComponent(select_region)
+    window.addComponent(pointsDisplay)
+    for key in variables.keys():
+        if key in select_region.sharedVariables.keys():
+            # Disconect old Variable
+            select_region.disconnectSharedVariable(key)
+            # comp1.var = comp0.var
+            setattr(select_region, key, variables[key])
+            # Connect new Variable
+            select_region.connectSharedVariable(key)
+            # Emit change signal
+            variables[key].update()
+    pointsDisplay.disconnectSharedVariable("Vpoints")
+    pointsDisplay.Vpoints = select_region.Vpoints
+    pointsDisplay.connectSharedVariable("Vpoints")
+    pointsDisplay.Vpoints.update()
 
 def extract_points_mode():
     change_mode(
@@ -219,7 +254,7 @@ def manual_unfold_mode():
 
 def manual_filter_mode():
     change_mode(
-        [FileNavigator, RadarDisplay, SelectRegion, ManualEdit],
+        [FileNavigator, RadarDisplay, SelectRegion, ManualEdit, PointsDisplay],
         [
             ((0, 'Vradar'), (1, 'Vradar')),
             ((1, 'VplotAxes'), (2, 'VplotAxes')),
@@ -231,6 +266,7 @@ def manual_filter_mode():
             ((2, 'Vpoints'), (3, 'Vpoints')),
             ((1, 'Vfield'), (3, 'Vfield')),
             ((1, 'Vgatefilter'), (3, 'Vgatefilter')),
+            ((2, "Vpoints"), (4, "Vpoints")),
             ]
         )
 
@@ -309,8 +345,6 @@ def radar_terminal_mode():
         ((1, 'Vradar'), (2, 'Vradar')),
         ]
     )
-
-
 
 modes = [
     {'label': 'Add RadarDisplay',

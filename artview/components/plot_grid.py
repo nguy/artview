@@ -431,15 +431,22 @@ class GridDisplay(Component):
         toolmenu = QtWidgets.QMenu(self)
         toolZoomPan = toolmenu.addAction("Zoom/Pan")
         toolValueClick = toolmenu.addAction("Click for Value")
-        toolSelectRegion = toolmenu.addAction("Select a Region of Interest")
         toolReset = toolmenu.addAction("Reset Tools")
         toolDefault = toolmenu.addAction("Reset File Defaults")
         toolZoomPan.triggered.connect(self.toolZoomPanCmd)
         toolValueClick.triggered.connect(self.toolValueClickCmd)
-        toolSelectRegion.triggered.connect(self.toolSelectRegionCmd)
         toolReset.triggered.connect(self.toolResetCmd)
         toolDefault.triggered.connect(self.toolDefaultCmd)
+        self.toolmenu = toolmenu
         self.toolsButton.setMenu(toolmenu)
+
+    def add_mode(self, mode, label):
+        """ Add a tool entry with given label. Selecting that tool, execute
+        mode passing this component shared variables."""
+        def call_mode():
+            mode(self.get_sharedVariables())
+        action = self.toolmenu.addAction(label)
+        action.triggered.connect(call_mode)
 
     def _add_infolabel(self):
         '''Create an information label about the display'''

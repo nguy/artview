@@ -284,3 +284,10 @@ class Component(QtWidgets.QMainWindow):
         componentsList.remove(self)
         self.disconnectAllVariables()
         super(Component, self).closeEvent(QCloseEvent)
+
+    def get_sharedVariables(self):
+        ''' get dictionaty of the shared variables '''
+        variables = {}
+        for key in self.sharedVariables.keys():
+            variables[key] = getattr(self, key)
+        return variables
