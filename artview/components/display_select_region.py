@@ -345,7 +345,7 @@ class DisplaySelectRegion(Component):
             warnings.warn(
                 "Reseting SelectRegion fails with following error\n" + error)
         self.disconnect()
-        super(SelectRegion, self).closeEvent(QCloseEvent)
+        super(DisplaySelectRegion, self).closeEvent(QCloseEvent)
 
     def displayStats(self):
         '''Calculate basic statistics of the SelectRegion list.'''

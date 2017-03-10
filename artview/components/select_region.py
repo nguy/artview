@@ -324,7 +324,7 @@ class SelectRegion(Component):
         '''Clear the SelectRegion lines from plot and reset things.'''
         if self.polys:
             for poly in self.polys:
-                for i in xrange(len(poly)):
+                for i in range(len(poly)):
                     try:
                         poly[i].remove()
                     except:
@@ -350,6 +350,8 @@ class SelectRegion(Component):
             error = traceback.format_exc()
             warnings.warn(
                 "Reseting SelectRegion fails with following error\n" + error)
+        import warnings
+        warnings.warn("a waring\n")
         self.disconnect()
         super(SelectRegion, self).closeEvent(QCloseEvent)
 
