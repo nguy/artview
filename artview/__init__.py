@@ -65,4 +65,4 @@ else:
 
     modes += plugins._modes
     # define standard execution
-    run = scripts.scripts['layout']
+    run = scripts.scripts['standard']

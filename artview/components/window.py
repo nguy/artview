@@ -3,6 +3,8 @@ menu.py
 
 Class instance used to create menu for ARTview app.
 """
+from __future__ import print_function
+
 import numpy as np
 import pyart
 
@@ -11,7 +13,7 @@ import sys
 import glob
 
 from ..core import (Variable, Component, common, QtGui, QtCore, componentsList,
-                    QtWidgets)
+                    QtWidgets, log)
 
 class Window(Component):
     '''Class to be Main Window'''
@@ -64,10 +66,6 @@ class Window(Component):
         root_spliter.setOrientation(QtCore.Qt.Horizontal)
 
         self.addPane()
-        print(self.layoutTree)
-        print(self.currentMultindex)
-
-
 
     def deleteComponent(self, midx, index):
         '''Delete Tab index from pane given by midx.'''
@@ -85,23 +83,18 @@ class Window(Component):
         '''Add Component to pane given by midx.'''
         if midx is None:
             midx = self.currentMultindex
-        print(midx)
         self.layoutTree[midx].addTab(component, component.name)
         self.layoutTree[midx].tabBar().setVisible(True)
 
     def setDesign(self, nrows, ncols):
         components = []
         rootMultindex = self.rootMultindex
-        print("root", rootMultindex)
         depth = len(rootMultindex)
 
-        print(rootMultindex)
         for multindex in list(self.layoutTree.keys()):
             if (multindex not in self.layoutTree or len(multindex)<=depth or
                 multindex[0:depth] != rootMultindex):
-                print(multindex, "   skip")
                 continue
-            print(multindex,"    cont")
             widget = self.layoutTree[multindex]
             if isinstance(widget, Pane) and widget.isClosable:
                 while widget.count() > 0:
@@ -193,14 +186,17 @@ class Window(Component):
         splitter.show()
 
     def closeCurrentPane(self):
-        print("CURRENT: ",self.currentMultindex)
+        print("Close current Pane: ", self.currentMultindex,
+              self.layoutTree[self.currentMultindex],
+              file=log.debug)
         if self.layoutTree[self.currentMultindex].isClosable:
             self.removeMultindex(self.currentMultindex, True)
         else:
             common.ShowWarning("Current Pane is not closable!")
 
     def removeMultindex(self, midx, resetCurrent=False):
-        print("close:  ", midx)
+        print("Close multindex: ", midx, self.layoutTree[midx],
+              file=log.debug)
         resetCurrent = (resetCurrent or midx == self.currentMultindex)
         if midx == self.rootMultindex:
             if isinstance(self.layoutTree[midx], QtWidgets.QSplitter):
@@ -218,12 +214,10 @@ class Window(Component):
         widget.setParent(None)
         widget.close()
         widget.deleteLater()
-        print(midx[:-1], "count  ", self.layoutTree[midx[:-1]].count())
         if self.layoutTree[midx[:-1]].count() == 0:
             self.removeMultindex(midx[:-1], resetCurrent)
         elif resetCurrent:
             l = [i for i in self.layoutTree if i[:-1]==midx[:-1] and i!=midx and i!=()]
-            print(l)
             if l:
                 self.setCurrentMultindex(l[0])
             else:
@@ -259,7 +253,6 @@ class Window(Component):
 
     def popNewWindow(self):
         widget = self.layoutTree[self.currentMultindex]
-        print(self.currentMultindex,widget)
         if not isinstance(widget, Pane):
             common.ShowWarning("ERROR: current widget is not a Pane.\n"
                                "this should not happen, please report at github")
@@ -389,52 +382,6 @@ class Window(Component):
         comp, independent = Comp.guiStart(self)
         if not independent:
             self.addComponent(comp, self.currentMultindex)
-
-    def changeMode(self, new_mode):
-        ''' Open and connect new components to satisfy mode.
-
-        Parameters
-        ----------
-        new_mode: see file artview/modes.py for documentation on modes
-        '''
-        components = new_mode[0][:]
-        links = new_mode[1]
-        static_comp_list = componentsList[:]
-        # find already running components
-        for i, component in enumerate(components):
-            flag = False
-            for j, comp in enumerate(static_comp_list):
-                if isinstance(comp, component):
-                    components[i] = static_comp_list.pop(j)
-                    flag = True
-                    break
-            if not flag:
-                # if there is no component open
-                print("starting component: %s" % component.__name__)
-                from ..core.core import suggestName
-                name = suggestName(components[i])
-                components[i] = components[i](name=name, parent=self)
-                self.addComponent(components[i], self.currentMultindex)
-
-        for link in links:
-            dest = getattr(components[link[0][0]], link[0][1])
-            orin = getattr(components[link[1][0]], link[1][1])
-            if dest is orin:
-                # already linked
-                pass
-            else:
-                # not linked, link
-                print("linking %s.%s to %s.%s" %
-                      (components[link[1][0]].name, link[1][1],
-                       components[link[0][0]].name, link[0][1]))
-                # Disconect old Variable
-                components[link[1][0]].disconnectSharedVariable(link[1][1])
-                # comp1.var = comp0.var
-                setattr(components[link[1][0]], link[1][1], dest)
-                # Connect new Variable
-                components[link[1][0]].connectSharedVariable(link[1][1])
-                # Emit change signal
-                dest.update()
 
     ######################
     # Help methods #
@@ -627,7 +574,7 @@ class Pane(QtWidgets.QTabWidget):
             #option.background = PyGui.QPalette.Background
             style.drawControl(QtWidgets.QStyle.CE_PushButton, option, painter, self)
         if self.count() == 0:
-            painter.drawText(option.rect,QtCore.Qt.AlignCenter,"Move Tabs \n in Here \n %s"%str(self.midx))
+            painter.drawText(option.rect,QtCore.Qt.AlignCenter,"Move Tabs \n in Here \n")
 
     def close(self):
         for i in range(self.count()):

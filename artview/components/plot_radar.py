@@ -3,6 +3,7 @@ plot_radar.py
 
 Class instance used to make Display.
 """
+from __future__ import print_function
 # Load the needed packages
 import numpy as np
 import os
@@ -21,7 +22,7 @@ from matplotlib.colorbar import ColorbarBase as mlabColorbarBase
 from matplotlib.pyplot import cm
 
 from ..core import (Variable, Component, common, VariableChoose, QtCore,
-                    QtGui, QtWidgets)
+                    QtGui, QtWidgets, log)
 from ..core.points import Points
 
 # Save image file type and DPI (resolution)
@@ -994,7 +995,7 @@ class RadarDisplay(Component):
                 self.plot_type = "radarRhi"
 
         if self.plot_type != old_plot_type:
-            print("Changed Scan types, reinitializing")
+            print("Changed Scan types, reinitializing", file=log.debug)
             self.toolResetCmd()
             self._set_default_limits()
             self._update_fig_ax()

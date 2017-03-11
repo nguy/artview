@@ -3,6 +3,7 @@ menu.py
 
 Class instance used to create menu for ARTview app.
 """
+from __future__ import print_function
 import numpy as np
 import pyart
 
@@ -10,7 +11,8 @@ import os
 import sys
 import glob
 
-from ..core import Variable, Component, common, QtWidgets, QtCore, componentsList
+from ..core import (Variable, Component, common, QtWidgets, QtCore,
+                    componentsList, log)
 
 
 class Menu(Component):
@@ -380,12 +382,51 @@ class Menu(Component):
 
     def change_mode(self, new_mode):
         ''' Open and connect new components to satisfy mode.
-
         Parameters
         ----------
         new_mode: see file artview/modes.py for documentation on modes
         '''
-        new_mode()
+        components = new_mode[0][:]
+        links = new_mode[1]
+        static_comp_list = componentsList[:]
+        # find already running components
+        for i, component in enumerate(components):
+            flag = False
+            for j, comp in enumerate(static_comp_list):
+                if isinstance(comp, component):
+                    components[i] = static_comp_list.pop(j)
+                    flag = True
+                    break
+            if not flag:
+                # if there is no component open
+                print("starting component: %s" % component.__name__,
+                      file=log.debug)
+                from ..core.core import suggestName
+                name = suggestName(components[i])
+                components[i] = components[i](name=name, parent=self)
+                self.addLayoutWidget(components[i])
+
+        for link in links:
+            dest = getattr(components[link[0][0]], link[0][1])
+            orin = getattr(components[link[1][0]], link[1][1])
+            if dest is orin:
+                # already linked
+                pass
+            else:
+                # not linked, link
+                print("linking %s.%s to %s.%s" %
+                      (components[link[1][0]].name, link[1][1],
+                       components[link[0][0]].name, link[0][1]),
+                      file=log.debug)
+                # Disconect old Variable
+                components[link[1][0]].disconnectSharedVariable(link[1][1])
+                # comp1.var = comp0.var
+                setattr(components[link[1][0]], link[1][1], dest)
+                # Connect new Variable
+                components[link[1][0]].connectSharedVariable(link[1][1])
+                # Emit change signal
+                dest.update()
+
 
     def addFileAdvanceMenu(self):
         '''
@@ -561,7 +602,6 @@ class Menu(Component):
     def AdvanceFileSelect(self, findex):
         '''Captures a selection and open file.'''
         if findex > (len(self.Vfilelist.value)-1):
-            print(len(self.Vfilelist.value))
             msg = "End of directory, cannot advance!"
             common.ShowWarning(msg)
             findex = (len(self.Vfilelist.value) - 1)
@@ -584,7 +624,7 @@ class Menu(Component):
         if filename is not None:
             self.filename = filename
 
-        print("Opening file " + self.filename)
+        print("Opening file " + self.filename, file=log.info)
 
         # Update to current directory when file is chosen
         self.dirIn = os.path.dirname(self.filename)

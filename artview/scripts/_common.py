@@ -72,7 +72,7 @@ def startMainMenu(DirIn=None, filename=None):
     MainMenu = Menu(DirIn, filename, mode=("Radar", "Grid"))
 
 #    try:
-    from ..modes import modes
+    from ..modes_legacy import modes
     group_names = [m['group'] for m in modes]
     seen = set()
     group_names = [x for x in group_names
@@ -102,8 +102,6 @@ def startMainMenu(DirIn=None, filename=None):
     menu_height = 180
 
     MainMenu.setGeometry(0, 0, menu_width, menu_height)
-
-
 
 
 def startMainWindow(DirIn=None, filename=None):
