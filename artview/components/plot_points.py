@@ -536,6 +536,9 @@ class PointsDisplay(Component):
         else:
             return ''
 
+    def minimumSizeHint(self):
+        return QtCore.QSize(0, 0)
+
     ########################
     # Image save methods #
     ########################
