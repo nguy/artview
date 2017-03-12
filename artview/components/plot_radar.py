@@ -1076,6 +1076,9 @@ class RadarDisplay(Component):
             self.canvas.print_figure(path, dpi=DPI)
             self.statusbar.showMessage('Saved to %s' % path)
 
+    def minimumSizeHint(self):
+        return QtCore.QSize(0, 0)
+
     ########################
     #      get methods     #
     ########################

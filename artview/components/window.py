@@ -61,6 +61,7 @@ class Window(Component):
         self.currentMultindex = self.rootMultindex
         self.layoutTree = {}
         root_spliter = QtWidgets.QSplitter(self)
+        root_spliter.setOpaqueResize(False)
         self.setCentralWidget(root_spliter)
         self.layoutTree[self.rootMultindex] = root_spliter
         root_spliter.setOrientation(QtCore.Qt.Horizontal)
@@ -129,6 +130,7 @@ class Window(Component):
         '''Replace widget in multindex with splitter and move tree down'''
         widget = self.layoutTree[multindex]
         splitter = QtWidgets.QSplitter()
+        splitter.setOpaqueResize(False)
         splitter.setOrientation(orientation)
         splitter.insertWidget(0, widget)
         self.layoutTree[multindex[:-1]].insertWidget(multindex[-1], splitter)
@@ -458,7 +460,7 @@ class Pane(QtWidgets.QTabWidget):
         if self.currentWidget() is not None:
             hint = self.currentWidget().minimumSizeHint()
             if self.tabBar().isVisible():
-                tabHint = self.tabBar().minimumSizeHint()
+                tabHint = self.tabBar().minimumSize()
             else:
                 tabHint = QtCore.QSize(0, 0)
             hint.setHeight(hint.height() + tabHint.height())
