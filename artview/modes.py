@@ -105,7 +105,7 @@ def grid_mode():
 
     from .core.core import suggestName
     grid = GridDisplay(name=suggestName(GridDisplay), Vgrid=menu.Vgrid,
-                         parent=menu)
+                       parent=menu)
     grid.add_mode(display_select_region, "Select a Region of Interest")
     window.addComponent(grid)
 
@@ -204,11 +204,17 @@ def display_select_region(variables={}):
             # Connect new Variable
             select_region.connectSharedVariable(key)
             # Emit change signal
-            variables[key].update()
+            variables[key].update(False)
+
+    pointsDisplay.disconnectSharedVariable("Vfield")
+    pointsDisplay.Vfield = select_region.Vfield
+    pointsDisplay.connectSharedVariable("Vfield")
+    pointsDisplay.Vfield.update(False)
+
     pointsDisplay.disconnectSharedVariable("Vpoints")
     pointsDisplay.Vpoints = select_region.Vpoints
     pointsDisplay.connectSharedVariable("Vpoints")
-    pointsDisplay.Vpoints.update()
+    pointsDisplay.Vpoints.update(True)
 
 def extract_points_mode():
     change_mode(
