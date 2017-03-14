@@ -3,9 +3,9 @@ common.py
 
 Common routines run throughout ARTView.
 """
-
+from __future__ import print_function
 # Load the needed packages
-from .core import QtWidgets, QtCore, QtGui
+from .core import QtWidgets, QtCore, QtGui, log
 import numpy as np
 import os
 import glob
@@ -28,9 +28,9 @@ def ShowWarning(msg):
     flags = QtWidgets.QMessageBox.StandardButton()
     response = QtWidgets.QMessageBox.warning(Dialog, "Warning!", msg, flags)
     if response == 0:
-        print(msg)
+        print(msg, file=log.debug)
     else:
-        print("Warning Discarded!")
+        print("Warning Discarded!", file=log.debug)
 
     return response
 
@@ -49,9 +49,9 @@ def ShowQuestion(msg):
         Dialog, "Question", msg,
         QtWidgets.QMessageBox.Ok, QtWidgets.QMessageBox.Cancel)
     if response == QtWidgets.QMessageBox.Ok:
-        print(msg)
+        print(msg, file=log.debug)
     else:
-        print("Warning Discarded!")
+        print("Warning Discarded!", file=log.debug)
 
     return response
 

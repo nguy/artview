@@ -1,7 +1,8 @@
+from __future__ import print_function
 
 from .components import *
 from .plugins import *
-from .core import componentsList
+from .core import componentsList, log
 from .core import QtWidgets, QtGui
 
 def change_mode(components, links):
@@ -33,7 +34,8 @@ def change_mode(components, links):
                     break
             if not flag:
                 # if there is no component open
-                print("starting component: %s" % component.__name__)
+                print("starting component: %s" % component.__name__,
+                      file=log.debug)
                 from .core.core import suggestName
                 name = suggestName(components[i])
                 components[i] = components[i](name=name, parent=window)
@@ -49,7 +51,8 @@ def change_mode(components, links):
                 # not linked, link
                 print("linking %s.%s to %s.%s" %
                       (components[link[1][0]].name, link[1][1],
-                       components[link[0][0]].name, link[0][1]))
+                       components[link[0][0]].name, link[0][1]),
+                      file=log.debug)
                 # Disconect old Variable
                 components[link[1][0]].disconnectSharedVariable(link[1][1])
                 # comp1.var = comp0.var
@@ -65,7 +68,6 @@ def radar_mode():
     menu = None
     window = None
     for j, comp in enumerate(static_comp_list):
-        print(comp)
         if isinstance(comp, FileNavigator) and menu is None:
             menu = comp
         elif isinstance(comp, Window) and window is None:
