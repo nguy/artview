@@ -3,6 +3,7 @@ plot_radar.py
 
 Class instance used to make Display.
 """
+from __future__ import print_function
 # Load the needed packages
 import numpy as np
 import os
@@ -21,7 +22,7 @@ from matplotlib.colorbar import ColorbarBase as mlabColorbarBase
 from matplotlib.pyplot import cm
 
 from ..core import (Variable, Component, common, VariableChoose, QtCore,
-                    QtGui, QtWidgets)
+                    QtGui, QtWidgets, log)
 from ..core.points import Points
 
 # Save image file type and DPI (resolution)
@@ -87,6 +88,7 @@ class RadarDisplay(Component):
         '''
         super(RadarDisplay, self).__init__(name=name, parent=parent)
         self.setFocusPolicy(QtCore.Qt.ClickFocus)
+        #self.setSizePolicy(QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Expanding)
         # Set up signal, so that DISPLAY can react to
         # external (or internal) changes in radar, field,
         # lims and tilt (expected to be Core.Variable instances)
@@ -996,7 +998,7 @@ class RadarDisplay(Component):
                 self.plot_type = "radarRhi"
 
         if self.plot_type != old_plot_type:
-            print("Changed Scan types, reinitializing")
+            print("Changed Scan types, reinitializing", file=log.debug)
             self.toolResetCmd()
             self._set_default_limits()
             self._update_fig_ax()
@@ -1076,6 +1078,9 @@ class RadarDisplay(Component):
         if path:
             self.canvas.print_figure(path, dpi=DPI)
             self.statusbar.showMessage('Saved to %s' % path)
+
+    def minimumSizeHint(self):
+        return QtCore.QSize(0, 0)
 
     ########################
     #      get methods     #

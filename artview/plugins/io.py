@@ -81,10 +81,7 @@ class DirectoryList(Component):
         self.listView = QtWidgets.QListView()
 
         # set up listView
-        try:
-            model = QtGui.QFileSystemModel()
-        except: # PyQt5
-            model = QtCore.QFileSystemModel()
+        model = QtWidgets.QFileSystemModel()
         model.setFilter(QtCore.QDir.AllEntries |
                         QtCore.QDir.AllDirs |
                         QtCore.QDir.NoDot)
@@ -219,14 +216,19 @@ class FileDetail(Component):
         return self(**kwargs), independent
         return self(), False
 
-    def __init__(self, dirIn=None, name="FileDetail", parent=None):
+    def __init__(self, Vradar=None, Vgrid=None, name="FileDetail",
+                 parent=None):
         '''Initialize the class to create the interface.
 
         Parameters
         ----------
         [Optional]
-        dirIn: string
-            Initial directory path to open.
+        Vradar : :py:class:`~artview.core.core.Variable` instance
+            Radar signal variable.
+            A value of None initializes an empty Variable.
+        Vgrid : :py:class:`~artview.core.core.Variable` instance
+            Grid signal variable.
+            A value of None initializes an empty Variable.
         name : string
             Window name.
         parent : PyQt instance
@@ -241,50 +243,39 @@ class FileDetail(Component):
 
         # Set up signal, so that DISPLAY can react to
         # changes in radar or gatefilter shared variables
-        self.Vradar = Variable(None)
-        self.Vgrid = Variable(None)
+        if Vradar is None:
+            self.Vradar = Variable(None)
+        else:
+            self.Vradar = Vradar
+        if Vgrid is None:
+            self.Vgrid = Variable(None)
+        else:
+            self.Vgrid = Vgrid
         self.sharedVariables = {"Vradar": None,
                                 "Vgrid": None}
         self.connectAllVariables()
 
         # Set the layout
-        self.generalLayout = QtWidgets.QVBoxLayout()
-        self.generalLayout.addWidget(self.createShortUI())
-        self.generalLayout.addWidget(self.createLongUI())
+        #self.generalLayout = QtWidgets.QVBoxLayout()
+        self.layout.addWidget(self.createUI(),0,0)
 
-        self.layout.addLayout(self.generalLayout, 0, 0, 1, 2)
+        #self.layout.addLayout(self.generalLayout, 0, 0, 1, 2)
 
         self.show()
 
-    def createShortUI(self):
+    def createUI(self):
         '''
         Choose to save minimal information from Radar instance.
         '''
-        groupBox = QtWidgets.QGroupBox("Output Short Radar Text Information")
-        gBox_layout = QtWidgets.QGridLayout()
+        self.button = QtWidgets.QPushButton("Radar Info")
+        self.menu = QtWidgets.QMenu()
 
-        self.RadarShortButton = QtWidgets.QPushButton("Save Short Info File")
-        self.RadarShortButton.setStatusTip('Save Short Radar Structure Info')
-        self.RadarShortButton.clicked.connect(self._get_RadarShortInfo)
-        gBox_layout.addWidget(self.RadarShortButton, 0, 0, 1, 1)
+        self.button.setMenu(self.menu)
+        self.menu.addAction("Show Short Info File", self._show_RadarShortInfo)
+        self.menu.addAction("Save Short Info File", self._save_RadarShortInfo)
+        self.menu.addAction("Save Long Info File", self._get_RadarLongInfo)
+        return self.button
 
-        groupBox.setLayout(gBox_layout)
-
-        return groupBox
-
-    def createLongUI(self):
-        '''
-        Choose to save full information from Radar instance.
-        '''
-        groupBox = QtWidgets.QGroupBox("Output Long Radar Text Information")
-        gBox_layout = QtWidgets.QGridLayout()
-
-        self.RadarLongButton = QtWidgets.QPushButton("Save Long Info File")
-        self.RadarLongButton.setStatusTip('Save Long Radar Structure Info')
-        self.RadarLongButton.clicked.connect(self._get_RadarLongInfo)
-        gBox_layout.addWidget(self.RadarLongButton, 0, 0, 1, 1)
-
-        groupBox.setLayout(gBox_layout)
 
         return groupBox
 
@@ -386,7 +377,15 @@ class FileDetail(Component):
                  ('Number of gates: %s\n' % ngates) +
                  ('Number of sweeps: %s\n' % nsweeps))
 
+        return txOut
+
+    def _save_RadarShortInfo(self):
+        txOut = self._get_RadarShortInfo()
         self.showSaveDialog('short_radar_info.txt', txOut)
+
+    def _show_RadarShortInfo(self):
+        txOut = self._get_RadarShortInfo()
+        common.ShowLongText(txOut)
 
     def showSaveDialog(self, fsuggest, txt):
 

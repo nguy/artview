@@ -1,215 +1,311 @@
+from __future__ import print_function
 
 from .components import *
 from .plugins import *
-from .core import componentsList
+from .core import componentsList, log
+from .core import QtWidgets, QtGui
 
-'''
-A mode is a  tuple: (components, links) where:
-* components is a list of uninitialized components
-* links is a list of links, where a link is a tuple:
-  ((destination_index, var_name), (origin_index, var_name))
-  where `destination_index` and `origin_index` refer to the indexes in the
-  components list of the origin and destination of the linking process, and
-  `var_name` is the respective shared variable name.
-'''
+def change_mode(components, links):
+        ''' Open and connect new components to satisfy mode.
+
+        Parameters
+        ----------
+        components: is a list of uninitialized components
+        links: list of links
+            link is a tuple ((destination_index, var_name),
+            (origin_index, var_name)) where `destination_index` and
+            `origin_index` refer to the indexes in the components list of the
+            origin and destination of the linking process, and
+            `var_name` is the respective shared variable name.
+        '''
+        static_comp_list = componentsList[:]
+        for j, comp in enumerate(static_comp_list):
+            if isinstance(comp, Window):
+                window = comp
+                break
+
+        # find already running components
+        for i, component in enumerate(components):
+            flag = False
+            for j, comp in enumerate(static_comp_list):
+                if isinstance(comp, component):
+                    components[i] = static_comp_list.pop(j)
+                    flag = True
+                    break
+            if not flag:
+                # if there is no component open
+                print("starting component: %s" % component.__name__,
+                      file=log.debug)
+                from .core.core import suggestName
+                name = suggestName(components[i])
+                components[i] = components[i](name=name, parent=window)
+                window.addComponent(components[i])
+
+        for link in links:
+            dest = getattr(components[link[0][0]], link[0][1])
+            orin = getattr(components[link[1][0]], link[1][1])
+            if dest is orin:
+                # already linked
+                pass
+            else:
+                # not linked, link
+                print("linking %s.%s to %s.%s" %
+                      (components[link[1][0]].name, link[1][1],
+                       components[link[0][0]].name, link[0][1]),
+                      file=log.debug)
+                # Disconect old Variable
+                components[link[1][0]].disconnectSharedVariable(link[1][1])
+                # comp1.var = comp0.var
+                setattr(components[link[1][0]], link[1][1], dest)
+                # Connect new Variable
+                components[link[1][0]].connectSharedVariable(link[1][1])
+                # Emit change signal
+                dest.update()
 
 
-radar_mode = (
-    [Menu, RadarDisplay],
-    [
-        ((0, 'Vradar'), (1, 'Vradar')),
-        # link component 1 (RadarDisplay) Vradar to
-        # component 0 (Menu) Vradar
-        ]
-    )
+def radar_mode():
+    static_comp_list = componentsList[:]
+    menu = None
+    window = None
+    for j, comp in enumerate(static_comp_list):
+        if isinstance(comp, FileNavigator) and menu is None:
+            menu = comp
+        elif isinstance(comp, Window) and window is None:
+            window = comp
+    if menu is None:
+        menu = FileNavigator()
+        window.addComponent(menu)
 
-grid_mode = (
-    [Menu, GridDisplay],
-    [
-        ((0, 'Vgrid'), (1, 'Vgrid')),
-        ]
-    )
+    from .core.core import suggestName
+    radar = RadarDisplay(name=suggestName(RadarDisplay), Vradar=menu.Vradar,
+                         parent=menu)
+    window.addComponent(radar)
 
-# Deprecated - duplicated of grid_mode and radar_mode
-radar_and_grid_mode = (
-    [Menu, RadarDisplay, GridDisplay],
-    [
-        ((0, 'Vradar'), (1, 'Vradar')),
-        ((0, 'Vgrid'), (2, 'Vgrid')),
-        ((1, 'Vfield'), (2, 'Vfield')),
-        ]
-    )
+def grid_mode():
+    static_comp_list = componentsList[:]
+    menu = None
+    window = None
+    for j, comp in enumerate(static_comp_list):
+        if isinstance(comp, FileNavigator) and menu is None:
+            menu = comp
+        elif isinstance(comp, Window) and window is None:
+            window = comp
 
-map_to_grid_mode = (
-    [Menu, RadarDisplay, Mapper, GridDisplay],
-    [
-        ((0, 'Vradar'), (1, 'Vradar')),
-        ((1, 'Vradar'), (2, 'Vradar')),
-        ((2, 'Vgrid'), (3, 'Vgrid')),
-        ]
-    )
+    if menu is None:
+        menu = FileNavigator()
+        window.addComponent(menu)
+
+    from .core.core import suggestName
+    grid = GridDisplay(name=suggestName(GridDisplay), Vgrid=menu.Vgrid,
+                         parent=menu)
+    window.addComponent(grid)
+
+def map_to_grid_mode():
+    change_mode(
+        [FileNavigator, RadarDisplay, Mapper, GridDisplay],
+        [
+            ((0, 'Vradar'), (1, 'Vradar')),
+            # link component 1 (RadarDisplay) Vradar to
+            # component 0 (FileNavigator) Vradar
+            ((1, 'Vradar'), (2, 'Vradar')),
+            ((2, 'Vgrid'), (3, 'Vgrid')),
+            ]
+        )
 
 # XXX Deprecated as this is standard startup
-compare_fields_mode = (
-    [Menu, RadarDisplay, RadarDisplay],
+def compare_fields_mode():
+    change_mode(
+        [FileNavigator, RadarDisplay, RadarDisplay],
+        [
+            ((0, 'Vradar'), (1, 'Vradar')),
+            ((1, 'Vradar'), (2, 'Vradar')),
+            ((1, 'Vtilt'), (2, 'Vtilt')),
+            ]
+        )
+
+def corrections_mode():
+    change_mode(
+        [FileNavigator, RadarDisplay],
+        [((0, 'Vradar'), (1, 'Vradar')),]
+        )
+
+    static_comp_list = componentsList[:]
+    window = None
+    display = None
+    for j, comp in enumerate(static_comp_list):
+        if isinstance(comp, Window) and window is None:
+            window = comp
+        elif isinstance(comp, RadarDisplay) and display is None:
+            display = comp
+
+    widget = LayoutComponent(name="Corrections")
+    window.addComponent(widget)
+
+    widget.layout.addWidget(DealiasRegionBased(
+        Vradar=display.Vradar, Vgatefilter=display.Vgatefilter), 0, 0)
+    widget.layout.addWidget(DealiasUnwrapPhase(
+        Vradar=display.Vradar, Vgatefilter=display.Vgatefilter), 1, 0)
+    widget.layout.addWidget(PhaseProcLp(Vradar=display.Vradar), 2, 0)
+    widget.layout.addWidget(CalculateAttenuation(Vradar=display.Vradar), 3, 0)
+    widget.layout.addWidget(Despeckle(
+        Vradar=display.Vradar, Vgatefilter=display.Vgatefilter,
+        Vfield=display.Vfield), 4, 0)
+
+    widget.layout.setRowStretch(5, 1)
+
+def gatefilter_mode():
+    change_mode(
+        [FileNavigator, RadarDisplay, GateFilter],
+        [
+            ((0, 'Vradar'), (1, 'Vradar')),
+            ((1, 'Vradar'), (2, 'Vradar')),
+            ((1, 'Vgatefilter'), (2, 'Vgatefilter')),
+            ]
+        )
+
+def select_region_mode():
+    change_mode(
+        [FileNavigator, RadarDisplay, SelectRegion],
+        [
+            ((0, 'Vradar'), (1, 'Vradar')),
+            ((1, 'VplotAxes'), (2, 'VplotAxes')),
+            ((1, 'Vfield'), (2, 'Vfield')),
+            ((1, 'VpathInteriorFunc'), (2, 'VpathInteriorFunc')),
+            ((1, 'Vgatefilter'), (2, 'Vgatefilter')),
+            ((1, 'Vradar'), (2, 'Vradar')),
+            ]
+        )
+
+
+def extract_points_mode():
+    change_mode(
+        [FileNavigator, RadarDisplay, SelectRegion, PointsDisplay],
+        [
+            ((0, 'Vradar'), (1, 'Vradar')),
+            ((1, 'VplotAxes'), (2, 'VplotAxes')),
+            ((1, 'Vfield'), (2, 'Vfield')),
+            ((1, 'VpathInteriorFunc'), (2, 'VpathInteriorFunc')),
+            ((1, 'Vgatefilter'), (2, 'Vgatefilter')),
+            ((1, 'Vradar'), (2, 'Vradar')),
+            ((2, 'Vpoints'), (3, 'Vpoints')),
+            ((1, 'Vfield'), (3, 'Vfield')),
+            # ((1, 'Vcolormap'), (3, 'Vcolormap')),
+            ]
+        )
+
+def map_to_grid_mode():
+    change_mode(
+        [FileNavigator, RadarDisplay, GridDisplay, Mapper],
+        [
+            ((0, 'Vradar'), (1, 'Vradar')),
+            ((1, 'Vradar'), (3, 'Vradar')),
+            ((3, 'Vgrid'), (2, 'Vgrid')),
+            ((1, 'Vfield'), (2, 'Vfield')),
+            ]
+        )
+
+def manual_unfold_mode():
+    change_mode(
+        [FileNavigator, RadarDisplay, SelectRegion, ManualUnfold],
+        [
+            ((0, 'Vradar'), (1, 'Vradar')),
+            ((1, 'VplotAxes'), (2, 'VplotAxes')),
+            ((1, 'Vfield'), (2, 'Vfield')),
+            ((1, 'VpathInteriorFunc'), (2, 'VpathInteriorFunc')),
+            ((1, 'Vgatefilter'), (2, 'Vgatefilter')),
+            ((1, 'Vradar'), (2, 'Vradar')),
+            ((1, 'Vradar'), (3, 'Vradar')),
+            ((2, 'Vpoints'), (3, 'Vpoints')),
+            ]
+        )
+
+def manual_filter_mode():
+    change_mode(
+        [FileNavigator, RadarDisplay, SelectRegion, ManualFilter],
+        [
+            ((0, 'Vradar'), (1, 'Vradar')),
+            ((1, 'VplotAxes'), (2, 'VplotAxes')),
+            ((1, 'Vfield'), (2, 'Vfield')),
+            ((1, 'VpathInteriorFunc'), (2, 'VpathInteriorFunc')),
+            ((1, 'Vgatefilter'), (2, 'Vgatefilter')),
+            ((1, 'Vradar'), (2, 'Vradar')),
+            ((1, 'Vradar'), (3, 'Vradar')),
+            ((2, 'Vpoints'), (3, 'Vpoints')),
+            ((1, 'Vfield'), (3, 'Vfield')),
+            ((1, 'Vgatefilter'), (3, 'Vgatefilter')),
+            ]
+        )
+
+def filelist_mode():
+    change_mode(
+        [FileNavigator, DirectoryList],
+        [
+            ((0, 'Vradar'), (1, 'Vradar')),
+            ((0, 'Vgrid'), (1, 'Vgrid')),
+        ]
+        )
+
+def filedetail_mode():
+    change_mode(
+        [FileNavigator, FileDetail],
+        [
+            ((0, 'Vradar'), (1, 'Vradar')),
+            ((0, 'Vgrid'), (1, 'Vgrid')),
+        ]
+        )
+
+def despeckle_mode():
+    change_mode(
+        [FileNavigator, RadarDisplay, Despeckle],
+        [
+            ((0, 'Vradar'), (1, 'Vradar')),
+            ((1, 'Vradar'), (2, 'Vradar')),
+            ((1, 'Vfield'), (2, 'Vfield')),
+            ((1, 'Vgatefilter'), (2, 'Vgatefilter')),
+        ]
+        )
+
+def navigate_mode():
+    change_mode(
+        [FileNavigator, FileNavigator],
+        [
+            ((0, 'Vradar'), (1, 'Vradar')),
+            ((0, 'Vgrid'), (1, 'Vgrid')),
+            ((0, 'Vfilelist'), (1, 'Vfilelist')),
+        ]
+        )
+
+def topography_mode():
+    change_mode(
+        [FileNavigator, RadarDisplay, TopographyBackground],
+        [
+            ((0, 'Vradar'), (1, 'Vradar')),
+            ((1, 'VpyartDisplay'), (2, 'VpyartDisplay')),
+            ]
+        )
+
+def background_mode():
+    change_mode(
+        [FileNavigator, RadarDisplay, ImageBackground],
+        [
+            ((0, 'Vradar'), (1, 'Vradar')),
+            ((1, 'VpyartDisplay'), (2, 'VpyartDisplay')),
+            ((1, 'Vradar'), (2, 'Vradar')),
+            ((1, 'VplotAxes'), (2, 'VplotAxes')),
+            ]
+        )
+
+def correlation_mode():
+    change_mode(
+    [FileNavigator, Correlation],
     [
         ((0, 'Vradar'), (1, 'Vradar')),
-        ((1, 'Vradar'), (2, 'Vradar')),
-        ((1, 'Vtilt'), (2, 'Vtilt')),
         ]
     )
 
-corrections_mode = (
-    [Menu, RadarDisplay, DealiasRegionBased, DealiasUnwrapPhase, PhaseProcLp,
-        CalculateAttenuation],
-    [
-        ((0, 'Vradar'), (1, 'Vradar')),
-        ((1, 'Vradar'), (2, 'Vradar')),
-        ((1, 'Vradar'), (3, 'Vradar')),
-        ((1, 'Vradar'), (4, 'Vradar')),
-        ((1, 'Vradar'), (5, 'Vradar')),
-        ]
-    )
-
-gatefilter_mode = (
-    [Menu, RadarDisplay, GateFilter],
-    [
-        ((0, 'Vradar'), (1, 'Vradar')),
-        ((1, 'Vradar'), (2, 'Vradar')),
-        ((1, 'Vgatefilter'), (2, 'Vgatefilter')),
-        ]
-    )
-
-select_region_mode = (
-    [Menu, RadarDisplay, SelectRegion],
-    [
-        ((0, 'Vradar'), (1, 'Vradar')),
-        ((1, 'VplotAxes'), (2, 'VplotAxes')),
-        ((1, 'Vfield'), (2, 'Vfield')),
-        ((1, 'VpathInteriorFunc'), (2, 'VpathInteriorFunc')),
-        ((1, 'Vgatefilter'), (2, 'Vgatefilter')),
-        ((1, 'Vradar'), (2, 'Vradar')),
-        ]
-    )
-
-
-extract_points_mode = (
-    [Menu, RadarDisplay, SelectRegion, PointsDisplay],
-    [
-        ((0, 'Vradar'), (1, 'Vradar')),
-        ((1, 'VplotAxes'), (2, 'VplotAxes')),
-        ((1, 'Vfield'), (2, 'Vfield')),
-        ((1, 'VpathInteriorFunc'), (2, 'VpathInteriorFunc')),
-        ((1, 'Vgatefilter'), (2, 'Vgatefilter')),
-        ((1, 'Vradar'), (2, 'Vradar')),
-        ((2, 'Vpoints'), (3, 'Vpoints')),
-        ((1, 'Vfield'), (3, 'Vfield')),
-        # ((1, 'Vcolormap'), (3, 'Vcolormap')),
-        ]
-    )
-
-map_to_grid_mode = (
-    [Menu, RadarDisplay, GridDisplay, Mapper],
-    [
-        ((0, 'Vradar'), (1, 'Vradar')),
-        ((1, 'Vradar'), (3, 'Vradar')),
-        ((3, 'Vgrid'), (2, 'Vgrid')),
-        ((1, 'Vfield'), (2, 'Vfield')),
-        ]
-    )
-
-manual_unfold_mode = (
-    [Menu, RadarDisplay, SelectRegion, ManualUnfold],
-    [
-        ((0, 'Vradar'), (1, 'Vradar')),
-        ((1, 'VplotAxes'), (2, 'VplotAxes')),
-        ((1, 'Vfield'), (2, 'Vfield')),
-        ((1, 'VpathInteriorFunc'), (2, 'VpathInteriorFunc')),
-        ((1, 'Vgatefilter'), (2, 'Vgatefilter')),
-        ((1, 'Vradar'), (2, 'Vradar')),
-        ((1, 'Vradar'), (3, 'Vradar')),
-        ((2, 'Vpoints'), (3, 'Vpoints')),
-        ]
-    )
-
-manual_filter_mode = (
-    [Menu, RadarDisplay, SelectRegion, ManualFilter],
-    [
-        ((0, 'Vradar'), (1, 'Vradar')),
-        ((1, 'VplotAxes'), (2, 'VplotAxes')),
-        ((1, 'Vfield'), (2, 'Vfield')),
-        ((1, 'VpathInteriorFunc'), (2, 'VpathInteriorFunc')),
-        ((1, 'Vgatefilter'), (2, 'Vgatefilter')),
-        ((1, 'Vradar'), (2, 'Vradar')),
-        ((1, 'Vradar'), (3, 'Vradar')),
-        ((2, 'Vpoints'), (3, 'Vpoints')),
-        ((1, 'Vfield'), (3, 'Vfield')),
-        ((1, 'Vgatefilter'), (3, 'Vgatefilter')),
-        ]
-    )
-
-filelist_mode = (
-    [Menu, DirectoryList],
-    [
-        ((0, 'Vradar'), (1, 'Vradar')),
-        ((0, 'Vgrid'), (1, 'Vgrid')),
-    ]
-)
-
-filedetail_mode = (
-    [Menu, FileDetail],
-    [
-        ((0, 'Vradar'), (1, 'Vradar')),
-        ((0, 'Vgrid'), (1, 'Vgrid')),
-    ]
-)
-
-despeckle_mode = (
-    [Menu, RadarDisplay, Despeckle],
-    [
-        ((0, 'Vradar'), (1, 'Vradar')),
-        ((1, 'Vradar'), (2, 'Vradar')),
-        ((1, 'Vfield'), (2, 'Vfield')),
-        ((1, 'Vgatefilter'), (2, 'Vgatefilter')),
-    ]
-)
-
-navigate_mode = (
-    [Menu, FileNavigator],
-    [
-        ((0, 'Vradar'), (1, 'Vradar')),
-        ((0, 'Vgrid'), (1, 'Vgrid')),
-        ((0, 'Vfilelist'), (1, 'Vfilelist')),
-    ]
-)
-
-topography_mode = (
-    [Menu, RadarDisplay, TopographyBackground],
-    [
-        ((0, 'Vradar'), (1, 'Vradar')),
-        ((1, 'VpyartDisplay'), (2, 'VpyartDisplay')),
-        ]
-    )
-
-background_mode = (
-    [Menu, RadarDisplay, ImageBackground],
-    [
-        ((0, 'Vradar'), (1, 'Vradar')),
-        ((1, 'VpyartDisplay'), (2, 'VpyartDisplay')),
-        ((1, 'Vradar'), (2, 'Vradar')),
-        ((1, 'VplotAxes'), (2, 'VplotAxes')),
-        ]
-    )
-
-correlation_mode = (
-    [Menu, Correlation],
-    [
-        ((0, 'Vradar'), (1, 'Vradar')),
-        ]
-    )
-
-radar_terminal_mode = (
-    [Menu, RadarDisplay, RadarTerminal],
+def radar_terminal_mode():
+    change_mode(
+    [FileNavigator, RadarDisplay, RadarTerminal],
     [
         ((0, 'Vradar'), (1, 'Vradar')),
         ((1, 'Vradar'), (2, 'Vradar')),
@@ -240,9 +336,9 @@ modes = [
     {'label': 'Manually unfold velocity',
      'group': 'correct',
      'action': manual_unfold_mode},
-    {'label': 'Despeckle Radar',
-     'group': 'correct',
-     'action': despeckle_mode},
+#    {'label': 'Despeckle Radar',
+#     'group': 'correct',
+#     'action': despeckle_mode},
     {'label': 'Query a selectable region of interest ',
      'group': 'select',
      'action': select_region_mode},
