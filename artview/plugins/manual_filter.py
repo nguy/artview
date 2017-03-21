@@ -100,30 +100,36 @@ class ManualFilter(Component):
         self.fieldBox.setToolTip("Select variable/field in data file.\n"
                                  "'Field Window' will launch popup.\n")
         self.fieldBox.activated[str].connect(self._fieldAction)
-        self.layout.addWidget(QtWidgets.QLabel("Current field"), 0, 0)
-        self.layout.addWidget(self.fieldBox, 0, 1)
+        self.layout.addWidget(QtWidgets.QLabel("Current field:"), 0, 0)
+        self.layout.addWidget(self.fieldBox, 1, 0)
 
         self.filterButton = QtWidgets.QPushButton("Filter Gates in the GateFilter")
+        self.filterButton.setToolTip("this is a tool tip")
         self.filterButton.clicked.connect(self.removeFromFilter)
-        self.layout.addWidget(self.filterButton, 1, 1)
+        self.layout.addWidget(self.filterButton, 2, 0)
 
         self.fieldButton = QtWidgets.QPushButton(
             "Filter Gates in the Current Field")
         self.fieldButton.clicked.connect(self.removeFromField)
-        self.layout.addWidget(self.fieldButton, 2, 1)
+        self.layout.addWidget(self.fieldButton, 3, 0)
 
         self.radarButton = QtWidgets.QPushButton("Filter Gates in the Radar")
         self.radarButton.clicked.connect(self.removeFromRadar)
-        self.layout.addWidget(self.radarButton, 3, 1)
+        self.layout.addWidget(self.radarButton, 4, 0)
 
         self.resetButton = QtWidgets.QPushButton("Reset GateFilter")
         self.resetButton.clicked.connect(self.reset)
-        self.layout.addWidget(self.resetButton, 4, 1)
+        self.layout.addWidget(self.resetButton, 5, 0)
 
         self.buttonHelp = QtWidgets.QPushButton("Help")
         self.buttonHelp.setToolTip("About using Manual Filter")
         self.buttonHelp.clicked.connect(self._displayHelp)
-        self.layout.addWidget(self.buttonHelp, 6, 1)
+        self.layout.addWidget(self.buttonHelp, 6, 0)
+
+        #empty space at the bottom
+        self.layout.addItem(QtWidgets.QSpacerItem(
+            0, 0, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding),
+                            7, 0)
 
         self.show()
 

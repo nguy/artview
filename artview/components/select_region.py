@@ -244,9 +244,14 @@ class SelectRegion(Component):
 
         # Create functionality buttons
         self.rBox_layout.addWidget(self.buttonResetSelectRegion)
-        self.rBox_layout.addWidget(self.buttonHelp)
         self.rBox_layout.addWidget(self.buttonRemovePoly)
         self.rBox_layout.addWidget(self.buttonRemoveVertex)
+        self.rBox_layout.addWidget(self.buttonHelp)
+
+        #empty space at the bottom
+        self.rBox_layout.addItem(QtWidgets.QSpacerItem(
+            0, 0, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding))
+
 
     def removePolygon(self):
         '''remove last polygon from the list if not drawing. if drawing
