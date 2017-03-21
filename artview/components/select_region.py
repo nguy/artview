@@ -100,7 +100,7 @@ class SelectRegion(Component):
             "VplotAxes": self.NewPlotAxes,
             "Vgatefilter": None,
             "Vradar": None,
-            "VpathInteriorFunc": None,
+            "VpathInteriorFunc": self.NewPathInteriorFunc,
             "Vfield": None,
             "Vpoints": None}
         # Connect the components
@@ -366,3 +366,7 @@ class SelectRegion(Component):
                 for line in poly:
                     self.VplotAxes.value.add_line(line)
                 self.fig.canvas.draw()
+
+    def NewPathInteriorFunc(self, variable, strong):
+        if strong:
+            self.update_points()

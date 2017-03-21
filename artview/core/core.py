@@ -280,7 +280,6 @@ class Component(QtWidgets.QMainWindow):
 
     def closeEvent(self, QCloseEvent):
         '''Reimplementation to remove from components list.'''
-        print("close event",self)
         componentsList.remove(self)
         self.disconnectAllVariables()
         super(Component, self).closeEvent(QCloseEvent)
@@ -291,3 +290,30 @@ class Component(QtWidgets.QMainWindow):
         for key in self.sharedVariables.keys():
             variables[key] = getattr(self, key)
         return variables
+
+
+# this is a primordial form of logging using print function
+class Stream():
+
+    def __init__(self, dump=False):
+        self.buff = []
+        self.dump = dump
+        pass
+
+    def write(self, string):
+        if string=='\n':
+            if self.dump:
+                print("".join(self.buff))
+            self.buff = []
+        else:
+            self.buff+=[string]
+
+
+class Log():
+    def __init__(self):
+        self.debug = Stream(True)
+        self.info = Stream(True)
+        self.error = Stream(True)
+        self.warning = Stream(True)
+
+log = Log()

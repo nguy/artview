@@ -506,6 +506,7 @@ class GridDisplay(Component):
             display = pyart.graph.GridMapDisplay(self.Vgrid.value)
             self.VpyartDisplay.change(display)
             self._update_infolabel()
+            self.VpathInteriorFunc.update(True)
 
     def NewField(self, variable, strong):
         '''
@@ -528,6 +529,7 @@ class GridDisplay(Component):
         if strong:
             self._update_plot()
             self._update_infolabel()
+            self.VpathInteriorFunc.update(True)
 
     def NewLimits(self, variable, strong):
         '''
@@ -569,6 +571,7 @@ class GridDisplay(Component):
             self.title = self._get_default_title()
             self._update_plot()
             self._update_infolabel()
+            self.VpathInteriorFunc.update(True)
 
     def NewDisplay(self, variable, strong):
         '''
@@ -1066,6 +1069,9 @@ class GridDisplay(Component):
             self.canvas.print_figure(path, dpi=DPI)
             self.statusbar.showMessage('Saved to %s' % path)
 
+    def minimumSizeHint(self):
+        return QtCore.QSize(0, 0)
+
     ########################
     #      get methods     #
     ########################
@@ -1222,3 +1228,23 @@ class _DisplayStart(QtWidgets.QDialog):
         self.result['plot_type'] = str(self.plot_type.text())
 
         return self.result
+
+try:
+    pyart.graph.GridMapDisplay(None)
+except pyart.exceptions.MissingOptionalDependency:
+    class GridDisplay(Component):
+
+        @classmethod
+        def guiStart(self, parent=None):
+            '''Graphical interface for starting this class'''
+            args = _DisplayStart().startDisplay()
+            args['parent'] = parent
+            return self(**args), True
+
+        def __init__(self, Vgrid=None, Vfield=None, VlevelZ=None, VlevelY=None,
+                    VlevelX=None, Vlimits=None, Vcolormap=None, plot_type="gridZ",
+                    name="Display", parent=None):
+            super(GridDisplay, self).__init__(name=name, parent=parent)
+            label = QtWidgets.QLabel("MISSING BASEMAP")
+            label.setStyleSheet('QLabel { background-color: black, color: red}')
+            self.setCentralWidget(label)
