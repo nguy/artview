@@ -507,6 +507,7 @@ class GridDisplay(Component):
             display = pyart.graph.GridMapDisplay(self.Vgrid.value)
             self.VpyartDisplay.change(display)
             self._update_infolabel()
+            self.VpathInteriorFunc.update(True)
 
     def NewField(self, variable, strong):
         '''
@@ -529,6 +530,7 @@ class GridDisplay(Component):
         if strong:
             self._update_plot()
             self._update_infolabel()
+            self.VpathInteriorFunc.update(True)
 
     def NewLimits(self, variable, strong):
         '''
@@ -570,6 +572,7 @@ class GridDisplay(Component):
             self.title = self._get_default_title()
             self._update_plot()
             self._update_infolabel()
+            self.VpathInteriorFunc.update(True)
 
     def NewDisplay(self, variable, strong):
         '''
