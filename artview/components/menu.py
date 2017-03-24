@@ -167,6 +167,7 @@ class Menu(Component):
 
         filename = QtWidgets.QFileDialog.getOpenFileName(
             self, 'Open file', self.dirIn)
+#            self, 'Open file', self.dirIn, options=QtWidgets.QFileDialog.DontUseNativeDialog)
         if isinstance(filename, tuple): # PyQt5
             filename = filename[0]
         filename = str(filename)
