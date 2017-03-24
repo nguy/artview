@@ -828,41 +828,41 @@ class GridDisplay(Component):
     def _change_axes_position(self):
         '''GUI change axes Position.'''
         options_type = [
-            ("Plot     top",  float),
-            ("Plot     left", float),
-            ("Plot     button", float),
-            ("Plot     right", float),
-            ("Colormap top",  float),
-            ("Colormap left", float),
-            ("Colormap button", float),
-            ("Colormap right", float),
+            ("Plot area top",  float),
+            ("Plot area left", float),
+            ("Plot area bottom", float),
+            ("Plot area right", float),
+            ("Colormap  top",  float),
+            ("Colormap  left", float),
+            ("Colormap  bottom", float),
+            ("Colormap  right", float),
             ]
         ax_pos = self.ax.get_position()
         cax_pos = self.cax.get_position()
         value = {
-            "Plot     button":  ax_pos.y0,
-            "Plot     left": ax_pos.x0,
-            "Plot     top": ax_pos.y0+ax_pos.height,
-            "Plot     right": ax_pos.x0+ax_pos.width,
-            "Colormap button":  cax_pos.y0,
-            "Colormap left": cax_pos.x0,
-            "Colormap top": cax_pos.y0+cax_pos.height,
-            "Colormap right": cax_pos.x0+cax_pos.width,
+            "Plot area bottom":  ax_pos.y0,
+            "Plot area left": ax_pos.x0,
+            "Plot area top": ax_pos.y0+ax_pos.height,
+            "Plot area right": ax_pos.x0+ax_pos.width,
+            "Colormap  bottom":  cax_pos.y0,
+            "Colormap  left": cax_pos.x0,
+            "Colormap  top": cax_pos.y0+cax_pos.height,
+            "Colormap  right": cax_pos.x0+cax_pos.width,
             }
         parm = common.get_options(options_type, value)
-        self.ax.set_position([parm["Plot     left"],
-                              parm["Plot     button"],
-                              parm["Plot     right"] -
-                                               parm["Plot     left"],
-                              parm["Plot     top"] -
-                                               parm["Plot     button"],
+        self.ax.set_position([parm["Plot area left"],
+                              parm["Plot area bottom"],
+                              parm["Plot area right"] -
+                                               parm["Plot area left"],
+                              parm["Plot area top"] -
+                                               parm["Plot area bottom"],
                               ])
-        self.cax.set_position([parm["Colormap left"],
-                               parm["Colormap button"],
-                               parm["Colormap right"] -
-                                               parm["Colormap left"],
-                                parm["Colormap top"] -
-                                               parm["Colormap button"],
+        self.cax.set_position([parm["Colormap  left"],
+                               parm["Colormap  bottom"],
+                               parm["Colormap  right"] -
+                                               parm["Colormap  left"],
+                                parm["Colormap  top"] -
+                                               parm["Colormap  bottom"],
                               ])
         self._update_axes()
 
