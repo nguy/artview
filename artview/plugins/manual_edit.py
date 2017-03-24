@@ -20,7 +20,7 @@ import artview
 from ..core import Component, Variable, common, QtWidgets, QtCore, componentsList
 
 
-class ManualFilter(Component):
+class ManualEdit(Component):
     '''
     Use of Points to remove data from Radar.
     '''
@@ -34,12 +34,12 @@ class ManualFilter(Component):
     def guiStart(self, parent=None):
         '''Graphical interface for starting this class.'''
         kwargs, independent = \
-            common._SimplePluginStart("ManualFilter").startDisplay()
+            common._SimplePluginStart("ManualEdit").startDisplay()
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
     def __init__(self, Vradar=None, Vpoints=None, Vfield=None,
-                 Vgatefilter=None, name=" ManualFilter", parent=None):
+                 Vgatefilter=None, name=" ManualEdit", parent=None):
         '''Initialize the class to create the interface.
 
         Parameters
@@ -63,7 +63,7 @@ class ManualFilter(Component):
             If None, then Qt owns, otherwise associated with parent PyQt
             instance.
         '''
-        super(ManualFilter, self).__init__(name=name, parent=parent)
+        super(ManualEdit, self).__init__(name=name, parent=parent)
 
         if Vradar is None:
             self.Vradar = Variable(None)
@@ -258,4 +258,4 @@ class ManualFilter(Component):
         self.fieldBox.setCurrentIndex(idx)
 
 
-_plugins = [ManualFilter]
+_plugins = [ManualEdit]

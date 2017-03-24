@@ -221,7 +221,7 @@ def manual_unfold_mode():
 
 def manual_filter_mode():
     change_mode(
-        [FileNavigator, RadarDisplay, SelectRegion, ManualFilter],
+        [FileNavigator, RadarDisplay, SelectRegion, ManualEdit],
         [
             ((0, 'Vradar'), (1, 'Vradar')),
             ((1, 'VplotAxes'), (2, 'VplotAxes')),
