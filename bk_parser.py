@@ -5,6 +5,7 @@ Parse the input code from execution program.
 """
 
 import argparse
+import os
 
 # Get the version
 f = open("version", "r")
@@ -49,9 +50,9 @@ def parse(argv):
 
     # Directory argument now optional
     igroup.add_argument('-d', '--directory', type=str,
-                        help='directory to open', default='./')
+                        help='Open specified directory', default='./')
     igroup.add_argument('-f', '--field', type=str,
-                        help='field to show', default='reflectivity')
+                        help='Name of field to show on open', default='reflectivity')
 
     # Parse the args
     args = parser.parse_args(argv[1::])
@@ -59,7 +60,7 @@ def parse(argv):
     if args.directory:
         fDirIn = args.directory
     else:
-        fDirIn = "./"
+        fDirIn = os.getcwd()
 
     # Set airborne flag off and change if airborne called
     airborne, rhi = False, False
