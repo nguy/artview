@@ -43,7 +43,7 @@ Operating System :: Microsoft :: Windows
 
 NAME = 'ARTview'
 MAINTAINER = "ARTview Developers"
-MAINTAINER_EMAIL = "nick.guy@uwyo.edu"
+MAINTAINER_EMAIL = "nguysur@gmail.com"
 DESCRIPTION = DOCLINES[0]
 LONG_DESCRIPTION = "\n".join(DOCLINES[2:])
 URL = "https://github.com/nguy/artview"
