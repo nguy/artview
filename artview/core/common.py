@@ -370,7 +370,7 @@ class CreateTable(QtWidgets.QTableWidget):
         colnames = self.points.axes.keys() + self.points.fields.keys()
         self.setHorizontalHeaderLabels(colnames)
 
-        for i in xrange(nrows):
+        for i in range(nrows):
             # Set each cell to be a QTableWidgetItem from _process_row method
             for j, name in enumerate(colnames):
                 if name in self.points.axes:
