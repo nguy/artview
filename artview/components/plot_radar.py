@@ -367,6 +367,11 @@ class RadarDisplay(Component):
         dispmenu = QtWidgets.QMenu(self)
         dispLimits = dispmenu.addAction("Adjust Display Limits")
         dispLimits.setToolTip("Set data, X, and Y range limits")
+        self.colormapToggle = QtWidgets.QAction(
+            'Colormap', dispmenu, checkable=True,
+            triggered=self._update_plot)
+        dispmenu.addAction(self.colormapToggle)
+        self.colormapToggle.setChecked(True)
         self.gatefilterToggle = QtWidgets.QAction(
             'GateFilter On', dispmenu, checkable=True,
             triggered=self._GateFilterToggleAction)
@@ -392,6 +397,7 @@ class RadarDisplay(Component):
         self.dispCmap = dispmenu.addAction("Change Colormap")
         self.dispCmapmenu = QtWidgets.QMenu("Change Cmap")
         self.dispCmapmenu.setFocusPolicy(QtCore.Qt.NoFocus)
+        changeAxesPosition = dispmenu.addAction("Change Axes Position")
         self.dispImageText = dispmenu.addAction("Add Text to Image")
         self.dispImageText.setToolTip("Add Text Box to Image")
         dispQuickSave = dispmenu.addAction("Quick Save Image")
@@ -405,6 +411,7 @@ class RadarDisplay(Component):
         dispLimits.triggered.connect(self._open_LimsDialog)
         dispTitle.triggered.connect(self._title_input)
         dispUnit.triggered.connect(self._units_input)
+        changeAxesPosition.triggered.connect(self._change_axes_position)
         self.dispImageText.triggered.connect(self._add_ImageText)
         dispQuickSave.triggered.connect(self._quick_savefile)
         dispSaveFile.triggered.connect(self._savefile)
@@ -849,6 +856,65 @@ class RadarDisplay(Component):
         self.ax.set_position([0.2, 0.55-0.5*yheight, xwidth, yheight])
         self.cax.set_position([0.2, 0.10, xwidth, 0.02])
         self._update_axes()
+    '''
+        options_type = [
+            ("Plot     top    left",  (float, float)),
+            ("Plot     button right", (float, float)),
+            ("Colormap top    left",  (float, float)),
+            ("Colormap button right", (float, float)),
+            ]
+        ax_pos = self.ax.get_position()
+        cax_pos = self.ax.get_position()
+        value = {
+            "Plot     top    left":  (ax_pos.y0,ax_pos.x0),
+            "Plot     button right": (ax_pos.y0+ax_pos.height,
+                                      ax_pos.x0+ax_pos.width),
+            "Colormap top    left":  (cax_pos.y0,ax_pos.x0),
+            "Colormap button right": (cax_pos.y0+cax_pos.height,
+                                      cax_pos.x0+cax_pos.width),
+            }
+    '''
+
+    def _change_axes_position(self):
+        '''GUI change axes Position.'''
+        options_type = [
+            ("Plot     top",  float),
+            ("Plot     left", float),
+            ("Plot     button", float),
+            ("Plot     right", float),
+            ("Colormap top",  float),
+            ("Colormap left", float),
+            ("Colormap button", float),
+            ("Colormap right", float),
+            ]
+        ax_pos = self.ax.get_position()
+        cax_pos = self.cax.get_position()
+        value = {
+            "Plot     button":  ax_pos.y0,
+            "Plot     left": ax_pos.x0,
+            "Plot     top": ax_pos.y0+ax_pos.height,
+            "Plot     right": ax_pos.x0+ax_pos.width,
+            "Colormap button":  cax_pos.y0,
+            "Colormap left": cax_pos.x0,
+            "Colormap top": cax_pos.y0+cax_pos.height,
+            "Colormap right": cax_pos.x0+cax_pos.width,
+            }
+        parm = common.get_options(options_type, value)
+        self.ax.set_position([parm["Plot     left"],
+                              parm["Plot     button"],
+                              parm["Plot     right"] -
+                                               parm["Plot     left"],
+                              parm["Plot     top"] -
+                                               parm["Plot     button"],
+                              ])
+        self.cax.set_position([parm["Colormap left"],
+                               parm["Colormap button"],
+                               parm["Colormap right"] -
+                                               parm["Colormap left"],
+                                parm["Colormap top"] -
+                                               parm["Colormap button"],
+                              ])
+        self._update_axes()
 
     def _set_figure_canvas(self):
         '''Set the figure canvas to draw in window area.'''
@@ -959,9 +1025,13 @@ class RadarDisplay(Component):
         if norm is None:
             norm = mlabNormalize(vmin=cmap['vmin'],
                                  vmax=cmap['vmax'])
-        self.cbar = mlabColorbarBase(self.cax, cmap=cmap['cmap'],
-                                     norm=norm, orientation='horizontal')
-        self.cbar.set_label(self.units)
+        if self.colormapToggle.isChecked():
+            self.cbar = mlabColorbarBase(self.cax, cmap=cmap['cmap'],
+                                        norm=norm, orientation='horizontal')
+            self.cbar.set_label(self.units)
+            self.cax.set_visible(True)
+        else:
+            self.cax.set_visible(False)
 
 #        print "Plotting %s field, Tilt %d in %s" % (
 #            self.Vfield.value, self.Vtilt.value+1, self.name)
@@ -1080,7 +1150,7 @@ class RadarDisplay(Component):
             self.statusbar.showMessage('Saved to %s' % path)
 
     def minimumSizeHint(self):
-        return QtCore.QSize(0, 0)
+        return QtCore.QSize(20, 20)
 
     ########################
     #      get methods     #
