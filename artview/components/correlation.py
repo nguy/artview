@@ -5,6 +5,7 @@ Class instance used to make Display.
 """
 # Load the needed packages
 import numpy as np
+import scipy
 import os
 import pyart
 
@@ -116,6 +117,10 @@ class Correlation(Component):
             "edgecolors": "none",
             "s": 20,
             "color": "red",
+            "xmin": None,
+            "xmax": None,
+            "ymin": None,
+            "ymax": None,
             }
 
         self.parameters_type = [
@@ -123,7 +128,11 @@ class Correlation(Component):
             ("facecolors", str, "marker color"),
             ("edgecolors", str, "marker edge color"),
             ("s", int, "marker size"),
-            ("color", str, "line color")
+            ("color", str, "line color"),
+            ("xmin", common.float_or_none, "Min X Value"),
+            ("xmax", common.float_or_none, "Max X Value"),
+            ("ymin", common.float_or_none, "Min Y Value"),
+            ("ymax", common.float_or_none, "Max Y Value"),
             ]
 
         # Set plot title and colorbar units to defaults
@@ -537,17 +546,35 @@ class Correlation(Component):
 
     @staticmethod
     def plot_regression(radar, field_horizontal, field_vertical,
-                        sweeps, gatefilter, ax, vmin, vmax, **kwargs):
+                        sweeps, gatefilter, ax, vmin, vmax, xscale="linear",
+                        yscale="linear", **kwargs):
 
         xvalues, yvalues = Correlation._get_xy_values(
             radar, field_horizontal, field_vertical, sweeps, gatefilter)
 
-        m,b = np.polyfit(xvalues[~xvalues.mask], yvalues[~xvalues.mask], 1)
+        if xscale=="log":
+            xvalues = np.ma.masked_where( xvalues <= 0, xvalues)
+            xvalues = np.ma.log10(xvalues)
+        if yscale=="log":
+            yvalues = np.ma.masked_where( yvalues <= 0, yvalues)
+            yvalues = np.ma.log10(yvalues)
 
-        x=np.linspace(vmin,vmax,50)
+        m, b, r, _, _ = scipy.stats.linregress(xvalues[~xvalues.mask],
+                                               yvalues[~xvalues.mask])
 
-        line = ax.plot(x,m * x + b, linestyle="--",
-                       label='y = %f x + %f'%(m,b), **kwargs)
+        if xscale=="log":
+            x = np.linspace(max(vmin,0.0001),vmax,50)
+            y = m * np.log10(x) + b
+        else:
+            x = np.linspace(vmin,vmax,50)
+            y = m * x + b
+
+        if yscale=="log":
+            y=10**y
+
+        line = ax.plot(x,y, linestyle="--",
+                       label='y = %f x + %f\n'%(m,b) +
+                             'r value = %f'%(r), **kwargs)
         ax.legend()
         return (m,b)
 
@@ -605,12 +632,20 @@ class Correlation(Component):
         self.ax.set_xlabel(self.unitsHorizontal)
         self.ax.set_ylabel(self.unitsVertical)
 
+        print (self.parameters["xmin"], self.parameters["xmax"])
+        print(self.parameters["ymin"], self.parameters["ymax"])
+        self.ax.set_xlim(self.parameters["xmin"], self.parameters["xmax"])
+        self.ax.set_ylim(self.parameters["ymin"], self.parameters["ymax"])
+
+
         if self.regressionLineToggle.isChecked():
             vmin, vmax = self.ax.get_xlim()
             self.plot_regression(
                 self.Vradar.value, self.VfieldHorizontal.value,
                 self.VfieldVertical.value, sweeps, gatefilter, self.ax,
                 vmin + 0.05 * (vmax-vmin), vmax - 0.05 * (vmax-vmin),
+                str(self.horizontal_scale_menu_group.checkedAction().text()),
+                str(self.vertical_scale_menu_group.checkedAction().text()),
                 color=self.parameters["color"])
 
         self.canvas.draw()

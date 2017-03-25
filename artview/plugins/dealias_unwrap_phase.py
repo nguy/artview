@@ -83,7 +83,7 @@ class DealiasUnwrapPhase(Component):
 
         self.parameters_type = [
             ("unwrap_unit", ('ray', 'sweep', 'volume')),
-            ("nyquist_velocity", float, None),
+            ("nyquist_velocity", float, common.float_or_none),
             ("check_nyquist_uniform", bool),
             ("rays_wrap_around", bool),
             ("keep_original", bool),
