@@ -364,6 +364,11 @@ class GridDisplay(Component):
         dispmenu = QtWidgets.QMenu(self)
         dispLimits = dispmenu.addAction("Adjust Display Limits")
         dispLimits.setToolTip("Set data, X, and Y range limits")
+        self.colormapToggle = QtWidgets.QAction(
+            'Colormap', dispmenu, checkable=True,
+            triggered=self._update_plot)
+        dispmenu.addAction(self.colormapToggle)
+        self.colormapToggle.setChecked(True)
         dispTitle = dispmenu.addAction("Change Title")
         dispTitle.setToolTip("Change plot title")
         dispUnit = dispmenu.addAction("Change Units")
@@ -374,6 +379,7 @@ class GridDisplay(Component):
 
         self.dispPlotType = dispmenu.addMenu("Change Plot Type")
         self.dispPlotType.setFocusPolicy(QtCore.Qt.NoFocus)
+
         PlotTypeAction = self.dispPlotType.addAction('Altitude Plot')
         PlotTypeAction.triggered.connect(
             lambda: self.change_plot_type('gridZ'))
@@ -384,6 +390,7 @@ class GridDisplay(Component):
         PlotTypeAction.triggered.connect(
             lambda: self.change_plot_type('gridX'))
 
+        changeAxesPosition = dispmenu.addAction("Change Axes Position")
         self.dispImageText = dispmenu.addAction("Add Text to Image")
         self.dispImageText.setToolTip("Add Text Box to Image")
         dispQuickSave = dispmenu.addAction("Quick Save Image")
@@ -397,6 +404,7 @@ class GridDisplay(Component):
         dispLimits.triggered.connect(self._open_LimsDialog)
         dispTitle.triggered.connect(self._title_input)
         dispUnit.triggered.connect(self._units_input)
+        changeAxesPosition.triggered.connect(self._change_axes_position)
         self.dispImageText.triggered.connect(self._add_ImageText)
         dispQuickSave.triggered.connect(self._quick_savefile)
         dispSaveFile.triggered.connect(self._savefile)
@@ -816,6 +824,48 @@ class GridDisplay(Component):
         self.cax.set_position([0.15+xwidth, 0.15, 0.02, yheight])
         self._update_axes()
 
+
+    def _change_axes_position(self):
+        '''GUI change axes Position.'''
+        options_type = [
+            ("Plot area top",  float),
+            ("Plot area left", float),
+            ("Plot area bottom", float),
+            ("Plot area right", float),
+            ("Colormap  top",  float),
+            ("Colormap  left", float),
+            ("Colormap  bottom", float),
+            ("Colormap  right", float),
+            ]
+        ax_pos = self.ax.get_position()
+        cax_pos = self.cax.get_position()
+        value = {
+            "Plot area bottom":  ax_pos.y0,
+            "Plot area left": ax_pos.x0,
+            "Plot area top": ax_pos.y0+ax_pos.height,
+            "Plot area right": ax_pos.x0+ax_pos.width,
+            "Colormap  bottom":  cax_pos.y0,
+            "Colormap  left": cax_pos.x0,
+            "Colormap  top": cax_pos.y0+cax_pos.height,
+            "Colormap  right": cax_pos.x0+cax_pos.width,
+            }
+        parm = common.get_options(options_type, value)
+        self.ax.set_position([parm["Plot area left"],
+                              parm["Plot area bottom"],
+                              parm["Plot area right"] -
+                                               parm["Plot area left"],
+                              parm["Plot area top"] -
+                                               parm["Plot area bottom"],
+                              ])
+        self.cax.set_position([parm["Colormap  left"],
+                               parm["Colormap  bottom"],
+                               parm["Colormap  right"] -
+                                               parm["Colormap  left"],
+                                parm["Colormap  top"] -
+                                               parm["Colormap  bottom"],
+                              ])
+        self._update_axes()
+
     def _set_figure_canvas(self):
         '''Set the figure canvas to draw in window area.'''
         self.canvas = FigureCanvasQTAgg(self.fig)
@@ -891,9 +941,13 @@ class GridDisplay(Component):
         if norm is None:
             norm = mlabNormalize(vmin=cmap['vmin'],
                                  vmax=cmap['vmax'])
-        self.cbar = mlabColorbarBase(self.cax, cmap=cmap['cmap'],
-                                     norm=norm, orientation='vertical')
-        self.cbar.set_label(self.units)
+        if self.colormapToggle.isChecked():
+            self.cbar = mlabColorbarBase(self.cax, cmap=cmap['cmap'],
+                                        norm=norm, orientation='vertical')
+            self.cbar.set_label(self.units)
+            self.cax.set_visible(True)
+        else:
+            self.cax.set_visible(False)
 
         if self.plot_type == "gridZ":
             print("Plotting %s field, Z level %d in %s" % (
