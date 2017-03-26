@@ -284,8 +284,15 @@ class Component(QtWidgets.QMainWindow):
         self.disconnectAllVariables()
         super(Component, self).closeEvent(QCloseEvent)
 
+    def get_sharedVariables(self):
+        ''' get dictionaty of the shared variables '''
+        variables = {}
+        for key in self.sharedVariables.keys():
+            variables[key] = getattr(self, key)
+        return variables
 
-# this is a primordial for logging using print function
+
+# this is a primordial form of logging using print function
 class Stream():
 
     def __init__(self, dump=False):

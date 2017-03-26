@@ -303,7 +303,18 @@ class PointsDisplay(Component):
         '''
         # test for None
         if self.Vpoints.value is None:
-            # self.fieldBox.clear()
+            #print(self.layout.itemAt(0).widget())
+            #self.layout.removeWidget(self.layout.itemAt(0).widget())
+            #self.layout.addWidget(QtWidgets.QWidget(), 0)
+            if self.plot_type == 'histogram':
+                self.ax.cla()
+                self.canvas.draw()
+            elif self.plot_type == 'statistics':
+                self.layout.removeWidget(self.statistics)
+                self.statistics.close()
+            elif self.plot_type == 'table':
+                self.layout.removeWidget(self.table)
+                self.table.close()
             return
 
         # Get field names

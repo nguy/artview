@@ -56,10 +56,13 @@ def run(DirIn=None, filename=None, field=None):
 
     # start Displays
     Vtilt = Variable(0)
+    from ..modes import display_select_region
     plot1 = RadarDisplay(Vradar, Variable(field), Vtilt, name="Display1",
                          parent=view.MainWindow)
+    plot1.add_mode(display_select_region, "Select a Region of Interest")
     plot2 = RadarDisplay(Vradar, Variable(field), Vtilt, name="Display2",
                          parent=view.MainWindow)
+    plot2.add_mode(display_select_region, "Select a Region of Interest")
 
     # start ComponentsControl
     control = LinkSharedVariables()
