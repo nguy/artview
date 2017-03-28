@@ -285,7 +285,7 @@ class Component(QtWidgets.QMainWindow):
         super(Component, self).closeEvent(QCloseEvent)
 
     def get_sharedVariables(self):
-        ''' get dictionaty of the shared variables '''
+        ''' get dictionary of the shared variables '''
         variables = {}
         for key in self.sharedVariables.keys():
             variables[key] = getattr(self, key)

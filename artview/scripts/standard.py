@@ -66,7 +66,7 @@ def run(DirIn=None, filename=None, field=None):
     menu_width = 500
     menu_height = 180
 
-    view.MainMenu.setGeometry(0, 0, menu_width, menu_height)
+    view.MainMenu.setGeometry(0, 0, menu_width, menu_height+200)
 
     plot_size = min(height-60-menu_height, width/2) - 50
     plot1.setGeometry(0, height-plot_size, plot_size, plot_size)

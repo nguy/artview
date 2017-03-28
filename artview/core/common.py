@@ -362,12 +362,12 @@ class CreateTable(QtWidgets.QTableWidget):
             ncols = 0
         else:
             nrows = self.points.npoints
-            colnames = self.points.axes.keys() + self.points.fields.keys()
+            colnames = list(self.points.axes.keys()) + list(self.points.fields.keys())
             ncols = len(colnames)
 
         self.setRowCount(nrows)
         self.setColumnCount(ncols)
-        colnames = self.points.axes.keys() + self.points.fields.keys()
+        colnames = list(self.points.axes.keys()) + list(self.points.fields.keys())
         self.setHorizontalHeaderLabels(colnames)
 
         for i in range(nrows):
