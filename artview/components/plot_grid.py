@@ -98,6 +98,7 @@ class GridDisplay(Component):
         '''
         super(GridDisplay, self).__init__(name=name, parent=parent)
         self.setFocusPolicy(QtCore.Qt.ClickFocus)
+        self.setMinimumSize(20,20)
         self.basemap = None
         # Set up signal, so that DISPLAY can react to
         # external (or internal) changes in grid, field,
