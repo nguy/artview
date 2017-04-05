@@ -261,7 +261,7 @@ modes = [
     {'label': 'Add Topographic Background',
      'group': 'graph',
      'action': topography_mode},
-    {'label': 'Radar Moments Correlation',
+    {'label': 'Fields Correlation',
      'group': 'graph',
      'action': correlation_mode},
 #    {'label': 'Add Image to Background',

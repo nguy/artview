@@ -231,7 +231,7 @@ def string_dialog_with_reset(stringIn, title, msg, reset=None):
 
 
 def float_or_none(text):
-    if text=="None":
+    if text=="None" or text=="none" or text=="NONE":
         return None
     else:
         return float(text)
