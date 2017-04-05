@@ -128,6 +128,8 @@ class PointsDisplay(Component):
             self._set_default_limits(strong=False)
 
         self.plot_type = None
+        self.statistics = None
+        self.table = None
         self.changePlotType(plot_type)
 
         self.show()
@@ -303,7 +305,20 @@ class PointsDisplay(Component):
         '''
         # test for None
         if self.Vpoints.value is None:
-            # self.fieldBox.clear()
+            #print(self.layout.itemAt(0).widget())
+            #self.layout.removeWidget(self.layout.itemAt(0).widget())
+            #self.layout.addWidget(QtWidgets.QWidget(), 0)
+            if self.plot_type == 'histogram':
+                self.ax.cla()
+                self.canvas.draw()
+            elif self.plot_type == 'statistics':
+                self.layout.removeWidget(self.statistics)
+                self.statistics.close()
+                self.statistics = None
+            elif self.plot_type == 'table':
+                self.layout.removeWidget(self.table)
+                self.table.close()
+                self.table = None
             return
 
         # Get field names
@@ -413,7 +428,7 @@ class PointsDisplay(Component):
                                          "color:black;font-weight:bold;}")
             self.statusbar.clearMessage()
 
-        if self.plot_type == "histogram":
+        if self.plot_type == "histogram" and len(points.fields[field]['data'])>0:
             self.plot = self.ax.hist(
                 points.fields[field]['data'], bins=25,
                 range=(cmap['vmin'], cmap['vmax']),
@@ -454,6 +469,9 @@ class PointsDisplay(Component):
                 for stat in SelectRegionstats:
                     text += ("<i>%s</i>: %5.2f<br>" %
                              (stat, SelectRegionstats[stat]))
+                if self.statistics is not None:
+                    self.layout.removeWidget(self.statistics)
+                    self.statistics.close()
                 self.statistics = QtWidgets.QDialog()
                 layout = QtWidgets.QGridLayout(self.statistics)
                 self.statistics = QtWidgets.QTextEdit("")
@@ -465,6 +483,9 @@ class PointsDisplay(Component):
         elif self.plot_type == "table":
             if self.Vpoints.value is not None:
                 # Instantiate Table
+                if self.table is not None:
+                    self.layout.removeWidget(self.table)
+                    self.table.close()
                 self.table = common.CreateTable(self.Vpoints.value)
                 self.layout.addWidget(self.table, 0)
                 self.table.display()

@@ -88,6 +88,7 @@ class RadarDisplay(Component):
         '''
         super(RadarDisplay, self).__init__(name=name, parent=parent)
         self.setFocusPolicy(QtCore.Qt.ClickFocus)
+        self.setMinimumSize(20,20)
         #self.setSizePolicy(QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Expanding)
         # Set up signal, so that DISPLAY can react to
         # external (or internal) changes in radar, field,
@@ -445,15 +446,22 @@ class RadarDisplay(Component):
         toolmenu = QtWidgets.QMenu(self)
         toolZoomPan = toolmenu.addAction("Zoom/Pan")
         toolValueClick = toolmenu.addAction("Click for Value")
-        toolSelectRegion = toolmenu.addAction("Select a Region of Interest")
         toolReset = toolmenu.addAction("Reset Tools")
         toolDefault = toolmenu.addAction("Reset File Defaults")
         toolZoomPan.triggered.connect(self.toolZoomPanCmd)
         toolValueClick.triggered.connect(self.toolValueClickCmd)
-        toolSelectRegion.triggered.connect(self.toolSelectRegionCmd)
         toolReset.triggered.connect(self.toolResetCmd)
         toolDefault.triggered.connect(self.toolDefaultCmd)
+        self.toolmenu = toolmenu
         self.toolsButton.setMenu(toolmenu)
+
+    def add_mode(self, mode, label):
+        """ Add a tool entry with given label. Selecting that tool, execute
+        mode passing this component shared variables."""
+        def call_mode():
+            mode(self.get_sharedVariables())
+        action = self.toolmenu.addAction(label)
+        action.triggered.connect(call_mode)
 
     def _add_infolabel(self):
         '''Create an information label about the display'''
@@ -681,13 +689,6 @@ class RadarDisplay(Component):
         self.tools['valueclick'] = ValueClick(
             self, name=self.name + "ValueClick", parent=self.parent)
         self.tools['valueclick'].connect()
-
-    def toolSelectRegionCmd(self):
-        '''Creates and connects to Region of Interest instance'''
-        from .display_select_region import DisplaySelectRegion
-        self.tools['select_region'] = DisplaySelectRegion(
-            self.VplotAxes, self.VpathInteriorFunc, self.Vfield,
-            name=self.name + " SelectRegion", parent=self)
 
     def toolResetCmd(self):
         '''Reset tools via disconnect.'''
@@ -1133,6 +1134,7 @@ class RadarDisplay(Component):
 
     def minimumSizeHint(self):
         return QtCore.QSize(20, 20)
+
 
     ########################
     #      get methods     #
