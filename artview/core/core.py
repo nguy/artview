@@ -233,6 +233,8 @@ class Component(QtWidgets.QMainWindow):
         self.setWindowTitle(name)
         self.sharedVariables = {}
         componentsList.append(self)
+        self.setSizePolicy(QtWidgets.QSizePolicy.Maximum,
+                           QtWidgets.QSizePolicy.Maximum)
 
     def connectAllVariables(self):
         '''Call connectSharedVariable for all keys in sharedVariables.'''
@@ -281,3 +283,37 @@ class Component(QtWidgets.QMainWindow):
         componentsList.remove(self)
         self.disconnectAllVariables()
         super(Component, self).closeEvent(QCloseEvent)
+
+    def get_sharedVariables(self):
+        ''' get dictionary of the shared variables '''
+        variables = {}
+        for key in self.sharedVariables.keys():
+            variables[key] = getattr(self, key)
+        return variables
+
+
+# this is a primordial form of logging using print function
+class Stream():
+
+    def __init__(self, dump=False):
+        self.buff = []
+        self.dump = dump
+        pass
+
+    def write(self, string):
+        if string=='\n':
+            if self.dump:
+                print("".join(self.buff))
+            self.buff = []
+        else:
+            self.buff+=[string]
+
+
+class Log():
+    def __init__(self):
+        self.debug = Stream(True)
+        self.info = Stream(True)
+        self.error = Stream(True)
+        self.warning = Stream(True)
+
+log = Log()

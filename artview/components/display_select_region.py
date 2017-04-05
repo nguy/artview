@@ -1,3 +1,6 @@
+### This file is diprecated and shall be removed in the future
+import warnings
+warnings.warn("File display_select_region.py is deprecated and will be removed in the future")
 """
 select_region.py
 
@@ -345,7 +348,7 @@ class DisplaySelectRegion(Component):
             warnings.warn(
                 "Reseting SelectRegion fails with following error\n" + error)
         self.disconnect()
-        super(SelectRegion, self).closeEvent(QCloseEvent)
+        super(DisplaySelectRegion, self).closeEvent(QCloseEvent)
 
     def displayStats(self):
         '''Calculate basic statistics of the SelectRegion list.'''

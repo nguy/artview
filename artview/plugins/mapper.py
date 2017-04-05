@@ -1,7 +1,7 @@
 """
 mapper.py
 """
-
+from __future__ import print_function
 # Load the needed packages
 from functools import partial
 
@@ -11,7 +11,7 @@ import time
 import os
 
 from ..core import (Component, Variable, common, QtWidgets, QtGui,
-                    QtCore, VariableChoose)
+                    QtCore, VariableChoose, log)
 
 class Mapper(Component):
     '''
@@ -215,7 +215,7 @@ class Mapper(Component):
             common.ShowWarning("Radar is None, can not perform correction")
             return
         # mount options
-        self.parameters['radar'] = self.Vradar.value
+        self.parameters['radars'] = (self.Vradar.value,)
         self.parameters['fields'] = []
         for field in self.field_actions.keys():
             if self.field_actions[field].isChecked():
@@ -232,10 +232,8 @@ class Mapper(Component):
         self.parameters['grid_origin'] = (self.parameters['grid_origin_lat'],
                                           self.parameters['grid_origin_lon'])
 
-        print(self.parameters)
-
         # execute
-        print("mapping ..")
+        print("mapping ..", file=log.debug)
         t0 = time.time()
         try:
             grid = pyart.map.grid_from_radars(**self.parameters)
@@ -245,7 +243,7 @@ class Mapper(Component):
             common.ShowLongText("Py-ART fails with following error\n\n" +
                                 error)
         t1 = time.time()
-        print(("Mapping took %fs" % (t1-t0)))
+        print("Mapping took %fs" % (t1-t0), file=log.debug)
 
         # update
         self.Vgrid.change(grid)

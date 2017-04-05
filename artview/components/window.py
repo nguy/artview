@@ -3,6 +3,8 @@ menu.py
 
 Class instance used to create menu for ARTview app.
 """
+from __future__ import print_function
+
 import numpy as np
 import pyart
 
@@ -11,10 +13,11 @@ import sys
 import glob
 
 from ..core import (Variable, Component, common, QtGui, QtCore, componentsList,
-                    QtWidgets)
+                    QtWidgets, log)
 
 class Window(Component):
     '''Class to be Main Window'''
+    rootMultindex = ()
 
     def __init__(self, name="Window", parent=None):
         '''
@@ -55,18 +58,18 @@ class Window(Component):
         self.CreateMenu()
 
         self.widgets = {}
-        self.currentMindex = ()
+        self.currentMultindex = self.rootMultindex
         self.layoutTree = {}
         root_spliter = QtWidgets.QSplitter(self)
+        root_spliter.setOpaqueResize(False)
         self.setCentralWidget(root_spliter)
-        self.layoutTree[()] = root_spliter
+        self.layoutTree[self.rootMultindex] = root_spliter
         root_spliter.setOrientation(QtCore.Qt.Horizontal)
 
-        self.addView()
-
+        self.addPane()
 
     def deleteComponent(self, midx, index):
-        '''Delete Tab index from view given by midx.'''
+        '''Delete Tab index from pane given by midx.'''
         #widget = self.tabWidget.widget(idx)
         #self.tabWidget.removeTab(idx)
         #widget.close()
@@ -74,120 +77,215 @@ class Window(Component):
 
 
     def popComponent(self, midx, index):
-        '''Pop Tab index from view given by midx.'''
+        '''Pop Tab index from pane given by midx.'''
         pass
 
     def addComponent(self, component,  midx=None):
-        '''Add Component to view given by midx.'''
+        '''Add Component to pane given by midx.'''
         if midx is None:
-            midx = self.currentMindex
+            midx = self.currentMultindex
         self.layoutTree[midx].addTab(component, component.name)
         self.layoutTree[midx].tabBar().setVisible(True)
 
-    def splitVertical(self):
-        if (self.currentMindex is None or
-            self.layoutTree[self.currentMindex[:-1]].orientation() ==
-            QtCore.Qt.Horizontal):
-            self.addView()
-            return
-        widget = self.layoutTree[self.currentMindex]
+    def setDesign(self, nrows, ncols):
+        components = []
+        rootMultindex = self.rootMultindex
+        depth = len(rootMultindex)
+
+        for multindex in list(self.layoutTree.keys()):
+            if (multindex not in self.layoutTree or len(multindex)<=depth or
+                multindex[0:depth] != rootMultindex):
+                continue
+            widget = self.layoutTree[multindex]
+            if isinstance(widget, Pane) and widget.isClosable:
+                while widget.count() > 0:
+                    components.append(widget.widget(0))
+                    widget.removeTab(0)
+                self.removeMultindex(multindex)
+
+        root = self.layoutTree[rootMultindex]
+        self.setCurrentMultindex(rootMultindex+(0,))
+        if root.orientation() == QtCore.Qt.Vertical:
+            for j in range(ncols-1):
+                self.splitVertical()
+            for row in range(nrows-1):
+                self.setCurrentMultindex(rootMultindex+(0,))
+                self.addPane()
+                for j in range(ncols-1):
+                    self.splitVertical()
+        else:
+            for row in range(nrows-1):
+                self.splitHorizontal()
+            for col in range(ncols-1):
+                self.setCurrentMultindex(rootMultindex+(0,))
+                self.addPane()
+                for row in range(nrows-1):
+                    self.splitHorizontal()
+
+        root = self.layoutTree[self.currentMultindex]
+        for component in components:
+            root.addTab(component, component.name)
+
+    def replaceWithSplitter(self, multindex, orientation, setCurrent=True):
+        '''Replace widget in multindex with splitter and move tree down'''
+        widget = self.layoutTree[multindex]
         splitter = QtWidgets.QSplitter()
-        splitter.setOrientation(QtCore.Qt.Horizontal)
+        splitter.setOpaqueResize(False)
+        splitter.setOrientation(orientation)
         splitter.insertWidget(0, widget)
-        self.layoutTree[self.currentMindex] = splitter
-        self.layoutTree[self.currentMindex[:-1]].insertWidget(self.currentMindex[-1], splitter)
-        self.layoutTree[self.currentMindex+(0,)] = widget
-        self.setCurrentMindex(self.currentMindex+(0,))
-        self.addView()
+        self.layoutTree[multindex[:-1]].insertWidget(multindex[-1], splitter)
+
+        depth = len(multindex)
+        widgets = []
+        for index in list(self.layoutTree.keys()):
+            if (len(index)<depth or
+                index[0:depth] != multindex):
+                continue
+            widgets.append((index,self.layoutTree.pop(index)))
+        for index, widget in widgets:
+            self.layoutTree[index[0:depth]+(0,)+index[depth:]] = widget
+        self.layoutTree[multindex] = splitter
+        self.layoutTree[multindex+(0,)].midx = multindex+(0,)
+        if setCurrent and len(self.currentMultindex)>=depth:
+            index = self.currentMultindex
+            self.setCurrentMultindex(index[0:depth]+(0,)+index[depth:])
+
+    def splitVertical(self):
+        if (self.currentMultindex is None or
+            self.layoutTree[self.currentMultindex[:-1]].orientation() ==
+            QtCore.Qt.Horizontal):
+            self.addPane()
+            return
+        self.replaceWithSplitter(self.currentMultindex, QtCore.Qt.Horizontal,
+                                 False)
+        self.setCurrentMultindex(self.currentMultindex+(0,))
+        self.addPane()
 
     def splitHorizontal(self):
-        if (self.currentMindex is None or
-            self.layoutTree[self.currentMindex[:-1]].orientation() ==
+        if (self.currentMultindex is None or
+            self.layoutTree[self.currentMultindex[:-1]].orientation() ==
             QtCore.Qt.Vertical):
-            self.addView()
+            self.addPane()
             return
-        widget = self.layoutTree[self.currentMindex]
-        splitter = QtWidgets.QSplitter()
-        splitter.setOrientation(QtCore.Qt.Vertical)
-        splitter.insertWidget(0, widget)
-        self.layoutTree[self.currentMindex] = splitter
-        self.layoutTree[self.currentMindex[:-1]].insertWidget(self.currentMindex[-1], splitter)
-        self.layoutTree[self.currentMindex+(0,)] = widget
-        self.setCurrentMindex(self.currentMindex+(0,))
-        self.addView()
+        self.replaceWithSplitter(self.currentMultindex, QtCore.Qt.Vertical,
+                                 False)
+        self.setCurrentMultindex(self.currentMultindex+(0,))
+        self.addPane()
 
-    def addView(self):
-        widget = View()
+    def addPane(self):
+        widget = Pane()
         widget.turnCurrent.connect(self.widgetTurnCurrent)
 
-        if self.currentMindex is None:
-            self.currentMindex = ()
-        splitter = self.layoutTree[self.currentMindex[:-1]]
+        if self.currentMultindex is None:
+            self.currentMultindex = self.rootMultindex
+        splitter = self.layoutTree[self.currentMultindex[:-1]]
         splitter.addWidget(widget)
-        midx = self.currentMindex[:-1]+(splitter.count()-1,)
+        midx = self.currentMultindex[:-1]+(splitter.count()-1,)
         self.layoutTree[midx] = widget
-        self.setCurrentMindex(midx)
+        widget.midx = midx
+        self.setCurrentMultindex(midx)
         widget.show()
         splitter.show()
 
-    def closeCurrentView(self):
-        self.removeMindex(self.currentMindex)
+    def closeCurrentPane(self):
+        print("Close current Pane: ", self.currentMultindex,
+              self.layoutTree[self.currentMultindex],
+              file=log.debug)
+        if self.layoutTree[self.currentMultindex].isClosable:
+            self.removeMultindex(self.currentMultindex, True)
+        else:
+            common.ShowWarning("Current Pane is not closable!")
 
-    def removeMindex(self, midx):
-        print("close:  ", midx)
-        if midx == ():
-            self.setCurrentMindex(())
+    def removeMultindex(self, midx, resetCurrent=False):
+        print("Close multindex: ", midx, self.layoutTree[midx],
+              file=log.debug)
+        resetCurrent = (resetCurrent or midx == self.currentMultindex)
+        if midx == self.rootMultindex:
+            if isinstance(self.layoutTree[midx], QtWidgets.QSplitter):
+                widget = Pane()
+                widget.turnCurrent.connect(self.widgetTurnCurrent)
+                self.layoutTree[midx].insertWidget(0, widget)
+                self.layoutTree[midx+(0,)] = widget
+                widget.midx = midx+(0,)
+                if resetCurrent:
+                    self.setCurrentMultindex(midx+(0,))
+            elif resetCurrent:
+                self.setCurrentMultindex(self.rootMultindex)
             return
         widget = self.layoutTree.pop(midx)
         widget.setParent(None)
         widget.close()
         widget.deleteLater()
-        print(midx[:-1], "count  ", self.layoutTree[midx[:-1]].count())
         if self.layoutTree[midx[:-1]].count() == 0:
-            self.removeMindex(midx[:-1])
-        else:
+            self.removeMultindex(midx[:-1], resetCurrent)
+        elif resetCurrent:
             l = [i for i in self.layoutTree if i[:-1]==midx[:-1] and i!=midx and i!=()]
-            print(l)
             if l:
-                self.setCurrentMindex(l[0])
+                self.setCurrentMultindex(l[0])
             else:
-                self.setCurrentMindex(midx[:-1])
+                self.setCurrentMultindex(midx[:-1])
 
-    def closeInactiveView(self):
-        widget = self.layoutTree[self.currentMindex]
-        splitter = self.layoutTree[()]
-        splitter.insertWidget(0, widget)
+#    def closeInactivePanes(self):
+#        widget = self.layoutTree[self.currentMultindex]
+#        splitter = self.layoutTree[()]
+#        splitter.insertWidget(0, widget)
+#        for midx in list(self.layoutTree.keys()):
+#            if midx != () and midx !=self.currentMultindex:
+#                self.layoutTree[midx].deleteLater()
+#                del self.layoutTree[midx]
+#        del self.layoutTree[self.currentMultindex]
+#        self.layoutTree[(0,)] = widget
+#        self.setCurrentMultindex((0,))
+
+    def closeEmptyPanes(self):
         for midx in list(self.layoutTree.keys()):
-            if midx != () and midx !=self.currentMindex:
-                self.layoutTree[midx].deleteLater()
-                del self.layoutTree[midx]
-        del self.layoutTree[self.currentMindex]
-        self.layoutTree[(0,)] = widget
-        self.setCurrentMindex((0,))
+            if midx not in self.layoutTree:
+                continue
+            widget = self.layoutTree[midx]
+            if isinstance(widget, Pane):
+                if widget.count() == 0 and widget.isClosable:
+                    self.removeMultindex(midx)
 
     def showHideTabBar(self):
-        bar = self.layoutTree[self.currentMindex].tabBar()
+        bar = self.layoutTree[self.currentMultindex].tabBar()
         if bar.isVisible():
             bar.setVisible(False)
         else:
             bar.setVisible(True)
 
+    def popNewWindow(self):
+        widget = self.layoutTree[self.currentMultindex]
+        if not isinstance(widget, Pane):
+            common.ShowWarning("ERROR: current widget is not a Pane.\n"
+                               "this should not happen, please report at github")
+        components = []
+        while widget.count() > 0:
+            components.append(widget.widget(0))
+            widget.removeTab(0)
+
+        newWindow = Window()
+        pane = newWindow.layoutTree[newWindow.currentMultindex]
+        for component in components:
+            pane.addTab(component,component.name)
+
+        self.removeMultindex(self.currentMultindex)
+
     def widgetTurnCurrent(self, widget):
         for midx in self.layoutTree.keys():
             if self.layoutTree[midx] == widget:
-                self.setCurrentMindex(midx)
+                self.setCurrentMultindex(midx)
                 return
 
-    def setCurrentMindex(self, midx):
-        if midx == self.currentMindex:
+    def setCurrentMultindex(self, midx):
+        if midx == self.currentMultindex:
             return
-        self.currentMindex = midx
+        self.currentMultindex = midx
         for key in self.layoutTree.keys():
             widget = self.layoutTree[key]
             if key == midx:
                 widget.isCurrent = True
                 widget.update()
-            elif isinstance(widget, View):
+            elif isinstance(widget, Pane):
                 if widget.isCurrent:
                     widget.isCurrent = False
                     widget.update()
@@ -239,13 +337,18 @@ class Window(Component):
         self.addArtviewMenu()
         layoutmenu = self.menubar.addMenu('&Layout')
 
-        layoutmenu.addAction('Split Vertical', self.splitVertical)
-        layoutmenu.addAction('Split Horizontal', self.splitHorizontal)
-        #layoutmenu.addAction('Add View', self.addView)
-        layoutmenu.addAction('Current View: show/hide TabBar', self.showHideTabBar)
-        layoutmenu.addAction('Close Current View', self.closeCurrentView)
-        layoutmenu.addAction('Close Inactive Views', self.closeInactiveView)
+        designsMenu = layoutmenu.addMenu("Designs")
+        designsMenu.addAction("1 x 1", lambda: self.setDesign(1, 1))
+        designsMenu.addAction("2 x 2", lambda: self.setDesign(2, 2))
+        designsMenu.addAction("4 x 1", lambda: self.setDesign(4, 1))
 
+        layoutmenu.addAction('Split Pane Verticaly', self.splitVertical)
+        layoutmenu.addAction('Split Pane Horizontaly', self.splitHorizontal)
+        #layoutmenu.addAction('Add Pane', self.addPane)
+        layoutmenu.addAction('Current Pane: show/hide TabBar', self.showHideTabBar)
+        layoutmenu.addAction('Current Pane: Pop into new Window', self.popNewWindow)
+        layoutmenu.addAction('Close Current Pane', self.closeCurrentPane)
+        layoutmenu.addAction('Close Empty Panes', self.closeEmptyPanes)
 
         action = QtWidgets.QAction('New Window', self)
         action.triggered.connect(self.addWindow)
@@ -280,53 +383,7 @@ class Window(Component):
         add to layout if not independent.'''
         comp, independent = Comp.guiStart(self)
         if not independent:
-            self.addComponent(comp, self.currentMindex)
-
-    def changeMode(self, new_mode):
-        ''' Open and connect new components to satisfy mode.
-
-        Parameters
-        ----------
-        new_mode: see file artview/modes.py for documentation on modes
-        '''
-        components = new_mode[0][:]
-        links = new_mode[1]
-        static_comp_list = componentsList[:]
-        # find already running components
-        for i, component in enumerate(components):
-            flag = False
-            for j, comp in enumerate(static_comp_list):
-                if isinstance(comp, component):
-                    components[i] = static_comp_list.pop(j)
-                    flag = True
-                    break
-            if not flag:
-                # if there is no component open
-                print("starting component: %s" % component.__name__)
-                from ..core.core import suggestName
-                name = suggestName(components[i])
-                components[i] = components[i](name=name, parent=self)
-                self.addComponent(components[i], self.currentMindex)
-
-        for link in links:
-            dest = getattr(components[link[0][0]], link[0][1])
-            orin = getattr(components[link[1][0]], link[1][1])
-            if dest is orin:
-                # already linked
-                pass
-            else:
-                # not linked, link
-                print("linking %s.%s to %s.%s" %
-                      (components[link[1][0]].name, link[1][1],
-                       components[link[0][0]].name, link[0][1]))
-                # Disconect old Variable
-                components[link[1][0]].disconnectSharedVariable(link[1][1])
-                # comp1.var = comp0.var
-                setattr(components[link[1][0]], link[1][1], dest)
-                # Connect new Variable
-                components[link[1][0]].connectSharedVariable(link[1][1])
-                # Emit change signal
-                dest.update()
+            self.addComponent(comp, self.currentMultindex)
 
     ######################
     # Help methods #
@@ -373,13 +430,14 @@ class Window(Component):
         common.ShowLongText(text)
 
 
-class View(QtWidgets.QTabWidget):
+class Pane(QtWidgets.QTabWidget):
     turnCurrent = QtCore.pyqtSignal(QtWidgets.QTabWidget, name="turnCurrent")
     isCurrent = False
+    isClosable = True
     fix = False
 
     def __init__(self):
-        super(View,self).__init__()
+        super(Pane,self).__init__()
         tab=TabBar()
         tab.dragStart.connect(self.dragStart)
         tab.currentChanged.connect(self.setCurrent)
@@ -389,7 +447,8 @@ class View(QtWidgets.QTabWidget):
         self.setTabsClosable(True)
         self.tabCloseRequested.connect(self.closeTab)
         #self.setMinimumSize(80,40)
-        self.setSizePolicy(QtWidgets.QSizePolicy.Maximum,QtWidgets.QSizePolicy.Maximum)
+        self.setSizePolicy(QtWidgets.QSizePolicy.Maximum,
+                           QtWidgets.QSizePolicy.Maximum)
         self.show()
 
     def setCurrent(self):
@@ -401,13 +460,13 @@ class View(QtWidgets.QTabWidget):
         if self.currentWidget() is not None:
             hint = self.currentWidget().minimumSizeHint()
             if self.tabBar().isVisible():
-                tabHint = self.tabBar().minimumSizeHint()
+                tabHint = self.tabBar().minimumSize()
             else:
                 tabHint = QtCore.QSize(0, 0)
             hint.setHeight(hint.height() + tabHint.height())
             hint.setWidth(max(hint.width(), tabHint.width()))
         else:
-            hint = super(View, self).minimumSizeHint()
+            hint = super(Pane, self).minimumSizeHint()
             if hint.width() < 80:
                 hint.setWidth(80)
             if hint.height() < 40:
@@ -418,29 +477,29 @@ class View(QtWidgets.QTabWidget):
         if self.fix:
             return self.minimumSizeHint()
         else:
-            return super(View, self).sizeHint()
+            return super(Pane, self).sizeHint()
 
     def maximumSize(self):
         if self.fix:
             return self.minimumSizeHint()
         else:
-            return super(View, self).maximumSize()
+            return super(Pane, self).maximumSize()
 
     def maximumSizeHint(self):
         if self.fix:
             return self.minimumSizeHint()
         else:
-            return super(View, self).maximumSizeHint()
+            return super(Pane, self).maximumSizeHint()
 
     def minimumSize(self):
         return self.minimumSizeHint()
 
     def mousePressEvent(self, event):
-        super(View,self).mousePressEvent(event)
+        super(Pane,self).mousePressEvent(event)
         self.setCurrent()
 
     def keyPressEvent(self,event):
-        super(View,self).keyPressEvent(event)
+        super(Pane,self).keyPressEvent(event)
 
     def dragStart(self, idx):
         mimeData = QtCore.QMimeData()
@@ -454,7 +513,7 @@ class View(QtWidgets.QTabWidget):
 
     def dragEnterEvent(self, event):
         source = event.source()
-        if source.__class__ == View and self.tabBar().isVisible():
+        if source.__class__ == Pane and self.tabBar().isVisible():
             event.accept()
         else:
             event.ignore()
@@ -475,11 +534,11 @@ class View(QtWidgets.QTabWidget):
 
 #    def addTab(self, widget, name):
 #        widget.installEventFilter(self)
-#        super(View, self).addTab(widget, name)
+#        super(Pane, self).addTab(widget, name)
 #
 #    def tabRemoved(self, idx):
 #        print "remove tab",idx
-#        super(View, self).tabRemoved(idx)
+#        super(Pane, self).tabRemoved(idx)
 #
 #    def eventFilter(self, obj, event):
 #        if event.type() == QtCore.QEvent.FocusIn:
@@ -491,7 +550,7 @@ class View(QtWidgets.QTabWidget):
         self.widget(idx).deleteLater()
 
     def paintEvent(self, event):
-        super(View, self).paintEvent(event)
+        super(Pane, self).paintEvent(event)
 
         painter = QtGui.QPainter(self)
         #painter.setBackgroundMode(1)
@@ -517,8 +576,12 @@ class View(QtWidgets.QTabWidget):
             #option.background = PyGui.QPalette.Background
             style.drawControl(QtWidgets.QStyle.CE_PushButton, option, painter, self)
         if self.count() == 0:
-            painter.drawText(option.rect,QtCore.Qt.AlignCenter,"Move Tabs \n in Here")
+            painter.drawText(option.rect,QtCore.Qt.AlignCenter,"Move Tabs \n in Here \n")
 
+    def close(self):
+        for i in range(self.count()):
+            self.closeTab(i)
+        super(Pane, self).close()
 
 class TabBar(QtWidgets.QTabBar):
     dragStart = QtCore.pyqtSignal(int)
@@ -528,13 +591,13 @@ class TabBar(QtWidgets.QTabBar):
         super(QtWidgets.QTabBar, self).__init__()
         self.pos = None
 
-    def tabInserted(self, index):
-        super(TabBar, self).tabInserted(index)
-        #self.setVisible(self.count() > 1)
+#    def tabInserted(self, index):
+#        super(TabBar, self).tabInserted(index)
+#        self.setVisible(self.count() > 1)
 
-    def tabRemoved(self, index):
-        super(TabBar, self).tabRemoved(index)
-        #self.setVisible(self.count() > 1)
+#    def tabRemoved(self, index):
+#        super(TabBar, self).tabRemoved(index)
+#        self.setVisible(self.count() > 1)
 
 
     def mousePressEvent(self, mouseEvent):
@@ -553,7 +616,8 @@ class TabBar(QtWidgets.QTabBar):
                 self.dragStart.emit(self.tabAt(self.pos))
 
 class LayoutComponent(Component):
-    '''Class to be Main Window'''
+    '''Class to staticly hold other components inside a layout.
+    Once they are added do not try remove or delete then.'''
 
     def __init__(self, name="Layout", parent=None):
         '''
@@ -572,6 +636,22 @@ class LayoutComponent(Component):
         '''
         super(LayoutComponent, self).__init__(name=name, parent=parent)
         widget = QtWidgets.QWidget()
+        self.widgets = []
         self.layout = QtWidgets.QGridLayout()
         widget.setLayout(self.layout)
         self.setCentralWidget(widget)
+        self.layout.setContentsMargins(0,0,0,0)
+
+    def addWidget(self, widget, *args, **kwargs):
+        """ Add widget to the layout and to a list that keeps track of it
+        there is no way to revert this, once added the widget shall not be
+        removed, and when this component is closed all added widgets are closed
+        as well."""
+        self.layout.addWidget(widget, *args, **kwargs)
+        self.widgets.append(widget)
+
+    def close(self):
+        for widget in self.widgets:
+            widget.close()
+            widget.deleteLater()
+        super(LayoutComponent, self).close()

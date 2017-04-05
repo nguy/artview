@@ -5,6 +5,7 @@ Parse the input code from execution program.
 """
 
 import argparse
+import os
 import sys
 
 # Get the version
@@ -30,12 +31,12 @@ def parse(argv):
     '''
     Parse the input command line.
 
-    Parameters::
+    Parameters
     ----------
     argv - string
         Input command line string.
 
-    Notes::
+    Notes
     -----
     Returns directory and field for initialization.
     '''
@@ -47,14 +48,17 @@ def parse(argv):
 
     # Directory argument now optional
     parser.add_argument('-d', '--directory', type=str,
-                        help='directory to open', default='./')
-    parser.add_argument('-f', '--field', type=str, help='Field to show',
+                        help='Open specified directory', default=os.getcwd())
+    parser.add_argument('-f', '--field', type=str,
+                        help='Name of field to show on open',
                         default=None)
-    parser.add_argument('-F', '--file', type=str, help='File to show',
+    parser.add_argument('-F', '--file', type=str,
+                        help='File to show on open',
                         default=None)
     parser.add_argument(
-        '-s', '--script', type=str,
-        help='Select from artview.scripts a script to execute', default=None)
+        '-s', '--script', type=str, default=None,
+        help=('Select from artview.scripts a script to execute. '
+              'Possibilities include: standard, layout, grid, radar '))
 
     # Parse the args
     args = parser.parse_args(argv[1::])

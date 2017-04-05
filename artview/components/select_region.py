@@ -100,7 +100,7 @@ class SelectRegion(Component):
             "VplotAxes": self.NewPlotAxes,
             "Vgatefilter": None,
             "Vradar": None,
-            "VpathInteriorFunc": None,
+            "VpathInteriorFunc": self.NewPathInteriorFunc,
             "Vfield": None,
             "Vpoints": None}
         # Connect the components
@@ -324,7 +324,7 @@ class SelectRegion(Component):
         '''Clear the SelectRegion lines from plot and reset things.'''
         if self.polys:
             for poly in self.polys:
-                for i in xrange(len(poly)):
+                for i in range(len(poly)):
                     try:
                         poly[i].remove()
                     except:
@@ -350,6 +350,8 @@ class SelectRegion(Component):
             error = traceback.format_exc()
             warnings.warn(
                 "Reseting SelectRegion fails with following error\n" + error)
+        import warnings
+        warnings.warn("a waring\n")
         self.disconnect()
         super(SelectRegion, self).closeEvent(QCloseEvent)
 
@@ -364,3 +366,7 @@ class SelectRegion(Component):
                 for line in poly:
                     self.VplotAxes.value.add_line(line)
                 self.fig.canvas.draw()
+
+    def NewPathInteriorFunc(self, variable, strong):
+        if strong:
+            self.update_points()

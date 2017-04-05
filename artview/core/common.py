@@ -3,9 +3,9 @@ common.py
 
 Common routines run throughout ARTView.
 """
-
+from __future__ import print_function
 # Load the needed packages
-from .core import QtWidgets, QtCore, QtGui
+from .core import QtWidgets, QtCore, QtGui, log
 import numpy as np
 import os
 import glob
@@ -28,9 +28,9 @@ def ShowWarning(msg):
     flags = QtWidgets.QMessageBox.StandardButton()
     response = QtWidgets.QMessageBox.warning(Dialog, "Warning!", msg, flags)
     if response == 0:
-        print(msg)
+        print(msg, file=log.debug)
     else:
-        print("Warning Discarded!")
+        print("Warning Discarded!", file=log.debug)
 
     return response
 
@@ -49,9 +49,9 @@ def ShowQuestion(msg):
         Dialog, "Question", msg,
         QtWidgets.QMessageBox.Ok, QtWidgets.QMessageBox.Cancel)
     if response == QtWidgets.QMessageBox.Ok:
-        print(msg)
+        print(msg, file=log.debug)
     else:
-        print("Warning Discarded!")
+        print("Warning Discarded!", file=log.debug)
 
     return response
 
@@ -229,18 +229,19 @@ def string_dialog_with_reset(stringIn, title, msg, reset=None):
 # Option methods #
 ##################
 
+
 def float_or_none(text):
     if text=="None":
         return None
     else:
         return float(text)
 
-def get_options(options, values):
+def get_options(options_type, values):
     dialog = QtWidgets.QDialog()
     gridLayout = QtWidgets.QGridLayout(dialog)
-
+    keys = [a[0] for a in options_type]
     entrys = {}
-    for i, option in enumerate(options):
+    for i, option in enumerate(options_type):
         key = option[0]
         try:
             name = option[2]
@@ -260,7 +261,6 @@ def get_options(options, values):
             gridLayout.addWidget(entrys[key], i, 1, 1, 1)
             entrys[key].setCurrentIndex(option[1].index(values[key]))
 
-
     buttonBox = QtWidgets.QDialogButtonBox(dialog)
     buttonBox.setOrientation(QtCore.Qt.Horizontal)
     buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel |
@@ -275,7 +275,7 @@ def get_options(options, values):
 
     if entry == QtWidgets.QDialog.Accepted:
         out = {}
-        for option in options:
+        for option in options_type:
             key = option[0]
             opt = option[1]
             try:
@@ -379,10 +379,10 @@ class CreateTable(QtWidgets.QTableWidget):
 
         self.setRowCount(nrows)
         self.setColumnCount(ncols)
-        colnames = self.points.axes.keys() + self.points.fields.keys()
+        colnames = list(self.points.axes.keys()) + list(self.points.fields.keys())
         self.setHorizontalHeaderLabels(colnames)
 
-        for i in xrange(nrows):
+        for i in range(nrows):
             # Set each cell to be a QTableWidgetItem from _process_row method
             for j, name in enumerate(colnames):
                 if name in self.points.axes:
