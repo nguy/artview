@@ -84,12 +84,13 @@ class DealiasRegionBased(Component):
             "corr_vel_field": get_field_name('corrected_velocity'),
             }
 
+
         self.parameters_type = [
             ("interval_splits", int),
             ("skip_between_rays", int),
             ("skip_along_ray", int),
             ("centered", bool),
-            ("nyquist_velocity", float, None),
+            ("nyquist_velocity", common.float_or_none),
             ("check_nyquist_uniform", bool),
             ("rays_wrap_around", bool),
             ("keep_original", bool),
