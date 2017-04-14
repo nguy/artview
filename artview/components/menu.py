@@ -61,6 +61,7 @@ class Menu(Component):
                            QtWidgets.QSizePolicy.Maximum)
         self.sizePolicy().setHorizontalStretch(0)
         self.sizePolicy().setVerticalStretch(0)
+        self.setMinimumSize(20,20)
 
         # Set some parameters
         if pathDir is None:
@@ -97,8 +98,8 @@ class Menu(Component):
 
         # Launch the GUI interface
         self.LaunchApp()
-        self.resize(300, 180)
         self.raise_()
+
 #        self.activateWindow()
         self.show()
 
@@ -167,6 +168,7 @@ class Menu(Component):
 
         filename = QtWidgets.QFileDialog.getOpenFileName(
             self, 'Open file', self.dirIn)
+#            self, 'Open file', self.dirIn, options=QtWidgets.QFileDialog.DontUseNativeDialog)
         if isinstance(filename, tuple): # PyQt5
             filename = filename[0]
         filename = str(filename)

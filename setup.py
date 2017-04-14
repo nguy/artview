@@ -43,7 +43,7 @@ Operating System :: Microsoft :: Windows
 
 NAME = 'ARTview'
 MAINTAINER = "ARTview Developers"
-MAINTAINER_EMAIL = "nick.guy@uwyo.edu"
+MAINTAINER_EMAIL = "nguysur@gmail.com"
 DESCRIPTION = DOCLINES[0]
 LONG_DESCRIPTION = "\n".join(DOCLINES[2:])
 URL = "https://github.com/nguy/artview"
@@ -53,7 +53,7 @@ CLASSIFIERS = filter(None, CLASSIFIERS.split('\n'))
 PLATFORMS = ["Linux", "Mac OS-X", "Unix"]
 MAJOR = 1
 MINOR = 3
-MICRO = 5
+MICRO = 6
 ISRELEASED = False
 ISPROFILING = False
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)

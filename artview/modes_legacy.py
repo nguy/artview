@@ -133,7 +133,7 @@ manual_unfold_mode = (
     )
 
 manual_filter_mode = (
-    [Menu, RadarDisplay, SelectRegion, ManualFilter],
+    [Menu, RadarDisplay, SelectRegion, ManualEdit],
     [
         ((0, 'Vradar'), (1, 'Vradar')),
         ((1, 'VplotAxes'), (2, 'VplotAxes')),
@@ -243,10 +243,10 @@ modes = [
     {'label': 'Despeckle Radar',
      'group': 'correct',
      'action': despeckle_mode},
-    {'label': 'Query a selectable region of interest ',
+    {'label': 'Select Polygons',
      'group': 'select',
      'action': select_region_mode},
-    {'label': 'Extract a selected region of points',
+    {'label': 'Query Selected Area',
      'group': 'select',
      'action': extract_points_mode},
     {'label': 'File navigator',
@@ -261,7 +261,7 @@ modes = [
     {'label': 'Add Topographic Background',
      'group': 'graph',
      'action': topography_mode},
-    {'label': 'Radar Moments Correlation',
+    {'label': 'Fields Correlation',
      'group': 'graph',
      'action': correlation_mode},
 #    {'label': 'Add Image to Background',

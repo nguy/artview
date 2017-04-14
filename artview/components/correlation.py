@@ -5,6 +5,7 @@ Class instance used to make Display.
 """
 # Load the needed packages
 import numpy as np
+import scipy
 import os
 import pyart
 
@@ -110,6 +111,30 @@ class Correlation(Component):
         # Connect the components
         self.connectAllVariables()
 
+        self.parameters = {
+            "marker": 'o',
+            "facecolors": "blue",
+            "edgecolors": "none",
+            "s": 20,
+            "color": "red",
+            "xmin": None,
+            "xmax": None,
+            "ymin": None,
+            "ymax": None,
+            }
+
+        self.parameters_type = [
+            ("marker", str, "marker type"),
+            ("facecolors", str, "marker color"),
+            ("edgecolors", str, "marker edge color"),
+            ("s", int, "marker size"),
+            ("color", str, "line color"),
+            ("xmin", common.float_or_none, "Min X Value"),
+            ("xmax", common.float_or_none, "Max X Value"),
+            ("ymin", common.float_or_none, "Min Y Value"),
+            ("ymax", common.float_or_none, "Max Y Value"),
+            ]
+
         # Set plot title and colorbar units to defaults
         self.title = self._get_default_title()
         self.unitsVertical, self.unitsHorizontal = self._get_default_units()
@@ -150,6 +175,13 @@ class Correlation(Component):
 
         # Set the status bar to display messages
         self.statusbar = self.statusBar()
+
+    def setParameters(self):
+        '''Open set parameters dialog.'''
+        parm = common.get_options(self.parameters_type, self.parameters)
+        for key in parm.keys():
+            self.parameters[key] = parm[key]
+        self._update_plot()
 
     ##################################
     # User display interface methods #
@@ -297,7 +329,7 @@ class Correlation(Component):
         self.gatefilterToggle.setChecked(True)
 
         self.regressionLineToggle = QtWidgets.QAction(
-            'Regression Line', dispmenu, checkable=True,
+            'Linear Regression', dispmenu, checkable=True,
             triggered=self._update_plot)
         dispmenu.addAction(self.regressionLineToggle)
 
@@ -310,6 +342,9 @@ class Correlation(Component):
         dispSaveFile = dispmenu.addAction("Save Image")
         dispSaveFile.setShortcut("Ctrl+S")
         dispSaveFile.setStatusTip("Save Image using dialog")
+
+        dispmenu.addAction(QtWidgets.QAction("Set Parameters", self,
+                           triggered=self.setParameters))
 
         dispTitle.triggered.connect(self._title_input)
         dispUnit.triggered.connect(self._units_input)
@@ -500,25 +535,48 @@ class Correlation(Component):
 
     @staticmethod
     def plot_correlation(radar, field_horizontal, field_vertical,
-                         sweeps, gatefilter, ax, title):
+                         sweeps, gatefilter, ax, title, **kwargs):
 
         xvalues, yvalues = Correlation._get_xy_values(
             radar, field_horizontal, field_vertical, sweeps, gatefilter)
 
-        ax.scatter(xvalues,yvalues)
+        ax.scatter(xvalues,yvalues,**kwargs)
 
         ax.set_title(title)
 
     @staticmethod
     def plot_regression(radar, field_horizontal, field_vertical,
-                        sweeps, gatefilter, ax):
+                        sweeps, gatefilter, ax, vmin, vmax, xscale="linear",
+                        yscale="linear", **kwargs):
 
         xvalues, yvalues = Correlation._get_xy_values(
             radar, field_horizontal, field_vertical, sweeps, gatefilter)
 
-        print(xvalues.shape)
-        m,b = np.polyfit(xvalues.reshape((-1)), yvalues.reshape((-1)), 1)
-        ax.plot(xvalues,m * xvalues + b, '--r')
+        if xscale=="log":
+            xvalues = np.ma.masked_where( xvalues <= 0, xvalues)
+            xvalues = np.ma.log10(xvalues)
+        if yscale=="log":
+            yvalues = np.ma.masked_where( yvalues <= 0, yvalues)
+            yvalues = np.ma.log10(yvalues)
+
+        m, b, r, _, _ = scipy.stats.linregress(xvalues[~xvalues.mask],
+                                               yvalues[~xvalues.mask])
+
+        if xscale=="log":
+            x = np.linspace(max(vmin,0.0001),vmax,50)
+            y = m * np.log10(x) + b
+        else:
+            x = np.linspace(vmin,vmax,50)
+            y = m * x + b
+
+        if yscale=="log":
+            y=10**y
+
+        line = ax.plot(x,y, linestyle="--",
+                       label='y = %f x + %f\n'%(m,b) +
+                             'r value = %f'%(r), **kwargs)
+        ax.legend()
+        return (m,b)
 
     def _update_plot(self):
         '''Draw/Redraw the plot.'''
@@ -560,7 +618,11 @@ class Correlation(Component):
 
         self.plot_correlation(
             self.Vradar.value, self.VfieldHorizontal.value,
-            self.VfieldVertical.value, sweeps, gatefilter, self.ax, self.title)
+            self.VfieldVertical.value, sweeps, gatefilter, self.ax, self.title,
+            **{k: self.parameters[k] for k in
+               ('s','facecolors', 'edgecolors', 'marker')}
+            )
+
 
         self.ax.set_xscale(
             str(self.horizontal_scale_menu_group.checkedAction().text()))
@@ -570,10 +632,21 @@ class Correlation(Component):
         self.ax.set_xlabel(self.unitsHorizontal)
         self.ax.set_ylabel(self.unitsVertical)
 
+        print(self.parameters["xmin"], self.parameters["xmax"])
+        print(self.parameters["ymin"], self.parameters["ymax"])
+        self.ax.set_xlim(self.parameters["xmin"], self.parameters["xmax"])
+        self.ax.set_ylim(self.parameters["ymin"], self.parameters["ymax"])
+
+
         if self.regressionLineToggle.isChecked():
+            vmin, vmax = self.ax.get_xlim()
             self.plot_regression(
                 self.Vradar.value, self.VfieldHorizontal.value,
-                self.VfieldVertical.value, sweeps, gatefilter, self.ax)
+                self.VfieldVertical.value, sweeps, gatefilter, self.ax,
+                vmin + 0.05 * (vmax-vmin), vmax - 0.05 * (vmax-vmin),
+                str(self.horizontal_scale_menu_group.checkedAction().text()),
+                str(self.vertical_scale_menu_group.checkedAction().text()),
+                color=self.parameters["color"])
 
         self.canvas.draw()
 

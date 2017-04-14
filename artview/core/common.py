@@ -229,25 +229,37 @@ def string_dialog_with_reset(stringIn, title, msg, reset=None):
 # Option methods #
 ##################
 
-def get_options(options, values):
+
+def float_or_none(text):
+    if text=="None" or text=="none" or text=="NONE":
+        return None
+    else:
+        return float(text)
+
+def get_options(options_type, values):
     dialog = QtWidgets.QDialog()
     gridLayout = QtWidgets.QGridLayout(dialog)
-    keys = [a[0] for a in options]
+    keys = [a[0] for a in options_type]
     entrys = {}
-    for i, key in enumerate(keys):
-        if options[i][1] in (str, int, float):
-            gridLayout.addWidget(QtWidgets.QLabel(key), i, 0, 1, 1)
+    for i, option in enumerate(options_type):
+        key = option[0]
+        try:
+            name = option[2]
+        except:
+            name = key
+        if option[1] in (str, int, float) or callable(option[1]):
+            gridLayout.addWidget(QtWidgets.QLabel(name), i, 0, 1, 1)
             entrys[key] = QtWidgets.QLineEdit(str(values[key]), dialog)
             gridLayout.addWidget(entrys[key], i, 1, 1, 1)
-        elif options[i][1] is bool:
-            entrys[key] = QtWidgets.QCheckBox(key)
+        elif option[1] is bool:
+            entrys[key] = QtWidgets.QCheckBox(name)
             gridLayout.addWidget(entrys[key], i, 1, 1, 1)
             entrys[key].setChecked(values[key])
-        elif isinstance(options[i][1], tuple):
+        elif isinstance(option[1], tuple):
             entrys[key] = QtWidgets.QComboBox()
-            entrys[key].addItems(options[i][1])
+            entrys[key].addItems(option[1])
             gridLayout.addWidget(entrys[key], i, 1, 1, 1)
-            entrys[key].setCurrentIndex(options[i][1].index(values[key]))
+            entrys[key].setCurrentIndex(option[1].index(values[key]))
 
     buttonBox = QtWidgets.QDialogButtonBox(dialog)
     buttonBox.setOrientation(QtCore.Qt.Horizontal)
@@ -263,7 +275,7 @@ def get_options(options, values):
 
     if entry == QtWidgets.QDialog.Accepted:
         out = {}
-        for option in options:
+        for option in options_type:
             key = option[0]
             opt = option[1]
             try:
@@ -277,11 +289,10 @@ def get_options(options, values):
                     out[key] = entrys[key].isChecked()
                 elif isinstance(opt, tuple):
                     out[key] = opt[entrys[key].currentIndex()]
+                elif callable(opt):
+                    out[key] = opt(entrys[key].text())
             except:
-                if len(option) > 2:
-                    out[key] = option[2]
-                else:
-                    out[key] = values[key]
+                out[key] = values[key]
     else:
         out = values.copy()
 
@@ -362,15 +373,16 @@ class CreateTable(QtWidgets.QTableWidget):
             ncols = 0
         else:
             nrows = self.points.npoints
-            colnames = self.points.axes.keys() + self.points.fields.keys()
+            colnames = (list(self.points.axes.keys()) +
+                        list(self.points.fields.keys()))
             ncols = len(colnames)
 
         self.setRowCount(nrows)
         self.setColumnCount(ncols)
-        colnames = self.points.axes.keys() + self.points.fields.keys()
+        colnames = list(self.points.axes.keys()) + list(self.points.fields.keys())
         self.setHorizontalHeaderLabels(colnames)
 
-        for i in xrange(nrows):
+        for i in range(nrows):
             # Set each cell to be a QTableWidgetItem from _process_row method
             for j, name in enumerate(colnames):
                 if name in self.points.axes:
@@ -427,13 +439,13 @@ class select_cmap(QtWidgets.QDialog):
         for i, path in enumerate(images):
             name = path.split('/')[-1].split('.')[0]
             button = QtWidgets.QPushButton(name)
-            self.layout.addWidget(button, 2 * (i/3) + 1, 2 * (i % 3))
+            self.layout.addWidget(button, (i/3) + 1, 2 * (i % 3))
             button.clicked.connect(lambda ans, name=name: self.select(name))
             label = QtWidgets.QLabel()
             pixmap = QtGui.QPixmap(path)
             label.setPixmap(pixmap)
             label.setScaledContents(True)
-            self.layout.addWidget(label, 2 * (i/3) + 1, 2 * (i % 3) + 1)
+            self.layout.addWidget(label, (i/3) + 1, 2 * (i % 3) + 1)
 
         self.selection = None
         self.exec_()

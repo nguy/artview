@@ -5,6 +5,15 @@ from .plugins import *
 from .core import componentsList, log
 from .core import QtWidgets, QtGui
 
+def _get_component_instance(component):
+    static_comp_list = componentsList[:]
+    for comp in static_comp_list:
+        if isinstance(comp, component):
+            return comp
+    from .core.core import suggestName
+    name = suggestName(component)
+    return component(name=name, parent=None)
+
 def change_mode(components, links):
         ''' Open and connect new components to satisfy mode.
 
@@ -79,6 +88,7 @@ def radar_mode():
     from .core.core import suggestName
     radar = RadarDisplay(name=suggestName(RadarDisplay), Vradar=menu.Vradar,
                          parent=menu)
+    radar.add_mode(display_select_region, "Select a Region of Interest")
     window.addComponent(radar)
 
 def grid_mode():
@@ -97,7 +107,8 @@ def grid_mode():
 
     from .core.core import suggestName
     grid = GridDisplay(name=suggestName(GridDisplay), Vgrid=menu.Vgrid,
-                         parent=menu)
+                       parent=menu)
+    grid.add_mode(display_select_region, "Select a Region of Interest")
     window.addComponent(grid)
 
 def map_to_grid_mode():
@@ -176,6 +187,36 @@ def select_region_mode():
             ]
         )
 
+def display_select_region(variables={}):
+    if not variables:
+        select_region_mode()
+        return
+    window = _get_component_instance(Window)
+    from .core.core import suggestName
+    select_region = SelectRegion(name=suggestName(SelectRegion), parent=window)
+    pointsDisplay = PointsDisplay(name=suggestName(PointsDisplay), parent=window)
+    window.addComponent(select_region)
+    window.addComponent(pointsDisplay)
+    for key in variables.keys():
+        if key in select_region.sharedVariables.keys():
+            # Disconect old Variable
+            select_region.disconnectSharedVariable(key)
+            # comp1.var = comp0.var
+            setattr(select_region, key, variables[key])
+            # Connect new Variable
+            select_region.connectSharedVariable(key)
+            # Emit change signal
+            variables[key].update(False)
+
+    pointsDisplay.disconnectSharedVariable("Vfield")
+    pointsDisplay.Vfield = select_region.Vfield
+    pointsDisplay.connectSharedVariable("Vfield")
+    pointsDisplay.Vfield.update(False)
+
+    pointsDisplay.disconnectSharedVariable("Vpoints")
+    pointsDisplay.Vpoints = select_region.Vpoints
+    pointsDisplay.connectSharedVariable("Vpoints")
+    pointsDisplay.Vpoints.update(True)
 
 def extract_points_mode():
     change_mode(
@@ -221,7 +262,7 @@ def manual_unfold_mode():
 
 def manual_filter_mode():
     change_mode(
-        [FileNavigator, RadarDisplay, SelectRegion, ManualFilter],
+        [FileNavigator, RadarDisplay, SelectRegion, ManualEdit, PointsDisplay],
         [
             ((0, 'Vradar'), (1, 'Vradar')),
             ((1, 'VplotAxes'), (2, 'VplotAxes')),
@@ -233,6 +274,7 @@ def manual_filter_mode():
             ((2, 'Vpoints'), (3, 'Vpoints')),
             ((1, 'Vfield'), (3, 'Vfield')),
             ((1, 'Vgatefilter'), (3, 'Vgatefilter')),
+            ((2, "Vpoints"), (4, "Vpoints")),
             ]
         )
 
@@ -312,8 +354,6 @@ def radar_terminal_mode():
         ]
     )
 
-
-
 modes = [
     {'label': 'Add RadarDisplay',
      'group': 'graph',
@@ -339,10 +379,10 @@ modes = [
 #    {'label': 'Despeckle Radar',
 #     'group': 'correct',
 #     'action': despeckle_mode},
-    {'label': 'Query a selectable region of interest ',
+    {'label': 'Select Polygons',
      'group': 'select',
      'action': select_region_mode},
-    {'label': 'Extract a selected region of points',
+    {'label': 'Query Selected Area',
      'group': 'select',
      'action': extract_points_mode},
     {'label': 'File navigator',
@@ -357,7 +397,7 @@ modes = [
     {'label': 'Add Topographic Background',
      'group': 'graph',
      'action': topography_mode},
-    {'label': 'Radar Moments Correlation',
+    {'label': 'Fields Correlation',
      'group': 'graph',
      'action': correlation_mode},
 #    {'label': 'Add Image to Background',
