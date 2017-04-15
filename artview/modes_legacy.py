@@ -183,13 +183,16 @@ navigate_mode = (
     ]
 )
 
-topography_mode = (
-    [Menu, RadarDisplay, TopographyBackground],
-    [
-        ((0, 'Vradar'), (1, 'Vradar')),
-        ((1, 'VpyartDisplay'), (2, 'VpyartDisplay')),
-        ]
-    )
+try:
+    topography_mode = (
+        [Menu, RadarDisplay, TopographyBackground],
+        [
+            ((0, 'Vradar'), (1, 'Vradar')),
+            ((1, 'VpyartDisplay'), (2, 'VpyartDisplay')),
+            ]
+        )
+except:
+    pass
 
 background_mode = (
     [Menu, RadarDisplay, ImageBackground],
@@ -258,9 +261,6 @@ modes = [
     {'label': 'Directory View',
      'group': 'io',
      'action': filelist_mode},
-    {'label': 'Add Topographic Background',
-     'group': 'graph',
-     'action': topography_mode},
     {'label': 'Fields Correlation',
      'group': 'graph',
      'action': correlation_mode},
@@ -271,3 +271,12 @@ modes = [
      'group': 'terminal',
      'action': radar_terminal_mode},
     ]
+
+try:
+    modes += [
+        {'label': 'Add Topographic Background',
+        'group': 'graph',
+        'action': topography_mode},
+        ]
+except:
+    pass

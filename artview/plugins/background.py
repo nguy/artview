@@ -17,6 +17,7 @@ import os
 from ..core import Component, Variable, common, QtWidgets, QtCore, componentsList
 
 
+
 class TopographyBackground(Component):
     '''
     add TopograpyBackground to Display
@@ -328,4 +329,46 @@ class ImageBackground(Component):
         self.VpyartDisplay.update(strong=False)
 
 
-_plugins = [TopographyBackground, ImageBackground]
+def topography_mode():
+    from ..modes import change_mode
+    change_mode(
+        [FileNavigator, RadarDisplay, TopographyBackground],
+        [
+            ((0, 'Vradar'), (1, 'Vradar')),
+            ((1, 'VpyartDisplay'), (2, 'VpyartDisplay')),
+            ]
+        )
+
+def background_mode():
+    from ..modes import change_mode
+    change_mode(
+        [FileNavigator, RadarDisplay, ImageBackground],
+        [
+            ((0, 'Vradar'), (1, 'Vradar')),
+            ((1, 'VpyartDisplay'), (2, 'VpyartDisplay')),
+            ((1, 'Vradar'), (2, 'Vradar')),
+            ((1, 'VplotAxes'), (2, 'VplotAxes')),
+            ]
+        )
+
+
+try:
+    from mpl_toolkits.basemap import shiftgrid, cm
+    _plugins = [TopographyBackground, ImageBackground]
+
+    _modes = [
+        {'label': 'Add Topographic Background',
+         'group': 'graph',
+         'action': topography_mode},
+#        {'label': 'Add Image to Background',
+#         'group': 'graph',
+#         'action': background_mode},
+        ]
+except:
+    _plugins = [ImageBackground]
+
+    _modes = [
+#        {'label': 'Add Image to Background',
+#         'group': 'graph',
+#         'action': background_mode},
+        ]
