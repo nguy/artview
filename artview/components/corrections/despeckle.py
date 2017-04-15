@@ -15,8 +15,8 @@ import numpy as np
 import os
 
 
-from ..core import (Component, Variable, common, QtWidgets, QtCore, QtGui,
-                    componentsList)
+from ...core import (Component, Variable, common, QtWidgets, QtCore, QtGui,
+                     componentsList)
 
 
 class Despeckle(Component):

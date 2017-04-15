@@ -9,7 +9,7 @@ import sys
 from ..core import Variable, QtWidgets, QtCore
 from ..components import RadarDisplay, Menu, LinkSharedVariables, SelectRegion
 from ._common import _add_all_advanced_tools, _parse_dir, _parse_field
-from ..plugins import ManualUnfold
+from ..components import ManualUnfold
 
 
 def run(DirIn=None, filename=None, field=None):

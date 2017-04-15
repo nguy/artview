@@ -1,5 +1,5 @@
 """
-calculate_attenuation.py
+
 """
 
 # Load the needed packages
@@ -8,30 +8,29 @@ from functools import partial
 import pyart
 from pyart.config import get_field_name
 import time
-
-from ..core import (Component, Variable, common, QtWidgets, QtGui,
-                    QtCore, VariableChoose)
-
 import os
 
+from ...core import (Component, Variable, common, QtWidgets, QtGui,
+                     QtCore, VariableChoose)
 
-class CalculateAttenuation(Component):
+
+class PhaseProcLp(Component):
     '''
-    Interface for executing :py:func:`pyart.correct.calculate_attenuation`
+    Interface for executing :py:func:`pyart.correct.phase_proc_lp`
     '''
 
     Vradar = None  #: see :ref:`shared_variable`
 
     @classmethod
     def guiStart(self, parent=None):
-        '''Graphical interface for starting this class'''
+        '''Graphical interface for starting this class.'''
         kwargs, independent = \
-            common._SimplePluginStart("CalculateAttenuation").startDisplay()
+            common._SimplePluginStart("PhaseProcLp").startDisplay()
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
     def __init__(self, Vradar=None,  # Vgatefilter=None,
-                 name="CalculateAttenuation", parent=None):
+                 name="PhaseProcLp", parent=None):
         '''Initialize the class to create the interface.
 
         Parameters
@@ -46,13 +45,13 @@ class CalculateAttenuation(Component):
             Parent instance to associate to this class.
             If None, then Qt owns, otherwise associated w/ parent PyQt instance
         '''
-        super(CalculateAttenuation, self).__init__(name=name, parent=parent)
+        super(PhaseProcLp, self).__init__(name=name, parent=parent)
         self.central_widget = QtWidgets.QWidget()
         self.setCentralWidget(self.central_widget)
         self.layout = QtWidgets.QGridLayout(self.central_widget)
 
-        self.despeckleButton = QtWidgets.QPushButton("CalculateAttenuation")
-        self.despeckleButton.clicked.connect(self.calculate_attenuation)
+        self.despeckleButton = QtWidgets.QPushButton("PhaseProcLp")
+        self.despeckleButton.clicked.connect(self.phase_proc_lp)
         self.layout.addWidget(self.despeckleButton, 0, 0)
 
         parentdir = os.path.abspath(os.path.join(os.path.dirname(__file__),
@@ -72,35 +71,55 @@ class CalculateAttenuation(Component):
             "radar": None,
             "z_offset": 0,
             "debug": False,
-            "doc": 15,
+            "self_const": 60000,
+            "low_z": 10,
+            "high_z": 53,
+            "min_phidp": 0.01,
+            "min_ncp": 0.5,
+            "min_rhv": 0.8,
             "fzl": 4000,
-            "rhv_min": 0.8,
-            "ncp_min": 0.5,
-            "a_coef": 0.06,
-            "beta": 0.8,
+            "sys_phase": 0,
+            "overide_sys_phase": False,
+            "nowrap": None,
+            "really_verbose": False,
+            "LP_solver": "cylp",
             "refl_field": get_field_name('reflectivity'),
             "ncp_field": get_field_name('normalized_coherent_power'),
             "rhv_field": get_field_name('cross_correlation_ratio'),
             "phidp_field": get_field_name('differential_phase'),
-            "spec_at_field": get_field_name('specific_attenuation'),
-            "corr_refl_field": get_field_name('corrected_reflectivity'),
+            "kdp_field": get_field_name('specific_differential_phase'),
+            "unf_field": get_field_name('unfolded_differential_phase'),
+            "window_len": 35,
+            "proc": 1,
+            "reproc_phase": "repro_phase",
+            "sob_kdp": "sob_kdp",
             }
 
         self.parameters_type = [
             ("z_offset", float),
             ("debug", bool),
-            ("doc", float),
+            ("self_const", float),
+            ("low_z", float),
+            ("high_z", float),
+            ("min_phidp", float),
+            ("min_ncp", float),
+            ("min_rhv", float),
             ("fzl", float),
-            ("rhv_min", float),
-            ("ncp_min", float),
-            ("a_coef", float),
-            ("beta", float),
+            ("sys_phase", float),
+            ("overide_sys_phase", bool),
+            ("nowrap", int, None),
+            ("really_verbose", bool),
+            ("LP_solver", ("pyglpk", "cvxopt", "cylp", "cylp_mp")),
             ("refl_field", str),
             ("ncp_field", str),
             ("rhv_field", str),
             ("phidp_field", str),
-            ("spec_at_field", str),
-            ("corr_refl_field", str),
+            ("kdp_field", str),
+            ("unf_field", str),
+            ("window_len", int),
+            ("proc", int),
+            ("reproc_phase", str),
+            ("sob_kdp", str),
             ]
 
         self.layout.setColumnStretch(0, 1)
@@ -115,9 +134,8 @@ class CalculateAttenuation(Component):
 
         self.show()
 
-    def calculate_attenuation(self):
-        '''Mount Options and execute
-        :py:func:`~pyart.correct.calculate_attenuation`.
+    def phase_proc_lp(self):
+        '''Mount Options and execute :py:func:`~pyart.correct.phase_proc_lp`.
         The resulting fields are added to Vradar.
         Vradar is updated, strong or weak depending on overwriting old fields.
         '''
@@ -127,14 +145,17 @@ class CalculateAttenuation(Component):
             return
         # mount options
         self.parameters['radar'] = self.Vradar.value
+        parameters = self.parameters.copy()
+        del parameters["reproc_phase"]
+        del parameters["sob_kdp"]
 
-        print(self.parameters)
+        print(parameters)
 
         # execute
         print("Correcting ..")
         t0 = time.time()
         try:
-            spec_at, cor_z = pyart.correct.calculate_attenuation(**self.parameters)
+            reproc_phase, sob_kdp = pyart.correct.phase_proc_lp(**parameters)
         except:
             import traceback
             error = traceback.format_exc()
@@ -144,31 +165,32 @@ class CalculateAttenuation(Component):
         print(("Correction took %fs" % (t1-t0)))
 
         # verify field overwriting
-        spec_at_field_name = self.parameters['spec_at_field']
-        corr_refl_field_name = self.parameters['corr_refl_field']
+        reproc_phase_name = self.parameters["reproc_phase"]
+        sob_kdp_name = self.parameters["sob_kdp"]
 
         strong_update = False  # insertion is weak, overwrite strong
-        if spec_at_field_name in self.Vradar.value.fields.keys():
+        if reproc_phase_name in self.Vradar.value.fields.keys():
             resp = common.ShowQuestion(
                 "Field %s already exists! Do you want to over write it?" %
-                spec_at_field_name)
+                reproc_phase_name)
             if resp != QtWidgets.QMessageBox.Ok:
                 return
             else:
                 strong_update = True
 
-        if corr_refl_field_name in self.Vradar.value.fields.keys():
+        if sob_kdp_name in self.Vradar.value.fields.keys():
             resp = common.ShowQuestion(
                 "Field %s already exists! Do you want to over write it?" %
-                corr_refl_field_name)
+                sob_kdp_name)
             if resp != QtWidgets.QMessageBox.Ok:
                 return
             else:
                 strong_update = True
 
         # add fields and update
-        self.Vradar.value.add_field(spec_at_field_name, spec_at, True)
-        self.Vradar.value.add_field(corr_refl_field_name, cor_z, True)
+        self.Vradar.value.add_field(reproc_phase_name, reproc_phase, True)
+        self.Vradar.value.add_field(sob_kdp_name, sob_kdp, True)
+        self.Vradar.value.changed = True
         self.Vradar.update(strong_update)
         print("Correction took %fs" % (t1-t0))
 
@@ -180,7 +202,7 @@ class CalculateAttenuation(Component):
 
     def _displayHelp(self):
         '''Display Py-Art's docstring for help.'''
-        common.ShowLongText(pyart.correct.calculate_attenuation.__doc__)
+        common.ShowLongText(pyart.correct.phase_proc_lp.__doc__)
 
 
-_plugins = [CalculateAttenuation]
+_plugins = [PhaseProcLp]

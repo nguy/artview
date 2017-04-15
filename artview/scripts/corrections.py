@@ -10,7 +10,7 @@ import sys
 from ..core import Variable, QtWidgets, QtCore
 from ..components import RadarDisplay, Menu
 from ._common import _add_all_advanced_tools, _parse_dir, _parse_field
-from ..plugins import (DealiasRegionBased, DealiasUnwrapPhase, PhaseProcLp,
+from ..components import (DealiasRegionBased, DealiasUnwrapPhase, PhaseProcLp,
                        CalculateAttenuation)
 
 corrections = [DealiasRegionBased, DealiasUnwrapPhase, PhaseProcLp,
