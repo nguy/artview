@@ -74,6 +74,9 @@ class TopographyBackground(Component):
 
         self.sharedVariables = {"VpyartDisplay": None}
 
+        # Connect the components
+        self.connectAllVariables()
+
         self.show()
 
     def search(self):
@@ -218,6 +221,9 @@ class ImageBackground(Component):
                                 "VplotAxes": None,
                                 "Vradar": self.NewRadar,
                                 "Vgrid": self.NewGrid, }
+
+        # Connect the components
+        self.connectAllVariables()
 
         self.show()
 
