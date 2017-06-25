@@ -143,14 +143,14 @@ class Mapper(Component):
         self.configButton.setMenu(self.configMenu)
 
         self.configMenu.addAction(QtWidgets.QAction("Set General Parameters", self,
-                                                triggered=self.setParameters))
+                                                    triggered=self.setParameters))
         self.configMenu.addAction(QtWidgets.QAction("Set Radius of Influence Parameters", self,
-                                                triggered=self.setRoiParameters))
+                                                    triggered=self.setRoiParameters))
         self.configMenu.addAction(QtWidgets.QAction("Set map_to_grid Parameters", self,
-                                                triggered=self.setGriddingParameters))
+                                                    triggered=self.setGriddingParameters))
         self.fieldMenu = self.configMenu.addMenu("Fields")
         self.configMenu.addAction(QtWidgets.QAction("Help", self,
-                                                triggered=self._displayHelp))
+                                                    triggered=self._displayHelp))
 
         self.layout.addWidget(QtWidgets.QLabel("Z"), 1, 0, 2, 1)
         self.layout.addWidget(QtWidgets.QLabel("Y"), 3, 0, 2, 1)
