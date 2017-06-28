@@ -10,8 +10,7 @@ import sys
 from ..core import Variable, QtGui, QtCore, QtWidgets, componentsList
 from ..components import RadarDisplay, Menu, LevelButtonWindow, \
     LinkSharedVariables, SelectRegion, Window, FileNavigator, \
-    LayoutComponent
-from ..plugins import FileDetail
+    LayoutComponent, FileDetail
 from ._parse_field import _parse_field
 from ._common import startMainMenu
 from .. import view

@@ -8,8 +8,7 @@ import os
 import sys
 
 from ..core import Variable, QtWidgets
-from ..components import RadarDisplay, Menu, SelectRegion
-from ..plugins import GateFilter
+from ..components import RadarDisplay, Menu, SelectRegion, GateFilter
 from ._common import _parse_dir, _parse_field
 
 

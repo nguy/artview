@@ -15,7 +15,7 @@ from matplotlib import colors
 
 import pyart
 
-from .. import core, components
+from .. import core
 
 gradient = np.linspace(0, 1, 256)
 gradient = np.vstack((gradient, gradient))
@@ -289,31 +289,3 @@ class ColormapEdit(core.Component):
         self.plot()
 
 _plugins = [ColormapEdit]
-
-
-def radar_mode():
-    from ..modes import change_mode
-    change_mode(
-        [components.FileNavigator, components.RadarDisplay, ColormapEdit],
-        [
-            ((1, 'Vcolormap'), (2, 'Vcolormap')),
-            ]
-        )
-
-def grid_mode():
-    from ..modes import change_mode
-    change_mode(
-        [components.FileNavigator, components.GridDisplay, ColormapEdit],
-        [
-            ((1, 'Vcolormap'), (2, 'Vcolormap')),
-            ]
-        )
-
-_modes = [
-    {'label': 'Edit Colormap (radar)',
-     'group': 'graph',
-     'action': radar_mode},
-    {'label': 'Edit Colormap (grid)',
-     'group': 'graph',
-     'action': grid_mode},
-    ]

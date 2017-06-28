@@ -503,7 +503,10 @@ class Pane(QtWidgets.QTabWidget):
 
     def dragStart(self, idx):
         mimeData = QtCore.QMimeData()
-        mimeData.setData("text/artview",self.widget(idx).__repr__())
+        if sys.version_info[0] < 3:
+            mimeData.setData("text/artview",self.widget(idx).__repr__())
+        else:
+            mimeData.setData("text/artview",bytes(self.widget(idx).__repr__(),"utf-8"))
         drag = QtGui.QDrag(self)
         drag.setMimeData(mimeData)
         drag.exec_(QtCore.Qt.MoveAction)
