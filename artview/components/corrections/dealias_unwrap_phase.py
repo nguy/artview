@@ -1,7 +1,6 @@
 """
 
 """
-
 # Load the needed packages
 from functools import partial
 
@@ -10,13 +9,12 @@ from pyart.config import get_field_name
 import time
 import os
 
-from ..core import (Component, Variable, common, QtGui, QtWidgets,
-                    QtCore, VariableChoose)
+from ...core import (Component, Variable, common, QtWidgets, QtGui,
+                     QtCore, VariableChoose)
 
-
-class DealiasRegionBased(Component):
+class DealiasUnwrapPhase(Component):
     '''
-    Interface for executing :py:func:`pyart.correct.dealias_region_based`
+    Interface for executing :py:func:`pyart.correct.dealias_unwrap_phase`
     '''
 
     Vradar = None  #: see :ref:`shared_variable`
@@ -24,14 +22,14 @@ class DealiasRegionBased(Component):
 
     @classmethod
     def guiStart(self, parent=None):
-        '''Graphical interface for starting this class'''
+        '''Graphical interface for starting this class.'''
         kwargs, independent = \
-            common._SimplePluginStart("DealiasRegionBased").startDisplay()
+            common._SimplePluginStart("DealiasUnwrapPhase").startDisplay()
         kwargs['parent'] = parent
         return self(**kwargs), independent
 
     def __init__(self, Vradar=None, Vgatefilter=None,
-                 name="DealiasRegionBased", parent=None):
+                 name="DealiasUnwrapPhase", parent=None):
         '''Initialize the class to create the interface.
 
         Parameters
@@ -46,13 +44,13 @@ class DealiasRegionBased(Component):
             Parent instance to associate to this class.
             If None, then Qt owns, otherwise associated w/ parent PyQt instance
         '''
-        super(DealiasRegionBased, self).__init__(name=name, parent=parent)
+        super(DealiasUnwrapPhase, self).__init__(name=name, parent=parent)
         self.central_widget = QtWidgets.QWidget()
         self.setCentralWidget(self.central_widget)
         self.layout = QtWidgets.QGridLayout(self.central_widget)
 
-        self.despeckleButton = QtWidgets.QPushButton("DealiasRegionBased")
-        self.despeckleButton.clicked.connect(self.dealias_region_based)
+        self.despeckleButton = QtWidgets.QPushButton("DealiasUnwrapPhase")
+        self.despeckleButton.clicked.connect(self.dealias_unwrap_phase)
         self.layout.addWidget(self.despeckleButton, 0, 0)
 
         parentdir = os.path.abspath(os.path.join(os.path.dirname(__file__),
@@ -71,31 +69,26 @@ class DealiasRegionBased(Component):
         self.parameters = {
             "radar": None,
             "gatefilter": None,
-            "interval_splits": 3,
+            "unwrap_unit": "sweep",
             "interval_limits": None,
-            "skip_between_rays": 100,
-            "skip_along_ray": 100,
-            "centered": True,
             "nyquist_velocity": "",
             "check_nyquist_uniform": False,
             "rays_wrap_around": True,
             "keep_original": False,
             "vel_field": get_field_name('velocity'),
             "corr_vel_field": get_field_name('corrected_velocity'),
+            "skip_checks": False
             }
 
-
         self.parameters_type = [
-            ("interval_splits", int),
-            ("skip_between_rays", int),
-            ("skip_along_ray", int),
-            ("centered", bool),
-            ("nyquist_velocity", common.float_or_none),
+            ("unwrap_unit", ('ray', 'sweep', 'volume')),
+            ("nyquist_velocity", float, common.float_or_none),
             ("check_nyquist_uniform", bool),
             ("rays_wrap_around", bool),
             ("keep_original", bool),
             ("vel_field", str),
             ("corr_vel_field", str),
+            ("skip_checks", bool)
             ]
 
         self.layout.setColumnStretch(0, 1)
@@ -116,15 +109,15 @@ class DealiasRegionBased(Component):
 
         self.show()
 
-    def dealias_region_based(self):
-        '''Mount Options and execute.
-        :py:func:`~pyart.correct.dealias_region_based`.
+    def dealias_unwrap_phase(self):
+        '''Mount Options and execute
+        :py:func:`~pyart.correct.dealias_unwrap_phase`.
         The resulting fields are added to Vradar.
         Vradar is updated, strong or weak depending on overwriting old fields.
         '''
         # test radar
         if self.Vradar.value is None:
-            common.ShowWarning("Radar is None, can not perform correction.")
+            common.ShowWarning("Radar is None, can not perform correction")
             return
         self.parameters['radar'] = self.Vradar.value
         self.parameters['gatefilter'] = self.Vgatefilter.value
@@ -134,7 +127,7 @@ class DealiasRegionBased(Component):
         print("Correcting ..")
         t0 = time.time()
         try:
-            field = pyart.correct.dealias_region_based(**self.parameters)
+            field = pyart.correct.dealias_unwrap_phase(**self.parameters)
         except:
             import traceback
             error = traceback.format_exc()
@@ -144,7 +137,10 @@ class DealiasRegionBased(Component):
         print(("Correction took %fs" % (t1-t0)))
 
         # verify field overwriting
-        name = self.parameters['corr_vel_field']
+        if args['corr_vel_field'] is None:
+            name = "dealiased_velocity"
+        else:
+            name = args['corr_vel_field']
 
         strong_update = False  # insertion is weak, overwrite strong
         if name in self.Vradar.value.fields.keys():
@@ -170,7 +166,7 @@ class DealiasRegionBased(Component):
 
     def _displayHelp(self):
         '''Display Py-Art's docstring for help.'''
-        common.ShowLongText(pyart.correct.dealias_region_based.__doc__)
+        common.ShowLongText(pyart.correct.dealias_unwrap_phase.__doc__)
 
 
-_plugins = [DealiasRegionBased]
+_plugins = [DealiasUnwrapPhase]

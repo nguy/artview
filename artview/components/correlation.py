@@ -632,8 +632,6 @@ class Correlation(Component):
         self.ax.set_xlabel(self.unitsHorizontal)
         self.ax.set_ylabel(self.unitsVertical)
 
-        print(self.parameters["xmin"], self.parameters["xmax"])
-        print(self.parameters["ymin"], self.parameters["ymax"])
         self.ax.set_xlim(self.parameters["xmin"], self.parameters["xmax"])
         self.ax.set_ylim(self.parameters["ymin"], self.parameters["ymax"])
 

@@ -220,6 +220,21 @@ radar_terminal_mode = (
     )
 
 
+cmap_radar_mode = (
+        [FileNavigator, RadarDisplay, ColormapEdit],
+        [
+            ((1, 'Vcolormap'), (2, 'Vcolormap')),
+            ]
+        )
+
+
+cmap_grid_mode = (
+        [FileNavigator, GridDisplay, ColormapEdit],
+        [
+            ((1, 'Vcolormap'), (2, 'Vcolormap')),
+            ]
+        )
+
 
 modes = [
     {'label': 'Add RadarDisplay',
@@ -270,6 +285,12 @@ modes = [
     {'label': 'Manipulate Radar in Terminal',
      'group': 'terminal',
      'action': radar_terminal_mode},
+    {'label': 'Edit Colormap (radar)',
+     'group': 'graph',
+     'action': cmap_radar_mode},
+    {'label': 'Edit Colormap (grid)',
+     'group': 'graph',
+     'action': cmap_grid_mode},
     ]
 
 try:

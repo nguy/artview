@@ -39,6 +39,16 @@ from .component_control import LinkSharedVariables
 from .select_region import SelectRegion
 from .plot_simple import PlotDisplay
 from .navigator import FileNavigator
+from .cmap import ColormapEdit
+from .console import AccessTerminal
+from .gatefilter import GateFilter
+from .io import DirectoryList, FileDetail
+from .manual_edit import ManualEdit
+from .manual_unfold import ManualUnfold
+from .mapper import Mapper
+from .radar_terminal import RadarTerminal
+from .corrections import *
+
 
 del pyart
 del parse_version
