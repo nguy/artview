@@ -1,0 +1,6 @@
+artview.components.Mapper.guiStart
+==================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Mapper.guiStart

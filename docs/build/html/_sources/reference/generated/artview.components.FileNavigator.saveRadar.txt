@@ -1,0 +1,6 @@
+artview.components.FileNavigator.saveRadar
+==========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: FileNavigator.saveRadar

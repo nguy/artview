@@ -1,0 +1,6 @@
+artview.components.FileNavigator.NewFile
+========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: FileNavigator.NewFile

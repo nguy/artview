@@ -1,0 +1,6 @@
+artview.plugins.ImageBackground.NewGrid
+=======================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: ImageBackground.NewGrid

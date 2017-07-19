@@ -1,0 +1,6 @@
+artview.components.FileNavigator.replaceRadar
+=============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: FileNavigator.replaceRadar

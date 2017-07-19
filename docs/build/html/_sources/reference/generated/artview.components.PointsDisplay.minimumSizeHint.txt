@@ -1,0 +1,6 @@
+artview.components.PointsDisplay.minimumSizeHint
+================================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: PointsDisplay.minimumSizeHint

@@ -1,0 +1,6 @@
+artview.components.Correlation.addButtons
+=========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Correlation.addButtons

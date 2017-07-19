@@ -1,0 +1,6 @@
+artview.components.ColormapEdit.select_cmap
+===========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: ColormapEdit.select_cmap

@@ -1,0 +1,6 @@
+artview.components.Window.showHideTabBar
+========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Window.showHideTabBar

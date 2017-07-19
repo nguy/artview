@@ -1,0 +1,6 @@
+artview.components.LayoutComponent.close
+========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: LayoutComponent.close

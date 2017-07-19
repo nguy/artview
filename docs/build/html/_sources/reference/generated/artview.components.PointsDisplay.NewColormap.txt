@@ -1,0 +1,6 @@
+artview.components.PointsDisplay.NewColormap
+============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: PointsDisplay.NewColormap

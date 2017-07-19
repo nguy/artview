@@ -1,0 +1,6 @@
+artview.core.core.Component.get_sharedVariables
+===============================================
+
+.. currentmodule:: artview.core.core
+
+.. automethod:: Component.get_sharedVariables

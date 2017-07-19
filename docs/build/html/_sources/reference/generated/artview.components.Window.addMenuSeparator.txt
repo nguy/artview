@@ -1,0 +1,6 @@
+artview.components.Window.addMenuSeparator
+==========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Window.addMenuSeparator

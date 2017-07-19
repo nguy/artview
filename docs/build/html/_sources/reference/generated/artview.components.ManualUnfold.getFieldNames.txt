@@ -1,0 +1,6 @@
+artview.components.ManualUnfold.getFieldNames
+=============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: ManualUnfold.getFieldNames

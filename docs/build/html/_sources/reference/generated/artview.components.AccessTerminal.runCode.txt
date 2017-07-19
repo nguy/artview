@@ -1,0 +1,6 @@
+artview.components.AccessTerminal.runCode
+=========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: AccessTerminal.runCode

@@ -1,0 +1,6 @@
+artview.plugins.ColormapEdit.plot
+=================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: ColormapEdit.plot

@@ -1,0 +1,35 @@
+artview.plugins.ColormapEdit
+============================
+
+.. currentmodule:: artview.plugins
+
+.. autoclass:: ColormapEdit
+   :show-inheritance:
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+         ColormapEdit.NewColormap
+         ColormapEdit.add_bound
+         ColormapEdit.apply
+         ColormapEdit.change_norm
+         ColormapEdit.createUI
+         ColormapEdit.get_bounds
+         ColormapEdit.guiStart
+         ColormapEdit.plot
+         ColormapEdit.remove_bound
+         ColormapEdit.select_cmap
+         ColormapEdit.set_layout
+         ColormapEdit.update_colormap
+   
+   
+
+   
+   
+   
+

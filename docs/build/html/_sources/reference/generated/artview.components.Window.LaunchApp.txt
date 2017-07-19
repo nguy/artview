@@ -1,0 +1,6 @@
+artview.components.Window.LaunchApp
+===================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Window.LaunchApp

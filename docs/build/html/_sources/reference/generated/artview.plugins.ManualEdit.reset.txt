@@ -1,0 +1,6 @@
+artview.plugins.ManualEdit.reset
+================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: ManualEdit.reset

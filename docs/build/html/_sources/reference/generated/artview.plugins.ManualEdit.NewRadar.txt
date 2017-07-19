@@ -1,0 +1,6 @@
+artview.plugins.ManualEdit.NewRadar
+===================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: ManualEdit.NewRadar

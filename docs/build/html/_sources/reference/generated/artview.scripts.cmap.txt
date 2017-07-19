@@ -1,0 +1,6 @@
+artview.scripts.cmap
+====================
+
+.. currentmodule:: artview.scripts
+
+.. autofunction:: cmap

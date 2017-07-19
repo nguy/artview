@@ -1,0 +1,6 @@
+artview.components.FileNavigator.createUI
+=========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: FileNavigator.createUI

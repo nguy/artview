@@ -1,0 +1,6 @@
+artview.plugins.ColormapEdit.guiStart
+=====================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: ColormapEdit.guiStart

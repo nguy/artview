@@ -1,0 +1,6 @@
+artview.components.PointsDisplay.saveTable
+==========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: PointsDisplay.saveTable

@@ -1,0 +1,6 @@
+artview.components.RadarDisplay.add_mode
+========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: RadarDisplay.add_mode

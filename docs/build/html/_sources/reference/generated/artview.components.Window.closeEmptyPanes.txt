@@ -1,0 +1,6 @@
+artview.components.Window.closeEmptyPanes
+=========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Window.closeEmptyPanes

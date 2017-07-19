@@ -1,0 +1,6 @@
+artview.components.SelectRegion.NewPathInteriorFunc
+===================================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: SelectRegion.NewPathInteriorFunc

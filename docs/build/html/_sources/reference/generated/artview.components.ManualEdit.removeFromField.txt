@@ -1,0 +1,6 @@
+artview.components.ManualEdit.removeFromField
+=============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: ManualEdit.removeFromField

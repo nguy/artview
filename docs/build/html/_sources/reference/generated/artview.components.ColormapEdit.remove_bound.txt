@@ -1,0 +1,6 @@
+artview.components.ColormapEdit.remove_bound
+============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: ColormapEdit.remove_bound

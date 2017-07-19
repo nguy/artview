@@ -1,0 +1,6 @@
+artview.components.ManualEdit.removeFromFilter
+==============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: ManualEdit.removeFromFilter

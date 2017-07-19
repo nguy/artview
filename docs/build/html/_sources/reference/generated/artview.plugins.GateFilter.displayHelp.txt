@@ -1,0 +1,6 @@
+artview.plugins.GateFilter.displayHelp
+======================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: GateFilter.displayHelp

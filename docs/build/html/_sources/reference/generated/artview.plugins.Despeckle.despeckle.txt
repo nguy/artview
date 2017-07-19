@@ -1,0 +1,6 @@
+artview.plugins.Despeckle.despeckle
+===================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: Despeckle.despeckle

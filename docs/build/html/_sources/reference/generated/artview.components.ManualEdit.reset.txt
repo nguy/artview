@@ -1,0 +1,6 @@
+artview.components.ManualEdit.reset
+===================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: ManualEdit.reset

@@ -1,0 +1,6 @@
+artview.plugins.ManualEdit.removeFromFilter
+===========================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: ManualEdit.removeFromFilter

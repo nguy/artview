@@ -1,0 +1,6 @@
+artview.components.FileNavigator.goto_prev_file
+===============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: FileNavigator.goto_prev_file

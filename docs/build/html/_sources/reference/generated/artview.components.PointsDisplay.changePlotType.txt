@@ -1,0 +1,6 @@
+artview.components.PointsDisplay.changePlotType
+===============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: PointsDisplay.changePlotType

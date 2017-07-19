@@ -1,0 +1,6 @@
+artview.components.PointsDisplay.LaunchGUI
+==========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: PointsDisplay.LaunchGUI

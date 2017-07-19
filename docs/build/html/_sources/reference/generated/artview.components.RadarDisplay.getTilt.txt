@@ -1,0 +1,6 @@
+artview.components.RadarDisplay.getTilt
+=======================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: RadarDisplay.getTilt

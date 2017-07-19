@@ -1,0 +1,6 @@
+artview.components.Correlation.plot_correlation
+===============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Correlation.plot_correlation

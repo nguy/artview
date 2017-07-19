@@ -1,0 +1,6 @@
+artview.components.AccessTerminal.guiStart
+==========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: AccessTerminal.guiStart

@@ -1,0 +1,6 @@
+artview.components.Window.addPane
+=================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Window.addPane

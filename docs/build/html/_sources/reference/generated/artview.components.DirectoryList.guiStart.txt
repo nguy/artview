@@ -1,0 +1,6 @@
+artview.components.DirectoryList.guiStart
+=========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: DirectoryList.guiStart

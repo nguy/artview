@@ -1,0 +1,6 @@
+artview.components.GateFilter.restoreRadar
+==========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: GateFilter.restoreRadar

@@ -1,0 +1,6 @@
+artview.plugins.ManualEdit.guiStart
+===================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: ManualEdit.guiStart

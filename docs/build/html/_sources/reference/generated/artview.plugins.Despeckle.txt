@@ -1,0 +1,30 @@
+artview.plugins.Despeckle
+=========================
+
+.. currentmodule:: artview.plugins
+
+.. autoclass:: Despeckle
+   :show-inheritance:
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+         Despeckle.NewField
+         Despeckle.NewRadar
+         Despeckle.addObjectsField
+         Despeckle.change_field
+         Despeckle.despeckle
+         Despeckle.guiStart
+         Despeckle.setParameters
+   
+   
+
+   
+   
+   
+

@@ -1,0 +1,6 @@
+artview.components.Window.widgetTurnCurrent
+===========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Window.widgetTurnCurrent

@@ -1,0 +1,6 @@
+artview.components.Window.popNewWindow
+======================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Window.popNewWindow

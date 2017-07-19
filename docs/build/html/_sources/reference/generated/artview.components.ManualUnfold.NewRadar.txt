@@ -1,0 +1,6 @@
+artview.components.ManualUnfold.NewRadar
+========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: ManualUnfold.NewRadar

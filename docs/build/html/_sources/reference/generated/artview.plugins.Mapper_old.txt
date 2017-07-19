@@ -1,0 +1,39 @@
+artview.plugins.Mapper_old
+==========================
+
+.. currentmodule:: artview.plugins
+
+.. autoclass:: Mapper_old
+   :show-inheritance:
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+         Mapper_old.NewRadar
+         Mapper_old.addEspecificOptions
+         Mapper_old.addGeneralOptions
+         Mapper_old.constantRoiOptions
+         Mapper_old.distBeamRoiOptions
+         Mapper_old.distRoiOptions
+         Mapper_old.grid_from_radars
+         Mapper_old.guiStart
+         Mapper_old.mapGatesToGridOptions
+         Mapper_old.mapToGridOptions
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+   
+   
+   .. autoattribute:: Vgrid
+   .. autoattribute:: Vradar
+   
+   
+

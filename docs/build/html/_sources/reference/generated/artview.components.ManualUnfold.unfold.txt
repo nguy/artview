@@ -1,0 +1,6 @@
+artview.components.ManualUnfold.unfold
+======================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: ManualUnfold.unfold

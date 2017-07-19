@@ -1,0 +1,6 @@
+artview.plugins.ColormapEdit.set_layout
+=======================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: ColormapEdit.set_layout

@@ -1,0 +1,36 @@
+artview.components.ManualUnfold
+===============================
+
+.. currentmodule:: artview.components
+
+.. autoclass:: ManualUnfold
+   :show-inheritance:
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+         ManualUnfold.NewRadar
+         ManualUnfold.foldBack
+         ManualUnfold.getFieldNames
+         ManualUnfold.guiStart
+         ManualUnfold.negativeUnfold
+         ManualUnfold.positiveUnfold
+         ManualUnfold.unfold
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+   
+   
+   .. autoattribute:: Vpoints
+   .. autoattribute:: Vradar
+   
+   
+

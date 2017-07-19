@@ -1,0 +1,52 @@
+artview.components.Window
+=========================
+
+.. currentmodule:: artview.components
+
+.. autoclass:: Window
+   :show-inheritance:
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+         Window.CreateMenu
+         Window.LaunchApp
+         Window.addArtviewMenu
+         Window.addComponent
+         Window.addMenuAction
+         Window.addMenuSeparator
+         Window.addPane
+         Window.addWindow
+         Window.closeCurrentPane
+         Window.closeEmptyPanes
+         Window.deleteComponent
+         Window.menus
+         Window.popComponent
+         Window.popNewWindow
+         Window.removeMultindex
+         Window.replaceWithSplitter
+         Window.setCurrentMultindex
+         Window.setDesign
+         Window.showHideTabBar
+         Window.splitHorizontal
+         Window.splitVertical
+         Window.startComponent
+         Window.subMenus
+         Window.widgetTurnCurrent
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+   
+   
+   .. autoattribute:: rootMultindex
+   
+   
+

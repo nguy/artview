@@ -1,0 +1,6 @@
+artview.components.GateFilter.set_operator_menu
+===============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: GateFilter.set_operator_menu

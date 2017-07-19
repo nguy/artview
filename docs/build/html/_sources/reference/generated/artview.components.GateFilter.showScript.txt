@@ -1,0 +1,6 @@
+artview.components.GateFilter.showScript
+========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: GateFilter.showScript

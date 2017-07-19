@@ -1,0 +1,6 @@
+artview.components.Mapper.NewRadar
+==================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Mapper.NewRadar

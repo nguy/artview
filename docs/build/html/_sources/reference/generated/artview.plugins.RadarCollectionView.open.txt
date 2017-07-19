@@ -1,0 +1,6 @@
+artview.plugins.RadarCollectionView.open
+========================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: RadarCollectionView.open

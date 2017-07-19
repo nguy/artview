@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>artview.components.Correlation &#8212; ARTview 1.3.5.dev+dba3dca documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/scipy.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.3.5.dev+dba3dca',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="top" title="ARTview 1.3.5.dev+dba3dca documentation" href="../../index.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="artview-components-correlation">
+<h1>artview.components.Correlation<a class="headerlink" href="#artview-components-correlation" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="artview.components.Correlation">
+<em class="property">class </em><code class="descclassname">artview.components.</code><code class="descname">Correlation</code><span class="sig-paren">(</span><em>Vradar=None</em>, <em>VfieldVertical=None</em>, <em>VfieldHorizontal=None</em>, <em>Vgatefilter=None</em>, <em>name='Correlation'</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/correlation.py#L34"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.Correlation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><code class="xref py py-class docutils literal"><span class="pre">artview.core.core.Component</span></code></a></p>
+<p>Class to create a correlation plot, using a returned Radar structure
+from the PyArt pyart.graph package.</p>
+<dl class="method">
+<dt id="artview.components.Correlation.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>Vradar=None</em>, <em>VfieldVertical=None</em>, <em>VfieldHorizontal=None</em>, <em>Vgatefilter=None</em>, <em>name='Correlation'</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/correlation.py#L55"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.Correlation.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the class to create display.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>[Optional]</strong> :</p>
+<p><strong>Vradar</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><code class="xref py py-class docutils literal"><span class="pre">Variable</span></code></a> instance</p>
+<blockquote>
+<div><p>Radar signal variable. If None start new one with None.</p>
+</div></blockquote>
+<p><strong>VfieldVertical,         VfieldHorizontal</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><code class="xref py py-class docutils literal"><span class="pre">Variable</span></code></a> instance</p>
+<blockquote>
+<div><p>Field signal variable. If None start new one with empty string.</p>
+</div></blockquote>
+<p><strong>Vgatefilter</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><code class="xref py py-class docutils literal"><span class="pre">Variable</span></code></a> instance</p>
+<blockquote>
+<div><p>Gatefilter signal variable.
+A value of None will instantiate a empty variable.</p>
+</div></blockquote>
+<p><strong>name</strong> : string</p>
+<blockquote>
+<div><p>Display window name.</p>
+</div></blockquote>
+<p><strong>parent</strong> : PyQt instance</p>
+<blockquote class="last">
+<div><p>Parent instance to associate to Display window.
+If None, then Qt owns, otherwise associated with parent PyQt
+instance.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.Correlation.LaunchGUI.html#artview.components.Correlation.LaunchGUI" title="artview.components.Correlation.LaunchGUI"><code class="xref py py-obj docutils literal"><span class="pre">Correlation.LaunchGUI</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.Correlation.NewField.html#artview.components.Correlation.NewField" title="artview.components.Correlation.NewField"><code class="xref py py-obj docutils literal"><span class="pre">Correlation.NewField</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.Correlation.NewGatefilter.html#artview.components.Correlation.NewGatefilter" title="artview.components.Correlation.NewGatefilter"><code class="xref py py-obj docutils literal"><span class="pre">Correlation.NewGatefilter</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.Correlation.NewRadar.html#artview.components.Correlation.NewRadar" title="artview.components.Correlation.NewRadar"><code class="xref py py-obj docutils literal"><span class="pre">Correlation.NewRadar</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.Correlation.addButtons.html#artview.components.Correlation.addButtons" title="artview.components.Correlation.addButtons"><code class="xref py py-obj docutils literal"><span class="pre">Correlation.addButtons</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.Correlation.guiStart.html#artview.components.Correlation.guiStart" title="artview.components.Correlation.guiStart"><code class="xref py py-obj docutils literal"><span class="pre">Correlation.guiStart</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.Correlation.plot_correlation.html#artview.components.Correlation.plot_correlation" title="artview.components.Correlation.plot_correlation"><code class="xref py py-obj docutils literal"><span class="pre">Correlation.plot_correlation</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.Correlation.plot_regression.html#artview.components.Correlation.plot_regression" title="artview.components.Correlation.plot_regression"><code class="xref py py-obj docutils literal"><span class="pre">Correlation.plot_regression</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.Correlation.setParameters.html#artview.components.Correlation.setParameters" title="artview.components.Correlation.setParameters"><code class="xref py py-obj docutils literal"><span class="pre">Correlation.setParameters</span></code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<dl class="attribute">
+<dt id="artview.components.Correlation.VfieldHorizontal">
+<code class="descname">VfieldHorizontal</code><em class="property"> = None</em><a class="headerlink" href="#artview.components.Correlation.VfieldHorizontal" title="Permalink to this definition">¶</a></dt>
+<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><span class="std std-ref">Shared Variables Table</span></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="artview.components.Correlation.VfieldVertical">
+<code class="descname">VfieldVertical</code><em class="property"> = None</em><a class="headerlink" href="#artview.components.Correlation.VfieldVertical" title="Permalink to this definition">¶</a></dt>
+<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><span class="std std-ref">Shared Variables Table</span></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="artview.components.Correlation.Vgatefilter">
+<code class="descname">Vgatefilter</code><em class="property"> = None</em><a class="headerlink" href="#artview.components.Correlation.Vgatefilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><span class="std std-ref">Shared Variables Table</span></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="artview.components.Correlation.VplotAxes">
+<code class="descname">VplotAxes</code><em class="property"> = None</em><a class="headerlink" href="#artview.components.Correlation.VplotAxes" title="Permalink to this definition">¶</a></dt>
+<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><span class="std std-ref">Shared Variables Table</span></a> (no internal use)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="artview.components.Correlation.Vradar">
+<code class="descname">Vradar</code><em class="property"> = None</em><a class="headerlink" href="#artview.components.Correlation.Vradar" title="Permalink to this definition">¶</a></dt>
+<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><span class="std std-ref">Shared Variables Table</span></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="artview.components.Correlation.Vtilt">
+<code class="descname">Vtilt</code><em class="property"> = None</em><a class="headerlink" href="#artview.components.Correlation.Vtilt" title="Permalink to this definition">¶</a></dt>
+<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><span class="std std-ref">Shared Variables Table</span></a></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/reference/generated/artview.components.Correlation.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Nick Guy.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.9</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+      |
+      <a href="../../_sources/reference/generated/artview.components.Correlation.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

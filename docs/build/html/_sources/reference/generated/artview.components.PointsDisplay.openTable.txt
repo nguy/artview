@@ -1,0 +1,6 @@
+artview.components.PointsDisplay.openTable
+==========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: PointsDisplay.openTable

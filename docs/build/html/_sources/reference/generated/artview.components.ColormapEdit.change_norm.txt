@@ -1,0 +1,6 @@
+artview.components.ColormapEdit.change_norm
+===========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: ColormapEdit.change_norm

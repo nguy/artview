@@ -1,0 +1,6 @@
+artview.components.ColormapEdit.plot
+====================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: ColormapEdit.plot

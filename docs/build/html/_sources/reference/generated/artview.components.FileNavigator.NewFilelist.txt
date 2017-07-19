@@ -1,0 +1,6 @@
+artview.components.FileNavigator.NewFilelist
+============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: FileNavigator.NewFilelist

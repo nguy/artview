@@ -1,0 +1,42 @@
+artview.components.Correlation
+==============================
+
+.. currentmodule:: artview.components
+
+.. autoclass:: Correlation
+   :show-inheritance:
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+         Correlation.LaunchGUI
+         Correlation.NewField
+         Correlation.NewGatefilter
+         Correlation.NewRadar
+         Correlation.addButtons
+         Correlation.guiStart
+         Correlation.plot_correlation
+         Correlation.plot_regression
+         Correlation.setParameters
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+   
+   
+   .. autoattribute:: VfieldHorizontal
+   .. autoattribute:: VfieldVertical
+   .. autoattribute:: Vgatefilter
+   .. autoattribute:: VplotAxes
+   .. autoattribute:: Vradar
+   .. autoattribute:: Vtilt
+   
+   
+

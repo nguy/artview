@@ -1,0 +1,6 @@
+artview.components.DirectoryList.open_with
+==========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: DirectoryList.open_with

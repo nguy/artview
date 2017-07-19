@@ -1,0 +1,6 @@
+artview.plugins.FileDetail.createUI
+===================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: FileDetail.createUI

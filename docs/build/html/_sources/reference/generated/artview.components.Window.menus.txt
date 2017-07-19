@@ -1,0 +1,6 @@
+artview.components.Window.menus
+===============================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Window.menus

@@ -1,0 +1,6 @@
+artview.components.FileNavigator.guiStart
+=========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: FileNavigator.guiStart

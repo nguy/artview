@@ -1,0 +1,6 @@
+artview.plugins.Despeckle.change_field
+======================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: Despeckle.change_field

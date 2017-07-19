@@ -1,0 +1,6 @@
+artview.components.RadarTerminal.guiStart
+=========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: RadarTerminal.guiStart

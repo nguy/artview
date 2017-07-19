@@ -1,0 +1,6 @@
+artview.components.Mapper.mountUI
+=================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Mapper.mountUI

@@ -1,0 +1,43 @@
+artview.components.FileNavigator
+================================
+
+.. currentmodule:: artview.components
+
+.. autoclass:: FileNavigator
+   :show-inheritance:
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+         FileNavigator.AdvanceFileSelect
+         FileNavigator.NewFile
+         FileNavigator.NewFilelist
+         FileNavigator.createUI
+         FileNavigator.goto_first_file
+         FileNavigator.goto_last_file
+         FileNavigator.goto_next_file
+         FileNavigator.goto_prev_file
+         FileNavigator.guiStart
+         FileNavigator.replaceGrid
+         FileNavigator.replaceRadar
+         FileNavigator.saveGrid
+         FileNavigator.saveRadar
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+   
+   
+   .. autoattribute:: Vfilelist
+   .. autoattribute:: Vgrid
+   .. autoattribute:: Vradar
+   
+   
+

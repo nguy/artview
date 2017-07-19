@@ -1,0 +1,6 @@
+artview.plugins.Despeckle.NewField
+==================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: Despeckle.NewField

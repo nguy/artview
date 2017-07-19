@@ -1,0 +1,6 @@
+artview.components.Mapper.setGriddingParameters
+===============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Mapper.setGriddingParameters

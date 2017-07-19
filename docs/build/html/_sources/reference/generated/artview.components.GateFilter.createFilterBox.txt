@@ -1,0 +1,6 @@
+artview.components.GateFilter.createFilterBox
+=============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: GateFilter.createFilterBox

@@ -1,0 +1,6 @@
+artview.components.Correlation.plot_regression
+==============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Correlation.plot_regression

@@ -1,0 +1,6 @@
+artview.plugins.ManualUnfold.NewRadar
+=====================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: ManualUnfold.NewRadar
