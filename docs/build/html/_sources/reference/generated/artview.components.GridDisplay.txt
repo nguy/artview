@@ -14,50 +14,11 @@ artview.components.GridDisplay
    .. autosummary::
       :toctree:
    
-         GridDisplay.FieldSelectCmd
-         GridDisplay.LaunchGUI
-         GridDisplay.LevelSelectCmd
-         GridDisplay.NewColormap
-         GridDisplay.NewField
-         GridDisplay.NewGrid
-         GridDisplay.NewLevel
-         GridDisplay.NewLimits
-         GridDisplay.addButtons
-         GridDisplay.change_plot_type
-         GridDisplay.cmapSelectCmd
-         GridDisplay.getField
-         GridDisplay.getNearestPoints
-         GridDisplay.getPathInteriorValues
-         GridDisplay.getPlotAxis
-         GridDisplay.getStatusBar
-         GridDisplay.getUnits
          GridDisplay.guiStart
-         GridDisplay.keyPressEvent
-         GridDisplay.parse_plot_type
-         GridDisplay.setUILayout
-         GridDisplay.toolDefaultCmd
-         GridDisplay.toolResetCmd
-         GridDisplay.toolSelectRegionCmd
-         GridDisplay.toolValueClickCmd
-         GridDisplay.toolZoomPanCmd
    
    
 
    
-   
-   .. rubric:: Attributes
-   
-   
-   .. autoattribute:: Vcolormap
-   .. autoattribute:: Vfield
-   .. autoattribute:: Vgrid
-   .. autoattribute:: Vlevel
-   .. autoattribute:: VlevelX
-   .. autoattribute:: VlevelY
-   .. autoattribute:: VlevelZ
-   .. autoattribute:: VpathInteriorFunc
-   .. autoattribute:: VplotAxes
-   .. autoattribute:: levels
    
    
 

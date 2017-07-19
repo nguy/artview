@@ -25,6 +25,7 @@ artview.core.core.Variable
    
    
    .. autoattribute:: value
+   .. autoattribute:: valueChanged
    
    
 

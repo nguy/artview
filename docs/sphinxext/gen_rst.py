@@ -53,9 +53,17 @@ import shutil
 import traceback
 import glob
 import sys
-from StringIO import StringIO
-import cPickle
-import urllib2
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
+import pickle
+try:
+    from urllib.request import urlopen
+    from urllib.error import HTTPError, URLError
+except ImportError:
+    from urllib2 import urlopen, HTTPError, URLError
+
 import gzip
 import posixpath
 
@@ -96,7 +104,7 @@ class Tee(object):
 def get_data(url):
     """Helper function to get data over http or from a local file"""
     if url.startswith('http://'):
-        resp = urllib2.urlopen(url)
+        resp = urlopen(url)
         encoding = resp.headers.dict.get('content-encoding', 'plain')
         data = resp.read()
         if encoding == 'plain':
@@ -449,7 +457,7 @@ def generate_example_rst(app):
         os.makedirs(root_dir)
 
     # we create an index.rst with all examples
-    fhindex = file(os.path.join(root_dir, 'index.rst'), 'w')
+    fhindex = open(os.path.join(root_dir, 'index.rst'), 'w')
     fhindex.write("""\
 
 
@@ -1031,10 +1039,10 @@ def embed_code_links(app, exception):
                                 for name, link in str_repl.iteritems():
                                     line = line.replace(name, link)
                                 fid.write(line.encode('utf-8'))
-    except urllib2.HTTPError, e:
+    except HTTPError as e:
         print ("The following HTTP Error has occurred:\n")
         print(e.code)
-    except urllib2.URLError, e:
+    except URLError as e:
         print ("\n...\n"
                "Warning: Embedding the documentation hyperlinks requires "
                "internet access.\nPlease check your network connection.\n"

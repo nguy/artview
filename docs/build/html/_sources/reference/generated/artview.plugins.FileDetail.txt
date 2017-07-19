@@ -14,8 +14,7 @@ artview.plugins.FileDetail
    .. autosummary::
       :toctree:
    
-         FileDetail.createLongUI
-         FileDetail.createShortUI
+         FileDetail.createUI
          FileDetail.guiStart
          FileDetail.showSaveDialog
    

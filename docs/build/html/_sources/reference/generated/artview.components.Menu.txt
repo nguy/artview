@@ -24,6 +24,7 @@ artview.components.Menu
          Menu.addLayoutMenuItem
          Menu.addLayoutWidget
          Menu.addMenuAction
+         Menu.addMenuSeparator
          Menu.addPluginMenuItem
          Menu.change_mode
          Menu.keyPressEvent
@@ -31,6 +32,7 @@ artview.components.Menu
          Menu.removeLayoutMenuItem
          Menu.removeLayoutWidget
          Menu.removeTab
+         Menu.saveCurrent
          Menu.saveGrid
          Menu.saveRadar
          Menu.showFileDialog

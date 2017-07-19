@@ -14,7 +14,6 @@ artview.plugins.Mapper
    .. autosummary::
       :toctree:
    
-         Mapper.NewRadar
          Mapper.addEspecificOptions
          Mapper.addGeneralOptions
          Mapper.constantRoiOptions
@@ -24,6 +23,7 @@ artview.plugins.Mapper
          Mapper.guiStart
          Mapper.mapGatesToGridOptions
          Mapper.mapToGridOptions
+         Mapper.newRadar
    
    
 

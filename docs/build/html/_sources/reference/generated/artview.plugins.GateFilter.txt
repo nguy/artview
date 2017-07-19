@@ -14,11 +14,14 @@ artview.plugins.GateFilter
    .. autosummary::
       :toctree:
    
+         GateFilter.AddCorrectedFields
+         GateFilter.NewGateFilter
          GateFilter.apply_filters
          GateFilter.chooseDisplay
          GateFilter.createButtonUI
          GateFilter.createFilterBox
          GateFilter.createVarUI
+         GateFilter.displayHelp
          GateFilter.guiStart
          GateFilter.restoreRadar
          GateFilter.saveRadar

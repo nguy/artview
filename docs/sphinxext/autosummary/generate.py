@@ -28,7 +28,10 @@ from jinja2 import FileSystemLoader, TemplateNotFound
 from jinja2.sandbox import SandboxedEnvironment
 
 from sphinx import package_dir
-from .__init__ import import_by_name, get_documenter
+try:
+    from .__init__ import import_by_name, get_documenter
+except:
+    pass
 from sphinx.jinja2glue import BuiltinTemplateLoader
 from sphinx.util.osutil import ensuredir
 from sphinx.util.inspect import safe_getattr
@@ -55,10 +58,10 @@ def main(argv=sys.argv):
                               template_dir=options.templates)
 
 def _simple_info(msg):
-    print msg
+    print(msg)
 
 def _simple_warn(msg):
-    print >> sys.stderr, 'WARNING: ' + msg
+    print('WARNING: ' + msg)
 
 # -- Generating output ---------------------------------------------------------
 
@@ -112,7 +115,7 @@ def generate_autosummary_docs(sources, output_dir=None, suffix='.rst',
 
         try:
             name, obj, parent = import_by_name(name)
-        except ImportError, e:
+        except ImportError as e:
             warn('[autosummary] failed to import %r: %s' % (name, e))
             continue
 
@@ -230,8 +233,8 @@ def find_autosummary_in_docstring(name, module=None, filename=None):
         return find_autosummary_in_lines(lines, module=name, filename=filename)
     except AttributeError:
         pass
-    except ImportError, e:
-        print "Failed to import '%s': %s" % (name, e)
+    except ImportError as e:
+        print("Failed to import '%s': %s" % (name, e))
     return []
 
 def find_autosummary_in_lines(lines, module=None, filename=None):
