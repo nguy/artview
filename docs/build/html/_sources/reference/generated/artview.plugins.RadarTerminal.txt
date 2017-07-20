@@ -1,0 +1,26 @@
+artview.plugins.RadarTerminal
+=============================
+
+.. currentmodule:: artview.plugins
+
+.. autoclass:: RadarTerminal
+   :show-inheritance:
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+         RadarTerminal.buttonClicked
+         RadarTerminal.guiStart
+         RadarTerminal.runCode
+   
+   
+
+   
+   
+   
+

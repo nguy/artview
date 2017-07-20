@@ -1,0 +1,6 @@
+artview.components.ColormapEdit.add_bound
+=========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: ColormapEdit.add_bound

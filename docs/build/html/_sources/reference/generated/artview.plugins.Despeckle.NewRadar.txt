@@ -1,0 +1,6 @@
+artview.plugins.Despeckle.NewRadar
+==================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: Despeckle.NewRadar

@@ -19,6 +19,7 @@ artview.core.core.Component
          Component.connectSharedVariable
          Component.disconnectAllVariables
          Component.disconnectSharedVariable
+         Component.get_sharedVariables
          Component.keyPressEvent
    
    

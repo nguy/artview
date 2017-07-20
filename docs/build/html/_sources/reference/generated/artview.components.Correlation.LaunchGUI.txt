@@ -1,0 +1,6 @@
+artview.components.Correlation.LaunchGUI
+========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Correlation.LaunchGUI

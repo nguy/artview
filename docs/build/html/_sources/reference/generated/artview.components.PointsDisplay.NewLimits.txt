@@ -1,0 +1,6 @@
+artview.components.PointsDisplay.NewLimits
+==========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: PointsDisplay.NewLimits

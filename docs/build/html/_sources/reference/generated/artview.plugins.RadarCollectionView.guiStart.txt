@@ -1,0 +1,6 @@
+artview.plugins.RadarCollectionView.guiStart
+============================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: RadarCollectionView.guiStart

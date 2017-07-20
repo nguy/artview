@@ -1,0 +1,6 @@
+artview.components.Window.addWindow
+===================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Window.addWindow

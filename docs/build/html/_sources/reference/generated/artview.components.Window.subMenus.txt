@@ -1,0 +1,6 @@
+artview.components.Window.subMenus
+==================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Window.subMenus

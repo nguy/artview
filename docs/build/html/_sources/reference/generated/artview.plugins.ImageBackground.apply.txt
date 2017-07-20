@@ -1,0 +1,6 @@
+artview.plugins.ImageBackground.apply
+=====================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: ImageBackground.apply

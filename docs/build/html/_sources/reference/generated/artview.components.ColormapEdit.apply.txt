@@ -1,0 +1,6 @@
+artview.components.ColormapEdit.apply
+=====================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: ColormapEdit.apply

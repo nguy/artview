@@ -1,0 +1,6 @@
+artview.components.ColormapEdit.createUI
+========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: ColormapEdit.createUI

@@ -1,0 +1,6 @@
+artview.components.GateFilter.createButtonUI
+============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: GateFilter.createButtonUI

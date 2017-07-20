@@ -1,0 +1,6 @@
+artview.components.Window.deleteComponent
+=========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Window.deleteComponent

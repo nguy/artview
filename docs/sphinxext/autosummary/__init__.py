@@ -66,7 +66,6 @@ from docutils import nodes
 from sphinx import addnodes
 from sphinx.util.compat import Directive
 
-
 # -- autosummary_toc node ------------------------------------------------------
 
 class autosummary_toc(nodes.comment):
@@ -116,7 +115,7 @@ def autosummary_table_visit_html(self, node):
             par = col1_entry[0]
             for j, subnode in enumerate(list(par)):
                 if isinstance(subnode, nodes.Text):
-                    new_text = unicode(subnode.astext())
+                    new_text = str(subnode.astext())
                     new_text = new_text.replace(u" ", u"\u00a0")
                     par[j] = nodes.Text(new_text)
     except IndexError:
@@ -199,7 +198,10 @@ class Autosummary(Directive):
         nodes = self.get_table(items)
 
         if 'toctree' in self.options:
-            suffix = env.config.source_suffix
+            try:
+                suffix = env.config.source_suffix[0]
+            except:
+                suffix = env.config.source_suffix
             dirname = posixpath.dirname(env.docname)
 
             tree_prefix = self.options['toctree'].strip()
@@ -468,7 +470,7 @@ def _import_by_name(name):
             return obj, parent
         else:
             return sys.modules[modname], None
-    except (ValueError, ImportError, AttributeError, KeyError), e:
+    except (ValueError, ImportError, AttributeError, KeyError) as e:
         raise ImportError(*e.args)
 
 
@@ -499,7 +501,10 @@ def autolink_role(typ, rawtext, etext, lineno, inliner,
 def process_generate_options(app):
     genfiles = app.config.autosummary_generate
 
-    ext = app.config.source_suffix
+    try:
+        ext = app.config.source_suffix[0]
+    except:
+        ext = app.config.source_suffix
 
     if genfiles and not hasattr(genfiles, '__len__'):
         env = app.builder.env
@@ -509,7 +514,7 @@ def process_generate_options(app):
     if not genfiles:
         return
 
-    from generate import generate_autosummary_docs
+    from .generate import generate_autosummary_docs
 
     genfiles = [genfile + (not genfile.endswith(ext) and ext or '')
                 for genfile in genfiles]

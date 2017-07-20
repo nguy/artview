@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>artview.components.ManualEdit &#8212; ARTview 1.3.5.dev+dba3dca documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/scipy.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.3.5.dev+dba3dca',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="top" title="ARTview 1.3.5.dev+dba3dca documentation" href="../../index.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="artview-components-manualedit">
+<h1>artview.components.ManualEdit<a class="headerlink" href="#artview-components-manualedit" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="artview.components.ManualEdit">
+<em class="property">class </em><code class="descclassname">artview.components.</code><code class="descname">ManualEdit</code><span class="sig-paren">(</span><em>Vradar=None</em>, <em>Vpoints=None</em>, <em>Vfield=None</em>, <em>Vgatefilter=None</em>, <em>name=' ManualEdit'</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/manual_edit.py#L23"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.ManualEdit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="artview.core.core.Component.html#artview.core.core.Component" title="artview.core.core.Component"><code class="xref py py-class docutils literal"><span class="pre">artview.core.core.Component</span></code></a></p>
+<p>Use of Points to remove data from Radar.</p>
+<dl class="method">
+<dt id="artview.components.ManualEdit.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>Vradar=None</em>, <em>Vpoints=None</em>, <em>Vfield=None</em>, <em>Vgatefilter=None</em>, <em>name=' ManualEdit'</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/nguy/artview/blob/master/artview/components/manual_edit.py#L41"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#artview.components.ManualEdit.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the class to create the interface.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>[Optional]</strong> :</p>
+<p><strong>Vradar</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><code class="xref py py-class docutils literal"><span class="pre">Variable</span></code></a> instance</p>
+<blockquote>
+<div><p>Radar signal variable.
+A value of None will instantiate a empty variable.</p>
+</div></blockquote>
+<p><strong>Vpoints</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><code class="xref py py-class docutils literal"><span class="pre">Variable</span></code></a> instance</p>
+<blockquote>
+<div><p>Points signal variable.
+A value of None will instantiate a empty variable.</p>
+</div></blockquote>
+<p><strong>Vfield</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><code class="xref py py-class docutils literal"><span class="pre">Variable</span></code></a> instance</p>
+<blockquote>
+<div><p>Field signal variable. If None start new one with empty string.</p>
+</div></blockquote>
+<p><strong>Vgatefilter</strong> : <a class="reference internal" href="artview.core.core.Variable.html#artview.core.core.Variable" title="artview.core.core.Variable"><code class="xref py py-class docutils literal"><span class="pre">Variable</span></code></a> instance</p>
+<blockquote>
+<div><p>Gatefilter signal variable.
+A value of None will instantiate a empty variable.</p>
+</div></blockquote>
+<p><strong>name</strong> : string</p>
+<blockquote>
+<div><p>Field Radiobutton window name.</p>
+</div></blockquote>
+<p><strong>parent</strong> : PyQt instance</p>
+<blockquote class="last">
+<div><p>Parent instance to associate to this class.
+If None, then Qt owns, otherwise associated with parent PyQt
+instance.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.ManualEdit.NewField.html#artview.components.ManualEdit.NewField" title="artview.components.ManualEdit.NewField"><code class="xref py py-obj docutils literal"><span class="pre">ManualEdit.NewField</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.ManualEdit.NewRadar.html#artview.components.ManualEdit.NewRadar" title="artview.components.ManualEdit.NewRadar"><code class="xref py py-obj docutils literal"><span class="pre">ManualEdit.NewRadar</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.ManualEdit.guiStart.html#artview.components.ManualEdit.guiStart" title="artview.components.ManualEdit.guiStart"><code class="xref py py-obj docutils literal"><span class="pre">ManualEdit.guiStart</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.ManualEdit.removeFromField.html#artview.components.ManualEdit.removeFromField" title="artview.components.ManualEdit.removeFromField"><code class="xref py py-obj docutils literal"><span class="pre">ManualEdit.removeFromField</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.ManualEdit.removeFromFilter.html#artview.components.ManualEdit.removeFromFilter" title="artview.components.ManualEdit.removeFromFilter"><code class="xref py py-obj docutils literal"><span class="pre">ManualEdit.removeFromFilter</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="artview.components.ManualEdit.removeFromRadar.html#artview.components.ManualEdit.removeFromRadar" title="artview.components.ManualEdit.removeFromRadar"><code class="xref py py-obj docutils literal"><span class="pre">ManualEdit.removeFromRadar</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="artview.components.ManualEdit.reset.html#artview.components.ManualEdit.reset" title="artview.components.ManualEdit.reset"><code class="xref py py-obj docutils literal"><span class="pre">ManualEdit.reset</span></code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<dl class="attribute">
+<dt id="artview.components.ManualEdit.Vfield">
+<code class="descname">Vfield</code><em class="property"> = None</em><a class="headerlink" href="#artview.components.ManualEdit.Vfield" title="Permalink to this definition">¶</a></dt>
+<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><span class="std std-ref">Shared Variables Table</span></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="artview.components.ManualEdit.Vgatefilter">
+<code class="descname">Vgatefilter</code><em class="property"> = None</em><a class="headerlink" href="#artview.components.ManualEdit.Vgatefilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><span class="std std-ref">Shared Variables Table</span></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="artview.components.ManualEdit.Vpoints">
+<code class="descname">Vpoints</code><em class="property"> = None</em><a class="headerlink" href="#artview.components.ManualEdit.Vpoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><span class="std std-ref">Shared Variables Table</span></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="artview.components.ManualEdit.Vradar">
+<code class="descname">Vradar</code><em class="property"> = None</em><a class="headerlink" href="#artview.components.ManualEdit.Vradar" title="Permalink to this definition">¶</a></dt>
+<dd><p>see <a class="reference internal" href="artview.core.core.Variable.html#shared-variable"><span class="std std-ref">Shared Variables Table</span></a></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/reference/generated/artview.components.ManualEdit.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Nick Guy.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.9</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+      |
+      <a href="../../_sources/reference/generated/artview.components.ManualEdit.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

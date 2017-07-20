@@ -17,6 +17,7 @@ artview.components.RadarDisplay
          RadarDisplay.FieldSelectCmd
          RadarDisplay.LaunchGUI
          RadarDisplay.NewCmap
+         RadarDisplay.NewDisplay
          RadarDisplay.NewField
          RadarDisplay.NewGatefilter
          RadarDisplay.NewLims
@@ -25,19 +26,21 @@ artview.components.RadarDisplay
          RadarDisplay.RngRingSelectCmd
          RadarDisplay.TiltSelectCmd
          RadarDisplay.addButtons
+         RadarDisplay.add_mode
          RadarDisplay.cmapSelectCmd
          RadarDisplay.getField
          RadarDisplay.getPathInteriorValues
          RadarDisplay.getPlotAxis
          RadarDisplay.getRadar
          RadarDisplay.getStatusBar
+         RadarDisplay.getTilt
          RadarDisplay.getUnits
          RadarDisplay.guiStart
          RadarDisplay.keyPressEvent
+         RadarDisplay.minimumSizeHint
          RadarDisplay.setUILayout
          RadarDisplay.toolDefaultCmd
          RadarDisplay.toolResetCmd
-         RadarDisplay.toolSelectRegionCmd
          RadarDisplay.toolValueClickCmd
          RadarDisplay.toolZoomPanCmd
    
@@ -54,6 +57,7 @@ artview.components.RadarDisplay
    .. autoattribute:: Vlimits
    .. autoattribute:: VpathInteriorFunc
    .. autoattribute:: VplotAxes
+   .. autoattribute:: VpyartDisplay
    .. autoattribute:: Vradar
    .. autoattribute:: Vtilt
    

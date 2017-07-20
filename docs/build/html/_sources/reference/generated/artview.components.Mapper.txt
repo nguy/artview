@@ -1,0 +1,36 @@
+artview.components.Mapper
+=========================
+
+.. currentmodule:: artview.components
+
+.. autoclass:: Mapper
+   :show-inheritance:
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+         Mapper.NewRadar
+         Mapper.grid_from_radars
+         Mapper.guiStart
+         Mapper.mountUI
+         Mapper.setGriddingParameters
+         Mapper.setParameters
+         Mapper.setRoiParameters
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+   
+   
+   .. autoattribute:: Vgrid
+   .. autoattribute:: Vradar
+   
+   
+

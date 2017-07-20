@@ -1,0 +1,6 @@
+artview.components.DirectoryList.contextMenu
+============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: DirectoryList.contextMenu

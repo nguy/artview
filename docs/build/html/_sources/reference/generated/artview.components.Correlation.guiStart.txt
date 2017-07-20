@@ -1,0 +1,6 @@
+artview.components.Correlation.guiStart
+=======================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Correlation.guiStart

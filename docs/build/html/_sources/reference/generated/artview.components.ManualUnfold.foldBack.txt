@@ -1,0 +1,6 @@
+artview.components.ManualUnfold.foldBack
+========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: ManualUnfold.foldBack

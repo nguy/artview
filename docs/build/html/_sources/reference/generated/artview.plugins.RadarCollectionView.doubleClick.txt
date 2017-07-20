@@ -1,0 +1,6 @@
+artview.plugins.RadarCollectionView.doubleClick
+===============================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: RadarCollectionView.doubleClick

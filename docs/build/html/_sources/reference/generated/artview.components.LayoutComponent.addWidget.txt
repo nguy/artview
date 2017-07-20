@@ -1,0 +1,6 @@
+artview.components.LayoutComponent.addWidget
+============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: LayoutComponent.addWidget

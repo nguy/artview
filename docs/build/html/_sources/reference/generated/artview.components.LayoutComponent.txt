@@ -1,0 +1,25 @@
+artview.components.LayoutComponent
+==================================
+
+.. currentmodule:: artview.components
+
+.. autoclass:: LayoutComponent
+   :show-inheritance:
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+         LayoutComponent.addWidget
+         LayoutComponent.close
+   
+   
+
+   
+   
+   
+

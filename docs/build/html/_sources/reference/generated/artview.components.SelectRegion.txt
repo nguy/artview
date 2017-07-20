@@ -15,6 +15,7 @@ artview.components.SelectRegion
       :toctree:
    
          SelectRegion.CreateSelectRegionWidget
+         SelectRegion.NewPathInteriorFunc
          SelectRegion.NewPlotAxes
          SelectRegion.button_press_callback
          SelectRegion.closeEvent

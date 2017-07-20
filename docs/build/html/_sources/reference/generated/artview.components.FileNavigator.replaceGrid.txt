@@ -1,0 +1,6 @@
+artview.components.FileNavigator.replaceGrid
+============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: FileNavigator.replaceGrid

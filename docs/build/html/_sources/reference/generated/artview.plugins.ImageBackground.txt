@@ -1,0 +1,28 @@
+artview.plugins.ImageBackground
+===============================
+
+.. currentmodule:: artview.plugins
+
+.. autoclass:: ImageBackground
+   :show-inheritance:
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+         ImageBackground.NewGrid
+         ImageBackground.NewRadar
+         ImageBackground.apply
+         ImageBackground.guiStart
+         ImageBackground.search
+   
+   
+
+   
+   
+   
+

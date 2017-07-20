@@ -1,0 +1,6 @@
+artview.components.Mapper.setParameters
+=======================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Mapper.setParameters

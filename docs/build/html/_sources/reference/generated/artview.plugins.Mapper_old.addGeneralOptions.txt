@@ -1,0 +1,6 @@
+artview.plugins.Mapper_old.addGeneralOptions
+============================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: Mapper_old.addGeneralOptions

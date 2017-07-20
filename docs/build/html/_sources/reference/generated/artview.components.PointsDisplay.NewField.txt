@@ -1,0 +1,6 @@
+artview.components.PointsDisplay.NewField
+=========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: PointsDisplay.NewField

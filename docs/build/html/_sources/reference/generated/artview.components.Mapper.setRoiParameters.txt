@@ -1,0 +1,6 @@
+artview.components.Mapper.setRoiParameters
+==========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Mapper.setRoiParameters

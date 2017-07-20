@@ -1,0 +1,6 @@
+artview.components.Window.splitHorizontal
+=========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Window.splitHorizontal

@@ -1,0 +1,36 @@
+artview.plugins.RadarCollectionView
+===================================
+
+.. currentmodule:: artview.plugins
+
+.. autoclass:: RadarCollectionView
+   :show-inheritance:
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+         RadarCollectionView.NewRadarCollection
+         RadarCollectionView.collectionContextMenu
+         RadarCollectionView.directoryContextMenu
+         RadarCollectionView.doubleClick
+         RadarCollectionView.guiStart
+         RadarCollectionView.open
+         RadarCollectionView.open_with
+         RadarCollectionView.remove_radar
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+   
+   
+   .. autoattribute:: VradarCollection
+   
+   
+

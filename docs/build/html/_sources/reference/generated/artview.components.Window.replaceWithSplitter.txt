@@ -1,0 +1,6 @@
+artview.components.Window.replaceWithSplitter
+=============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Window.replaceWithSplitter

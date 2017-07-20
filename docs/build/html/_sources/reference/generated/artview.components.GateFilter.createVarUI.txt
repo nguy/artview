@@ -1,0 +1,6 @@
+artview.components.GateFilter.createVarUI
+=========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: GateFilter.createVarUI

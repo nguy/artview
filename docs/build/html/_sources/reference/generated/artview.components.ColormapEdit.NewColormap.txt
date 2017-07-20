@@ -1,0 +1,6 @@
+artview.components.ColormapEdit.NewColormap
+===========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: ColormapEdit.NewColormap

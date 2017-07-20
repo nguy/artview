@@ -1,0 +1,6 @@
+artview.components.PointsDisplay.addStandardMenu
+================================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: PointsDisplay.addStandardMenu

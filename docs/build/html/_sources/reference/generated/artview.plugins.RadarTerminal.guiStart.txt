@@ -1,0 +1,6 @@
+artview.plugins.RadarTerminal.guiStart
+======================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: RadarTerminal.guiStart

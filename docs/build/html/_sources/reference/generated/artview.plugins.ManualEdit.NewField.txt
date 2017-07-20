@@ -1,0 +1,6 @@
+artview.plugins.ManualEdit.NewField
+===================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: ManualEdit.NewField

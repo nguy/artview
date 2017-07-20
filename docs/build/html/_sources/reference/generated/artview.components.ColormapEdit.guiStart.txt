@@ -1,0 +1,6 @@
+artview.components.ColormapEdit.guiStart
+========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: ColormapEdit.guiStart

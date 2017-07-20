@@ -1,0 +1,6 @@
+artview.plugins.RadarCollectionView.remove_radar
+================================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: RadarCollectionView.remove_radar

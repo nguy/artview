@@ -1,0 +1,6 @@
+artview.plugins.Despeckle.setParameters
+=======================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: Despeckle.setParameters

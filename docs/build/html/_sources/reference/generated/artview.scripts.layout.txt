@@ -1,0 +1,6 @@
+artview.scripts.layout
+======================
+
+.. currentmodule:: artview.scripts
+
+.. autofunction:: layout

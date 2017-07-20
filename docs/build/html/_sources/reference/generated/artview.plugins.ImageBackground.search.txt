@@ -1,0 +1,6 @@
+artview.plugins.ImageBackground.search
+======================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: ImageBackground.search

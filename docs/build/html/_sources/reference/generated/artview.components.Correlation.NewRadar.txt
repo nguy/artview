@@ -1,0 +1,6 @@
+artview.components.Correlation.NewRadar
+=======================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Correlation.NewRadar

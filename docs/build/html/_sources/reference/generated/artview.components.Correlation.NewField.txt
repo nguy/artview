@@ -1,0 +1,6 @@
+artview.components.Correlation.NewField
+=======================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Correlation.NewField

@@ -1,0 +1,6 @@
+artview.components.RadarDisplay.minimumSizeHint
+===============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: RadarDisplay.minimumSizeHint

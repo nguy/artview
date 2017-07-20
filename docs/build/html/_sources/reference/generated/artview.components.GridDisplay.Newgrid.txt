@@ -1,6 +1,6 @@
-artview.components.GridDisplay.NewGrid
+artview.components.GridDisplay.Newgrid
 ======================================
 
 .. currentmodule:: artview.components
 
-.. automethod:: GridDisplay.NewGrid
+.. automethod:: GridDisplay.Newgrid

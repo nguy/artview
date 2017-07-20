@@ -1,0 +1,6 @@
+artview.components.ManualEdit.NewField
+======================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: ManualEdit.NewField

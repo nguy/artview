@@ -21,6 +21,7 @@ artview.components.LinkSharedVariables
          LinkSharedVariables.setComponent0
          LinkSharedVariables.setComponent1
          LinkSharedVariables.setupUi
+         LinkSharedVariables.sizeHint
    
    
 

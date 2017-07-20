@@ -1,0 +1,6 @@
+artview.plugins.ImageBackground.guiStart
+========================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: ImageBackground.guiStart

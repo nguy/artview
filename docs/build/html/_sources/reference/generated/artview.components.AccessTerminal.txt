@@ -1,0 +1,25 @@
+artview.components.AccessTerminal
+=================================
+
+.. currentmodule:: artview.components
+
+.. autoclass:: AccessTerminal
+   :show-inheritance:
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+         AccessTerminal.guiStart
+         AccessTerminal.runCode
+   
+   
+
+   
+   
+   
+

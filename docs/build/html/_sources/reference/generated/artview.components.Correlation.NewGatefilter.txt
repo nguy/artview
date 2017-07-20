@@ -1,0 +1,6 @@
+artview.components.Correlation.NewGatefilter
+============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Correlation.NewGatefilter

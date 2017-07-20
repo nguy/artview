@@ -1,0 +1,6 @@
+artview.components.Window.setDesign
+===================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Window.setDesign

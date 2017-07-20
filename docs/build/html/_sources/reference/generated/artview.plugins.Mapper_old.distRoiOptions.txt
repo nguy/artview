@@ -1,0 +1,6 @@
+artview.plugins.Mapper_old.distRoiOptions
+=========================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: Mapper_old.distRoiOptions

@@ -1,0 +1,6 @@
+artview.components.Menu.saveCurrent
+===================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Menu.saveCurrent

@@ -1,0 +1,6 @@
+artview.components.Correlation.setParameters
+============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Correlation.setParameters

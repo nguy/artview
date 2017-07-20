@@ -1,0 +1,32 @@
+artview.components.FileDetail
+=============================
+
+.. currentmodule:: artview.components
+
+.. autoclass:: FileDetail
+   :show-inheritance:
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+         FileDetail.createUI
+         FileDetail.guiStart
+         FileDetail.showSaveDialog
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+   
+   
+   .. autoattribute:: Vgrid
+   .. autoattribute:: Vradar
+   
+   
+

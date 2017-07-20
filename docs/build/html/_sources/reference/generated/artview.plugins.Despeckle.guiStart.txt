@@ -1,0 +1,6 @@
+artview.plugins.Despeckle.guiStart
+==================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: Despeckle.guiStart

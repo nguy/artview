@@ -1,0 +1,6 @@
+artview.components.FileDetail.guiStart
+======================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: FileDetail.guiStart

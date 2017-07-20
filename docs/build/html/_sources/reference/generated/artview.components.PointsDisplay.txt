@@ -1,0 +1,42 @@
+artview.components.PointsDisplay
+================================
+
+.. currentmodule:: artview.components
+
+.. autoclass:: PointsDisplay
+   :show-inheritance:
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :toctree:
+   
+         PointsDisplay.LaunchGUI
+         PointsDisplay.NewColormap
+         PointsDisplay.NewField
+         PointsDisplay.NewLimits
+         PointsDisplay.NewPoints
+         PointsDisplay.addStandardMenu
+         PointsDisplay.changePlotType
+         PointsDisplay.guiStart
+         PointsDisplay.minimumSizeHint
+         PointsDisplay.openTable
+         PointsDisplay.saveTable
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+   
+   
+   .. autoattribute:: Vcolormap
+   .. autoattribute:: Vfield
+   .. autoattribute:: Vlimits
+   .. autoattribute:: Vpoints
+   
+   
+

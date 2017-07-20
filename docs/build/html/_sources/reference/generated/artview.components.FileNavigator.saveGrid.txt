@@ -1,0 +1,6 @@
+artview.components.FileNavigator.saveGrid
+=========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: FileNavigator.saveGrid

@@ -1,0 +1,6 @@
+artview.components.LinkPlugins.guiStart
+=======================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: LinkPlugins.guiStart

@@ -14,13 +14,29 @@ ARTview functions.
 
     RadarDisplay
     GridDisplay
+    PointsDisplay
+    Correlation
     Menu
+    Window
+    LayoutComponent
     LevelButtonWindow
     FieldButtonWindow
     LinkSharedVariables
     SelectRegion
     PlotDisplay
+    FileNavigator
+    ColormapEdit
+    AccessTerminal
+    GateFilter
+    DirectoryList
+    FileDetail
+    ManualEdit
+    ManualUnfold
+    Mapper
+    RadarTerminal
+    corrections
 """
+
 import pyart
 from pkg_resources import parse_version
 

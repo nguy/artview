@@ -1,0 +1,6 @@
+artview.components.ColormapEdit.get_bounds
+==========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: ColormapEdit.get_bounds

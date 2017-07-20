@@ -1,0 +1,6 @@
+artview.plugins.RadarCollectionView.directoryContextMenu
+========================================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: RadarCollectionView.directoryContextMenu

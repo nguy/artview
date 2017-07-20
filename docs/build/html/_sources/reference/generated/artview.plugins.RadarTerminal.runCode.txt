@@ -1,0 +1,6 @@
+artview.plugins.RadarTerminal.runCode
+=====================================
+
+.. currentmodule:: artview.plugins
+
+.. automethod:: RadarTerminal.runCode

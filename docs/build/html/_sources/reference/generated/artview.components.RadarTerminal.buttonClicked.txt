@@ -1,0 +1,6 @@
+artview.components.RadarTerminal.buttonClicked
+==============================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: RadarTerminal.buttonClicked

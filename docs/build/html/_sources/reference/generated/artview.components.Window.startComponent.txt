@@ -1,0 +1,6 @@
+artview.components.Window.startComponent
+========================================
+
+.. currentmodule:: artview.components
+
+.. automethod:: Window.startComponent
