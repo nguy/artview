@@ -20,7 +20,7 @@ import os
 import platform
 import pyart
 
-from .core import Variable, QtGui, QtWidgets, QtCore
+from .core import Variable, QtGui, QtWidgets, QtCore, componentsList
 from .components import (
     RadarDisplay, GridDisplay, Menu, LinkSharedVariables, SelectRegion)
 from .scripts._common import startMainMenu, startMainWindow
@@ -102,6 +102,13 @@ def execute():
     ''' Execute Application '''
     global app
     app.exec_()
+    
+    #clean componentsList
+    for component in componentsList[:]:
+        try:
+            componentsList.parentWidget()
+        except:
+            componentsList.remove(component)
 
 
 def close():
