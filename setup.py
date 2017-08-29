@@ -29,11 +29,11 @@ Intended Audience :: Developers
 License :: OSI Approved :: BSD License
 Programming Language :: Python
 Programming Language :: Python :: 2
-Programming Language :: Python :: 2.6
 Programming Language :: Python :: 2.7
 Programming Language :: Python :: 3
 Programming Language :: Python :: 3.3
 Programming Language :: Python :: 3.4
+Programming Language :: Python :: 3.5
 Topic :: Scientific/Engineering
 Topic :: Scientific/Engineering :: Atmospheric Science
 Operating System :: POSIX :: Linux
@@ -53,7 +53,7 @@ CLASSIFIERS = filter(None, CLASSIFIERS.split('\n'))
 PLATFORMS = ["Linux", "Mac OS-X", "Unix"]
 MAJOR = 1
 MINOR = 3
-MICRO = 6
+MICRO = 7
 ISRELEASED = False
 ISPROFILING = False
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
