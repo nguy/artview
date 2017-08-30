@@ -100,7 +100,7 @@ def grid_mode():
             menu = comp
         elif isinstance(comp, Window) and window is None:
             window = comp
-
+    raise
     if menu is None:
         menu = FileNavigator()
         window.addComponent(menu)
