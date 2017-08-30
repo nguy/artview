@@ -1289,6 +1289,19 @@ try:
 except pyart.exceptions.MissingOptionalDependency:
     class GridDisplay(Component):
 
+
+        Vgrid = None  #: see :ref:`shared_variable`
+        Vfield = None  #: see :ref:`shared_variable`
+        VlevelZ = None \
+            #: see :ref:`shared_variable`, only used if plot_type="gridZ"
+        VlevelY = None \
+            #: see :ref:`shared_variable`, only used if plot_type="gridY"
+        VlevelX = None \
+            #: see :ref:`shared_variable`, only used if plot_type="gridX"
+        Vcolormap = None  #: see :ref:`shared_variable`
+        VplotAxes = None  #: see :ref:`shared_variable` (no internal use)
+        VpathInteriorFunc = None  #: see :ref:`shared_variable` (no internal use)
+
         @classmethod
         def guiStart(self, parent=None):
             '''Graphical interface for starting this class'''
@@ -1303,3 +1316,7 @@ except pyart.exceptions.MissingOptionalDependency:
             label = QtWidgets.QLabel("MISSING BASEMAP")
             label.setStyleSheet('QLabel { background-color: black, color: red}')
             self.setCentralWidget(label)
+            self.show()
+
+        def add_mode(self, mode, label):
+            pass

@@ -108,6 +108,8 @@ def grid_mode():
     from .core.core import suggestName
     grid = GridDisplay(name=suggestName(GridDisplay), Vgrid=menu.Vgrid,
                        parent=menu)
+    import inspect
+    print(inspect.getfile(grid.__class__))
     grid.add_mode(display_select_region, "Select a Region of Interest")
     window.addComponent(grid)
 
