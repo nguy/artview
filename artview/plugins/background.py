@@ -337,6 +337,7 @@ class ImageBackground(Component):
 
 def topography_mode():
     from ..modes import change_mode
+    from ..components import FileNavigator, RadarDisplay
     change_mode(
         [FileNavigator, RadarDisplay, TopographyBackground],
         [
@@ -347,6 +348,7 @@ def topography_mode():
 
 def background_mode():
     from ..modes import change_mode
+    from ..components import FileNavigator, RadarDisplay
     change_mode(
         [FileNavigator, RadarDisplay, ImageBackground],
         [

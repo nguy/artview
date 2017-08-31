@@ -15,14 +15,17 @@ def test_matplotlib_qt_backend():
                 from matplotlib.backends.qt4_compat import QtCore
             except:
                 from matplotlib.backends.qt import QtCore
-        from PyQt4 import QtCore as QtCore4
+        try:
+            from PyQt4 import QtCore as QtCore_pyqt
+        except:
+            from PyQt5 import QtCore as QtCore_pyqt
 
-        if QtCore is QtCore4:
+        if QtCore is QtCore_pyqt:
             print ("... test passed")
             return True
         else:
             using = QtCore.__name__.split('.')[0]
-            expect = QtCore4.__name__.split('.')[0]
+            expect = QtCore_pyqt.__name__.split('.')[0]
             print ("... Qt test FAILURE\n" +
                    "    Matplotlib is using %s\n" % using +
                    "    It must use %s\n" % expect +
@@ -33,7 +36,7 @@ def test_matplotlib_qt_backend():
     except:
         import traceback
         print(traceback.format_exc())
-        print ("... If you experience this test failure, it may be an "
+        print ("... If you experience this test failure, it may be un"
                "expected! We would like to know why, "
                "please report in 'https://github.com/nguy/artview/issues'")
         return None

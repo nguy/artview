@@ -101,7 +101,16 @@ def startWindow(DirIn=os.getcwd(), filename=False):
 def execute():
     ''' Execute Application '''
     global app
+    import sys
+
+    # Prevent app on exiting with an exception
+    excepthook = sys.excepthook
+    def my_excepthook(type, value, tback):
+        sys.__excepthook__(type, value, tback)
+
+    sys.excepthook = my_excepthook
     app.exec_()
+    sys.excepthook = excepthook
     
     #clean componentsList
     for component in componentsList[:]:

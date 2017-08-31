@@ -623,11 +623,10 @@ class Correlation(Component):
                ('s','facecolors', 'edgecolors', 'marker')}
             )
 
-
-        self.ax.set_xscale(
-            str(self.horizontal_scale_menu_group.checkedAction().text()))
-        self.ax.set_yscale(
-            str(self.vertical_scale_menu_group.checkedAction().text()))
+        xscale, yscale = self.get_xyscale()
+        
+        self.ax.set_xscale(xscale)
+        self.ax.set_yscale(yscale)
 
         self.ax.set_xlabel(self.unitsHorizontal)
         self.ax.set_ylabel(self.unitsVertical)
@@ -642,11 +641,24 @@ class Correlation(Component):
                 self.Vradar.value, self.VfieldHorizontal.value,
                 self.VfieldVertical.value, sweeps, gatefilter, self.ax,
                 vmin + 0.05 * (vmax-vmin), vmax - 0.05 * (vmax-vmin),
-                str(self.horizontal_scale_menu_group.checkedAction().text()),
-                str(self.vertical_scale_menu_group.checkedAction().text()),
+                xscale,
+                yscale,
                 color=self.parameters["color"])
 
         self.canvas.draw()
+
+    def get_xyscale(self):
+        scale = [None, None]
+        scale[0] = str(self.horizontal_scale_menu_group.checkedAction().text())
+        scale[1] = str(self.vertical_scale_menu_group.checkedAction().text())
+        
+        for i in range(2):
+            if scale[i] == "&linear":
+                scale[i] = "linear"
+            elif scale[i] == "l&og":
+                scale[i] = "log"
+        return scale
+
 
     #########################
     # Check methods #
