@@ -11,7 +11,7 @@ the latest release.  To do this you must download and install
 Then use the following command in a terminal or command prompt to install
 the latest version of ARTview::
 
-    conda install -c jjhelmus artivew
+    conda install -c jjhelmus artview
 
 To update an older version of ARTview to the latest release use::
 
