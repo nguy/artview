@@ -11,11 +11,11 @@ the latest release.  To do this you must download and install
 Then use the following command in a terminal or command prompt to install
 the latest version of ARTview::
 
-    conda install -c jjhelmus artivew
+    conda install -c jjhelmus artview
 
 To update an older version of ARTview to the latest release use::
 
-    conda update -c jjhelmus ARTview
+    conda update -c jjhelmus artview
 
 If you do not wish to use Anaconda or Miniconda as a Python environment or want
 to use the latest, unreleased version of ARTview see the section below on
