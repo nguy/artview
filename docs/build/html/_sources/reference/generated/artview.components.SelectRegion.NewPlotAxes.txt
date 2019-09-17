@@ -1,6 +1,6 @@
-artview.components.SelectRegion.NewPlotAxes
+artview.components.SelectRegion.newPlotAxes
 ===========================================
 
 .. currentmodule:: artview.components
 
-.. automethod:: SelectRegion.NewPlotAxes
+.. automethod:: SelectRegion.newPlotAxes
