@@ -7,11 +7,7 @@ Class instance to create Variables and establish change signals.
 
 # Load the needed packages
 # this should the only place with reference to PyQt4
-try:
-    from PyQt4 import QtGui, QtCore
-    QtWidgets = QtGui
-except:
-    from PyQt5 import QtWidgets, QtCore, QtGui
+from matplotlib.backends.qt_compat import QtCore, QtWidgets, QtGui
 import sys
 
 # lets add some magic for the documentation

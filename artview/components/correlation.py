@@ -9,13 +9,14 @@ import scipy
 import os
 import pyart
 
-from matplotlib.backends import pylab_setup
-backend = pylab_setup()[0]
-FigureCanvasQTAgg = backend.FigureCanvasQTAgg
-NavigationToolbar = backend.NavigationToolbar2QT
-#from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
-#from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as \
-#    NavigationToolbar
+from matplotlib.backends.qt_compat import is_pyqt5
+if is_pyqt5():
+    from matplotlib.backends.backend_qt5agg import (
+        FigureCanvas, NavigationToolbar2QT as NavigationToolbar)
+else:
+    from matplotlib.backends.backend_qt4agg import (
+        FigureCanvas, NavigationToolbar2QT as NavigationToolbar)
+
 from matplotlib.figure import Figure
 from matplotlib.colors import Normalize as mlabNormalize
 from matplotlib.colorbar import ColorbarBase as mlabColorbarBase

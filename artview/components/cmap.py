@@ -8,9 +8,12 @@ from ..core import QtWidgets, QtGui, QtCore
 
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
-from matplotlib.backends import pylab_setup
-FigureCanvasQTAgg = pylab_setup()[0].FigureCanvasQTAgg
-#from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
+from matplotlib.backends.qt_compat import is_pyqt5
+if is_pyqt5():
+    from matplotlib.backends.backend_qt5agg import FigureCanvas
+else:
+    from matplotlib.backends.backend_qt4agg import FigureCanvas
+
 from matplotlib import colors
 
 import pyart

@@ -51,10 +51,8 @@ else:
     import matplotlib
     if core.QtCore.__name__ == 'PyQt4.QtCore':
         matplotlib.use('Qt4Agg')
-        matplotlib.rcParams['backend.qt4'] = 'PyQt4'
     elif core.QtCore.__name__ == 'PyQt5.QtCore':
         matplotlib.use('Qt5Agg')
-        matplotlib.rcParams['backend.qt5'] = 'PyQt5'
 
     from . import components
     from . import plugins

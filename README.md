@@ -162,7 +162,7 @@ to the list.
 ## Dependencies
 [Py-ART](https://github.com/ARM-DOE/pyart) >= 1.6
 
-[matplotlib](http://matplotlib.org) >= 1.1.0
+[matplotlib](http://matplotlib.org) >= 2.0.0
 
 [Basemap](http://matplotlib.org/basemap) >= 0.99
 
